@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --void: #0a0a0f;
+  --midnight: #12121a;
+  --depth: #1a1a2e;
+  --surface: #252538;
+  --muted: #6b7280;
+  --text: #f8fafc;
+  --cyan: #22d3ee;
+  --violet: #8b5cf6;
+  --fuchsia: #d946ef;
+}
+
+@layer base {
+  * {
+    @apply border-neutral-800;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-void text-slate-100 antialiased;
+    font-family: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Elegant serif headings like Commune font */
+  h1, h2, h3 {
+    font-family: var(--font-playfair), 'Playfair Display', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply text-cyan-400;
+  }
+  
+  .glass {
+    @apply bg-white/10 backdrop-blur-xl border border-white/10;
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    transform: translate3d(0, 0, 0);
+    will-change: backdrop-filter;
+  }
+  
+  /* Marquee animation */
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  
+  .animate-marquee {
+    animation: marquee linear infinite;
+  }
+  
+  .group:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+  
+  /* Smooth marquee animation - right to left */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  
+  .animate-marquee {
+    animation: marquee linear infinite;
+  }
+  
+  /* Pause on hover */
+  .group:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+  
+  /* Fallback for browsers without backdrop-filter support */
+  @supports not (backdrop-filter: blur(24px)) {
+    .glass {
+      @apply bg-black/70;
+    }
+  }
+  
+  /* Mobile-specific glass - whitish smoked glass effect */
+  .glass-mobile {
+    background: rgba(255, 255, 255, 0.12);
+    -webkit-backdrop-filter: blur(8px) saturate(180%);
+    backdrop-filter: blur(8px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+  
+  /* When backdrop-filter is not supported, use solid smoked background */
+  @supports not ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
+    .glass-mobile {
+      background: rgba(40, 40, 50, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+  }
+  
+  .glow-cyan {
+    box-shadow: 0 0 40px -10px rgba(34, 211, 238, 0.3);
+  }
+  
+  .glow-violet {
+    box-shadow: 0 0 40px -10px rgba(34, 211, 238, 0.2);
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Mobile utilities */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
+  }
+}
+
+/* Smooth animations */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom aesthetic scrollbar for terminal and dark theme */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(30, 30, 40, 0.5);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 120, 0.5);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 211, 238, 0.6);
+}
+
+/* Firefox scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 100, 120, 0.5) rgba(30, 30, 40, 0.5);
+}
+
+/* Global scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #252538;
+  border-radius: 4px;
+  border: 2px solid #0a0a0f;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #22d3ee;
+}
