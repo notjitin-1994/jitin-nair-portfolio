@@ -238,14 +238,13 @@ export function DesktopCapabilitiesEnhanced() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="relative overflow-hidden rounded-2xl p-6 text-center border border-white/10 bg-white/[0.02] backdrop-blur-sm group hover:border-cyan-500/20 transition-all duration-300"
+              className="relative overflow-hidden rounded-2xl p-5 text-center border border-white/[0.08] bg-[#0d0d12] hover:border-cyan-500/20 transition-all duration-300"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative">
-                <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mx-auto mb-3 border border-cyan-500/20">
-                  <stat.icon className="w-6 h-6 text-cyan-400" />
+                <div className="w-10 h-10 rounded-lg bg-cyan-500/15 border border-cyan-500/25 flex items-center justify-center mx-auto mb-3">
+                  <stat.icon className="w-5 h-5 text-cyan-400" />
                 </div>
-                <div className="text-3xl font-bold text-cyan-400 mb-1">{stat.value}</div>
+                <div className="text-2xl font-bold text-cyan-400 mb-1">{stat.value}</div>
                 <div className="text-sm text-slate-400">{stat.label}</div>
               </div>
             </motion.div>
