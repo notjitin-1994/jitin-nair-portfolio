@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Layout, Bot, Globe, Monitor, Network, Sparkles } from 'lucide-react';
+import { Brain, Sparkles, Zap, Network, Monitor, Video, Database, TrendingUp } from 'lucide-react';
 
 interface ExpertiseItem {
   icon: React.ElementType;
@@ -54,12 +54,12 @@ function ExpertiseCard({ item, index, isPaused }: { item: ExpertiseItem; index: 
 
   return (
     <motion.div
-      className="flex-shrink-0 w-[320px] px-3"
+      className="flex-shrink-0 w-[360px] px-3"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <motion.div
-        className={`relative overflow-hidden rounded-2xl p-6 h-[240px] ${
+        className={`relative overflow-hidden rounded-2xl p-6 h-[300px] ${
           item.featured
             ? "bg-gradient-to-br from-cyan-500/20 via-white/[0.05] to-transparent border-cyan-500/30"
             : "bg-white/[0.03] border-white/[0.08]"
@@ -124,13 +124,13 @@ function ExpertiseCard({ item, index, isPaused }: { item: ExpertiseItem; index: 
 
           {/* Content */}
           <h3 className="text-xl font-bold mb-3">{item.title}</h3>
-          <p className="text-slate-400 text-sm mb-4 leading-relaxed flex-grow line-clamp-3">
+          <p className="text-slate-400 text-sm mb-4 leading-relaxed flex-grow">
             {item.description}
           </p>
 
           {/* Skills */}
           <div className="flex flex-wrap gap-2">
-            {item.skills.slice(0, 4).map((skill, i) => (
+            {item.skills.map((skill, i) => (
               <motion.span
                 key={i}
                 className={`px-2.5 py-1 text-[10px] font-mono rounded-full border ${
@@ -173,55 +173,61 @@ export function DesktopExpertiseMarquee() {
   const expertise: ExpertiseItem[] = [
     {
       icon: Brain,
-      title: "AI Automation Systems",
-      description:
-        "Autonomous agents that streamline workflows, reduce manual tasks, and deliver measurable productivity gains for enterprise teams.",
-      skills: ["LangGraph", "CrewAI", "Process Automation", "LLM Orchestration"],
+      title: "Autonomous Agentic Systems",
+      description: "Multi-agent orchestration networks that perceive, decide, and act autonomously—spanning trading, operations, monitoring, and decision intelligence.",
+      skills: ["LangGraph", "AutoGen", "CrewAI", "Vector DBs"],
       featured: true,
     },
     {
-      icon: Layout,
-      title: "Dashboards & Analytics",
-      description:
-        "Real-time data dashboards and admin panels that transform complex data into actionable insights for stakeholders.",
-      skills: ["React", "D3.js", "PostgreSQL", "Data Visualization"],
+      icon: Sparkles,
+      title: "AI-Native Applications",
+      description: "RAG-powered apps, semantic search, document intelligence, and verification frameworks achieving 95%+ accuracy.",
+      skills: ["OpenAI", "RAG", "CoVe", "TypeScript"],
     },
     {
-      icon: Bot,
-      title: "AI-Enabled Applications",
-      description:
-        "Production-grade apps with integrated AI features—semantic search, document processing, and intelligent recommendations.",
-      skills: ["OpenAI", "RAG", "Vector DBs", "TypeScript"],
-    },
-    {
-      icon: Globe,
-      title: "Marketing Websites",
-      description:
-        "High-converting landing pages and marketing sites built for performance, SEO, and lead generation.",
-      skills: ["Next.js", "Astro", "Tailwind", "SEO"],
-    },
-    {
-      icon: Monitor,
-      title: "Internal Tools",
-      description:
-        "Custom desktop applications and internal tools that accelerate team productivity and replace manual processes.",
-      skills: ["Tauri", "Electron", "Rust", "Cross-platform"],
+      icon: Zap,
+      title: "Intelligent Process Automation",
+      description: "Self-healing infrastructure, browser automation, and workflow engines that reduce manual work by 80%+.",
+      skills: ["Playwright", "Python", "systemd", "Docker"],
     },
     {
       icon: Network,
-      title: "Integration Pipelines",
-      description:
-        "Scalable data pipelines and API integrations that connect disparate systems and automate data flows.",
-      skills: ["Kafka", "Redis", "Docker", "Microservices"],
+      title: "Enterprise Integration Platforms",
+      description: "API orchestration, chatbots, IoT systems, messaging, and secrets management across 200+ connected agents.",
+      skills: ["Discord/Telegram", "1Password", "IoT", "GitHub"],
+    },
+    {
+      icon: Monitor,
+      title: "Desktop & Internal Tools",
+      description: "Cross-platform desktop applications and internal productivity accelerators built for engineering teams.",
+      skills: ["Tauri", "Electron", "Rust", "React"],
+    },
+    {
+      icon: Video,
+      title: "Content & Media Pipelines",
+      description: "AI-generated content, video processing, speech-to-text, and automated media workflows at scale.",
+      skills: ["FFmpeg", "Whisper", "AI Gen", "Summarization"],
+    },
+    {
+      icon: Database,
+      title: "Real-Time Data Infrastructure",
+      description: "Streaming pipelines, time-series databases, and live analytics dashboards with sub-second latency.",
+      skills: ["Kafka", "Redis", "TimescaleDB", "D3"],
+    },
+    {
+      icon: TrendingUp,
+      title: "Quantitative & Algorithmic Systems",
+      description: "Institutional-grade trading infrastructure with regime detection, MLOps, and sub-second execution.",
+      skills: ["TimescaleDB", "Polars", "Backtesting", "Risk"],
     },
   ];
 
-  // Split expertise into two rows
-  const row1 = expertise.slice(0, 3);
-  const row2 = expertise.slice(3, 6);
+  // Split expertise into two rows (4 each)
+  const row1 = expertise.slice(0, 4);
+  const row2 = expertise.slice(4, 8);
 
   return (
-    <section id="expertise" className="py-32 overflow-hidden">
+    <section id="expertise" className="py-14 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header - Left Aligned */}
         <motion.div
@@ -268,12 +274,10 @@ export function DesktopExpertiseMarquee() {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-
           {/* Row 1 - Left to Right */}
           <div className="relative">
+            <div className="absolute left-0 inset-y-0 w-20 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 inset-y-0 w-20 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
             <Marquee
               speed={40}
               direction="left"
@@ -287,6 +291,8 @@ export function DesktopExpertiseMarquee() {
 
           {/* Row 2 - Right to Left */}
           <div className="relative">
+            <div className="absolute left-0 inset-y-0 w-20 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 inset-y-0 w-20 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
             <Marquee
               speed={45}
               direction="right"

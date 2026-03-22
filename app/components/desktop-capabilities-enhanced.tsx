@@ -216,7 +216,7 @@ export function DesktopCapabilitiesEnhanced() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
           >
-            Production <span className="text-cyan-400">Systems</span>
+            Core <span className="text-cyan-400">Competencies</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}

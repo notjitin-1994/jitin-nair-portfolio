@@ -2,7 +2,8 @@
 
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Github, ExternalLink } from 'lucide-react';
+import { Github, ExternalLink, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface TouchFlipCardProps {
   project: {
@@ -12,6 +13,7 @@ interface TouchFlipCardProps {
     features: string[];
     githubUrl?: string;
     liveUrl?: string;
+    learnMoreUrl?: string;
     image?: string; // optional background
   };
 }
@@ -188,7 +190,23 @@ export function TouchFlipCard({ project }: TouchFlipCardProps) {
             </div>
 
             {/* Links */}
-            <div className="flex gap-3 mt-4 pt-4 border-t border-white/10">
+            <div className="flex flex-wrap gap-3 mt-4 pt-4 border-t border-white/10">
+              {project.learnMoreUrl && (
+                <Link
+                  href={project.learnMoreUrl}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105"
+                  style={{
+                    backgroundColor: 'rgba(34, 211, 238, 0.2)',
+                    color: '#22d3ee',
+                    border: '1px solid rgba(34, 211, 238, 0.4)',
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label={`Learn more about ${project.name}`}
+                >
+                  <span>Learn More</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              )}
               {project.githubUrl && (
                 <a
                   href={project.githubUrl}

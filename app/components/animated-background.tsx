@@ -1,73 +1,36 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
 
 export function AnimatedBackground() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Small delay to ensure hydration is complete
+    const timer = setTimeout(() => setMounted(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Static gradient for SSR and initial render
+  if (!mounted) {
+    return (
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#0d0d12] to-[#0a0a0f]" />
+      </div>
+    );
+  }
+
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none">
+    <div className="fixed inset-0 overflow-hidden pointer-events-none gpu-accelerated">
       {/* Base gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#0d0d12] to-[#0a0a0f]" />
       
-      {/* Animated orbs - super slow and smooth */}
-      <motion.div
-        className="absolute w-[800px] h-[800px] rounded-full opacity-[0.08]"
-        style={{
-          background: "radial-gradient(circle, #22d3ee 0%, transparent 70%)",
-          filter: "blur(100px)",
-        }}
-        animate={{
-          x: ["-20%", "60%", "-20%"],
-          y: ["10%", "40%", "10%"],
-        }}
-        transition={{
-          duration: 60,
-          ease: "linear",
-          repeat: Infinity,
-        }}
-      />
-      
-      <motion.div
-        className="absolute w-[600px] h-[600px] rounded-full opacity-[0.06]"
-        style={{
-          background: "radial-gradient(circle, #10b981 0%, transparent 70%)",
-          filter: "blur(80px)",
-          right: "-10%",
-          top: "20%",
-        }}
-        animate={{
-          x: ["0%", "-40%", "0%"],
-          y: ["0%", "30%", "0%"],
-        }}
-        transition={{
-          duration: 45,
-          ease: "linear",
-          repeat: Infinity,
-          delay: 5,
-        }}
-      />
-      
-      <motion.div
-        className="absolute w-[500px] h-[500px] rounded-full opacity-[0.05]"
-        style={{
-          background: "radial-gradient(circle, #22d3ee 0%, transparent 70%)",
-          filter: "blur(60px)",
-          left: "30%",
-          bottom: "-10%",
-        }}
-        animate={{
-          x: ["0%", "20%", "0%"],
-          y: ["0%", "-20%", "0%"],
-        }}
-        transition={{
-          duration: 50,
-          ease: "linear",
-          repeat: Infinity,
-          delay: 10,
-        }}
-      />
+      {/* CSS-animated orbs - GPU accelerated, no Framer Motion */}
+      <div className="animated-orb-1" />
+      <div className="animated-orb-2" />
+      <div className="animated-orb-3" />
 
-      {/* Subtle noise texture overlay */}
+      {/* Static noise texture - no animation */}
       <div 
         className="absolute inset-0 opacity-[0.015]"
         style={{

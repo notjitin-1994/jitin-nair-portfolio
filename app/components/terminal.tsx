@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Download, ChevronDown, ChevronRight, ArrowRight, Phone, Mail, FileText, Check } from "lucide-react";
+import { Download, ChevronDown, ArrowRight, Phone, Mail, FileText, Check, Terminal as TerminalIcon, Cpu, Globe, Layers, Zap } from "lucide-react";
 
 // Hook to detect when element enters viewport
 function useInView(ref: React.RefObject<HTMLElement | null>, once = true) {
@@ -33,32 +33,492 @@ function useInView(ref: React.RefObject<HTMLElement | null>, once = true) {
   return inView;
 }
 
-// ASCII Art
-const asciiBanner = [
-  "     ██╗██╗████████╗██╗███╗   ██╗",
-  "     ██║██║╚══██╔══╝██║████╗  ██║",
-  "     ██║██║   ██║   ██║██╔██╗ ██║",
-  "██   ██║██║   ██║   ██║██║╚██╗██║",
-  "╚█████╔╝██║   ██║   ██║██║ ╚████║",
-  " ╚════╝ ╚═╝   ╚═╝   ╚═╝╚═╝  ╚═══╝",
+// Pixel Grid ASCII Art - Renders crisp on all devices using CSS Grid
+// 1 = pixel on, 0 = pixel off
+const pixelBannerP = [
+  [1,1,1,1,1,1],
+  [1,1,0,0,0,1],
+  [1,1,1,1,1,1],
+  [1,1,0,0,0,0],
+  [1,1,0,0,0,0],
+];
+const pixelBannerO = [
+  [0,1,1,1,1,0],
+  [1,1,0,0,1,1],
+  [1,1,0,0,1,1],
+  [1,1,0,0,1,1],
+  [0,1,1,1,1,0],
+];
+const pixelBannerR = [
+  [1,1,1,1,1,0],
+  [1,1,0,0,1,1],
+  [1,1,1,1,1,0],
+  [1,1,0,0,1,1],
+  [1,1,0,0,1,1],
+];
+const pixelBannerT = [
+  [1,1,1,1,1,1],
+  [0,0,1,1,0,0],
+  [0,0,1,1,0,0],
+  [0,0,1,1,0,0],
+  [0,0,1,1,0,0],
+];
+const pixelBannerF = [
+  [1,1,1,1,1,1],
+  [1,1,0,0,0,0],
+  [1,1,1,1,1,0],
+  [1,1,0,0,0,0],
+  [1,1,0,0,0,0],
+];
+const pixelBannerL = [
+  [1,1,0,0,0,0],
+  [1,1,0,0,0,0],
+  [1,1,0,0,0,0],
+  [1,1,0,0,0,0],
+  [1,1,1,1,1,1],
+];
+const pixelBannerI = [
+  [1,1,1,1],
+  [0,1,1,0],
+  [0,1,1,0],
+  [0,1,1,0],
+  [1,1,1,1],
 ];
 
-const PROGRESS_FULL = "█";
-const PROGRESS_EMPTY = "░";
+const pixelLetters = [pixelBannerP, pixelBannerO, pixelBannerR, pixelBannerT, pixelBannerF, pixelBannerO, pixelBannerL, pixelBannerI, pixelBannerO];
+
+// Pixel Banner Component - renders ASCII as CSS Grid pixels
+function PixelBanner({ isMobile }: { isMobile: boolean }) {
+  const pixelSize = isMobile ? 3 : 5;
+  const gap = isMobile ? 1 : 2;
+  const letterGap = isMobile ? 3 : 6;
+  
+  const totalWidth = pixelLetters.reduce((acc, letter) => acc + letter[0].length * pixelSize + letterGap, 0) - letterGap;
+  
+  return (
+    <div className="flex items-center" style={{ height: isMobile ? '40px' : '65px' }}>
+      <div className="flex items-end">
+        {pixelLetters.map((letter, letterIndex) => (
+          <div key={letterIndex} className="flex">
+            <div
+              className="grid"
+              style={{
+                gridTemplateColumns: `repeat(${letter[0].length}, ${pixelSize}px)`,
+                gridTemplateRows: `repeat(${letter.length}, ${pixelSize}px)`,
+                gap: `${gap}px`,
+              }}
+            >
+              {letter.flat().map((pixel, pixelIndex) => (
+                <motion.div
+                  key={pixelIndex}
+                  className={pixel ? '' : 'bg-transparent'}
+                  style={{
+                    width: pixelSize,
+                    height: pixelSize,
+                    borderRadius: isMobile ? 0.5 : 1,
+                  }}
+                  initial={{ opacity: 0, scale: 0, backgroundColor: '#22d3ee' }}
+                  animate={{
+                    opacity: pixel ? 1 : 0,
+                    scale: pixel ? 1 : 0,
+                    backgroundColor: pixel ? ['#22d3ee', '#10b981', '#22d3ee'] : 'transparent',
+                  }}
+                  transition={{
+                    opacity: { duration: 0.3, delay: (letterIndex * 5 + pixelIndex) * 0.01, ease: [0.4, 0, 0.2, 1] },
+                    scale: { duration: 0.3, delay: (letterIndex * 5 + pixelIndex) * 0.01, ease: [0.4, 0, 0.2, 1] },
+                    backgroundColor: { duration: 2, ease: 'linear', repeat: Infinity },
+                  }}
+                />
+              ))}
+            </div>
+            {letterIndex < pixelLetters.length - 1 && (
+              <div style={{ width: letterGap }} />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Scramble characters for decode effect
+const SCRAMBLE_CHARS = "!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+// Glitch text component with neon cyberpunk effect
+function GlitchText({ text, className }: { text: string; className?: string }) {
+  const [glitchOffset, setGlitchOffset] = useState(0);
+  const [glitchOpacity, setGlitchOpacity] = useState(0);
+  const [hueRotate, setHueRotate] = useState(0);
+
+  useEffect(() => {
+    const glitchInterval = setInterval(() => {
+      // Random glitch trigger
+      if (Math.random() > 0.7) {
+        setGlitchOffset(Math.random() > 0.5 ? 2 : -2);
+        setGlitchOpacity(0.8);
+        setHueRotate(Math.random() * 30 - 15);
+        
+        setTimeout(() => {
+          setGlitchOffset(0);
+          setGlitchOpacity(0);
+          setHueRotate(0);
+        }, 50 + Math.random() * 100);
+      }
+    }, 200 + Math.random() * 300);
+
+    return () => clearInterval(glitchInterval);
+  }, []);
+
+  return (
+    <span className={cn("relative inline-block", className)}>
+      {/* Main text */}
+      <span 
+        className="relative z-10"
+        style={{
+          color: '#22d3ee',
+          textShadow: '0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(34, 211, 238, 0.3)',
+        }}
+      >
+        {text}
+      </span>
+      
+      {/* Glitch layer 1 - Cyan offset */}
+      <span 
+        className="absolute inset-0 z-0 pointer-events-none select-none"
+        style={{
+          color: '#06b6d4',
+          left: `${glitchOffset}px`,
+          opacity: glitchOpacity,
+          clipPath: 'inset(10% 0 60% 0)',
+          filter: `hue-rotate(${hueRotate}deg)`,
+        }}
+        aria-hidden
+      >
+        {text}
+      </span>
+      
+      {/* Glitch layer 2 - Magenta offset */}
+      <span 
+        className="absolute inset-0 z-0 pointer-events-none select-none"
+        style={{
+          color: '#d946ef',
+          left: `${-glitchOffset}px`,
+          opacity: glitchOpacity * 0.7,
+          clipPath: 'inset(40% 0 30% 0)',
+          filter: `hue-rotate(${-hueRotate}deg)`,
+        }}
+        aria-hidden
+      >
+        {text}
+      </span>
+      
+      {/* Glitch layer 3 - Green offset */}
+      <span 
+        className="absolute inset-0 z-0 pointer-events-none select-none"
+        style={{
+          color: '#22c55e',
+          left: `${glitchOffset * 0.5}px`,
+          opacity: glitchOpacity * 0.5,
+          clipPath: 'inset(70% 0 10% 0)',
+        }}
+        aria-hidden
+      >
+        {text}
+      </span>
+    </span>
+  );
+}
+
+// Terminal typing animation with command execution feel
+function TypewriterCommand({ 
+  prompt, 
+  command, 
+  onComplete,
+  speed = 25 
+}: { 
+  prompt: string; 
+  command: string; 
+  onComplete: () => void;
+  speed?: number;
+}) {
+  const [displayedCommand, setDisplayedCommand] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+
+  useEffect(() => {
+    let index = 0;
+    const typeInterval = setInterval(() => {
+      if (index <= command.length) {
+        setDisplayedCommand(command.slice(0, index));
+        index++;
+      } else {
+        clearInterval(typeInterval);
+        setShowCursor(false);
+        setTimeout(onComplete, 300);
+      }
+    }, speed);
+
+    return () => clearInterval(typeInterval);
+  }, [command, onComplete, speed]);
+
+  return (
+    <div className="flex flex-wrap items-start">
+      <span className="text-cyan-400/80 font-semibold flex-shrink-0">{prompt}</span>
+      <span className="text-neutral-300 ml-1 break-all">{displayedCommand}</span>
+      {showCursor && (
+        <motion.span
+          animate={{ opacity: [1, 0] }}
+          transition={{ duration: 0.5, repeat: Infinity }}
+          className="inline-block w-2 h-4 bg-cyan-400 ml-0.5 align-middle flex-shrink-0 mt-0.5"
+        />
+      )}
+    </div>
+  );
+}
+
+// Enhanced section header with TUX aesthetics
+function SectionHeader({ 
+  title, 
+  icon: Icon,
+  color = "cyan" 
+}: { 
+  title: string; 
+  icon?: React.ComponentType<{ className?: string }>;
+  color?: "cyan" | "emerald";
+}) {
+  const colorClasses = {
+    cyan: "text-cyan-400 border-cyan-400/30",
+    emerald: "text-emerald-400 border-emerald-400/30",
+  };
+
+  return (
+    <div className={cn(
+      "flex items-center gap-2 mt-3 sm:mt-4 mb-1.5 sm:mb-2 text-[10px] font-medium border-l-2 pl-2 py-0.5",
+      colorClasses[color]
+    )}>
+      {Icon && <Icon className="w-3 h-3 flex-shrink-0" />}
+      <span className="uppercase tracking-wider whitespace-nowrap">{title}</span>
+      <span className="flex-1 border-t border-dashed border-current opacity-30 min-w-[20px]" />
+    </div>
+  );
+}
+
+// Status indicator component
+function StatusLine({ 
+  label, 
+  value, 
+  status = "neutral",
+  animate = false 
+}: { 
+  label: string; 
+  value: string; 
+  status?: "success" | "warning" | "info" | "neutral";
+  animate?: boolean;
+}) {
+  const statusColors = {
+    success: "text-emerald-400",
+    warning: "text-cyan-300",
+    info: "text-cyan-400",
+    neutral: "text-neutral-400",
+  };
+
+  const statusBg = {
+    success: "bg-emerald-400",
+    warning: "bg-cyan-300",
+    info: "bg-cyan-400",
+    neutral: "bg-neutral-400",
+  };
+
+  return (
+    <div className={cn(
+      "flex items-start gap-2 sm:gap-3 text-xs py-0.5",
+      "min-w-0"
+    )}>
+      <span className={cn(
+        "w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1",
+        statusBg[status], 
+        animate && "animate-pulse"
+      )} />
+      <span className="text-neutral-500 w-16 sm:w-20 flex-shrink-0">{label}</span>
+      <span className={cn(
+        "font-medium break-words leading-tight min-w-0 flex-1",
+        statusColors[status]
+      )}>
+        {value}
+      </span>
+    </div>
+  );
+}
+
+// Progress bar with cyberpunk styling
+function CyberProgress({ 
+  label, 
+  progress, 
+  color = "cyan",
+  delay = 0
+}: { 
+  label: string; 
+  progress: number; 
+  color?: "cyan" | "emerald";
+  delay?: number;
+}) {
+  const [displayProgress, setDisplayProgress] = useState(0);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const duration = 800;
+      const steps = 40;
+      const increment = progress / steps;
+      let current = 0;
+      
+      const interval = setInterval(() => {
+        current += increment;
+        if (current >= progress) {
+          setDisplayProgress(progress);
+          clearInterval(interval);
+        } else {
+          setDisplayProgress(Math.floor(current));
+        }
+      }, duration / steps);
+      
+      return () => clearInterval(interval);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [progress, delay]);
+
+  const filled = "█".repeat(Math.floor(displayProgress / 10));
+  const empty = "░".repeat(10 - Math.floor(displayProgress / 10));
+  
+  const colorClasses = {
+    cyan: "text-cyan-400",
+    emerald: "text-emerald-400",
+  };
+
+  return (
+    <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs py-0.5 sm:py-1 w-full min-w-0">
+      <span className="text-neutral-400 whitespace-nowrap overflow-hidden text-ellipsis max-w-[45%] sm:max-w-none">{label}</span>
+      <span className="flex-1 min-w-0" />
+      <span className={cn("font-mono tracking-tight flex-shrink-0", colorClasses[color])}>
+        {filled}{empty}
+      </span>
+      <span className={cn("text-[10px] sm:text-xs w-7 sm:w-8 text-right flex-shrink-0", colorClasses[color])}>
+        {displayProgress}%
+      </span>
+    </div>
+  );
+}
+
+// Metric with animated counting
+function AnimatedMetric({ 
+  label, 
+  value, 
+  suffix = "",
+  delay = 0 
+}: { 
+  label: string; 
+  value: number | string; 
+  suffix?: string;
+  delay?: number;
+}) {
+  const [displayValue, setDisplayValue] = useState("0");
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsRevealed(true);
+      if (typeof value === "number") {
+        let current = 0;
+        const increment = value / 20;
+        const interval = setInterval(() => {
+          current += increment;
+          if (current >= value) {
+            setDisplayValue(value.toString());
+            clearInterval(interval);
+          } else {
+            setDisplayValue(Math.floor(current).toString());
+          }
+        }, 30);
+        return () => clearInterval(interval);
+      } else {
+        setDisplayValue(value);
+      }
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return (
+    <div className="flex items-center justify-between py-0.5 sm:py-1 min-w-0">
+      <span className="text-neutral-500 text-xs sm:text-sm truncate mr-2">{label}</span>
+      <motion.span 
+        initial={{ opacity: 0, x: -10 }}
+        animate={isRevealed ? { opacity: 1, x: 0 } : {}}
+        className="text-emerald-400 font-mono font-bold text-xs sm:text-sm flex-shrink-0"
+      >
+        {displayValue}{suffix}
+      </motion.span>
+    </div>
+  );
+}
+
 const SPINNER_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
-const skillsData = [
-  { name: "agentic-systems", label: "Agentic Systems" },
-  { name: "ai-workflows", label: "AI Workflows" },
-  { name: "content-dev", label: "Content Development" },
-  { name: "app-dev", label: "App Development" },
-  { name: "web-dev", label: "Web Development" },
-];
+// Comprehensive data about all sections
+const portfolioData = {
+  identity: {
+    name: "Jitin Nair",
+    role: "AI Enablement Leader | Instructional Designer",
+    specialty: "Autonomous Agent Development",
+    experience: "10+ years",
+    location: "Bangalore, India",
+    status: "Available",
+  },
+  expertise: [
+    { name: "Autonomous Agentic Systems", level: 95, icon: Cpu },
+    { name: "AI-Native Applications", level: 90, icon: Zap },
+    { name: "Intelligent Process Automation", level: 88, icon: Layers },
+    { name: "Enterprise Integration", level: 85, icon: Globe },
+    { name: "Quantitative Systems", level: 82, icon: Terminal },
+  ],
+  stats: {
+    yearsExperience: 10,
+    technologies: 38,
+    industries: 5,
+    aiModels: 6,
+    automationHours: 1000,
+    mentored: 2000,
+    agents: 200,
+    instances: 147,
+  },
+  featuredProjects: [
+    { name: "Predator Scalping System", type: "Trading & Finance", status: "Production" },
+    { name: "AI Agency Ops", type: "Multi-Agentic Framework & Ecosystem", status: "Active" },
+    { name: "Reality-Check System", type: "Governance", status: "Deployed" },
+    { name: "Smartslate", type: "L&D Platform", status: "Work in Progress" },
+    { name: "Project Commune", type: "Community Platform", status: "Beta" },
+    { name: "RevOS", type: "Garage Management", status: "Production" },
+  ],
+  stack: {
+    primary: ["Claude", "GPT", "Gemini", "LangGraph", "FastAPI", "PostgreSQL"],
+    agentic: ["MCP", "LangChain", "AutoGen", "CrewAI", "n8n"],
+    infrastructure: ["Docker", "Redis", "Supabase", "TimescaleDB"],
+  },
+  journey: [
+    { year: "2025", role: "AI Systems Architect", org: "Glitchzero" },
+    { year: "2022", role: "Instructional Designer", org: "Moody's" },
+    { year: "2019", role: "Instructor Analyst", org: "Accenture" },
+    { year: "2017", role: "Senior Executive", org: "247.ai" },
+    { year: "2015", role: "B.Com Graduate", org: "Sindhi College" },
+  ],
+  availability: {
+    fulltime: true,
+    contract: true,
+    advisory: true,
+    response: "< 24h",
+  },
+};
 
 interface TerminalProps {
   className?: string;
   username?: string;
-  hostname?: string;
   typingSpeed?: number;
   initialDelay?: number;
   hideHeader?: boolean;
@@ -67,7 +527,6 @@ interface TerminalProps {
 
 // Validation functions
 const isValidPhone = (phone: string): boolean => {
-  // Must start with + and have at least 8 digits
   const phoneRegex = /^\+[\d\s\-\(\)]{7,}$/;
   return phoneRegex.test(phone.trim());
 };
@@ -80,8 +539,7 @@ const isValidEmail = (email: string): boolean => {
 export function Terminal({
   className,
   username = "jitin",
-  hostname = "portfolio",
-  typingSpeed = 30,
+  typingSpeed = 20,
   initialDelay = 200,
   hideHeader = false,
   isMobile = false,
@@ -93,10 +551,11 @@ export function Terminal({
   const animationStarted = useRef(false);
   const isMounted = useRef(false);
 
+  const hostname = "glitchzero";
+
   const [windowOpen, setWindowOpen] = useState(false);
   const [lines, setLines] = useState<React.ReactNode[]>([]);
-  const [currentInput, setCurrentInput] = useState("");
-  const [cursorVisible, setCursorVisible] = useState(true);
+  const [currentPhase, setCurrentPhase] = useState<"idle" | "typing" | "executing" | "complete">("idle");
   const [animationComplete, setAnimationComplete] = useState(false);
 
   // Download flow states
@@ -125,7 +584,7 @@ export function Terminal({
     animationStarted.current = true;
     const timer = setTimeout(() => {
       setWindowOpen(true);
-      setTimeout(() => startAnimation(), 150);
+      setTimeout(() => setCurrentPhase("typing"), 150);
     }, initialDelay);
     return () => clearTimeout(timer);
   }, [inView, initialDelay]);
@@ -135,31 +594,25 @@ export function Terminal({
       if (!animationStarted.current && isMounted.current) {
         animationStarted.current = true;
         setWindowOpen(true);
-        startAnimation();
+        setCurrentPhase("typing");
       }
     }, 2000);
     return () => clearTimeout(fallback);
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => setCursorVisible((v) => !v), 530);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
     if (contentRef.current) {
       contentRef.current.scrollTop = contentRef.current.scrollHeight;
     }
-  }, [lines, currentInput]);
+  }, [lines, currentPhase]);
 
   useEffect(() => {
     if (downloadMode && inputRef.current && isMobile) {
-      // Focus input for mobile when entering download mode
       inputRef.current.focus();
     }
   }, [downloadMode, downloadStep, isMobile]);
 
-  // Keyboard navigation for buttons
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!animationComplete || downloadMode) return;
@@ -194,31 +647,9 @@ export function Terminal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [animationComplete, downloadMode, selectedButton]);
 
-  const typeText = useCallback((text: string, callback: () => void) => {
-    let idx = 0;
-    const typeNext = () => {
-      if (idx < text.length) {
-        setCurrentInput(text.slice(0, idx + 1));
-        idx++;
-        setTimeout(typeNext, typingSpeed);
-      } else {
-        callback();
-      }
-    };
-    typeNext();
-  }, [typingSpeed]);
-
-  const startAnimation = () => {
-    typeText("./jitin.exe", () => {
-      setLines([
-        <div key="cmd" className="text-sky-500 font-semibold">
-          {getPrompt()}
-          <span className="text-neutral-300">./jitin.exe</span>
-        </div>
-      ]);
-      setCurrentInput("");
-      setTimeout(() => runOutputSequence(), 200);
-    });
+  const handleCommandComplete = () => {
+    setCurrentPhase("executing");
+    runOutputSequence();
   };
 
   const startDownloadFlow = () => {
@@ -231,10 +662,12 @@ export function Terminal({
     
     setLines((prev) => [
       ...prev,
-      <div key="dl-empty" className="h-1" />,
-      <div key="dl-header" className="text-emerald-400 text-xs">┌─ RESUME DOWNLOAD ─┐</div>,
-      <div key="dl-init" className="text-neutral-400 text-sm">initiating download sequence...</div>,
-      <div key="dl-prompt-phone" className="text-neutral-300 text-sm mt-1">Please enter your phone number:</div>,
+      <div key="dl-sep" className="border-t border-neutral-800 my-3" />,
+      <div key="dl-header" className="flex items-center gap-2 text-emerald-400 text-xs font-medium">
+        <Download className="w-3.5 h-3.5" />
+        <span>RESUME ACQUISITION PROTOCOL</span>
+      </div>,
+      <div key="dl-init" className="text-neutral-500 text-xs">Initializing secure transfer...</div>,
     ]);
   };
 
@@ -243,28 +676,27 @@ export function Terminal({
     setErrorMsg("");
     
     if (!phoneNumber.trim()) {
-      setErrorMsg("Phone number is required");
+      setErrorMsg("Phone number required for verification");
       return;
     }
     
     if (!isValidPhone(phoneNumber)) {
-      setErrorMsg("Please include country code (e.g., +91 90011 32425)");
+      setErrorMsg("Include country code (e.g., +91 90088 98642)");
       return;
     }
     
     setLines((prev) => [
       ...prev,
-      <div key="phone-label" className="text-neutral-400 text-sm mt-1">
-        ph number: <span className="text-neutral-200">{phoneNumber}</span>
-      </div>,
-      <div key="phone-check" className="text-emerald-400 text-sm">✓ phone number gathered</div>,
-      <div key="email-prompt" className="text-neutral-300 text-sm mt-2">Please enter your e-mail ID:</div>,
+      <StatusLine key="phone-conf" label="Phone" value={phoneNumber} status="success" />,
     ]);
     
     setTimeout(() => {
       setDownloadStep("email");
-      setErrorMsg("");
-    }, 200);
+      setLines((prev) => [
+        ...prev,
+        <div key="email-prompt" className="text-neutral-400 text-xs mt-2">Enter email for delivery:</div>,
+      ]);
+    }, 400);
   };
 
   const handleEmailSubmit = (e?: React.FormEvent) => {
@@ -272,26 +704,23 @@ export function Terminal({
     setErrorMsg("");
     
     if (!email.trim()) {
-      setErrorMsg("Email address is required");
+      setErrorMsg("Email address required");
       return;
     }
     
     if (!isValidEmail(email)) {
-      setErrorMsg("Please enter a valid email address");
+      setErrorMsg("Valid email required");
       return;
     }
     
     setLines((prev) => [
       ...prev,
-      <div key="email-label" className="text-neutral-400 text-sm mt-1">
-        email: <span className="text-neutral-200">{email}</span>
-      </div>,
-      <div key="email-check" className="text-emerald-400 text-sm">✓ e-mail ID gathered</div>,
+      <StatusLine key="email-conf" label="Email" value={email} status="success" />,
     ]);
     
     setTimeout(() => {
       completeDownload();
-    }, 200);
+    }, 400);
   };
 
   const completeDownload = () => {
@@ -299,31 +728,24 @@ export function Terminal({
     
     setLines((prev) => [
       ...prev,
-      <div key="processing" className="text-cyan-400 text-sm mt-2">⠋ Processing request...</div>,
+      <div key="processing" className="flex items-center gap-2 text-cyan-400 text-xs mt-2">
+        <motion.span
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        >
+          ⟳
+        </motion.span>
+        <span>Processing request...</span>
+      </div>,
     ]);
-    
-    let frame = 0;
-    const spinnerInterval = setInterval(() => {
-      const spinner = SPINNER_FRAMES[frame % SPINNER_FRAMES.length];
-      setLines((prev) => {
-        const newLines = [...prev];
-        const idx = newLines.findIndex((l: any) => l?.key === "processing");
-        if (idx >= 0) {
-          newLines[idx] = <div key="processing" className="text-cyan-400 text-sm mt-2">{spinner} Processing request...</div>;
-        }
-        return newLines;
-      });
-      frame++;
-    }, 80);
 
     setTimeout(() => {
-      clearInterval(spinnerInterval);
       setLines((prev) => {
         const filtered = prev.filter((l: any) => l?.key !== "processing");
         return [
           ...filtered,
-          <div key="success" className="text-emerald-300 text-sm mt-2">✓ Details received successfully!</div>,
-          <div key="format-prompt" className="text-neutral-300 text-sm mt-3">Select resume format:</div>,
+          <div key="success" className="text-emerald-400 text-xs">✓ Identity verified</div>,
+          <div key="format-prompt" className="text-neutral-300 text-xs mt-3">Select format:</div>,
         ];
       });
     }, 1500);
@@ -335,7 +757,7 @@ export function Terminal({
     
     setLines((prev) => [
       ...prev,
-      <div key="format-select" className="text-emerald-400 text-sm mt-2">✓ {formatLabels[format]} format selected</div>,
+      <div key="format-select" className="text-emerald-400 text-xs">✓ {formatLabels[format]} selected</div>,
     ]);
     
     setTimeout(() => {
@@ -356,8 +778,8 @@ export function Terminal({
         const newLines = [...prev];
         const idx = newLines.findIndex((l: any) => l?.key === "countdown");
         const countdownLine = (
-          <div key="countdown" className="text-cyan-400 text-sm mt-2">
-            Your download will begin in {count}...
+          <div key="countdown" className="text-cyan-400 text-xs mt-2 font-mono">
+            Download in {count}s...
           </div>
         );
         if (idx >= 0) {
@@ -381,7 +803,6 @@ export function Terminal({
     setDownloadStep("complete");
     setShowLearnMore(true);
     
-    // Trigger file download
     if (selectedFormat) {
       const formatExtensions = { pdf: "pdf", doc: "doc", md: "md" };
       const extension = formatExtensions[selectedFormat];
@@ -397,7 +818,7 @@ export function Terminal({
       const newLines = [...prev];
       const idx = newLines.findIndex((l: any) => l?.key === "countdown");
       if (idx >= 0) {
-        newLines[idx] = <div key="download-started" className="text-emerald-300 text-sm mt-2">✓ Download started!</div>;
+        newLines[idx] = <div key="download-started" className="text-emerald-400 text-xs mt-2">✓ Download initiated</div>;
       }
       return newLines;
     });
@@ -406,148 +827,219 @@ export function Terminal({
   const runOutputSequence = () => {
     let delay = 0;
 
+    // ASCII Banner with pixel-grid rendering (crisp on all devices)
     setTimeout(() => {
       setLines((prev) => [
         ...prev,
-        <pre key="ascii" className="text-cyan-500/80 text-[9px] leading-[1.1] tracking-wide mt-1">
-          {asciiBanner.join("\n")}
-        </pre>,
-        <div key="ver" className="text-neutral-500 text-xs mt-1">portfolio-cli v2.0.26 x86_64-linux</div>,
+        <PixelBanner key="pixel-banner" isMobile={isMobile} />,
+        <div key="ver" className="text-neutral-600 text-[10px] mt-2">glitchzero-cli v3.0.1 x86_64-linux-gnu</div>,
       ]);
     }, delay);
     delay += 600;
 
+    // Identity Section
     setTimeout(() => {
       setLines((prev) => [
         ...prev,
-        <SectionHeader key="id-h" title="IDENTITY" />,
-        <InfoRow key="name" label="Name" value="Jitin Nair" />,
-        <InfoRow key="role" label="Role" value="AI Enablement Specialist | Instructional Designer" highlight />,
+        <SectionHeader key="id-h" title="Identity" icon={TerminalIcon} color="cyan" />,
+        <StatusLine key="name" label="Name" value={portfolioData.identity.name} status="info" />,
+        <StatusLine key="role" label="Role" value={portfolioData.identity.role} status="success" animate />,
+        <StatusLine key="specialty" label="Focus" value={portfolioData.identity.specialty} status="info" />,
+        <StatusLine key="exp" label="Experience" value={portfolioData.identity.experience} status="neutral" />,
+        <StatusLine key="loc" label="Location" value={portfolioData.identity.location} status="neutral" />,
       ]);
     }, delay);
     delay += 700;
 
+    // Expertise Section with progress bars
     setTimeout(() => {
       setLines((prev) => [
         ...prev,
-        <SectionHeader key="mission-h" title="MISSION" />,
-        <div key="m1" className="text-emerald-300 text-sm">Bridging AI innovation with human adoption through training systems and enablement strategies.</div>,
+        <SectionHeader key="exp-h" title="Core Expertise" icon={Cpu} color="emerald" />,
       ]);
+      
+      portfolioData.expertise.forEach((skill, idx) => {
+        setLines((prev) => [
+          ...prev,
+          <CyberProgress 
+            key={`skill-${idx}`} 
+            label={skill.name} 
+            progress={skill.level} 
+            color={idx % 2 === 0 ? "cyan" : "emerald"}
+            delay={idx * 150}
+          />,
+        ]);
+      });
     }, delay);
     delay += 800;
 
+    // Stats Section - Unique Metrics
     setTimeout(() => {
-      setLines((prev) => [...prev, <SectionHeader key="skill-h" title="SKILLSET" />]);
+      setLines((prev) => [
+        ...prev,
+        <SectionHeader key="stats-h" title="System Metrics" icon={Zap} color="cyan" />,
+        <AnimatedMetric key="years" label="Years Experience" value={portfolioData.stats.yearsExperience} suffix="+" delay={0} />,
+        <AnimatedMetric key="tech" label="Technologies" value={portfolioData.stats.technologies} delay={50} />,
+        <AnimatedMetric key="industries" label="Industries Served" value={portfolioData.stats.industries} suffix="+" delay={100} />,
+        <AnimatedMetric key="models" label="AI Models Integrated" value={portfolioData.stats.aiModels} suffix="+" delay={150} />,
+        <AnimatedMetric key="hours" label="Automation Hours Saved" value={portfolioData.stats.automationHours} suffix="+" delay={200} />,
+        <AnimatedMetric key="agents" label="Agents Deployed" value={portfolioData.stats.agents} suffix="+" delay={250} />,
+        <AnimatedMetric key="instances" label="Active Instances" value={portfolioData.stats.instances} delay={300} />,
+      ]);
     }, delay);
-    delay += 300;
+    delay += 1000;
 
-    skillsData.forEach((skill, skillIdx) => {
-      const skillKey = `skill-${skillIdx}`;
-      for (let i = 0; i <= 10; i++) {
+    // Featured Projects
+    setTimeout(() => {
+      setLines((prev) => [
+        ...prev,
+        <SectionHeader key="proj-h" title="Featured Projects" icon={Layers} color="cyan" />,
+      ]);
+      
+      portfolioData.featuredProjects.slice(0, 4).forEach((proj, idx) => {
         setTimeout(() => {
-          const filled = PROGRESS_FULL.repeat(i);
-          const empty = PROGRESS_EMPTY.repeat(10 - i);
-          const isComplete = i === 10;
-          
-          setLines((prev) => {
-            const newLines = [...prev];
-            const existingIdx = newLines.findIndex((l: any) => l?.key === skillKey);
-            const progressLine = (
-              <div key={skillKey} className="flex items-center gap-2 text-xs">
-                <span className={isComplete ? "text-emerald-400" : "text-cyan-400"}>
-                  {filled}{empty}
-                </span>
-                <span className={isComplete ? "text-emerald-300" : "text-neutral-500"}>
-                  {skill.label} {isComplete && "✓"}
+          setLines((prev) => [
+            ...prev,
+            <div key={`proj-${idx}`} className="flex items-center justify-between text-xs py-1">
+              <span className="text-neutral-300">{proj.name}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-neutral-500">{proj.type}</span>
+                <span className={cn(
+                  "text-[10px] px-1.5 py-0.5 rounded",
+                  proj.status === "Production" ? "bg-emerald-500/20 text-emerald-400" :
+                  proj.status === "Active" ? "bg-cyan-500/20 text-cyan-400" :
+                  "bg-cyan-300/20 text-cyan-300"
+                )}>
+                  {proj.status}
                 </span>
               </div>
-            );
-            
-            if (existingIdx >= 0) newLines[existingIdx] = progressLine;
-            else newLines.push(progressLine);
-            return newLines;
-          });
-        }, delay + i * 50);
-      }
-      delay += 600;
-    });
-
-    delay += 300;
-
-    setTimeout(() => {
-      setLines((prev) => [...prev, <SectionHeader key="stats-h" title="PORTFOLIO" />]);
+            </div>,
+          ]);
+        }, idx * 80);
+      });
     }, delay);
-    delay += 300;
+    delay += 700;
 
-    const stats = [
-      { key: "stat1", label: "Agents Built", value: "200+" },
-      { key: "stat2", label: "Projects", value: "10+" },
-      { key: "stat3", label: "Availability", value: "100%" },
-    ];
-
-    stats.forEach((stat, idx) => {
-      animateStat(delay + idx * 600, stat.key, stat.label, stat.value);
-    });
-    delay += stats.length * 600 + 300;
-
+    // Tech Stack
     setTimeout(() => {
+      setLines((prev) => [
+        ...prev,
+        <SectionHeader key="stack-h" title="Tech Stack" icon={Globe} color="cyan" />,
+        <div key="stack-primary" className="flex flex-wrap gap-1.5 mt-1">
+          {portfolioData.stack.primary.map((tech, i) => (
+            <span key={i} className="text-[10px] px-2 py-0.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded">
+              {tech}
+            </span>
+          ))}
+        </div>,
+        <div key="stack-agentic" className="flex flex-wrap gap-1.5 mt-1.5">
+          {portfolioData.stack.agentic.map((tech, i) => (
+            <span key={i} className="text-[10px] px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded">
+              {tech}
+            </span>
+          ))}
+        </div>,
+      ]);
+    }, delay);
+    delay += 600;
+
+    // Journey Timeline
+    setTimeout(() => {
+      setLines((prev) => [
+        ...prev,
+        <SectionHeader key="journey-h" title="Career Timeline" icon={TerminalIcon} color="emerald" />,
+        ...portfolioData.journey.slice(0, 3).map((item, i) => (
+          <div key={`journey-${i}`} className="flex items-center gap-3 text-xs py-0.5">
+            <span className="text-neutral-600 w-10">{item.year}</span>
+            <span className="text-neutral-400">{item.org}</span>
+            <span className="flex-1 border-t border-dashed border-neutral-800" />
+            <span className="text-emerald-400/80">{item.role}</span>
+          </div>
+        )),
+      ]);
+    }, delay);
+    delay += 600;
+
+    // Availability
+    setTimeout(() => {
+      setLines((prev) => [
+        ...prev,
+        <SectionHeader key="avail-h" title="Availability" icon={Check} color="emerald" />,
+        <div key="avail-row" className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] sm:text-xs">
+          {portfolioData.availability.fulltime && (
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-emerald-400">Full-time</span>
+            </div>
+          )}
+          {portfolioData.availability.contract && (
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+              <span className="text-cyan-400">Contract</span>
+            </div>
+          )}
+          {portfolioData.availability.advisory && (
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-300" />
+              <span className="text-emerald-300">Advisory</span>
+            </div>
+          )}
+        </div>,
+        <div key="response-row" className="flex items-center gap-2 text-[10px] sm:text-xs mt-1">
+          <span className="text-neutral-500">Response:</span>
+          <span className="text-cyan-400">{portfolioData.availability.response}</span>
+        </div>,
+      ]);
+    }, delay);
+    delay += 500;
+
+    // Complete
+    setTimeout(() => {
+      setLines((prev) => [
+        ...prev,
+        <div key="complete-sep" className="border-t border-neutral-800 my-3" />,
+        <div key="ready" className="text-emerald-400 text-[10px] font-medium">✓ System ready for engagement</div>,
+      ]);
       setAnimationComplete(true);
+      setCurrentPhase("complete");
     }, delay);
-  };
-
-  const animateStat = (startDelay: number, key: string, label: string, value: string) => {
-    const frames = SPINNER_FRAMES;
-    const maxFrames = frames.length * 2;
-    
-    for (let i = 0; i <= maxFrames; i++) {
-      setTimeout(() => {
-        if (i < maxFrames) {
-          const spinner = frames[i % frames.length];
-          setLines((prev) => updateLine(prev, key, 
-            <div key={key} className="flex items-center gap-3 text-xs">
-              <span className="text-cyan-400">{spinner}</span>
-              <span className="text-neutral-500">{label}</span>
-              <span className="text-neutral-600">...</span>
-            </div>
-          ));
-        } else {
-          setLines((prev) => updateLine(prev, key,
-            <div key={key} className="flex items-center gap-3 text-xs">
-              <span className="text-emerald-400">✓</span>
-              <span className="text-neutral-500">{label}</span>
-              <span className="text-emerald-300 font-medium">{value}</span>
-            </div>
-          ));
-        }
-      }, startDelay + i * 60);
-    }
-  };
-
-  const updateLine = (lines: React.ReactNode[], key: string, newLine: React.ReactNode) => {
-    const newLines = [...lines];
-    const idx = newLines.findIndex((l: any) => l?.key === key);
-    if (idx >= 0) newLines[idx] = newLine;
-    else newLines.push(newLine);
-    return newLines;
   };
 
   return (
-    <div ref={containerRef} className={cn("w-full font-mono text-sm", className)}>
+    <div ref={containerRef} className={cn("w-full h-full font-mono text-sm flex flex-col", className)}>
+      <style jsx global>{`
+        @keyframes blink {
+          0%, 50% { border-color: transparent; }
+          51%, 100% { border-color: currentColor; }
+        }
+        @keyframes glitch {
+          0% { transform: translate(0); }
+          20% { transform: translate(-2px, 2px); }
+          40% { transform: translate(-2px, -2px); }
+          60% { transform: translate(2px, 2px); }
+          80% { transform: translate(2px, -2px); }
+          100% { transform: translate(0); }
+        }
+      `}</style>
       <motion.div
-        className="overflow-hidden rounded-xl border border-neutral-800 bg-[#0d0d12] shadow-2xl"
+        className="overflow-hidden rounded-xl border border-neutral-800 bg-[#0a0a0f] shadow-2xl shadow-cyan-500/5 flex flex-col h-full"
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={windowOpen ? { opacity: 1, scale: 1, y: 0 } : {}}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* macOS title bar */}
+        {/* macOS title bar with glitchzero branding */}
         {!hideHeader && (
-          <div className="flex items-center justify-between bg-[#15151a] px-4 py-2.5 border-b border-neutral-800/50">
+          <div className="flex items-center justify-between bg-[#111116] px-4 py-2.5 border-b border-neutral-800/50">
             <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-cyan-500/70 shadow-[0_0_6px_rgba(34,211,238,0.3)]" />
-              <div className="h-3 w-3 rounded-full bg-neutral-500/60" />
-              <div className="h-3 w-3 rounded-full bg-emerald-500/70 shadow-[0_0_6px_rgba(16,185,129,0.3)]" />
+              <div className="h-3 w-3 rounded-full bg-cyan-500/70 shadow-[0_0_8px_rgba(34,211,238,0.4)]" />
+              <div className="h-3 w-3 rounded-full bg-neutral-600/60" />
+              <div className="h-3 w-3 rounded-full bg-emerald-500/70 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
             </div>
-            <span className="text-xs text-neutral-500 font-medium">{username}@{hostname} — zsh</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-neutral-500">{username}@</span>
+              <GlitchText text={hostname} className="text-xs font-medium" />
+              <span className="text-xs text-neutral-500">— zsh</span>
+            </div>
             <div className="w-16" />
           </div>
         )}
@@ -555,39 +1047,37 @@ export function Terminal({
         {/* Terminal content */}
         <div
           ref={contentRef}
-          className="h-[420px] overflow-y-auto p-4 space-y-1 custom-scrollbar bg-gradient-to-b from-[#0d0d12] to-[#0a0a0f]"
+          className={`${isMobile ? 'h-[340px]' : 'flex-1'} overflow-y-auto p-4 space-y-0.5 custom-scrollbar bg-gradient-to-b from-[#0a0a0f] via-[#0c0c12] to-[#08080a]`}
         >
           <AnimatePresence>
             {lines.map((line, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.15 }}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2 }}
               >
                 {line}
               </motion.div>
             ))}
           </AnimatePresence>
 
-          {/* Current typing */}
-          {currentInput && (
-            <div className="text-sky-500 font-semibold">
-              {getPrompt()}
-              <span className="text-neutral-300">{currentInput}</span>
-              <motion.span
-                animate={{ opacity: cursorVisible ? 1 : 0 }}
-                className="ml-0.5 inline-block h-4 w-2 bg-cyan-400 align-middle"
-              />
-            </div>
+          {/* Command typing animation */}
+          {currentPhase === "typing" && (
+            <TypewriterCommand
+              prompt={getPrompt()}
+              command="execute portfolio.bin"
+              onComplete={handleCommandComplete}
+              speed={typingSpeed}
+            />
           )}
 
-          {/* Mobile-Optimized Phone Input */}
+          {/* Mobile Phone Input */}
           {downloadMode && downloadStep === "phone" && (
-            <form onSubmit={handlePhoneSubmit} className="mt-2">
+            <form onSubmit={handlePhoneSubmit} className="mt-6">
               <div className={cn(
-                "flex items-center gap-2 p-2 rounded-lg border transition-all",
-                isInputFocused ? "border-cyan-500/50 bg-cyan-500/5" : "border-neutral-700 bg-neutral-900/50"
+                "flex items-center gap-2 p-2.5 rounded-lg border transition-all",
+                isInputFocused ? "border-cyan-500/50 bg-cyan-500/5" : "border-neutral-700 bg-neutral-900/30"
               )}>
                 <Phone className="w-4 h-4 text-neutral-500 flex-shrink-0" />
                 <input
@@ -601,14 +1091,13 @@ export function Terminal({
                   }}
                   onFocus={() => setIsInputFocused(true)}
                   onBlur={() => setIsInputFocused(false)}
-                  placeholder="+91 90011 32425"
+                  placeholder="+91 90088 98642"
                   className="bg-transparent text-neutral-200 outline-none flex-1 text-sm min-w-0"
                   autoFocus
                 />
                 <button
                   type="submit"
                   className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-md bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-colors active:scale-95"
-                  aria-label="Submit phone number"
                 >
                   <ArrowRight className="w-4 h-4" />
                 </button>
@@ -619,12 +1108,12 @@ export function Terminal({
             </form>
           )}
 
-          {/* Mobile-Optimized Email Input */}
+          {/* Mobile Email Input */}
           {downloadMode && downloadStep === "email" && (
-            <form onSubmit={handleEmailSubmit} className="mt-2">
+            <form onSubmit={handleEmailSubmit} className="mt-6">
               <div className={cn(
-                "flex items-center gap-2 p-2 rounded-lg border transition-all",
-                isInputFocused ? "border-cyan-500/50 bg-cyan-500/5" : "border-neutral-700 bg-neutral-900/50"
+                "flex items-center gap-2 p-2.5 rounded-lg border transition-all",
+                isInputFocused ? "border-cyan-500/50 bg-cyan-500/5" : "border-neutral-700 bg-neutral-900/30"
               )}>
                 <Mail className="w-4 h-4 text-neutral-500 flex-shrink-0" />
                 <input
@@ -638,14 +1127,13 @@ export function Terminal({
                   }}
                   onFocus={() => setIsInputFocused(true)}
                   onBlur={() => setIsInputFocused(false)}
-                  placeholder="jitin.nair@example.com"
+                  placeholder="you@example.com"
                   className="bg-transparent text-neutral-200 outline-none flex-1 text-sm min-w-0"
                   autoFocus
                 />
                 <button
                   type="submit"
                   className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-md bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-colors active:scale-95"
-                  aria-label="Submit email"
                 >
                   <ArrowRight className="w-4 h-4" />
                 </button>
@@ -656,145 +1144,109 @@ export function Terminal({
             </form>
           )}
 
-          {/* Format Selection Buttons */}
+          {/* Format Selection */}
           {downloadMode && downloadStep === "format" && (
             <motion.div
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-3 space-y-1"
+              className="mt-3 flex flex-wrap gap-2"
             >
-              <div className="flex items-center gap-2 flex-wrap">
+              {(["pdf", "doc", "md"] as const).map((format) => (
                 <button
-                  onClick={() => handleFormatSelect("pdf")}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 rounded hover:bg-cyan-500/20 transition-colors"
+                  key={format}
+                  onClick={() => handleFormatSelect(format)}
+                  className="flex items-center gap-1.5 px-3 py-2 text-xs bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 rounded hover:bg-cyan-500/20 transition-colors"
                 >
-                  <FileText className="w-3 h-3" />
-                  PDF
+                  <FileText className="w-3.5 h-3.5" />
+                  {format.toUpperCase()}
                 </button>
-                <button
-                  onClick={() => handleFormatSelect("doc")}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-neutral-800/50 border border-neutral-700 text-neutral-300 rounded hover:bg-neutral-700/50 transition-colors"
-                >
-                  <FileText className="w-3 h-3" />
-                  DOC
-                </button>
-                <button
-                  onClick={() => handleFormatSelect("md")}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-neutral-800/50 border border-neutral-700 text-neutral-300 rounded hover:bg-neutral-700/50 transition-colors"
-                >
-                  <FileText className="w-3 h-3" />
-                  Markdown
-                </button>
-              </div>
+              ))}
             </motion.div>
           )}
 
-          {/* Learn More Button - Fixed: down arrow on right */}
+          {/* Learn More Button */}
           {downloadMode && showLearnMore && (
             <motion.div
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-4 pt-2 border-t border-neutral-800"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-4 pt-3 border-t border-neutral-800"
             >
               <a
                 href="#projects"
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 rounded hover:bg-cyan-500/20 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 rounded hover:bg-emerald-500/20 transition-colors"
               >
-                <span>Learn More</span>
+                <span>Explore Projects</span>
                 <ChevronDown className="w-4 h-4" />
               </a>
             </motion.div>
           )}
 
-          {/* TUI Buttons - Fixed icons */}
+          {/* Action Buttons */}
           {!downloadMode && animationComplete && (
             <motion.div
-              initial={{ opacity: 0, y: 5 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="pt-4 space-y-2"
+              className="pt-5 space-y-2"
             >
-              <div className="text-neutral-500 text-xs mb-2">┌─ ACTIONS ─┐</div>
+              <div className="text-neutral-600 text-[10px] uppercase tracking-wider mb-3">Available Actions</div>
               
-              {/* Download Resume - Fixed: Download icon instead of play */}
-              <button
+              {/* Download Resume */}
+              <motion.button
                 onClick={startDownloadFlow}
+                animate={selectedButton === 0 ? {
+                  backgroundColor: ['rgba(34, 211, 238, 0.08)', 'rgba(34, 211, 238, 0.15)', 'rgba(34, 211, 238, 0.08)'],
+                } : {}}
+                transition={{ duration: 1.5, repeat: Infinity }}
                 className={cn(
-                  "w-full text-left block group transition-all",
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-all",
                   selectedButton === 0 
-                    ? "bg-cyan-500/10 border-l-2 border-cyan-400" 
-                    : "border-l-2 border-transparent hover:border-neutral-600"
+                    ? "border-cyan-400/50 bg-cyan-500/10" 
+                    : "border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/30"
                 )}
               >
-                <div className="flex items-center gap-2 px-3 py-2">
-                  <span className={selectedButton === 0 ? "text-cyan-400" : "text-neutral-500"}>
-                    {selectedButton === 0 ? <Download className="w-4 h-4" /> : <Download className="w-4 h-4" />}
-                  </span>
-                  <span className={selectedButton === 0 ? "text-cyan-300 font-medium" : "text-neutral-400"}>
-                    Download Resume
-                  </span>
-                  <span className={selectedButton === 0 ? "text-cyan-500/50 text-xs ml-auto" : "text-neutral-600 text-xs ml-auto"}>
-                    [Enter]
-                  </span>
-                </div>
-              </button>
+                <Download className={cn("w-5 h-5", selectedButton === 0 ? "text-cyan-400" : "text-neutral-500")} />
+                <span className={cn(selectedButton === 0 ? "text-cyan-300 font-medium" : "text-neutral-400")}>
+                  Download Resume
+                </span>
+                {selectedButton === 0 && (
+                  <span className="ml-auto text-cyan-500/50 text-xs">[Enter]</span>
+                )}
+              </motion.button>
 
-              {/* View Projects - Fixed: Down arrow instead of right arrow */}
+              {/* View Projects */}
               <a
                 href="#projects"
                 className={cn(
-                  "w-full text-left block group transition-all",
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-all",
                   selectedButton === 1 
-                    ? "bg-neutral-800/30 border-l-2 border-neutral-500" 
-                    : "border-l-2 border-transparent hover:border-neutral-700"
+                    ? "border-emerald-400/50 bg-emerald-500/10" 
+                    : "border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/30"
                 )}
               >
-                <div className="flex items-center gap-2 px-3 py-2">
-                  <span className={selectedButton === 1 ? "text-neutral-400" : "text-neutral-500"}>
-                    {selectedButton === 1 ? <ChevronDown className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                  </span>
-                  <span className={selectedButton === 1 ? "text-neutral-300" : "text-neutral-400"}>
-                    View Projects
-                  </span>
-                  <span className="text-neutral-600 text-xs ml-auto">
-                    <ChevronDown className="w-3 h-3" />
-                  </span>
-                </div>
+                <Layers className={cn("w-5 h-5", selectedButton === 1 ? "text-emerald-400" : "text-neutral-500")} />
+                <span className={cn(selectedButton === 1 ? "text-emerald-300" : "text-neutral-400")}>
+                  View Projects
+                </span>
+                <ChevronDown className="ml-auto w-4 h-4 text-neutral-600" />
               </a>
 
-              <div className="text-neutral-600 text-[10px] pt-1">└────────────┘</div>
-              <div className="text-neutral-600 text-[10px]">[↑↓] Navigate • [Enter] Select • [Tab] Switch</div>
+              <div className="text-neutral-700 text-[10px] pt-2">[↑↓] Navigate • [Enter] Select</div>
             </motion.div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between bg-[#1a1a22] px-4 py-1.5 border-t border-neutral-800 text-[10px] text-neutral-500">
-          <span className="flex items-center gap-1.5">
-            <span className={cn("w-1.5 h-1.5 rounded-full", animationComplete ? "bg-emerald-500" : "bg-amber-500 animate-pulse")} />
-            {animationComplete ? "ready" : "loading"}
+        <div className="flex items-center justify-between bg-[#111116] px-4 py-2 border-t border-neutral-800 text-[10px] text-neutral-500">
+          <span className="flex items-center gap-2">
+            <span className={cn("w-1.5 h-1.5 rounded-full", animationComplete ? "bg-emerald-500" : "bg-cyan-500 animate-pulse")} />
+            {animationComplete ? "ready" : currentPhase === "typing" ? "typing..." : "executing..."}
           </span>
-          <span>zsh</span>
+          <div className="flex items-center gap-3">
+            <span>UTF-8</span>
+            <span>zsh</span>
+          </div>
         </div>
       </motion.div>
-    </div>
-  );
-}
-
-// TUI Section Header
-function SectionHeader({ title }: { title: string }) {
-  return (
-    <div className="text-cyan-400 text-xs font-medium mt-3 mb-1">
-      ┌─ {title} {"─".repeat(Math.max(0, 18 - title.length))}┐
-    </div>
-  );
-}
-
-// TUI Info Row
-function InfoRow({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) {
-  return (
-    <div className="flex items-baseline gap-3 text-sm">
-      <span className="text-neutral-500">{label}:</span>
-      <span className={highlight ? "text-emerald-300 font-medium" : "text-emerald-300"}>{value}</span>
     </div>
   );
 }

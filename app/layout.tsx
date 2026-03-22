@@ -36,9 +36,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Jitin Nair" }],
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: [
+      { url: "/favicon.png", type: "image/png", sizes: "512x512" }
+    ],
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   viewport: {
     width: "device-width",

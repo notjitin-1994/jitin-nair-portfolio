@@ -27,9 +27,12 @@
     @apply bg-void text-slate-100 antialiased;
     font-family: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* GPU layer for entire page */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
   
-  /* Elegant serif headings like Commune font */
+  /* Elegant serif headings */
   h1, h2, h3 {
     font-family: var(--font-playfair), 'Playfair Display', Georgia, serif;
     font-weight: 500;
@@ -42,58 +45,41 @@
     @apply text-cyan-400;
   }
   
+  /* Safe area utilities for mobile notches */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
+  
+  .px-safe {
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+  
+  /* Mobile scroll container - optimized for touch */
+  .mobile-scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y pinch-zoom;
+  }
+  
+  .mobile-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* GPU-accelerated glass effect */
   .glass {
-    @apply bg-white/10 backdrop-blur-xl border border-white/10;
+    @apply bg-white/10 border border-white/10;
     -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
     transform: translate3d(0, 0, 0);
-    will-change: backdrop-filter;
+    -webkit-transform: translate3d(0, 0, 0);
   }
   
-  /* Marquee animation */
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-100%);
-    }
-  }
-  
-  .animate-marquee {
-    animation: marquee linear infinite;
-  }
-  
-  .group:hover .animate-marquee {
-    animation-play-state: paused;
-  }
-  
-  /* Smooth marquee animation - right to left */
-  @keyframes marquee {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
-  
-  .animate-marquee {
-    animation: marquee linear infinite;
-  }
-  
-  /* Pause on hover */
-  .group:hover .animate-marquee {
-    animation-play-state: paused;
-  }
-  
-  /* Fallback for browsers without backdrop-filter support */
-  @supports not (backdrop-filter: blur(24px)) {
-    .glass {
-      @apply bg-black/70;
-    }
-  }
-  
-  /* Mobile-specific glass - whitish smoked glass effect */
+  /* Mobile-optimized glass - reduced blur */
   .glass-mobile {
     background: rgba(255, 255, 255, 0.12);
     -webkit-backdrop-filter: blur(8px) saturate(180%);
@@ -103,8 +89,11 @@
     -webkit-transform: translate3d(0, 0, 0);
   }
   
-  /* When backdrop-filter is not supported, use solid smoked background */
+  /* Fallback for browsers without backdrop-filter */
   @supports not ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
+    .glass {
+      @apply bg-black/70;
+    }
     .glass-mobile {
       background: rgba(40, 40, 50, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -115,15 +104,11 @@
     box-shadow: 0 0 40px -10px rgba(34, 211, 238, 0.3);
   }
   
-  .glow-violet {
-    box-shadow: 0 0 40px -10px rgba(34, 211, 238, 0.2);
-  }
-  
   .text-balance {
     text-wrap: balance;
   }
   
-  /* Mobile utilities */
+  /* Scrollbar utilities */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -133,6 +118,7 @@
     display: none;
   }
   
+  /* Safe area utilities */
   .pt-safe {
     padding-top: env(safe-area-inset-top);
   }
@@ -141,22 +127,464 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
   
-  .bg-gradient-radial {
-    background: radial-gradient(circle, var(--tw-gradient-stops));
+  /* GPU acceleration utility */
+  .gpu-layer {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  
+  /* Contain for performance isolation */
+  .contain-strict {
+    contain: layout style paint;
+  }
+  
+  /* Touch optimizations */
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+  
+  .touch-pan-x {
+    touch-action: pan-x;
+  }
+  
+  .touch-manipulation {
+    touch-action: manipulation;
   }
 }
 
-/* Smooth animations */
-@keyframes pulse-slow {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.5; }
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS - GPU ACCELERATED
+   ============================================ */
+
+/* Base GPU layer for all animated elements */
+.gpu-accelerated {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+/* Content containment for sections */
+.section-contain {
+  contain: layout style paint;
+  content-visibility: auto;
 }
 
-/* Custom aesthetic scrollbar for terminal and dark theme */
+/* ============================================
+   BACKGROUND ORB ANIMATIONS - CSS GPU
+   ============================================ */
+
+@keyframes orbFloat1 {
+  0%, 100% {
+    transform: translate3d(-20%, 10%, 0);
+  }
+  50% {
+    transform: translate3d(60%, 40%, 0);
+  }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% {
+    transform: translate3d(0%, 0%, 0);
+  }
+  50% {
+    transform: translate3d(-40%, 30%, 0);
+  }
+}
+
+@keyframes orbFloat3 {
+  0%, 100% {
+    transform: translate3d(0%, 0%, 0);
+  }
+  50% {
+    transform: translate3d(20%, -20%, 0);
+  }
+}
+
+.animated-orb-1 {
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  opacity: 0.08;
+  background: radial-gradient(circle, #22d3ee 0%, transparent 70%);
+  filter: blur(80px);
+  animation: orbFloat1 60s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.animated-orb-2 {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  opacity: 0.06;
+  background: radial-gradient(circle, #10b981 0%, transparent 70%);
+  filter: blur(60px);
+  right: -10%;
+  top: 20%;
+  animation: orbFloat2 45s linear infinite;
+  animation-delay: 5s;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.animated-orb-3 {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  opacity: 0.05;
+  background: radial-gradient(circle, #22d3ee 0%, transparent 70%);
+  filter: blur(50px);
+  left: 30%;
+  bottom: -10%;
+  animation: orbFloat3 50s linear infinite;
+  animation-delay: 10s;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Reduced blur on mobile for performance */
+@media (max-width: 768px) {
+  .animated-orb-1 {
+    filter: blur(40px);
+    width: 400px;
+    height: 400px;
+    opacity: 0.12;
+  }
+  .animated-orb-2 {
+    filter: blur(30px);
+    width: 300px;
+    height: 300px;
+    opacity: 0.10;
+  }
+  .animated-orb-3 {
+    filter: blur(25px);
+    width: 250px;
+    height: 250px;
+    opacity: 0.08;
+  }
+}
+
+/* ============================================
+   MARQUEE ANIMATION - GPU OPTIMIZED
+   ============================================ */
+
+@keyframes marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.group:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* ============================================
+   SCROLL ANIMATIONS - CSS ONLY
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.5rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Animation utility classes */
+.anim-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  will-change: opacity, transform;
+}
+
+.anim-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+  will-change: opacity;
+}
+
+.anim-fade-in-scale {
+  animation: fadeInScale 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  will-change: opacity, transform;
+}
+
+/* ========================================
+   MOBILE SECTION ANIMATIONS
+   ======================================== */
+
+.mobile-section-title {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out 0.1s forwards;
+  will-change: opacity, transform;
+  transform: translateZ(0);
+}
+
+.mobile-section-subtitle {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out 0s forwards;
+  will-change: opacity, transform;
+  transform: translateZ(0);
+}
+
+.mobile-section-desc {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out 0.2s forwards;
+  will-change: opacity, transform;
+  transform: translateZ(0);
+}
+
+/* Ensure text is visible if animation fails */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-section-title,
+  .mobile-section-subtitle,
+  .mobile-section-desc {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+/* Stagger delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+
+/* Initial state for animated elements */
+.anim-initial {
+  opacity: 0;
+}
+
+/* Intersection Observer triggered animations */
+.intersect-visible .anim-fade-in-up,
+.intersect-visible.anim-fade-in-up {
+  opacity: 1;
+}
+
+/* ============================================
+   MOBILE TOUCH OPTIMIZATIONS
+   ============================================ */
+
+/* Prevent 300ms touch delay */
+html {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+/* Optimize touch targets */
+@layer utilities {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .touch-target-lg {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* Remove tap highlight on iOS */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Momentum scrolling on iOS */
+.scroll-momentum {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Horizontal scroll snap */
+.scroll-snap-x {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll-snap-x::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-snap-start {
+  scroll-snap-align: start;
+}
+
+/* Prevent pull-to-refresh */
+@supports (-webkit-touch-callout: none) {
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
+/* Disable text selection on interactive elements */
+button, a, [role="button"] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ============================================
+   HOVER STATES - DEVICE SPECIFIC
+   ============================================ */
+
+/* Desktop hover */
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+  }
+}
+
+/* Touch device active states */
+@media (hover: none) and (pointer: coarse) {
+  .hover-lift:active {
+    transform: scale(0.98);
+  }
+  
+  button:active, a:active {
+    opacity: 0.8;
+  }
+  
+  /* Disable expensive hover effects on touch */
+  .glass:hover,
+  .glass-mobile:hover {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* ============================================
+   MOBILE CARD OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Reduce blur on mobile cards */
+  .mobile-card-blur {
+    backdrop-filter: blur(1px) !important;
+    -webkit-backdrop-filter: blur(1px) !important;
+  }
+  
+  /* Optimize card transforms */
+  .mobile-card {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  
+  /* Disable complex gradients on mobile */
+  .mobile-simple-gradient {
+    background: linear-gradient(180deg, rgba(13, 13, 18, 0.9) 0%, rgba(13, 13, 18, 0.95) 100%);
+  }
+}
+
+/* ============================================
+   PROJECT CAROUSEL 3D OPTIMIZATIONS
+   ============================================ */
+
+.carousel-container {
+  perspective: 1200px;
+  -webkit-perspective: 1200px;
+}
+
+.carousel-card {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+}
+
+.carousel-card-front,
+.carousel-card-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.carousel-card-back {
+  transform: rotateY(180deg) translateZ(0);
+  -webkit-transform: rotateY(180deg) translateZ(0);
+}
+
+/* ============================================
+   SMOOTH SCROLL BEHAVIORS
+   ============================================ */
+
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Snap scroll for carousels */
+.snap-scroll {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.snap-scroll > * {
+  scroll-snap-align: center;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -170,20 +598,17 @@
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(100, 100, 120, 0.5);
   border-radius: 3px;
-  transition: background 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(34, 211, 238, 0.6);
 }
 
-/* Firefox scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgba(100, 100, 120, 0.5) rgba(30, 30, 40, 0.5);
 }
 
-/* Global scrollbar styling for dark theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -204,89 +629,47 @@
 }
 
 /* ============================================
-   TOUCH OPTIMIZATIONS FOR iOS & ANDROID
+   REDUCED MOTION SUPPORT
    ============================================ */
 
-/* Prevent 300ms touch delay on mobile browsers */
-html {
-  touch-action: manipulation;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-}
-
-/* Optimize touch targets for fingers (44x44px minimum) */
-@layer utilities {
-  .touch-target {
-    min-height: 44px;
-    min-width: 44px;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
   
-  .touch-target-lg {
-    min-height: 48px;
-    min-width: 48px;
-  }
-}
-
-/* Remove tap highlight on iOS */
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Smooth scrolling for touch devices */
-@supports (-webkit-touch-callout: none) {
-  .scroll-snap-x {
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
+  .animated-orb-1,
+  .animated-orb-2,
+  .animated-orb-3 {
+    animation: none !important;
   }
   
-  .scroll-snap-start {
-    scroll-snap-align: start;
+  .animate-marquee {
+    animation: none !important;
   }
 }
 
-/* Disable text selection on interactive elements */
-button, a, [role="button"] {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+/* ============================================
+   PULSE ANIMATIONS
+   ============================================ */
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
 }
 
-/* Enable momentum scrolling on iOS */
-.scroll-momentum {
-  -webkit-overflow-scrolling: touch;
+.animate-pulse-slow {
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Prevent pull-to-refresh on mobile (optional) */
-@supports (-webkit-touch-callout: none) {
-  body {
-    overscroll-behavior-y: none;
-  }
-}
+/* ============================================
+   SAFE AREA SUPPORT
+   ============================================ */
 
-/* Hover state for non-touch devices only */
-@media (hover: hover) and (pointer: fine) {
-  .hover-lift:hover {
-    transform: translateY(-2px);
-  }
-  
-  .hover-glow:hover {
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
-  }
-}
-
-/* Active state for touch devices */
-@media (hover: none) and (pointer: coarse) {
-  .hover-lift:active {
-    transform: scale(0.98);
-  }
-  
-  button:active, a:active {
-    opacity: 0.8;
-  }
-}
-
-/* Safe area insets for notched devices */
 @supports (padding: max(0px)) {
   .safe-top {
     padding-top: max(1rem, env(safe-area-inset-top));
@@ -299,5 +682,27 @@ button, a, [role="button"] {
   .safe-x {
     padding-left: max(1rem, env(safe-area-inset-left));
     padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* ============================================
+   iOS SPECIFIC FIXES
+   ============================================ */
+
+@supports (-webkit-touch-callout: none) {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Fix for iOS input zoom */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px;
   }
 }
