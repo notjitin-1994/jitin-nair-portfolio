@@ -28,8 +28,14 @@ export default function ConnectionStatus({ health, isLoading }: ConnectionStatus
     );
   }
 
-  const statusConfig = {
+  const statusConfig: Record<string, { icon: any; color: string; bgColor: string; label: string }> = {
     healthy: {
+      icon: Wifi,
+      color: 'text-green-400',
+      bgColor: 'bg-green-400/10',
+      label: 'Connected',
+    },
+    ok: {
       icon: Wifi,
       color: 'text-green-400',
       bgColor: 'bg-green-400/10',
@@ -49,7 +55,7 @@ export default function ConnectionStatus({ health, isLoading }: ConnectionStatus
     },
   };
 
-  const config = statusConfig[health.status];
+  const config = statusConfig[health.status] || statusConfig.down;
   const Icon = config.icon;
 
   return (
