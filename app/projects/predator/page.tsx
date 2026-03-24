@@ -42,11 +42,11 @@ function CTASection() {
               </button>
               
               <Link
-                href="/"
-                className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-white/[0.03] text-slate-300 border border-white/[0.08] hover:border-cyan-500/20 transition-all text-sm sm:text-base"
+                href="/projects/predator/dashboard"
+                className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-white/[0.03] text-slate-300 border border-white/[0.08] hover:border-cyan-500/20 hover:text-cyan-400 transition-all text-sm sm:text-base"
               >
                 <LayoutDashboard className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>Dashboard</span>
+                <span>Live Dashboard</span>
               </Link>
             </div>
           </motion.div>
@@ -77,11 +77,11 @@ export default function PredatorPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 py-3 sm:py-4">
         <div className="max-w-7xl mx-auto">
           <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/[0.05] backdrop-blur-md border border-white/[0.1] text-slate-300 hover:text-white hover:border-cyan-500/30 transition-all text-xs sm:text-sm"
+            href="/projects/predator/dashboard"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full bg-cyan-500/10 backdrop-blur-md border border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/20 hover:text-cyan-300 transition-all text-xs sm:text-sm"
           >
             <LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>Dashboard</span>
+            <span>Live Dashboard</span>
           </Link>
         </div>
       </nav>
