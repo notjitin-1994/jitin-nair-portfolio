@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
 import PriceChart from './components/PriceChart';
+import TradingViewChart from './components/TradingViewChart';
 import AgentStatusPanel from './components/AgentStatusPanel';
 import ConnectionStatus from './components/ConnectionStatus';
 import CurrentPriceDisplay from './components/CurrentPriceDisplay';
@@ -82,15 +83,12 @@ export default function DashboardPage() {
                   isLoading={priceLoading} 
                 />
                 <div className="text-xs text-slate-500">
-                  Live • 5s updates
+                  Live • TradingView Integration
                 </div>
               </div>
               
               <div className="bg-void/50 rounded-xl border border-white/[0.05] overflow-hidden">
-                <PriceChart 
-                  data={priceHistory || []} 
-                  height={350} 
-                />
+                <TradingViewChart height={500} />
               </div>
             </div>
 
