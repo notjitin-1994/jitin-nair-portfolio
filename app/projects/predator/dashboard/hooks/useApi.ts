@@ -63,6 +63,14 @@ export const useCurrentRegime = () => {
   });
 };
 
+// Hook for sentinel signal
+export const useSentinelSignal = () => {
+  return useSWR<any>('/api/status', fetcher, {
+    refreshInterval: 10000, // 10 seconds
+    errorRetryCount: 3,
+  });
+};
+
 // Hook for last update time
 export const useLastUpdate = () => {
   const { data: price } = useCurrentPrice();

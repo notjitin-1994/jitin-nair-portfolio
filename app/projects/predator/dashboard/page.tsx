@@ -9,12 +9,14 @@ import AgentStatusPanel from './components/AgentStatusPanel';
 import ConnectionStatus from './components/ConnectionStatus';
 import CurrentPriceDisplay from './components/CurrentPriceDisplay';
 import RegimeDisplay from './components/RegimeDisplay';
+import SignalDisplay from './components/SignalDisplay';
 import { 
   useApiHealth, 
   useCurrentPrice, 
   usePriceHistory, 
   useAgentStatus, 
-  useCurrentRegime 
+  useCurrentRegime,
+  useSentinelSignal
 } from './hooks/useApi';
 
 export default function DashboardPage() {
@@ -23,7 +25,9 @@ export default function DashboardPage() {
   const { data: priceHistory, isLoading: historyLoading } = usePriceHistory(100);
   const { data: agents, isLoading: agentsLoading, error: agentsError } = useAgentStatus();
   const { data: regime, isLoading: regimeLoading } = useCurrentRegime();
+  const { data: statusData, isLoading: sentinelLoading } = useSentinelSignal();
 
+  const sentinel = statusData?.sentinel;
   const lastUpdate = price?.timestamp || health?.timestamp;
 
   return (
@@ -111,6 +115,9 @@ export default function DashboardPage() {
             transition={{ delay: 0.2 }}
             className="space-y-6"
           >
+            {/* Sentinel Signal Oracle */}
+            <SignalDisplay data={sentinel || null} isLoading={sentinelLoading} />
+
             <div className="bg-midnight border border-white/[0.08] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-sm font-medium text-slate-300">

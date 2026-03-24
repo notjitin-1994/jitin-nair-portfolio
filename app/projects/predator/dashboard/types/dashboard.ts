@@ -43,10 +43,19 @@ export interface ApiHealth {
   version?: string;
 }
 
+export interface SentinelData {
+  signal: 'LONG' | 'SHORT' | 'HOLD' | 'EXIT_LONG' | 'EXIT_SHORT' | 'None';
+  confidence: number;
+  regime: string;
+  macro?: any;
+  timestamp: string;
+}
+
 export interface DashboardData {
   price: CurrentPrice | null;
   priceHistory: PriceData[];
   agents: AgentStatus[];
   regime: RegimeData | null;
+  sentinel: SentinelData | null;
   health: ApiHealth | null;
 }
