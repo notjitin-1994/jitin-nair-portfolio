@@ -235,13 +235,13 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
                         {agent.name === "Data Ingestion" && (
                           <div className="flex items-center gap-2">
                             <span className="text-emerald-400">SUCCESS:</span>
-                            <span>Stored {agent.barsToday || 0} bars in current session. Target: XAUUSD M5</span>
+                            <span>Session bars: {agent.barsToday || 0}. Target: XAUUSD M5</span>
                           </div>
                         )}
                         {agent.name === "Regime Detection" && (
                           <div className="flex items-center gap-2">
                             <span className="text-indigo-400">RESULT:</span>
-                            <span>Market Classified as <b className="text-slate-200">{agent.lastRegime || 'UNCERTAIN'}</b>. Confidence: 48%</span>
+                            <span>Market Classified as <b className="text-slate-200">{agent.lastRegime || 'UNCERTAIN'}</b>. Confidence: {agent.confidence ? (agent.confidence * 100).toFixed(1) : '--'}%</span>
                           </div>
                         )}
                         {agent.name === "Strategy Selector" && (

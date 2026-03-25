@@ -29,6 +29,7 @@ export interface AgentStatus {
   lastRun?: string;
   isActive?: boolean;
   strategy?: string;
+  confidence?: number;
 }
 
 export interface RegimeData {
