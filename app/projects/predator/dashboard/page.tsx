@@ -151,7 +151,7 @@ export default function DashboardPage() {
                 
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-slate-400">Update Interval</span>
-                  <span className="text-sm text-white font-mono">5s</span>
+                  <span className="text-sm text-white font-mono">1s</span>
                 </div>
                 
                 <div className="flex justify-between items-center">

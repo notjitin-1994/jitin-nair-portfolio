@@ -31,7 +31,7 @@ export const useApiHealth = () => {
 // Hook for current price
 export const useCurrentPrice = () => {
   return useSWR<CurrentPrice>('/api/price/current', fetcher, {
-    refreshInterval: 5000, // 5 seconds
+    refreshInterval: 1000, // 1 second
     errorRetryCount: 3,
   });
 };
@@ -39,7 +39,7 @@ export const useCurrentPrice = () => {
 // Hook for price history
 export const usePriceHistory = (limit: number = 100) => {
   return useSWR<PriceData[]>(`/api/price/history?limit=${limit}`, fetcher, {
-    refreshInterval: 30000, // 30 seconds
+    refreshInterval: 1000, // 1 second
     errorRetryCount: 3,
   });
 };
