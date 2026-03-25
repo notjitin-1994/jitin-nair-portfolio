@@ -23,6 +23,12 @@ export interface AgentStatus {
   lastSeen?: string;
   cpu?: number;
   memory?: number;
+  barsToday?: number;
+  lastRegime?: string;
+  lastSignal?: string;
+  lastRun?: string;
+  isActive?: boolean;
+  strategy?: string;
 }
 
 export interface RegimeData {
