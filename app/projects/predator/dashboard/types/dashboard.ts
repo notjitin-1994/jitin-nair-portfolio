@@ -30,6 +30,7 @@ export interface AgentStatus {
   isActive?: boolean;
   strategy?: string;
   confidence?: number;
+  indicators?: Record<string, any>;
 }
 
 export interface RegimeData {
@@ -56,6 +57,7 @@ export interface SentinelData {
   regime: string;
   macro?: any;
   timestamp: string;
+  indicators?: Record<string, any>;
 }
 
 export interface DashboardData {

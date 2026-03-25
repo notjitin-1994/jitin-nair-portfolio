@@ -251,9 +251,25 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
                           </div>
                         )}
                         {agent.name === "Sentinel Oracle" && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-cyan-400">SIGNAL:</span>
-                            <span>Current Signal: <b className="text-slate-200">{agent.lastSignal || 'NONE'}</b>. Macro confluence confirmed.</span>
+                          <div className="flex flex-col gap-1 w-full">
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">SIGNAL:</span>
+                              <span>Current Signal: <b className="text-slate-200">{agent.lastSignal || 'NONE'}</b>.</span>
+                            </div>
+                            {agent.indicators && (
+                              <div className="grid grid-cols-2 gap-2 mt-2 bg-black/20 p-2 rounded-lg border border-white/5">
+                                {Object.entries(agent.indicators).map(([key, val]: [string, any]) => (
+                                  <div key={key} className="flex flex-col">
+                                    <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{key}</span>
+                                    <span className="text-xs text-cyan-200/80 font-mono">
+                                      {typeof val === 'object' ? 
+                                        (val.price ? `${val.price} (${(val.change * 100).toFixed(2)}%)` : JSON.stringify(val)) : 
+                                        val}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
