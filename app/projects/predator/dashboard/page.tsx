@@ -124,7 +124,7 @@ export default function DashboardPage() {
                   Agent Status
                 </h3>
                 <div className="text-xs text-slate-500">
-                  {agents?.filter(a => a.status === 'active').length || 0}/{agents?.length || 0} active
+                  {agents?.filter(a => a.status === 'active' || a.status === 'running').length || 0}/{agents?.length || 0} active
                 </div>
               </div>
               

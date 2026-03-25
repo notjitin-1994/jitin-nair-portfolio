@@ -46,9 +46,9 @@ export const usePriceHistory = (limit: number = 100) => {
 
 // Hook for agent status
 export const useAgentStatus = () => {
-  return useSWR<AgentStatus[]>('/api/agents/status', async (url) => {
+  return useSWR<AgentStatus[]>('/api/status', async (url) => {
     const data = await fetcher(url);
-    return Object.values(data);
+    return Object.values(data.agents || {});
   }, {
     refreshInterval: 10000, // 10 seconds
     errorRetryCount: 3,
