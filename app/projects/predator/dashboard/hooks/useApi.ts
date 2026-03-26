@@ -46,13 +46,16 @@ export const usePriceHistory = (limit: number = 100) => {
 
 // Hook for agent status
 export const useAgentStatus = () => {
-  return useSWR<AgentStatus[]>('/api/status', async (url) => {
-    const data = await fetcher(url);
-    return Object.values(data.agents || {});
-  }, {
+  const { data, error, isLoading } = useSWR<any>('/api/status', fetcher, {
     refreshInterval: 10000, // 10 seconds
     errorRetryCount: 3,
   });
+  
+  return {
+    data: data?.agents ? Object.values(data.agents) as AgentStatus[] : [],
+    isLoading,
+    error
+  };
 };
 
 // Hook for current regime

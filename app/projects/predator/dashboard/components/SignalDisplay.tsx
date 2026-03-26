@@ -113,7 +113,11 @@ export default function SignalDisplay({ data, isLoading }: SignalDisplayProps) {
         <div>
           <div className="text-[10px] text-slate-500">DXY Correlation</div>
           <div className="text-xs text-slate-300 font-medium font-mono">
-            {data.macro?.DXY?.change > 0 ? '+' : ''}{data.macro?.DXY?.change.toFixed(3)}%
+            {data.macro?.DXY?.change !== undefined ? (
+              `${data.macro.DXY.change > 0 ? '+' : ''}${data.macro.DXY.change.toFixed(3)}%`
+            ) : (
+              'N/A'
+            )}
           </div>
         </div>
       </div>
