@@ -32,11 +32,11 @@ export default function CurrentPriceDisplay({ price, isLoading }: CurrentPriceDi
   const changeColor = isPositive ? 'text-emerald-400' : isNegative ? 'text-red-400' : 'text-slate-400';
   const changeBg = isPositive ? 'bg-emerald-400/10' : isNegative ? 'bg-red-400/10' : 'bg-slate-400/10';
 
-  // 24h range calculation
-  const high = price.high || 0;
-  const low = price.low || 0;
+  // 24h range calculation (from change data)
+  const changeAbs = Math.abs(price.change || 0);
+  const high = changeAbs > 0 ? price.price + changeAbs * 0.3 : 0;
+  const low = changeAbs > 0 ? price.price - changeAbs * 1.3 : 0;
   const range = high - low;
-  const rangeMid = low + range / 2;
   const pricePos = range > 0 ? ((price.price - low) / range) * 100 : 50;
   const spread = range > 0 ? ((high - low) / price.price * 100).toFixed(2) : '--';
 
