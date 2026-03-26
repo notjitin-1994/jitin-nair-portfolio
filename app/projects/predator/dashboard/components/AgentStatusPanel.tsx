@@ -2,20 +2,19 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Activity, 
-  AlertCircle, 
-  CheckCircle2, 
-  Cpu, 
+import {
+  Activity,
+  AlertCircle,
+  CheckCircle2,
+  Cpu,
   MemoryStick,
   Clock,
   ChevronDown,
   Terminal,
   Database,
-  BarChart3,
   Search,
   XCircle,
-  Zap
+  Zap,
 } from 'lucide-react';
 import { AgentStatus } from '../types/dashboard';
 
@@ -25,50 +24,48 @@ interface AgentStatusPanelProps {
   error?: Error;
 }
 
-const statusConfig: Record<string, { icon: any; color: string; bgColor: string; borderColor: string; label: string }> = {
-  running: {
-    icon: CheckCircle2,
-    color: 'text-emerald-400',
-    bgColor: 'bg-emerald-400/10',
-    borderColor: 'border-emerald-400/20',
-    label: 'Operational',
-  },
-  active: {
-    icon: CheckCircle2,
-    color: 'text-emerald-400',
-    bgColor: 'bg-emerald-400/10',
-    borderColor: 'border-emerald-400/20',
-    label: 'Active',
-  },
-  stopped: {
-    icon: AlertCircle,
-    color: 'text-amber-400',
-    bgColor: 'bg-amber-400/10',
-    borderColor: 'border-amber-400/20',
-    label: 'Standby',
-  },
-  inactive: {
-    icon: AlertCircle,
-    color: 'text-slate-400',
-    bgColor: 'bg-slate-400/10',
-    borderColor: 'border-slate-400/20',
-    label: 'Offline',
-  },
-  failed: {
-    icon: XCircle,
-    color: 'text-rose-400',
-    bgColor: 'bg-rose-400/10',
-    borderColor: 'border-rose-400/20',
-    label: 'Critical',
-  },
+const statusColor: Record<string, string> = {
+  running: '#4ade80',
+  active: '#4ade80',
+  stopped: '#facc15',
+  inactive: '#64748b',
+  failed: '#f87171',
 };
 
-const agentIcons: Record<string, any> = {
-  "Data Ingestion": Database,
-  "Regime Detection": Search,
-  "Strategy Selector": Zap,
-  "Sentinel Oracle": Activity
+const statusLabel: Record<string, string> = {
+  running: 'RUNNING',
+  active: 'ACTIVE',
+  stopped: 'STANDBY',
+  inactive: 'OFFLINE',
+  failed: 'CRITICAL',
 };
+
+const agentConfig: Record<string, { icon: any; accent: string; accentBg: string }> = {
+  'Data Ingestion': { icon: Database, accent: 'text-cyan-400', accentBg: 'bg-cyan-400' },
+  'Regime Detection': { icon: Search, accent: 'text-indigo-400', accentBg: 'bg-indigo-400' },
+  'Strategy Selector': { icon: Zap, accent: 'text-amber-400', accentBg: 'bg-amber-400' },
+  'Sentinel Oracle': { icon: Activity, accent: 'text-emerald-400', accentBg: 'bg-emerald-400' },
+};
+
+function MicroBar({ value, max = 100, color }: { value: number | undefined; max?: number; color: string }) {
+  if (value === undefined) return <div className="h-1 w-full bg-white/[0.04] rounded-full" />;
+  const pct = Math.min((value / max) * 100, 100);
+  return (
+    <div className="h-1 w-full bg-white/[0.04] rounded-full overflow-hidden">
+      <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%`, transition: 'width 0.5s' }} />
+    </div>
+  );
+}
+
+function MiniSparkline() {
+  // Decorative fake sparkline
+  const points = [2, 5, 3, 7, 4, 8, 6, 9, 5, 7, 4, 8].map((v, i) => `${i * 8},${20 - v * 2}`).join(' ');
+  return (
+    <svg viewBox="0 0 88 20" className="w-16 h-4 opacity-30">
+      <polyline points={points} fill="none" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
 
 export default function AgentStatusPanel({ agents, isLoading, error }: AgentStatusPanelProps) {
   const [expandedAgent, setExpandedAgent] = useState<string | null>(null);
@@ -77,7 +74,7 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
     return (
       <div className="space-y-3">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-16 bg-white/[0.02] border border-white/[0.05] rounded-xl animate-pulse" />
+          <div key={i} className="h-14 bg-white/[0.02] border border-white/[0.05] rounded-lg animate-pulse" />
         ))}
       </div>
     );
@@ -85,194 +82,130 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
 
   if (error) {
     return (
-      <div className="p-8 flex flex-col items-center justify-center text-rose-400 bg-rose-400/5 border border-rose-400/10 rounded-2xl">
-        <AlertCircle className="w-8 h-8 mb-3 opacity-50" />
+      <div className="p-6 flex flex-col items-center justify-center text-red-400 bg-red-400/5 border border-red-400/10 rounded-lg">
+        <AlertCircle className="w-7 h-7 mb-2 opacity-50" />
         <span className="text-sm font-medium">Telemetry Link Severed</span>
-        <span className="text-xs text-rose-400/60 mt-1">Check gateway connection status</span>
+        <span className="text-xs text-red-400/60 mt-1">Check gateway connection</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-2">
       {agents.map((agent, index) => {
-        const config = statusConfig[agent.status] || statusConfig.failed;
-        const Icon = config.icon;
-        const AgentIcon = agentIcons[agent.name] || Activity;
+        const isActive = agent.status === 'running' || agent.status === 'active';
+        const dotColor = statusColor[agent.status] || '#64748b';
+        const cfg = agentConfig[agent.name] || { icon: Activity, accent: 'text-slate-400', accentBg: 'bg-slate-400' };
+        const AgentIcon = cfg.icon;
         const isExpanded = expandedAgent === agent.name;
 
         return (
           <motion.div
             key={agent.name}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.05 }}
             className={`
-              group overflow-hidden rounded-xl border transition-all duration-300
-              ${isExpanded 
-                ? 'bg-white/[0.04] border-white/10 shadow-2xl shadow-void/50' 
-                : 'bg-white/[0.02] border-white/[0.05] hover:border-white/10 hover:bg-white/[0.03] cursor-pointer'
+              rounded-lg border transition-colors duration-200
+              ${isExpanded
+                ? 'bg-depth border-white/10'
+                : 'bg-midnight border-white/[0.06] hover:border-white/10 cursor-pointer'
               }
             `}
             onClick={() => setExpandedAgent(isExpanded ? null : agent.name)}
           >
-            {/* Header */}
-            <div className="p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3.5">
-                <div className={`
-                  p-2.5 rounded-xl transition-colors duration-300
-                  ${isExpanded ? 'bg-white/10 text-white' : 'bg-white/5 text-slate-400 group-hover:text-slate-200'}
-                `}>
-                  <AgentIcon className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-sm tracking-tight text-slate-100">
-                    {agent.name}
-                  </h4>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${config.color.replace('text', 'bg')} shadow-[0_0_8px_rgba(0,0,0,0.5)]`} />
-                    <span className={`text-[10px] font-bold uppercase tracking-widest ${config.color} opacity-80`}>
-                      {config.label}
-                    </span>
-                  </div>
+            {/* Collapsed row */}
+            <div className="p-3 flex items-center gap-3">
+              {/* Status dot */}
+              <div className="relative flex-shrink-0">
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: dotColor, boxShadow: isActive ? `0 0 8px ${dotColor}` : 'none' }}
+                />
+              </div>
+
+              {/* Icon */}
+              <div className={`p-1.5 rounded ${cfg.accentBg}/10`}>
+                <AgentIcon className={`w-3.5 h-3.5 ${cfg.accent}`} />
+              </div>
+
+              {/* Name + status */}
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-semibold text-slate-200 truncate">{agent.name}</div>
+                <div className="text-[10px] font-mono tracking-wider" style={{ color: dotColor }}>
+                  {statusLabel[agent.status] || agent.status}
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                {/* Minimal Metrics in Header */}
-                {!isExpanded && (
-                  <div className="hidden md:flex items-center gap-3 px-3 py-1.5 bg-void/40 rounded-lg border border-white/[0.03]">
-                    {agent.barsToday !== undefined && (
-                      <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-medium">
-                        <BarChart3 className="w-3 h-3 text-cyan-400" />
-                        <span>{agent.barsToday} bars</span>
-                      </div>
-                    )}
-                    {agent.lastRegime && (
-                      <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-medium">
-                        <Search className="w-3 h-3 text-indigo-400" />
-                        <span>{agent.lastRegime}</span>
-                      </div>
-                    )}
-                    {agent.lastSignal && (
-                      <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-medium">
-                        <Zap className="w-3 h-3 text-amber-400" />
-                        <span>{agent.lastSignal}</span>
-                      </div>
-                    )}
-                  </div>
+              {/* Key metric */}
+              <div className="hidden sm:flex items-center gap-2 text-[10px] text-slate-500 font-mono">
+                {agent.name === 'Data Ingestion' && agent.barsToday !== undefined && (
+                  <span>{agent.barsToday} bars</span>
                 )}
-                
-                <ChevronDown className={`w-4 h-4 text-slate-600 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+                {agent.name === 'Regime Detection' && agent.lastRegime && (
+                  <span className="text-indigo-300">{agent.lastRegime}</span>
+                )}
+                {agent.name === 'Strategy Selector' && agent.strategy && (
+                  <span className="text-amber-300 truncate max-w-[80px]">{agent.strategy}</span>
+                )}
+                {agent.name === 'Sentinel Oracle' && agent.lastSignal && (
+                  <span className="text-emerald-300">{agent.lastSignal}</span>
+                )}
               </div>
+
+              {/* Sparkline */}
+              {isActive && <MiniSparkline />}
+
+              {/* Chevron */}
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-600 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
             </div>
 
-            {/* Expanded Content */}
+            {/* Expanded */}
             <AnimatePresence>
               {isExpanded && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
                 >
-                  <div className="px-4 pb-4 border-t border-white/[0.05] bg-void/20">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4">
-                      {/* Telemetry Stats */}
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 uppercase tracking-wider font-bold">
-                          <Cpu className="w-3 h-3" />
-                          <span>CPU Load</span>
+                  <div className="px-3 pb-3 border-t border-white/[0.05]">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-3">
+                      <div>
+                        <div className="flex items-center gap-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">
+                          <Cpu className="w-2.5 h-2.5" /> CPU
                         </div>
-                        <div className="text-sm font-mono text-slate-200">
-                          {agent.cpu !== undefined ? `${agent.cpu.toFixed(1)}%` : '--'}
-                        </div>
+                        <MicroBar value={agent.cpu} color={cfg.accentBg} />
+                        <div className="text-[10px] font-mono text-slate-400 mt-0.5">{agent.cpu !== undefined ? `${agent.cpu.toFixed(1)}%` : '--'}</div>
                       </div>
-
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 uppercase tracking-wider font-bold">
-                          <MemoryStick className="w-3 h-3" />
-                          <span>Memory Usage</span>
+                      <div>
+                        <div className="flex items-center gap-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">
+                          <MemoryStick className="w-2.5 h-2.5" /> MEM
                         </div>
-                        <div className="text-sm font-mono text-slate-200">
-                          {agent.memory !== undefined ? `${(agent.memory / 1024).toFixed(1)} MB` : '--'}
-                        </div>
+                        <MicroBar value={agent.memory} max={512} color={cfg.accentBg} />
+                        <div className="text-[10px] font-mono text-slate-400 mt-0.5">{agent.memory !== undefined ? `${(agent.memory / 1024).toFixed(1)} MB` : '--'}</div>
                       </div>
-
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 uppercase tracking-wider font-bold">
-                          <Clock className="w-3 h-3" />
-                          <span>Uptime</span>
+                      <div>
+                        <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">
+                          <Clock className="w-2.5 h-2.5 inline mr-1" />Uptime
                         </div>
-                        <div className="text-sm font-mono text-slate-200 truncate">
-                          {agent.uptime || '--'}
-                        </div>
+                        <div className="text-xs font-mono text-slate-300">{agent.uptime || '--'}</div>
                       </div>
-
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 uppercase tracking-wider font-bold">
-                          <Terminal className="w-3 h-3" />
-                          <span>PID</span>
+                      <div>
+                        <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">
+                          <Terminal className="w-2.5 h-2.5 inline mr-1" />PID
                         </div>
-                        <div className="text-sm font-mono text-slate-200">
-                          {agent.pid || 'System Process'}
-                        </div>
+                        <div className="text-xs font-mono text-slate-300">{agent.pid || 'N/A'}</div>
                       </div>
                     </div>
 
-                    {/* Agent Specific Output */}
-                    <div className="mt-2 p-3 rounded-xl bg-void/50 border border-white/[0.05]">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">
-                          Latest Agent Output
-                        </div>
-                        <div className="text-[10px] text-slate-600 font-mono">
-                          {agent.lastRun ? new Date(agent.lastRun).toLocaleTimeString() : 'Never'}
-                        </div>
-                      </div>
-                      
-                      <div className="text-xs text-slate-400 font-mono leading-relaxed bg-black/20 p-2 rounded-lg border border-white/5">
-                        {agent.name === "Data Ingestion" && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-emerald-400">SUCCESS:</span>
-                            <span>Session bars: {agent.barsToday || 0}. Target: XAUUSD M5</span>
-                          </div>
-                        )}
-                        {agent.name === "Regime Detection" && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-indigo-400">RESULT:</span>
-                            <span>Market Classified as <b className="text-slate-200">{agent.lastRegime || 'UNCERTAIN'}</b>. Confidence: {agent.confidence ? (agent.confidence * 100).toFixed(1) : '--'}%</span>
-                          </div>
-                        )}
-                        {agent.name === "Strategy Selector" && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-amber-400">STRATEGY:</span>
-                            <span>{agent.isActive ? `ACTIVE: ${agent.strategy}` : "PENDING: Confidence threshold check failed."}</span>
-                          </div>
-                        )}
-                        {agent.name === "Sentinel Oracle" && (
-                          <div className="flex flex-col gap-1 w-full">
-                            <div className="flex items-center gap-2">
-                              <span className="text-cyan-400">SIGNAL:</span>
-                              <span>Current Signal: <b className="text-slate-200">{agent.lastSignal || 'NONE'}</b>.</span>
-                            </div>
-                            {agent.indicators && (
-                              <div className="grid grid-cols-2 gap-2 mt-2 bg-black/20 p-2 rounded-lg border border-white/5">
-                                {Object.entries(agent.indicators).map(([key, val]: [string, any]) => (
-                                  <div key={key} className="flex flex-col">
-                                    <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{key}</span>
-                                    <span className="text-xs text-cyan-200/80 font-mono">
-                                      {typeof val === 'object' ? 
-                                        (val.price ? `${val.price} (${(val.change * 100).toFixed(2)}%)` : JSON.stringify(val)) : 
-                                        val}
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
+                    {/* Agent output */}
+                    <div className="mt-2 p-2 rounded bg-void/50 border border-white/[0.04] text-[10px] font-mono text-slate-400">
+                      {agent.name === 'Data Ingestion' && <span>Bars ingested: {agent.barsToday || 0}. Target: XAUUSD M5</span>}
+                      {agent.name === 'Regime Detection' && <span>Regime: <b className="text-slate-200">{agent.lastRegime || 'N/A'}</b> • Conf: {agent.confidence ? `${(agent.confidence * 100).toFixed(1)}%` : '--'}</span>}
+                      {agent.name === 'Strategy Selector' && <span>{agent.isActive ? `Active: ${agent.strategy}` : 'Pending confidence threshold'}</span>}
+                      {agent.name === 'Sentinel Oracle' && <span>Signal: <b className="text-slate-200">{agent.lastSignal || 'NONE'}</b></span>}
                     </div>
                   </div>
                 </motion.div>
@@ -283,9 +216,9 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
       })}
 
       {agents.length === 0 && (
-        <div className="text-center py-12 text-slate-500 bg-white/[0.02] border border-white/[0.05] rounded-2xl border-dashed">
-          <Activity className="w-8 h-8 mx-auto mb-3 opacity-20" />
-          <span className="text-sm">No neural agents detected in cluster</span>
+        <div className="text-center py-8 text-slate-600 bg-white/[0.02] border border-white/[0.05] rounded-lg border-dashed">
+          <Activity className="w-6 h-6 mx-auto mb-2 opacity-20" />
+          <span className="text-xs">No agents detected</span>
         </div>
       )}
     </div>
