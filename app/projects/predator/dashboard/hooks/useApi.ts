@@ -10,10 +10,15 @@ import {
 } from '../types/dashboard';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.glitchzerolabs.com';
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY || '';
 
-// Base fetcher with error handling
+// Base fetcher with auth and error handling
 const fetcher = async (url: string) => {
-  const response = await fetch(`${API_URL}${url}`);
+  const headers: Record<string, string> = {};
+  if (API_KEY) {
+    headers['Authorization'] = `Bearer ${API_KEY}`;
+  }
+  const response = await fetch(`${API_URL}${url}`, { headers });
   if (!response.ok) {
     throw new Error(`API error: ${response.status}`);
   }
