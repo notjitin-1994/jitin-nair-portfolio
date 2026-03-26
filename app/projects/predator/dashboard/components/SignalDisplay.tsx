@@ -33,12 +33,33 @@ export default function SignalDisplay({ data, isLoading }: SignalDisplayProps) {
       borderColor: 'border-green-400/20',
       label: 'Strong Long'
     },
+    ENTER_LONG: {
+      icon: ArrowUpRight,
+      color: 'text-green-400',
+      bgColor: 'bg-green-400/10',
+      borderColor: 'border-green-400/20',
+      label: 'Enter Long'
+    },
     SHORT: {
       icon: ArrowDownRight,
       color: 'text-red-400',
       bgColor: 'bg-red-400/10',
       borderColor: 'border-red-400/20',
       label: 'Strong Short'
+    },
+    ENTER_SHORT: {
+      icon: ArrowDownRight,
+      color: 'text-red-400',
+      bgColor: 'bg-red-400/10',
+      borderColor: 'border-red-400/20',
+      label: 'Enter Short'
+    },
+    WAIT: {
+      icon: Pause,
+      color: 'text-yellow-400',
+      bgColor: 'bg-yellow-400/10',
+      borderColor: 'border-yellow-400/20',
+      label: 'Wait / Hold'
     },
     HOLD: {
       icon: Pause,
@@ -113,7 +134,9 @@ export default function SignalDisplay({ data, isLoading }: SignalDisplayProps) {
         <div>
           <div className="text-[10px] text-slate-500">DXY Correlation</div>
           <div className="text-xs text-slate-300 font-medium font-mono">
-            {data.macro?.DXY?.change !== undefined ? (
+            {data.macro?.data_used?.dxy_change !== undefined ? (
+              `${data.macro.data_used.dxy_change > 0 ? '+' : ''}${data.macro.data_used.dxy_change.toFixed(3)}%`
+            ) : data.macro?.DXY?.change !== undefined ? (
               `${data.macro.DXY.change > 0 ? '+' : ''}${data.macro.DXY.change.toFixed(3)}%`
             ) : (
               'N/A'
