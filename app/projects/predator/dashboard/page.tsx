@@ -9,6 +9,9 @@ import ConnectionStatus from './components/ConnectionStatus';
 import CurrentPriceDisplay from './components/CurrentPriceDisplay';
 import RegimeDisplay from './components/RegimeDisplay';
 import SignalDisplay from './components/SignalDisplay';
+import ExecutionPanel from './components/ExecutionPanel';
+import OpenPositions from './components/OpenPositions';
+import RecentTrades from './components/RecentTrades';
 import { 
   useApiHealth, 
   useCurrentPrice, 
@@ -111,7 +114,7 @@ export default function DashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           
-          {/* Left Column — Chart + Regime */}
+          {/* Row 1: Signal | Regime | CurrentPrice (existing chart card) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -150,9 +153,31 @@ export default function DashboardPage() {
               </div>
               <RegimeDisplay regime={regime || null} isLoading={regimeLoading} />
             </div>
+
+            {/* Row 2: Execution Panel | Open Positions */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <ExecutionPanel />
+              <OpenPositions />
+            </div>
+
+            {/* Row 3: Recent Trades | Agent Status */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <RecentTrades />
+              <div className="bg-midnight border border-white/[0.06] rounded-xl p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Agent Cluster
+                  </h3>
+                  <span className="text-[10px] font-mono text-slate-500">
+                    {activeAgents}/{agents?.length || 0} online
+                  </span>
+                </div>
+                <AgentStatusPanel agents={agents || []} isLoading={agentsLoading} error={agentsError} />
+              </div>
+            </div>
           </motion.div>
 
-          {/* Right Column — Signal + Agents + System */}
+          {/* Right Column — Signal + System */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -161,19 +186,6 @@ export default function DashboardPage() {
           >
             {/* Sentinel Oracle */}
             <SignalDisplay data={sentinel || null} isLoading={sentinelLoading} />
-
-            {/* Agent Cluster */}
-            <div className="bg-midnight border border-white/[0.06] rounded-xl p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Agent Cluster
-                </h3>
-                <span className="text-[10px] font-mono text-slate-500">
-                  {activeAgents}/{agents?.length || 0} online
-                </span>
-              </div>
-              <AgentStatusPanel agents={agents || []} isLoading={agentsLoading} error={agentsError} />
-            </div>
 
             {/* System Telemetry */}
             <div className="bg-midnight border border-white/[0.06] rounded-xl p-5">

@@ -130,8 +130,15 @@ export default function SignalDisplay({ data, isLoading }: SignalDisplayProps) {
       <div className="flex items-center gap-4 mb-4">
         <DirectionArrow direction={meta.arrow} color={meta.color} />
         <div>
-          <div className="text-2xl font-bold tracking-tight font-mono" style={{ color: meta.color }}>
-            {meta.label}
+          <div className="flex items-center gap-2">
+            <div className="text-2xl font-bold tracking-tight font-mono" style={{ color: meta.color }}>
+              {meta.label}
+            </div>
+            {data.indicators?.strategy && (
+              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/[0.06] text-slate-400 border border-white/[0.06]">
+                {data.indicators.strategy.replace(/_/g, ' ')}
+              </span>
+            )}
           </div>
           <div className="text-xs text-slate-500 mt-0.5">
             {data.regime.replace(/_/g, ' ')}

@@ -128,8 +128,15 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
             <Icon className={`w-5 h-5 ${config.color}`} />
           </div>
           <div>
-            <div className={`text-xl font-bold tracking-tight ${config.color}`}>
-              {regime.regime.replace('_', ' ')}
+            <div className="flex items-center gap-2">
+              <div className={`text-xl font-bold tracking-tight ${config.color}`}>
+                {regime.regime.replace('_', ' ')}
+              </div>
+              {regime.regime === 'RANGE' && (regime.features as any)?.activeStrategy && (
+                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-400/10 text-amber-400 border border-amber-400/20">
+                  {(regime.features as any).activeStrategy.replace(/_/g, ' ')}
+                </span>
+              )}
             </div>
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">
               Market Regime
