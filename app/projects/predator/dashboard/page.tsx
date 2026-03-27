@@ -189,7 +189,7 @@ export default function DashboardPage() {
             <SignalDisplay data={sentinel || null} isLoading={sentinelLoading} />
 
             {/* Strategy Info */}
-            {statusData?.strategyInfo && (
+            {statusData?.strategy?.current && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -201,31 +201,31 @@ export default function DashboardPage() {
                     Active Strategy
                   </h3>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-400/10 text-amber-400">
-                    {statusData.strategyInfo.regime}
+                    {statusData.strategy.current.regime}
                   </span>
                 </div>
                 <div className="space-y-2">
                   <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
-                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">Strategy ID</div>
+                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">Strategy</div>
                     <div className="text-[11px] text-white font-mono mt-1">
-                      {statusData.strategyInfo.strategy_id?.replace(/_/g, ' ')}
+                      {statusData.strategy.current.strategy_id?.replace(/_/g, ' ')}
                     </div>
                   </div>
                   <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
-                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">Entry Trigger</div>
+                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">Confidence</div>
                     <div className="text-[11px] text-cyan-400/80 font-mono mt-1">
-                      {statusData.strategyInfo.entry_trigger || 'N/A'}
+                      {(statusData.strategy.current.confidence_score * 100).toFixed(0)}%
                     </div>
                   </div>
                   <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
-                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">TP Mode</div>
+                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">Profit Target</div>
                     <div className="text-[11px] text-emerald-400/80 font-mono mt-1">
-                      {statusData.strategyInfo.tp_mode || 'N/A'}
+                      {statusData.strategy.current.parameters?.profit_target || 'N/A'}
                     </div>
                   </div>
-                  {statusData.strategyInfo.selection_reason && (
-                    <div className="text-[10px] text-slate-500 italic">
-                      {statusData.strategyInfo.selection_reason}
+                  {statusData.strategy.current.selection_reason && (
+                    <div className="text-[10px] text-slate-500 italic leading-relaxed">
+                      {statusData.strategy.current.selection_reason}
                     </div>
                   )}
                 </div>
