@@ -27,6 +27,7 @@ function PipelineBar({ agents }: { agents: AgentStatus[] }) {
     { id: 'regime', name: 'Regime', match: (a: AgentStatus) => a.name === 'Regime Detection', color: '#818cf8' },
     { id: 'strategy', name: 'Strategy', match: (a: AgentStatus) => a.name === 'Strategy Selector', color: '#fbbf24' },
     { id: 'sentinel', name: 'Sentinel', match: (a: AgentStatus) => a.name === 'Sentinel Oracle', color: '#34d399' },
+    { id: 'execution', name: 'Execute', match: (a: AgentStatus) => a.name === 'Execution Engine', color: '#f472b6' },
   ];
 
   return (
@@ -186,6 +187,50 @@ export default function DashboardPage() {
           >
             {/* Sentinel Oracle */}
             <SignalDisplay data={sentinel || null} isLoading={sentinelLoading} />
+
+            {/* Strategy Info */}
+            {statusData?.strategyInfo && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="bg-midnight border border-white/[0.06] rounded-xl p-5"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Active Strategy
+                  </h3>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-400/10 text-amber-400">
+                    {statusData.strategyInfo.regime}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
+                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">Strategy ID</div>
+                    <div className="text-[11px] text-white font-mono mt-1">
+                      {statusData.strategyInfo.strategy_id?.replace(/_/g, ' ')}
+                    </div>
+                  </div>
+                  <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
+                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">Entry Trigger</div>
+                    <div className="text-[11px] text-cyan-400/80 font-mono mt-1">
+                      {statusData.strategyInfo.entry_trigger || 'N/A'}
+                    </div>
+                  </div>
+                  <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
+                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">TP Mode</div>
+                    <div className="text-[11px] text-emerald-400/80 font-mono mt-1">
+                      {statusData.strategyInfo.tp_mode || 'N/A'}
+                    </div>
+                  </div>
+                  {statusData.strategyInfo.selection_reason && (
+                    <div className="text-[10px] text-slate-500 italic">
+                      {statusData.strategyInfo.selection_reason}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
 
             {/* System Telemetry */}
             <div className="bg-midnight border border-white/[0.06] rounded-xl p-5">
