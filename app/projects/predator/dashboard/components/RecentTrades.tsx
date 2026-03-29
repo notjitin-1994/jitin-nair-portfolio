@@ -59,23 +59,23 @@ function TradeRow({ trade, index }: { trade: Trade; index: number }) {
             {trade.direction}
           </span>
           <span className={`text-xs font-bold font-mono ${isWin ? 'text-emerald-400' : 'text-red-400'}`}>
-            {isWin ? '+' : ''}${trade.pnl.toFixed(2)}
+            {isWin ? '+' : ''}${(trade.pnl || 0).toFixed(2)}
           </span>
           {trade.strategy && (
             <span className="text-[9px] text-slate-600 font-mono">
-              {trade.strategy.replace(/_/g, ' ')}
+              {trade.strategy?.replace?.(/_/g, ' ') || 'NONE'}
             </span>
           )}
         </div>
         <div className="text-[10px] font-mono text-slate-500">
-          {trade.entryPrice.toFixed(2)} → {trade.exitPrice.toFixed(2)}
+          {(trade.entryPrice || 0).toFixed(2)} → {(trade.exitPrice || 0).toFixed(2)}
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           {trade.closeReason && (
             <span className={`text-[9px] font-mono ${
               trade.closeReason.toLowerCase().includes('tp') ? 'text-emerald-400/60' : 'text-red-400/60'
             }`}>
-              {trade.closeReason.replace(/_/g, ' ')}
+              {trade.closeReason?.replace?.(/_/g, ' ') || 'N/A'}
             </span>
           )}
           {trade.duration && (
