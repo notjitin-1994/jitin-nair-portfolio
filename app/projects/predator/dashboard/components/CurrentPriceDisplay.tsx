@@ -38,7 +38,7 @@ export default function CurrentPriceDisplay({ price, isLoading }: CurrentPriceDi
   const low = changeAbs > 0 ? price.price - changeAbs * 1.3 : 0;
   const range = high - low;
   const pricePos = range > 0 ? ((price.price - low) / range) * 100 : 50;
-  const spread = range > 0 ? ((high - low) / price.price * 100).toFixed(2) : '--';
+  const spread = range > 0 ? (Number((high - low) / price.price) * 100).toFixed(2) : '--';
 
   return (
     <motion.div

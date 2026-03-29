@@ -66,7 +66,7 @@ function PositionCard({ position, index }: { position: Position; index: number }
           )}
         </div>
         <span className={`text-xs font-bold font-mono ${isProfit ? 'text-emerald-400' : 'text-red-400'}`}>
-          {isProfit ? '+' : ''}${(position.pnl || 0).toFixed(2)}
+          {isProfit ? '+' : ''}${Number(position.pnl || 0).toFixed(2)}
         </span>
       </div>
 
@@ -74,21 +74,21 @@ function PositionCard({ position, index }: { position: Position; index: number }
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] font-mono mb-2">
         <div className="flex justify-between">
           <span className="text-slate-500">Entry</span>
-          <span className="text-slate-300">{(position.entryPrice || 0).toFixed(2)}</span>
+          <span className="text-slate-300">{Number(position.entryPrice || 0).toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-slate-500">Current</span>
           <span className={`font-semibold ${isProfit ? 'text-emerald-400' : 'text-red-400'}`}>
-            {isProfit ? '↑' : '↓'}{(position.currentPrice || 0).toFixed(2)}
+            {isProfit ? '↑' : '↓'}{Number(position.currentPrice || 0).toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between">
           <span className="text-red-400/60">SL</span>
-          <span className="text-red-400/80">{(position.sl || 0).toFixed(2)}</span>
+          <span className="text-red-400/80">{Number(position.sl || 0).toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-emerald-400/60">TP</span>
-          <span className="text-emerald-400/80">{(position.tp || 0).toFixed(2)}</span>
+          <span className="text-emerald-400/80">{Number(position.tp || 0).toFixed(2)}</span>
         </div>
       </div>
 
@@ -103,7 +103,7 @@ function PositionCard({ position, index }: { position: Position; index: number }
             style={{ backgroundColor: accentColor }}
           />
         </div>
-        <span className="text-[9px] font-mono text-slate-500">{progress.toFixed(0)}%</span>
+        <span className="text-[9px] font-mono text-slate-500">{Number(progress || 0).toFixed(0)}%</span>
       </div>
     </motion.div>
   );

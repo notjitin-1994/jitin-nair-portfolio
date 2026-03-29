@@ -89,7 +89,7 @@ function MacroBar({ label, change }: { label: string; change: number | undefined
         <div className={`h-full rounded-full ${barColor}`} style={{ width: `${w}%`, transition: 'width 0.5s' }} />
       </div>
       <span className={`text-[10px] font-mono ${isPos ? 'text-green-400' : 'text-red-400'} w-12`}>
-        {change > 0 ? '+' : ''}{(change * 100).toFixed(2)}%
+        {change > 0 ? '+' : ''}{(Number(change) * 100).toFixed(2)}%
       </span>
     </div>
   );
@@ -136,7 +136,7 @@ export default function SignalDisplay({ data, isLoading }: SignalDisplayProps) {
             </div>
             {data.indicators?.strategy && (
               <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/[0.06] text-slate-400 border border-white/[0.06]">
-                {data.indicators.strategy.replace(/_/g, ' ')}
+                {data.indicators.strategy?.replace?.(/_/g, ' ') || 'NONE'}
               </span>
             )}
           </div>

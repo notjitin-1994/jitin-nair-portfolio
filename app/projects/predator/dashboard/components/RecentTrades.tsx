@@ -59,7 +59,7 @@ function TradeRow({ trade, index }: { trade: Trade; index: number }) {
             {trade.direction}
           </span>
           <span className={`text-xs font-bold font-mono ${isWin ? 'text-emerald-400' : 'text-red-400'}`}>
-            {isWin ? '+' : ''}${(trade.pnl || 0).toFixed(2)}
+            {isWin ? '+' : ''}${Number(trade.pnl || 0).toFixed(2)}
           </span>
           {trade.strategy && (
             <span className="text-[9px] text-slate-600 font-mono">
@@ -68,7 +68,7 @@ function TradeRow({ trade, index }: { trade: Trade; index: number }) {
           )}
         </div>
         <div className="text-[10px] font-mono text-slate-500">
-          {(trade.entryPrice || 0).toFixed(2)} → {(trade.exitPrice || 0).toFixed(2)}
+          {Number(trade.entryPrice || 0).toFixed(2)} → {Number(trade.exitPrice || 0).toFixed(2)}
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           {trade.closeReason && (
