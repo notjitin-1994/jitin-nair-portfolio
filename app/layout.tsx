@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
@@ -21,45 +21,82 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
+const siteUrl = "https://jitinnair.com";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover",
+  themeColor: "#0a0a0f",
+};
+
 export const metadata: Metadata = {
-  title: "Jitin Nair | AI Enablement & Agentic Systems",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Jitin Nair | AI Systems Architect & Agentic AI Expert",
+    template: "%s | Jitin Nair",
+  },
   description:
-    "Expert in AI enablement, automation, and agentic applications. Building autonomous systems that ship. 147+ specialized AI agents deployed across enterprise infrastructure, trading, and business operations.",
+    "AI Systems Architect specializing in multi-agent orchestration, AI enablement, and autonomous systems. 200+ AI agents deployed across 147 instances.",
   keywords: [
     "AI Enablement",
-    "Automation",
-    "Agentic Systems",
+    "AI Systems Architect",
+    "Agentic AI",
     "LangGraph",
     "Multi-Agent Orchestration",
+    "Prompt Engineering",
     "Full-Stack Developer",
-    "AI Applications",
+    "AI Automation",
+    "Human-in-the-Loop",
+    "RAG Architecture",
   ],
-  authors: [{ name: "Jitin Nair" }],
+  authors: [{ name: "Jitin Nair", url: siteUrl }],
+  creator: "Jitin Nair",
+  publisher: "Jitin Nair",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
   icons: {
-    icon: [
-      { url: "/favicon.png", type: "image/png", sizes: "512x512" }
-    ],
+    icon: [{ url: "/favicon.png", type: "image/png", sizes: "512x512" }],
     shortcut: "/favicon.png",
     apple: "/favicon.png",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-    viewportFit: "cover",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName: "Jitin Nair — AI Systems Architect",
+    title: "Jitin Nair | AI Systems Architect & Agentic AI Expert",
+    description:
+      "200+ AI agents deployed. Specializing in multi-agent orchestration, AI enablement, and autonomous systems architecture.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Jitin Nair — AI Systems Architect",
+        type: "image/png",
+      },
+    ],
   },
-  themeColor: "#0a0a0f",
+  twitter: {
+    card: "summary_large_image",
+    title: "Jitin Nair | AI Systems Architect",
+    description: "200+ AI agents deployed. Multi-agent orchestration, AI enablement, autonomous systems.",
+    images: ["/og-image.png"],
+    creator: "@notjitin",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Jitin Nair",
   },
-  openGraph: {
-    title: "Jitin Nair | AI Enablement & Agentic Systems",
-    description:
-      "Building autonomous systems that ship. Expert in AI enablement, automation, and agentic applications.",
-    type: "website",
+  other: {
+    "google-site-verification": "",
   },
 };
 
@@ -70,6 +107,28 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        {/* JSON-LD Structured Data: Person */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Jitin Nair",
+              url: siteUrl,
+              jobTitle: "AI Systems Architect",
+              description: "AI Systems Architect specializing in multi-agent orchestration, AI enablement, and autonomous systems.",
+              knowsAbout: ["Artificial Intelligence", "Multi-Agent Systems", "LangGraph", "Prompt Engineering", "Instructional Design"],
+              sameAs: [
+                "https://github.com/notjitin-1994",
+                "https://linkedin.com/in/jitin-nair",
+                "https://twitter.com/notjitin",
+              ],
+            }),
+          }}
+        />
+      </head>
       <body className={`${dmSans.variable} ${jetbrains.variable} ${playfair.variable} font-sans`}>
         {children}
       </body>

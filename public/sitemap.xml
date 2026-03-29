@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://jitinnair.com</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://jitinnair.com/agents</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jitinnair.com/case-studies</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://jitinnair.com/case-studies/predator-trading-system</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jitinnair.com/case-studies/smartslate-learning-platform</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jitinnair.com/case-studies/reality-check-governance</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jitinnair.com/case-studies/revos-garage-management</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jitinnair.com/case-studies/ai-agency-ops</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jitinnair.com/insights</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://jitinnair.com/insights/from-ld-to-ai-prompt-engineering</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jitinnair.com/insights/building-200-ai-agents</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jitinnair.com/insights/reality-check-anti-hallucination</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jitinnair.com/insights/hitl-enterprise-ai</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jitinnair.com/insights/langgraph-vs-crewai</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jitinnair.com/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jitinnair.com/projects/predator</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jitinnair.com/projects/smartslate</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jitinnair.com/projects/reality</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jitinnair.com/projects/revos</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jitinnair.com/projects/agency</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jitinnair.com/projects/commune</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+</urlset>

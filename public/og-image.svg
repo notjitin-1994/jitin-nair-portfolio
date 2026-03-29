@@ -1,0 +1,20 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a0f"/>
+      <stop offset="100%" stop-color="#111118"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="50%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#f472b6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="60" y="500" width="200" height="4" rx="2" fill="url(#accent)"/>
+  <text x="60" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="#ffffff">Jitin Nair</text>
+  <text x="60" y="350" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#94a3b8">AI Systems Architect</text>
+  <text x="60" y="410" font-family="monospace" font-size="20" fill="#22d3ee">200+ Agents · LangGraph · Multi-Agent Orchestration</text>
+  <circle cx="1100" cy="150" r="80" fill="#22d3ee" opacity="0.08"/>
+  <circle cx="1050" cy="400" r="120" fill="#a78bfa" opacity="0.06"/>
+</svg>

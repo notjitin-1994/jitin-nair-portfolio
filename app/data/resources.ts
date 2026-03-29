@@ -10,16 +10,16 @@ export const resources: Resource[] = [
   {
     title: "Prompt Engineering Playbook",
     description: "10 battle-tested prompt patterns for LLM integration. Includes chain-of-thought, few-shot, and role-based templates.",
-    type: "PDF Guide",
+    type: "Markdown Guide",
     icon: "FileText",
-    downloadUrl: "#",
+    downloadUrl: "/resources/prompt-engineering-playbook.md",
   },
   {
     title: "Multi-Agent Architecture Blueprint",
     description: "System design template for LangGraph-based multi-agent orchestration. Includes state machine diagrams and data flow patterns.",
     type: "Architecture Doc",
     icon: "Network",
-    downloadUrl: "#",
+    downloadUrl: "/resources/multi-agent-blueprint.md",
   },
   {
     title: "AI Enablement Readiness Checklist",

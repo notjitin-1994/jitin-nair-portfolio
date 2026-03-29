@@ -5,6 +5,7 @@ import { PageLayout } from "../../components/PageLayout";
 import { blogPosts } from "../../data/blogPosts";
 import Link from "next/link";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
+import { ShareButtons } from "../../components/ui/ShareButtons";
 
 export function InsightDetail({ slug }: { slug: string }) {
   const post = blogPosts.find((p) => p.slug === slug);
@@ -32,6 +33,7 @@ export function InsightDetail({ slug }: { slug: string }) {
             <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {post.readTime} read</span>
             <span className="flex items-center gap-1"><Calendar className="w-4 h-4" /> {new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
           </div>
+          <ShareButtons title={post.title} url={"/insights/" + slug} />
         </motion.div>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
           className="space-y-4">
