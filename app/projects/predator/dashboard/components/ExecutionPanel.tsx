@@ -114,8 +114,8 @@ export default function ExecutionPanel() {
       {/* Stats Row */}
       <div className="flex gap-2 mb-4">
         <StatBox value={String(data.openPositions ?? 0)} label="Open" />
-        <StatBox value={`${pnlSign}$${Math.abs(pnl).toFixed(0)}`} label="P&L" color={pnlColor} />
-        <StatBox value={`${(data.winRate ?? 0).toFixed(0)}%`} label="Win %" />
+        <StatBox value={`${pnlSign}$${Math.abs(Number(pnl) || 0).toFixed(0)}`} label="P&L" color={pnlColor} />
+        <StatBox value={`${(Number(data.winRate) || 0).toFixed(0)}%`} label="Win %" />
       </div>
 
       {/* Daily Loss Usage */}
@@ -123,7 +123,7 @@ export default function ExecutionPanel() {
         <div className="flex items-center justify-between mb-1">
           <span className="text-[10px] text-slate-500 uppercase tracking-wider">Daily Loss</span>
           <span className="text-[10px] font-mono text-slate-400">
-            ${lossUsed.toFixed(0)} / ${lossLimit.toFixed(0)} ({lossPct.toFixed(0)}%)
+            ${(Number(lossUsed) || 0).toFixed(0)} / ${(Number(lossLimit) || 0).toFixed(0)} ({lossPct.toFixed(0)}%)
           </span>
         </div>
         <div className="h-2 bg-white/[0.04] rounded-full overflow-hidden">
@@ -152,7 +152,7 @@ export default function ExecutionPanel() {
         <div className="flex items-center justify-between mb-1">
           <span className="text-[10px] text-slate-500 uppercase tracking-wider">Drawdown</span>
           <span className="text-[10px] font-mono text-slate-400">
-            {drawdown.toFixed(1)}% / {maxDrawdown.toFixed(1)}%
+            {(Number(drawdown) || 0).toFixed(1)}% / {(Number(maxDrawdown) || 0).toFixed(1)}%
           </span>
         </div>
         <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
