@@ -3265,6 +3265,12 @@ function DesktopProjects() {
   return (
     <section id="projects" className="py-20 lg:py-32">
       <DesktopProjectCarousel />
+      <div className="max-w-7xl mx-auto px-6 mt-12 flex justify-center">
+        <Link href="/case-studies" className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all text-sm text-slate-400 hover:text-cyan-400">
+          View All Case Studies
+          <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+        </Link>
+      </div>
     </section>
   );
 }
@@ -3292,7 +3298,7 @@ function DesktopJourney() {
       title: "Independent - AI Systems Architect",
       role: "Agentic AI & Automation",
       period: "March 2025 - Present",
-      description: "Now building autonomous AI agents, multi-agent orchestration systems, and intelligent automation platforms. Combining 10 years of instructional design expertise with cutting-edge AI to create systems that learn, adapt, and execute.",
+      description: "Now building autonomous AI agents, multi-agent orchestration systems, and intelligent automation platforms. Combining years of instructional design expertise with cutting-edge AI to create systems that learn, adapt, and execute.",
       highlights: ["200+ Agents Deployed", "Multi-Agent Orchestration", "Full-Stack AI"],
       icon: Brain,
       bgImage: "/journey-ai.jpg",

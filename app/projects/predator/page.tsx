@@ -64,6 +64,20 @@ function CTASection() {
           </motion.div>
         </div>
       </section>
+      {/* Cross-link to Case Study */}
+      <section className="py-10 px-4 sm:px-6 md:px-8">
+        <div className="max-w-6xl mx-auto">
+          <Link href="/case-studies/predator-trading-system" className="group block p-5 sm:p-6 rounded-2xl border border-violet-500/20 bg-gradient-to-r from-violet-500/5 to-cyan-500/5 hover:border-cyan-500/30 transition-all">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-violet-400 font-mono uppercase tracking-wider mb-1">Detailed Case Study</p>
+                <p className="text-sm sm:text-base text-slate-300">Read the full breakdown — challenge, solution, results, and tech stack →</p>
+              </div>
+              <svg className="w-5 h-5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </div>
+          </Link>
+        </div>
+      </section>
 
       <AccessRequestModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
