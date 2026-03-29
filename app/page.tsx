@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -2988,6 +2989,13 @@ function MobileBottomNav() {
     { icon: Mail, label: "Contact", id: "contact" },
   ];
 
+  const pageLinks = [
+    { label: "Case Studies", href: "/case-studies" },
+    { label: "AI Agents", href: "/agents" },
+    { label: "Insights", href: "/insights" },
+    { label: "About Me", href: "/about" },
+  ];
+
   return (
     <motion.nav
       initial={{ y: 100 }}
@@ -2996,6 +3004,13 @@ function MobileBottomNav() {
       className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-safe"
     >
       <div className="mx-auto max-w-md">
+        <div className="flex items-center justify-around gap-2 px-3 py-1.5 mb-2 rounded-xl bg-surface/80 backdrop-blur-xl border border-white/10">
+            {pageLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="text-[10px] text-slate-400 hover:text-cyan-400 transition-colors py-1">
+                {link.label}
+              </Link>
+            ))}
+          </div>
         <div className="flex items-center justify-around p-2 mb-4 rounded-2xl bg-surface/90 backdrop-blur-xl border border-white/10 shadow-2xl">
           {navItems.map((item) => {
             const isActive = activeSection === item.id;
@@ -3071,7 +3086,6 @@ function DesktopNav() {
             {[
               { label: "Expertise", id: "expertise" },
               { label: "Projects", id: "projects" },
-              { label: "Tech Stack", id: "techstack" },
               { label: "Contact", id: "contact" },
             ].map((item) => (
               <button
@@ -3081,6 +3095,21 @@ function DesktopNav() {
               >
                 {item.label}
               </button>
+            ))}
+            <span className="w-px h-4 bg-white/10" />
+            {[
+              { label: "Case Studies", href: "/case-studies" },
+              { label: "Agents", href: "/agents" },
+              { label: "Insights", href: "/insights" },
+              { label: "About", href: "/about" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm text-slate-400 hover:text-cyan-400 transition-colors"
+              >
+                {item.label}
+              </Link>
             ))}
           </div>
         </div>
@@ -3271,7 +3300,7 @@ function DesktopJourney() {
     },
     {
       year: "2022",
-      title: "Moody's Ratings - Instructional Designer",
+      title: "Moody's Analytics - Instructional Designer",
       role: "Video & Automation Lead",
       period: "Sept 2022 - March 2025",
       description: "Pioneered video-based learning development at a global ratings agency. Built standardized templates, automated workflows, and scalable production pipelines - transforming how financial knowledge is disseminated across global teams.",

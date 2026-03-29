@@ -66,6 +66,17 @@ export function PageLayout({ children, title, subtitle }: { children: React.Reac
       {/* Content */}
       <div className="max-w-7xl mx-auto px-6 pb-20">{children}</div>
 
+      {/* CTA */}
+      <section className="py-16 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Interested in working together?</h2>
+          <p className="text-slate-400 mb-6">Let&apos;s discuss how AI enablement can transform your operations.</p>
+          <Link href="/#contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/30 transition-all text-sm font-medium">
+            Get in Touch
+          </Link>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-white/[0.08] py-8 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">

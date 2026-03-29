@@ -12,13 +12,13 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "from-ld-to-ai-prompt-engineering",
     title: "From L&D to AI: How Instructional Design Skills Transfer to Prompt Engineering",
-    excerpt: "10 years of designing learning experiences taught me exactly how to design prompts that work. Here's the unexpected overlap between instructional design and AI.",
+    excerpt: "Years of designing learning experiences taught me exactly how to design prompts that work. Here's the unexpected overlap between instructional design and AI.",
     category: "AI Enablement",
     date: "2026-03-15",
     readTime: "8 min",
     content: `## The Unexpected Bridge
 
-After a decade in Learning & Development — designing curricula at Accenture, building video-based learning at Moody's — I made a sharp pivot into AI systems architecture. What surprised me most wasn't how different the fields are. It was how similar they are.
+After years in Learning & Development — designing curricula at Accenture, building video-based learning at Moody's — I made a sharp pivot into AI systems architecture. What surprised me most wasn't how different the fields are. It was how similar they are.
 
 ### Instructional Design IS Prompt Engineering
 

@@ -11,8 +11,8 @@ import {
 const metrics = [
   { label: "Total Agents", value: "200+", icon: Bot, color: "#22d3ee" },
   { label: "Active Instances", value: "147", icon: Activity, color: "#a78bfa" },
-  { label: "Success Rate", value: "99.7%", icon: CheckCircle, color: "#22c55e" },
-  { label: "Avg Response", value: "<50ms", icon: Zap, color: "#f59e0b" },
+  { label: "Fleet Coverage", value: "96%", icon: CheckCircle, color: "#22c55e" },
+  { label: "Governance", value: "No Fiction", icon: Zap, color: "#f59e0b" },
 ];
 
 const categories = ["All", "Automation", "Research", "Content", "DevOps", "Integration", "Analytics"];
