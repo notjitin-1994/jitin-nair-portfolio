@@ -58,15 +58,15 @@ export default function CurrentPriceDisplay({ price, isLoading }: CurrentPriceDi
         </div>
         <div className="flex items-end gap-3 mt-1">
           <div className="text-3xl font-bold text-white font-mono tracking-tight">
-            {price.price.toFixed(2)}
+            {(Number(price.price) || 0).toFixed(2)}
           </div>
-          {(price.changePercent !== undefined) && (
+          {(price.changePercent !== undefined && price.changePercent !== null) && (
             <div className={`flex items-center gap-1 px-2 py-0.5 rounded-md ${changeBg}`}>
               {isPositive && <TrendingUp className="w-3 h-3" />}
               {isNegative && <TrendingDown className="w-3 h-3" />}
               {!isPositive && !isNegative && <Minus className="w-3 h-3" />}
               <span className={`text-xs font-semibold font-mono ${changeColor}`}>
-                {price.changePercent > 0 ? '+' : ''}{price.changePercent.toFixed(2)}%
+                {price.changePercent > 0 ? '+' : ''}{Number(price.changePercent).toFixed(2)}%
               </span>
             </div>
           )}
@@ -104,10 +104,10 @@ export default function CurrentPriceDisplay({ price, isLoading }: CurrentPriceDi
           </div>
           <div className="flex justify-between">
             <span className="text-[10px] font-mono text-slate-500">
-              L: {low.toFixed(2)}
+              L: {Number(low).toFixed(2)}
             </span>
             <span className="text-[10px] font-mono text-slate-500">
-              H: {high.toFixed(2)}
+              H: {Number(high).toFixed(2)}
             </span>
           </div>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { Footer } from "./components/Footer";
 
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -2938,183 +2939,7 @@ function MobileContact() {
   );
 }
 
-function MobileBottomNav() {
-  const [isVisible, setIsVisible] = useState(true);
-  const [activeSection, setActiveSection] = useState("top");
-  const lastScrollY = useRef(0);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsVisible(currentScrollY < lastScrollY.current || currentScrollY < 100);
-      lastScrollY.current = currentScrollY;
-
-      // Determine active section
-      const sections = [
-        { id: "top", offset: 0 },
-        { id: "expertise", offset: document.getElementById("expertise")?.offsetTop || 600 },
-        { id: "projects", offset: document.getElementById("projects")?.offsetTop || 1200 },
-        { id: "journey", offset: document.getElementById("journey")?.offsetTop || 1800 },
-        { id: "contact", offset: document.getElementById("contact")?.offsetTop || 2400 },
-      ];
-
-      const scrollPos = currentScrollY + window.innerHeight / 3;
-      for (let i = sections.length - 1; i >= 0; i--) {
-        if (scrollPos >= sections[i].offset) {
-          setActiveSection(sections[i].id);
-          break;
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial check
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollTo = (id: string) => {
-    if (id === "top") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    }
-    setActiveSection(id);
-  };
-
-  const navItems = [
-    { icon: Terminal, label: "Home", id: "top" },
-    { icon: Brain, label: "Work", id: "expertise" },
-    { icon: Layers, label: "Projects", id: "projects" },
-    { icon: MapPin, label: "Journey", id: "journey" },
-    { icon: Mail, label: "Contact", id: "contact" },
-  ];
-
-  const pageLinks = [
-    { label: "AI Agents", href: "/agents" },
-    { label: "Insights", href: "/insights" },
-    { label: "About Me", href: "/about" },
-  ];
-
-  return (
-    <motion.nav
-      initial={{ y: 100 }}
-      animate={{ y: isVisible ? 0 : 100 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-safe"
-    >
-      <div className="mx-auto max-w-md">
-        <div className="flex items-center justify-around gap-2 px-3 py-1.5 mb-2 rounded-xl bg-surface/80 backdrop-blur-xl border border-white/10">
-            {pageLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="text-[10px] text-slate-400 hover:text-cyan-400 transition-colors py-1">
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        <div className="flex items-center justify-around p-2 mb-4 rounded-2xl bg-surface/90 backdrop-blur-xl border border-white/10 shadow-2xl">
-          {navItems.map((item) => {
-            const isActive = activeSection === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => scrollTo(item.id)}
-                className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${
-                  isActive ? "bg-cyan-500/20" : "active:bg-white/5"
-                }`}
-              >
-                <item.icon className={`w-5 h-5 transition-colors duration-300 ${
-                  isActive ? "text-cyan-400" : "text-slate-400"
-                }`} />
-                <span className={`text-[10px] transition-colors duration-300 ${
-                  isActive ? "text-cyan-400 font-medium" : "text-slate-500"
-                }`}>
-                  {item.label}
-                </span>
-                {isActive && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute -bottom-1 w-1 h-1 rounded-full bg-cyan-400"
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </motion.nav>
-  );
-}
-
-function DesktopNav() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollTo = (id: string) => {
-    if (id === "top") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  return (
-    <motion.nav
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, delay: 2.5, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "bg-void/80 backdrop-blur-xl border-b border-white/10" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between h-16">
-          <button
-            onClick={() => scrollTo("top")}
-            className="text-lg font-bold tracking-tight hover:text-cyan-400 transition-colors"
-          >
-            Jitin <span className="text-cyan-400">Nair</span>
-          </button>
-          <div className="hidden md:flex items-center gap-8">
-            {[
-              { label: "Expertise", id: "expertise" },
-              { label: "Projects", id: "projects" },
-              { label: "Contact", id: "contact" },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollTo(item.id)}
-                className="text-sm text-slate-400 hover:text-white transition-colors"
-              >
-                {item.label}
-              </button>
-            ))}
-            <span className="w-px h-4 bg-white/10" />
-            {[
-              { label: "Agents", href: "/agents" },
-              { label: "Insights", href: "/insights" },
-              { label: "About", href: "/about" },
-            ].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm text-slate-400 hover:text-cyan-400 transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-    </motion.nav>
-  );
-}
 
 // Import DesktopProducts (carousel-style like mobile)
 // Import Desktop Products and Expertise
@@ -3764,6 +3589,7 @@ export default function Home() {
           <div id="contact"><DesktopContact /></div>
         </>
       )}
+      <Footer />
     </main>
   );
 }

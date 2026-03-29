@@ -57,7 +57,7 @@ export const useAgentStatus = () => {
   });
   
   return {
-    data: data?.agents ? Object.values(data.agents) as AgentStatus[] : [],
+    data: (data?.agents && typeof data.agents === 'object') ? Object.values(data.agents) as AgentStatus[] : [],
     isLoading,
     error
   };

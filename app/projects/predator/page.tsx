@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Github, ArrowLeft, ExternalLink, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
+import { Footer } from '../../components/Footer';
 import HeroSection from './components/HeroSection';
 import ArchitectureDiagram from './components/ArchitectureDiagram';
 import MetricsDashboard from './components/MetricsDashboard';
@@ -30,7 +31,7 @@ function CTASection() {
             <p className="text-slate-400 mb-6 sm:mb-8 max-w-xl text-sm sm:text-base">
               The Predator system is open source. View the complete implementation, documentation, and deployment guides on GitHub.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 sm:gap-4">
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -40,7 +41,7 @@ function CTASection() {
                 <span>View on GitHub</span>
                 <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
-              
+
               <Link
                 href="/projects/predator/dashboard"
                 className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-white/[0.03] text-slate-300 border border-white/[0.08] hover:border-cyan-500/20 hover:text-cyan-400 transition-all text-sm sm:text-base"
@@ -73,19 +74,6 @@ function CTASection() {
 export default function PredatorPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 py-3 sm:py-4">
-        <div className="max-w-7xl mx-auto">
-          <Link
-            href="/projects/predator/dashboard"
-            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full bg-cyan-500/10 backdrop-blur-md border border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/20 hover:text-cyan-300 transition-all text-xs sm:text-sm"
-          >
-            <LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>Live Dashboard</span>
-          </Link>
-        </div>
-      </nav>
-
       <HeroSection />
       <ProcessFlow />
       <MetricsDashboard />
@@ -93,6 +81,7 @@ export default function PredatorPage() {
       <TechStackGrid />
       <CitationsSection />
       <CTASection />
+      <Footer />
     </main>
   );
 }

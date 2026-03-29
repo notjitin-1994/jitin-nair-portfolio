@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, LayoutDashboard, Wrench, Package, Car, Users, TrendingUp, Zap } from 'lucide-react';
 import Link from 'next/link';
+import { Footer } from '../../components/Footer';
 
 const pixelLetters = [
   [[1,1,1,1,1,0], [1,1,0,0,1,1], [1,1,1,1,1,1], [1,1,0,1,0,0], [1,1,0,0,1,1]],
@@ -409,25 +410,13 @@ function CTASection() {
 export default function RevosPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-white">
-      <nav className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 py-3 sm:py-4">
-        <div className="max-w-7xl mx-auto">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/[0.05] backdrop-blur-md border border-white/[0.1] text-slate-300 hover:text-white hover:border-cyan-500/30 transition-all text-xs sm:text-sm"
-          >
-            <LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>Dashboard</span>
-          </Link>
-        </div>
-
-      </nav>
-
       <HeroSection />
       <ProcessFlow />
       <MetricsDashboard />
       <InnovationsSection />
       <TechStackGrid />
       <CTASection />
+      <Footer />
     </main>
   );
 }

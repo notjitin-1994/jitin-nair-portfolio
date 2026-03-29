@@ -204,7 +204,7 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
                     <div className="mt-2 p-2 rounded bg-void/50 border border-white/[0.04] text-[10px] font-mono text-slate-400">
                       {agent.name === 'Data Ingestion' && <span>Bars ingested: {agent.barsToday || 0}. Target: XAUUSD M5</span>}
                       {agent.name === 'Regime Detection' && <span>Regime: <b className="text-slate-200">{agent.lastRegime || 'N/A'}</b> • Conf: {agent.confidence ? `${(agent.confidence * 100).toFixed(1)}%` : '--'}</span>}
-                      {agent.name === 'Strategy Selector' && <span>{agent.isActive ? `Active: ${agent.strategy}` : 'Pending confidence threshold'}</span>}
+                      {agent.name === 'Strategy Selector' && <span>{agent.isActive ? `Active: ${agent.strategy?.replace?.(/_/g, ' ') || 'UNKNOWN'}` : 'Pending confidence threshold'}</span>}
                       {agent.name === 'Sentinel Oracle' && <span>Signal: <b className="text-slate-200">{agent.lastSignal || 'NONE'}</b></span>}
                     </div>
                   </div>
