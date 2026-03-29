@@ -56,7 +56,7 @@ function ConfidenceGauge({ value, color }: { value: number; color: string }) {
       />
       {/* Center text */}
       <text x="50" y="42" textAnchor="middle" className="fill-white text-lg font-bold" fontSize="16" fontWeight="700">
-        {Math.round(value * 100)}
+        {Math.round(Number(value || 0) * 100)}
       </text>
       <text x="50" y="52" textAnchor="middle" className="fill-slate-500" fontSize="7">
         CONFIDENCE
@@ -67,7 +67,7 @@ function ConfidenceGauge({ value, color }: { value: number; color: string }) {
 
 function TimeframeBar({ label, regime, confidence }: { label: string; regime?: string; confidence?: number }) {
   const cfg = regime ? regimeConfig[regime] : null;
-  const pct = confidence ? Math.round(confidence * 100) : 0;
+  const pct = confidence ? Math.round(Number(confidence) * 100) : 0;
 
   return (
     <div className="flex items-center gap-2">
@@ -143,7 +143,7 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
             </div>
           </div>
         </div>
-        <ConfidenceGauge value={regime.confidence || 0} color={config.color} />
+        <ConfidenceGauge value={Number(regime.confidence || 0)} color={config.color} />
       </div>
 
       {/* Multi-timeframe consensus */}
@@ -155,17 +155,17 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
           <TimeframeBar 
             label="M5" 
             regime={(regime.features as any)?.m5?.regime || regime.regime} 
-            confidence={(regime.features as any)?.m5?.confidence || regime.confidence} 
+            confidence={Number((regime.features as any)?.m5?.confidence || regime.confidence || 0)} 
           />
           <TimeframeBar 
             label="M15" 
             regime={(regime.features as any)?.m15?.regime || regime.regime} 
-            confidence={(regime.features as any)?.m15?.confidence || (regime.confidence || 0) * 0.8} 
+            confidence={Number((regime.features as any)?.m15?.confidence || (regime.confidence || 0) * 0.8)} 
           />
           <TimeframeBar 
             label="H1" 
             regime={(regime.features as any)?.h1?.regime || regime.regime} 
-            confidence={(regime.features as any)?.h1?.confidence || (regime.confidence || 0) * 0.85} 
+            confidence={Number((regime.features as any)?.h1?.confidence || (regime.confidence || 0) * 0.85)} 
           />
         </div>
       </div>
