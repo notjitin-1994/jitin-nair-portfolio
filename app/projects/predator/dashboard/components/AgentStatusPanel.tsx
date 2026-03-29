@@ -48,24 +48,6 @@ const agentConfig: Record<string, { icon: any; accent: string; accentBg: string 
 };
 
 function MicroBar({ value, max = 100, color }: { value: number | undefined; max?: number; color: string }) {
-  if (value === undefined) return <div className="h-1 w-full bg-white/[0.04] rounded-full" />;
-  const pct = Math.min((value / max) * 100, 100);
-  return (
-    <div className="h-1 w-full bg-white/[0.04] rounded-full overflow-hidden">
-      <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%`, transition: 'width 0.5s' }} />
-    </div>
-  );
-}
-
-function MiniSparkline() {
-  // Decorative fake sparkline
-  const points = [2, 5, 3, 7, 4, 8, 6, 9, 5, 7, 4, 8].map((v, i) => `${i * 8},${20 - v * 2}`).join(' ');
-  return (
-    <svg viewBox="0 0 88 20" className="w-16 h-4 opacity-30">
-      <polyline points={points} fill="none" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
 
 export default function AgentStatusPanel({ agents, isLoading, error }: AgentStatusPanelProps) {
   const [expandedAgent, setExpandedAgent] = useState<string | null>(null);
