@@ -152,9 +152,21 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
           Multi-Timeframe Consensus
         </div>
         <div className="space-y-2 bg-void/40 rounded-xl p-3 border border-white/[0.04]">
-          <TimeframeBar label="M5" regime={regime.regime} confidence={regime.confidence || 0} />
-          <TimeframeBar label="M15" regime={regime.regime} confidence={(regime.confidence || 0) * 0.8} />
-          <TimeframeBar label="H1" regime={regime.regime} confidence={(regime.confidence || 0) * 0.85} />
+          <TimeframeBar 
+            label="M5" 
+            regime={(regime.features as any)?.m5?.regime || regime.regime} 
+            confidence={(regime.features as any)?.m5?.confidence || regime.confidence} 
+          />
+          <TimeframeBar 
+            label="M15" 
+            regime={(regime.features as any)?.m15?.regime || regime.regime} 
+            confidence={(regime.features as any)?.m15?.confidence || (regime.confidence || 0) * 0.8} 
+          />
+          <TimeframeBar 
+            label="H1" 
+            regime={(regime.features as any)?.h1?.regime || regime.regime} 
+            confidence={(regime.features as any)?.h1?.confidence || (regime.confidence || 0) * 0.85} 
+          />
         </div>
       </div>
 

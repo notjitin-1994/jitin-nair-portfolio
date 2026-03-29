@@ -153,9 +153,6 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
                 )}
               </div>
 
-              {/* Sparkline */}
-              {isActive && <MiniSparkline />}
-
               {/* Chevron */}
               <ChevronDown className={`w-3.5 h-3.5 text-slate-600 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
             </div>

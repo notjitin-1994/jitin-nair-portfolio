@@ -13,12 +13,13 @@ import SignalDisplay from './components/SignalDisplay';
 import ExecutionPanel from './components/ExecutionPanel';
 import OpenPositions from './components/OpenPositions';
 import RecentTrades from './components/RecentTrades';
-import {
-  useApiHealth,
-  useCurrentPrice,
-  useAgentStatus,
+import { 
+  useApiHealth, 
+  useCurrentPrice, 
+  useAgentStatus, 
   useCurrentRegime,
-  useSentinelSignal
+  useSentinelSignal,
+  usePriceHistory
 } from './hooks/useApi';
 import { AgentStatus } from './types/dashboard';
 import { Footer } from '../../../components/Footer';
@@ -107,7 +108,7 @@ function PipelineBar({ agents }: { agents: AgentStatus[] }) {
               />
               <span className="text-[9px] text-slate-500 mt-1 hidden sm:block">{step.name}</span>
             </div>
-            {i < pipelineAgents.length - 1 && ( step.id !== 'execution' ) && (
+            {i < pipelineAgents.length - 1 && (
               <div className="w-8 sm:w-12 h-px mx-0.5" style={{
                 backgroundColor: isActive ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.04)',
               }} />
@@ -125,6 +126,14 @@ export default function DashboardPage() {
   const { data: agents, isLoading: agentsLoading, error: agentsError } = useAgentStatus();
   const { data: regime, isLoading: regimeLoading } = useCurrentRegime();
   const { data: statusData, isLoading: sentinelLoading } = useSentinelSignal();
+  const { data: history } = usePriceHistory(288); // 24h of 5m bars
+
+  // Calculate 24h high/low from real history
+  let high24h, low24h;
+  if (history && history.length > 0) {
+    high24h = Math.max(...history.map(b => Number(b.high)));
+    low24h = Math.min(...history.map(b => Number(b.low)));
+  }
 
   const sentinel = statusData?.sentinel;
   const lastUpdate = price?.timestamp || health?.timestamp;
@@ -192,7 +201,12 @@ export default function DashboardPage() {
               {/* Price + Chart Card */}
               <div className="bg-midnight border border-white/[0.06] rounded-xl p-5">
                 <div className="flex items-center justify-between mb-5">
-                  <CurrentPriceDisplay price={price || null} isLoading={priceLoading} />
+                  <CurrentPriceDisplay 
+                    price={price || null} 
+                    isLoading={priceLoading}
+                    high24h={high24h}
+                    low24h={low24h}
+                  />
                   <div className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     <span className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Live</span>

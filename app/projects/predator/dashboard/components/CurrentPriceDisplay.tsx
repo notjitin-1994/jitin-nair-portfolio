@@ -7,9 +7,11 @@ import { CurrentPrice } from '../types/dashboard';
 interface CurrentPriceDisplayProps {
   price: CurrentPrice | null;
   isLoading: boolean;
+  high24h?: number;
+  low24h?: number;
 }
 
-export default function CurrentPriceDisplay({ price, isLoading }: CurrentPriceDisplayProps) {
+export default function CurrentPriceDisplay({ price, isLoading, high24h, low24h }: CurrentPriceDisplayProps) {
   if (isLoading) {
     return (
       <div className="animate-pulse space-y-3">
@@ -27,18 +29,27 @@ export default function CurrentPriceDisplay({ price, isLoading }: CurrentPriceDi
     );
   }
 
-  const isPositive = (price.changePercent || 0) >= 0;
-  const isNegative = (price.changePercent || 0) < 0;
+  const isPositive = (Number(price.changePercent) || 0) >= 0;
+  const isNegative = (Number(price.changePercent) || 0) < 0;
   const changeColor = isPositive ? 'text-emerald-400' : isNegative ? 'text-red-400' : 'text-slate-400';
   const changeBg = isPositive ? 'bg-emerald-400/10' : isNegative ? 'bg-red-400/10' : 'bg-slate-400/10';
 
-  // 24h range calculation (from change data)
-  const changeAbs = Math.abs(price.change || 0);
-  const high = changeAbs > 0 ? price.price + changeAbs * 0.3 : 0;
-  const low = changeAbs > 0 ? price.price - changeAbs * 1.3 : 0;
+  // 24h range calculation
+  const currentPrice = Number(price.price) || 0;
+  let high = Number(high24h) || 0;
+  let low = Number(low24h) || 0;
+
+  // Speculative fallback if history not provided
+  if (!high || !low) {
+    const changeAbs = Math.abs(Number(price.change) || 0);
+    high = changeAbs > 0 ? currentPrice + changeAbs * 0.3 : 0;
+    low = changeAbs > 0 ? currentPrice - changeAbs * 1.3 : 0;
+  }
+
   const range = high - low;
-  const pricePos = range > 0 ? ((price.price - low) / range) * 100 : 50;
-  const spread = range > 0 ? (Number((high - low) / price.price) * 100).toFixed(2) : '--';
+  const pricePos = range > 0 ? ((currentPrice - low) / range) * 100 : 50;
+  const spread = range > 0 ? (Number((high - low) / currentPrice) * 100).toFixed(2) : '--';
+
 
   return (
     <motion.div
