@@ -706,3 +706,52 @@ button, a, [role="button"] {
     font-size: 16px;
   }
 }
+
+/* === Portfolio Revamp 2026 - Design System Extensions === */
+
+/* Glassmorphism variants */
+.glass-subtle {
+  @apply bg-white/[0.02] border border-white/[0.06] backdrop-blur-sm;
+}
+
+.glass-strong {
+  @apply bg-white/[0.05] border border-white/[0.12] backdrop-blur-xl;
+}
+
+/* Gradient text utility */
+.gradient-text {
+  @apply bg-gradient-to-r from-cyan-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent;
+}
+
+/* Card hover lift */
+.card-lift {
+  @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/10;
+}
+
+/* Focus ring for accessibility */
+.focus-ring {
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f];
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none !important;
+  }
+}
+
+/* Grid pattern background */
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Prose overrides for blog content */
+.prose-cyan a {
+  color: #22d3ee;
+}
+.prose-cyan a:hover {
+  color: #67e8f9;
+}
