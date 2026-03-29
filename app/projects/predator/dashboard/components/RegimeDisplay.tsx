@@ -83,7 +83,7 @@ function TimeframeBar({ label, regime, confidence }: { label: string; regime?: s
         {regime && (
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-[8px] font-bold text-white/70 tracking-wider">
-              {regime.replace('TREND_', '').replace('_', ' ')}
+              {regime?.replace?.('TREND_', '')?.replace?.('_', ' ') || 'UNKNOWN'}
             </span>
           </div>
         )}
@@ -130,11 +130,11 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
           <div>
             <div className="flex items-center gap-2">
               <div className={`text-xl font-bold tracking-tight ${config.color}`}>
-                {regime.regime.replace('_', ' ')}
+                {regime.regime?.replace?.('_', ' ') || 'UNKNOWN'}
               </div>
               {regime.regime === 'RANGE' && (regime.features as any)?.activeStrategy && (
                 <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-400/10 text-amber-400 border border-amber-400/20">
-                  {(regime.features as any).activeStrategy.replace(/_/g, ' ')}
+                  {(regime.features as any).activeStrategy?.replace?.(/_/g, ' ') || 'N/A'}
                 </span>
               )}
             </div>
@@ -143,7 +143,7 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
             </div>
           </div>
         </div>
-        <ConfidenceGauge value={regime.confidence} color={config.color} />
+        <ConfidenceGauge value={regime.confidence || 0} color={config.color} />
       </div>
 
       {/* Multi-timeframe consensus */}
@@ -152,31 +152,31 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
           Multi-Timeframe Consensus
         </div>
         <div className="space-y-2 bg-void/40 rounded-xl p-3 border border-white/[0.04]">
-          <TimeframeBar label="M5" regime={regime.regime} confidence={regime.confidence} />
-          <TimeframeBar label="M15" regime={regime.regime} confidence={regime.confidence * 0.8} />
-          <TimeframeBar label="H1" regime={regime.regime} confidence={regime.confidence * 0.85} />
+          <TimeframeBar label="M5" regime={regime.regime} confidence={regime.confidence || 0} />
+          <TimeframeBar label="M15" regime={regime.regime} confidence={(regime.confidence || 0) * 0.8} />
+          <TimeframeBar label="H1" regime={regime.regime} confidence={(regime.confidence || 0) * 0.85} />
         </div>
       </div>
 
       {/* Features */}
       {regime.features && (
         <div className="grid grid-cols-3 gap-2">
-          {regime.features.volatility !== undefined && (
+          {regime.features.volatility !== undefined && regime.features.volatility !== null && (
             <div className="bg-void/30 rounded-lg p-2 text-center border border-white/[0.03]">
               <div className="text-[9px] text-slate-500 uppercase tracking-wider">Vol</div>
-              <div className="text-sm font-mono text-slate-300 mt-0.5">{regime.features.volatility.toFixed(2)}</div>
+              <div className="text-sm font-mono text-slate-300 mt-0.5">{Number(regime.features.volatility).toFixed(2)}</div>
             </div>
           )}
-          {regime.features.trend !== undefined && (
+          {regime.features.trend !== undefined && regime.features.trend !== null && (
             <div className="bg-void/30 rounded-lg p-2 text-center border border-white/[0.03]">
               <div className="text-[9px] text-slate-500 uppercase tracking-wider">Trend</div>
-              <div className="text-sm font-mono text-slate-300 mt-0.5">{regime.features.trend.toFixed(2)}</div>
+              <div className="text-sm font-mono text-slate-300 mt-0.5">{Number(regime.features.trend).toFixed(2)}</div>
             </div>
           )}
-          {regime.features.volume !== undefined && (
+          {regime.features.volume !== undefined && regime.features.volume !== null && (
             <div className="bg-void/30 rounded-lg p-2 text-center border border-white/[0.03]">
               <div className="text-[9px] text-slate-500 uppercase tracking-wider">Volm</div>
-              <div className="text-sm font-mono text-slate-300 mt-0.5">{regime.features.volume.toFixed(0)}</div>
+              <div className="text-sm font-mono text-slate-300 mt-0.5">{Number(regime.features.volume).toFixed(0)}</div>
             </div>
           )}
         </div>

@@ -177,14 +177,14 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
                           <Cpu className="w-2.5 h-2.5" /> CPU
                         </div>
                         <MicroBar value={agent.cpu} color={cfg.accentBg} />
-                        <div className="text-[10px] font-mono text-slate-400 mt-0.5">{agent.cpu !== undefined ? `${agent.cpu.toFixed(1)}%` : '--'}</div>
+                        <div className="text-[10px] font-mono text-slate-400 mt-0.5">{agent.cpu !== undefined && agent.cpu !== null ? `${Number(agent.cpu).toFixed(1)}%` : '--'}</div>
                       </div>
                       <div>
                         <div className="flex items-center gap-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">
                           <MemoryStick className="w-2.5 h-2.5" /> MEM
                         </div>
                         <MicroBar value={agent.memory} max={512} color={cfg.accentBg} />
-                        <div className="text-[10px] font-mono text-slate-400 mt-0.5">{agent.memory !== undefined ? `${(agent.memory / 1024).toFixed(1)} MB` : '--'}</div>
+                        <div className="text-[10px] font-mono text-slate-400 mt-0.5">{agent.memory !== undefined && agent.memory !== null ? `${(Number(agent.memory) / 1024).toFixed(1)} MB` : '--'}</div>
                       </div>
                       <div>
                         <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">

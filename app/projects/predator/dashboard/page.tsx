@@ -201,20 +201,20 @@ export default function DashboardPage() {
                     Active Strategy
                   </h3>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-400/10 text-amber-400">
-                    {statusData.strategy.current.regime}
+                    {statusData.strategy.current.regime || 'UNKNOWN'}
                   </span>
                 </div>
                 <div className="space-y-2">
                   <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
                     <div className="text-[9px] text-slate-500 uppercase tracking-wider">Strategy</div>
                     <div className="text-[11px] text-white font-mono mt-1">
-                      {statusData.strategy.current.strategy_id?.replace(/_/g, ' ')}
+                      {statusData.strategy.current.strategy_id?.replace(/_/g, ' ') || 'NONE'}
                     </div>
                   </div>
                   <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
                     <div className="text-[9px] text-slate-500 uppercase tracking-wider">Confidence</div>
                     <div className="text-[11px] text-cyan-400/80 font-mono mt-1">
-                      {(statusData.strategy.current.confidence_score * 100).toFixed(0)}%
+                      {(statusData.strategy.current.confidence_score * 100 || 0).toFixed(0)}%
                     </div>
                   </div>
                   <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">

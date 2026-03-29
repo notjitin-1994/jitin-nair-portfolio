@@ -141,7 +141,7 @@ export default function SignalDisplay({ data, isLoading }: SignalDisplayProps) {
             )}
           </div>
           <div className="text-xs text-slate-500 mt-0.5">
-            {data.regime.replace(/_/g, ' ')}
+            {data.regime?.replace(/_/g, ' ') || 'UNKNOWN'}
           </div>
         </div>
       </div>
@@ -149,9 +149,9 @@ export default function SignalDisplay({ data, isLoading }: SignalDisplayProps) {
       {/* Confidence Ring + Macro */}
       <div className="flex items-start gap-5 mb-4">
         <div className="relative flex-shrink-0">
-          <ConfidenceRing value={data.confidence} color={meta.color} size={72} strokeWidth={4} />
+          <ConfidenceRing value={data.confidence || 0} color={meta.color} size={72} strokeWidth={4} />
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-sm font-mono font-bold text-white">{data.confidence.toFixed(0)}%</span>
+            <span className="text-sm font-mono font-bold text-white">{(data.confidence || 0).toFixed(0)}%</span>
           </div>
         </div>
 
