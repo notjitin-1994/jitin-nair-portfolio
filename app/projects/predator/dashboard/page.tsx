@@ -13,14 +13,15 @@ import SignalDisplay from './components/SignalDisplay';
 import ExecutionPanel from './components/ExecutionPanel';
 import OpenPositions from './components/OpenPositions';
 import RecentTrades from './components/RecentTrades';
-import { 
-  useApiHealth, 
-  useCurrentPrice, 
-  useAgentStatus, 
+import {
+  useApiHealth,
+  useCurrentPrice,
+  useAgentStatus,
   useCurrentRegime,
   useSentinelSignal
 } from './hooks/useApi';
 import { AgentStatus } from './types/dashboard';
+import { Footer } from '../../../components/Footer';
 
 // --- Error Boundary ---
 
@@ -132,11 +133,11 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-void text-white">
       <DashboardErrorBoundary>
-        {/* Header */}
+        {/* Header - Inline (non-sticky) */}
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="border-b border-white/[0.06] backdrop-blur-md bg-void/80 sticky top-0 z-50"
+          className="border-b border-white/[0.06] bg-void"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-14">
@@ -317,6 +318,8 @@ export default function DashboardPage() {
             </motion.div>
           </div>
         </main>
+
+        <Footer />
       </DashboardErrorBoundary>
     </div>
   );
