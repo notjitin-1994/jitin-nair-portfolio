@@ -74,7 +74,7 @@ export function AccessRequestModal({ isOpen, onClose }: AccessRequestModalProps)
                   <div className="mb-6">
                     <h3 className="text-xl font-bold text-white mb-2">Request Access</h3>
                     <p className="text-sm text-slate-400">
-                      The Predator source code is available by request. Fill in your details and I'll get back to you shortly.
+                      The Predator source code is available by request. Fill in your details and I&apos;ll get back to you shortly.
                     </p>
                   </div>
 
@@ -165,7 +165,7 @@ export function AccessRequestModal({ isOpen, onClose }: AccessRequestModalProps)
                   </motion.div>
                   <h4 className="text-lg font-semibold text-white mb-2">Request Sent!</h4>
                   <p className="text-sm text-slate-400">
-                    Thanks for your interest. I'll review your request and get back to you soon.
+                    Thanks for your interest. I&apos;ll review your request and get back to you soon.
                   </p>
                   <button
                     onClick={handleClose}

@@ -29,7 +29,7 @@ export const skillsData: SkillCategory[] = [
   },
   {
     title: "Frontend & UX",
-    color: "#a78bfa",
+    color: "#14b8a6",
     skills: [
       { name: "React 18", level: 92, description: "Server Components, Suspense, Concurrent" },
       { name: "Next.js 14", level: 92, description: "App Router, RSC, Edge Runtime" },
@@ -43,7 +43,7 @@ export const skillsData: SkillCategory[] = [
   },
   {
     title: "Backend & Data",
-    color: "#f472b6",
+    color: "#22d3ee",
     skills: [
       { name: "Python", level: 92, description: "AI/ML backbone, FastAPI, automation" },
       { name: "FastAPI", level: 90, description: "High-performance async Python APIs" },
@@ -57,7 +57,7 @@ export const skillsData: SkillCategory[] = [
   },
   {
     title: "DevOps & Infrastructure",
-    color: "#22c55e",
+    color: "#14b8a6",
     skills: [
       { name: "Docker", level: 88, description: "Containerization and orchestration" },
       { name: "Linux / Systemd", level: 90, description: "System administration" },
@@ -69,7 +69,7 @@ export const skillsData: SkillCategory[] = [
   },
   {
     title: "Automation & Integration",
-    color: "#f59e0b",
+    color: "#22d3ee",
     skills: [
       { name: "Playwright", level: 92, description: "Browser automation and testing" },
       { name: "n8n", level: 88, description: "Workflow automation platform" },
@@ -81,7 +81,7 @@ export const skillsData: SkillCategory[] = [
   },
   {
     title: "Instructional Design & L&D",
-    color: "#ec4899",
+    color: "#14b8a6",
     skills: [
       { name: "ADDIE Model", level: 95, description: "Systematic instructional design" },
       { name: "Video-Based Learning", level: 92, description: "Educational video production" },

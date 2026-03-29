@@ -136,7 +136,7 @@ export function CitationsSection() {
           <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3 sm:mb-4">References</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Methodology & Sources</h2>
           <p className="text-slate-400 max-w-2xl text-sm sm:text-base">
-            Academic foundations and industry standards that inform the Predator system's design and implementation.
+            Academic foundations and industry standards that inform the Predator system&apos;s design and implementation.
           </p>
         </motion.div>
 

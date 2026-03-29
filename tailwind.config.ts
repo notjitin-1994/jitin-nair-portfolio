@@ -13,6 +13,14 @@ module.exports = {
         midnight: "#12121a",
         depth: "#1a1a2e",
         surface: "#252538",
+        cyan: {
+          400: "#22d3ee",
+          300: "#67e8f9",
+        },
+        teal: {
+          400: "#2dd4bf",
+          500: "#14b8a6",
+        },
       },
       fontFamily: {
         sans: ["var(--font-dm-sans)", "DM Sans", "system-ui", "sans-serif"],
@@ -42,7 +50,7 @@ module.exports = {
         },
         glow: {
           "0%": { boxShadow: "0 0 20px -5px rgba(34, 211, 238, 0.2)" },
-          "100%": { boxShadow: "0 0 40px -5px rgba(139, 92, 246, 0.4)" },
+          "100%": { boxShadow: "0 0 40px -5px rgba(20, 184, 166, 0.4)" },
         },
       },
     },

@@ -2563,7 +2563,7 @@ function DesktopContact() {
               whileInView={{ opacity: 1, y: 0 }}
               className="text-4xl md:text-5xl font-bold mb-6"
             >
-              Let's Build Something <span className="text-cyan-400">Extraordinary</span>
+              Let&apos;s Build Something <span className="text-cyan-400">Extraordinary</span>
             </motion.h2>
 
             <motion.p
@@ -2571,7 +2571,7 @@ function DesktopContact() {
               whileInView={{ opacity: 1 }}
               className="text-slate-400 text-lg mb-8 max-w-lg"
             >
-              Ready to architect autonomous systems? I'm available for full-time roles,
+              Ready to architect autonomous systems? I&apos;m available for full-time roles,
               contracts, and advisory engagements.
             </motion.p>
 
@@ -2785,11 +2785,11 @@ function MobileContact() {
         </p>
 
         <h2 className={`text-3xl font-bold mb-4 ${mounted ? 'mobile-section-title' : 'opacity-0'}`}>
-          Let's Talk
+          Let&apos;s Talk
         </h2>
 
         <p className={`text-slate-400 mb-8 ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}>
-          Ready to build something amazing? Let's discuss your project.
+          Ready to build something amazing? Let&apos;s discuss your project.
         </p>
       </div>
 

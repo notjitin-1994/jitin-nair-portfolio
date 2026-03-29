@@ -15,6 +15,19 @@ export interface Metric {
   color: string;
 }
 
+export interface Result {
+  metric: string;
+  value: string;
+  context?: string;
+}
+
+export interface Testimonial {
+  quote: string;
+  author: string;
+  role: string;
+  company: string;
+}
+
 export interface Project {
   id: string;
   number: number;
@@ -38,6 +51,15 @@ export interface Project {
     secondary: string;
     gradient: string;
   };
+  // Merged case study fields
+  client: string;
+  industry: string;
+  category: 'AI Automation' | 'Agentic Systems' | 'Full-Stack';
+  challenge: string;
+  solution: string;
+  results: Result[];
+  duration: string;
+  testimonial?: Testimonial;
 }
 
 export const projectsData: Project[] = [
@@ -53,9 +75,9 @@ export const projectsData: Project[] = [
     technologies: ['Python 3.13', 'LangGraph', 'TimescaleDB', 'Polars', 'NumPy', 'Numba', 'CCXT', 'WebSocket', 'FastAPI', 'Streamlit', 'Docker', 'Redis', 'PostgreSQL', 'scikit-learn', 'ADWIN', 'PSI Drift Detection'],
     techCategories: [
       { name: 'Core Engine', items: ['Python 3.13', 'Numba', 'Polars'], color: '#22d3ee' },
-      { name: 'Multi-Agent', items: ['LangGraph', '5 Specialized Agents'], color: '#a78bfa' },
-      { name: 'Data Layer', items: ['TimescaleDB', 'Redis', 'PostgreSQL'], color: '#f472b6' },
-      { name: 'ML/Ops', items: ['ADWIN', 'PSI', 'Model Registry'], color: '#22c55e' },
+      { name: 'Multi-Agent', items: ['LangGraph', '5 Specialized Agents'], color: '#14b8a6' },
+      { name: 'Data Layer', items: ['TimescaleDB', 'Redis', 'PostgreSQL'], color: '#22d3ee' },
+      { name: 'ML/Ops', items: ['ADWIN', 'PSI', 'Model Registry'], color: '#14b8a6' },
     ],
     keyInnovations: [
       'Adaptive Regime Detection v2 with hysteresis filtering',
@@ -83,17 +105,29 @@ export const projectsData: Project[] = [
     ],
     metrics: [
       { id: 'latency', label: 'Execution Latency', value: 47, unit: 'ms', description: 'End-to-end signal to execution (p99)', trend: 'stable', trendValue: 'p99', color: '#22d3ee' },
-      { id: 'accuracy', label: 'Regime Detection', value: 88, unit: '%', description: 'Classification accuracy on out-of-sample data', trend: 'up', trendValue: '+2.3%', color: '#a78bfa' },
-      { id: 'uptime', label: 'System Uptime', value: 99.9, unit: '%', description: '24/7 continuous operation since deployment', trend: 'stable', trendValue: '30d', color: '#22c55e' },
-      { id: 'winrate', label: 'Strategy Win Rate', value: 62.5, unit: '%', description: 'Backtested win rate on 6 months data', trend: 'up', trendValue: '+1.2%', color: '#f472b6' },
+      { id: 'accuracy', label: 'Regime Detection', value: 88, unit: '%', description: 'Classification accuracy on out-of-sample data', trend: 'up', trendValue: '+2.3%', color: '#14b8a6' },
+      { id: 'uptime', label: 'System Uptime', value: 99.9, unit: '%', description: '24/7 continuous operation since deployment', trend: 'stable', trendValue: '30d', color: '#22d3ee' },
+      { id: 'winrate', label: 'Strategy Win Rate', value: 62.5, unit: '%', description: 'Backtested win rate on 6 months data', trend: 'up', trendValue: '+1.2%', color: '#14b8a6' },
     ],
     githubUrl: 'https://github.com/notjitin-1994/predator-scalping-system',
     learnMoreUrl: '/projects/predator',
     theme: {
       primary: '#22d3ee',
-      secondary: '#a78bfa',
-      gradient: 'from-cyan-400 via-purple-400 to-pink-400',
+      secondary: '#14b8a6',
+      gradient: 'from-cyan-400 to-teal-400',
     },
+    client: 'Independent Project',
+    industry: 'FinTech',
+    category: 'AI Automation',
+    challenge: 'Gold (XAU/USD) markets demand sub-50ms execution with adaptive regime detection. Manual trading cannot keep pace with micro-movements across volatile, trending, and ranging conditions.',
+    solution: 'Built a fully autonomous scalping engine deploying 5 specialized AI agents that detect market regimes, predict micro-movements, and execute trades with institutional-grade risk management using LangGraph orchestration.',
+    results: [
+      { metric: 'Execution Latency', value: '<50ms', context: 'p99 percentile' },
+      { metric: 'Regime Detection', value: 'Adaptive', context: 'Multi-condition' },
+      { metric: 'Speedup', value: '10x', context: 'Via Numba JIT compilation' },
+      { metric: 'Recovery', value: 'Auto', context: '3-state circuit breaker' },
+    ],
+    duration: '6 months',
   },
   {
     id: 'agency',
@@ -106,10 +140,10 @@ export const projectsData: Project[] = [
     howItWorks: 'Built on LangGraph state machines with vector memory persistence. Agents communicate via Redis Streams event bus. MCP enables tools to be shared as capabilities rather than possessions. Multi-LLM routing intelligently selects providers based on query type.',
     technologies: ['Claude', 'Gemini', 'GPT-4', 'Kimi', 'Ollama', 'Qwen', 'Python', 'FastAPI', 'LangGraph', 'Redis', 'MCP', 'Telegram API', 'WhatsApp API', 'GitHub API'],
     techCategories: [
-      { name: 'AI/ML', items: ['LangGraph', 'OpenAI', 'Anthropic'], color: '#a78bfa' },
-      { name: 'Orchestration', items: ['LangChain', 'Instructor', 'Pydantic'], color: '#22d3ee' },
-      { name: 'Data', items: ['PostgreSQL', 'pgvector', 'Redis'], color: '#f472b6' },
-      { name: 'Protocol', items: ['MCP', 'FastAPI', 'WebSocket'], color: '#22c55e' },
+      { name: 'AI/ML', items: ['LangGraph', 'OpenAI', 'Anthropic'], color: '#22d3ee' },
+      { name: 'Orchestration', items: ['LangChain', 'Instructor', 'Pydantic'], color: '#14b8a6' },
+      { name: 'Data', items: ['PostgreSQL', 'pgvector', 'Redis'], color: '#22d3ee' },
+      { name: 'Protocol', items: ['MCP', 'FastAPI', 'WebSocket'], color: '#14b8a6' },
     ],
     keyInnovations: [
       'Model Context Protocols for cross-agent tool sharing',
@@ -135,18 +169,30 @@ export const projectsData: Project[] = [
       'Vector memory',
     ],
     metrics: [
-      { id: 'agents', label: 'Active Agents', value: 34, unit: 'agents', description: 'Production agents across 3 clusters', trend: 'up', trendValue: '+4', color: '#a78bfa' },
-      { id: 'tools', label: 'Shared Tools', value: 47, unit: 'tools', description: 'MCP-enabled cross-agent capabilities', trend: 'up', trendValue: '+12', color: '#22d3ee' },
-      { id: 'savings', label: 'Cost Savings', value: 34, unit: '%', description: 'Multi-LLM routing optimization', trend: 'up', trendValue: '+8%', color: '#22c55e' },
-      { id: 'speed', label: 'Response Time', value: 350, unit: 'ms', description: 'Average end-to-end latency', trend: 'down', trendValue: '-120ms', color: '#f472b6' },
+      { id: 'agents', label: 'Active Agents', value: 34, unit: 'agents', description: 'Production agents across 3 clusters', trend: 'up', trendValue: '+4', color: '#22d3ee' },
+      { id: 'tools', label: 'Shared Tools', value: 47, unit: 'tools', description: 'MCP-enabled cross-agent capabilities', trend: 'up', trendValue: '+12', color: '#14b8a6' },
+      { id: 'savings', label: 'Cost Savings', value: 34, unit: '%', description: 'Multi-LLM routing optimization', trend: 'up', trendValue: '+8%', color: '#22d3ee' },
+      { id: 'speed', label: 'Response Time', value: 350, unit: 'ms', description: 'Average end-to-end latency', trend: 'down', trendValue: '-120ms', color: '#14b8a6' },
     ],
     githubUrl: 'https://github.com/jitinnair1',
     learnMoreUrl: '/projects/agency',
     theme: {
-      primary: '#a78bfa',
-      secondary: '#22d3ee',
-      gradient: 'from-purple-400 via-cyan-400 to-pink-400',
+      primary: '#22d3ee',
+      secondary: '#14b8a6',
+      gradient: 'from-cyan-400 to-teal-400',
     },
+    client: 'Independent Project',
+    industry: 'AI Infrastructure',
+    category: 'Agentic Systems',
+    challenge: 'Managing 30+ specialized AI agents across different LLM providers, communication channels, and tool integrations requires a unified orchestration layer with cross-agent coordination.',
+    solution: 'Built a unified multi-agent platform managing 30+ specialized agents — from code automation and content generation to IoT control and knowledge management — with Model Context Protocol integration and real-time event coordination.',
+    results: [
+      { metric: 'Agents', value: '30+', context: 'Specialized roles' },
+      { metric: 'Providers', value: '6', context: 'Multi-LLM routing' },
+      { metric: 'Protocol', value: 'MCP', context: 'Cross-agent tools' },
+      { metric: 'Memory', value: 'Vector', context: 'Persistent context' },
+    ],
+    duration: 'Ongoing',
   },
   {
     id: 'reality',
@@ -160,9 +206,9 @@ export const projectsData: Project[] = [
     technologies: ['Bash', 'Node.js', 'Python', 'YAML', 'Markdown', 'Git', 'Regex', 'File System APIs', 'Process Management', 'Audit Logging'],
     techCategories: [
       { name: 'Enforcement', items: ['Bash Scripts', 'Node.js', 'Regex'], color: '#22d3ee' },
-      { name: 'Policy', items: ['GLOBAL_PROTOCOLS.md', 'YAML Config'], color: '#22d3ee' },
+      { name: 'Policy', items: ['GLOBAL_PROTOCOLS.md', 'YAML Config'], color: '#14b8a6' },
       { name: 'Audit', items: ['VIOLATIONS.log', 'Real-time'], color: '#22d3ee' },
-      { name: 'Coverage', items: ['141/147 Agents', '96%'], color: '#22d3ee' },
+      { name: 'Coverage', items: ['141/147 Agents', '96%'], color: '#14b8a6' },
     ],
     keyInnovations: [
       'Automated policy injection across 147 agents',
@@ -190,17 +236,29 @@ export const projectsData: Project[] = [
     ],
     metrics: [
       { id: 'enforced', label: 'Agents Enforced', value: 141, unit: 'agents', description: 'Out of 147 total agents', trend: 'up', trendValue: '+4', color: '#22d3ee' },
-      { id: 'coverage', label: 'Coverage', value: 96, unit: '%', description: 'Fleet-wide policy coverage', trend: 'stable', trendValue: '96%', color: '#22c55e' },
-      { id: 'violations', label: 'Violations', value: 0, unit: 'active', description: 'Current active violations', trend: 'stable', trendValue: '0', color: '#22c55e' },
+      { id: 'coverage', label: 'Coverage', value: 96, unit: '%', description: 'Fleet-wide policy coverage', trend: 'stable', trendValue: '96%', color: '#14b8a6' },
+      { id: 'violations', label: 'Violations', value: 0, unit: 'active', description: 'Current active violations', trend: 'stable', trendValue: '0', color: '#14b8a6' },
       { id: 'time', label: 'Enforcement Time', value: 3, unit: 'min', description: 'Full fleet policy rollout', trend: 'down', trendValue: '-2min', color: '#22d3ee' },
     ],
     githubUrl: 'https://github.com/notjitin-1994/anti-hallucination',
     learnMoreUrl: '/projects/reality',
     theme: {
       primary: '#22d3ee',
-      secondary: '#22c55e',
-      gradient: 'from-cyan-400 to-emerald-400',
+      secondary: '#14b8a6',
+      gradient: 'from-cyan-400 to-teal-400',
     },
+    client: 'Independent Project',
+    industry: 'AI Infrastructure',
+    category: 'Agentic Systems',
+    challenge: 'AI agent fleets generating fictional data undermine trust and create liability. With 147 independent agents, manual oversight is impossible — the system needed autonomous governance at scale.',
+    solution: 'Built a distributed governance platform that enforces a No Fiction Protocol across the entire agent fleet through automated policy injection, real-time violation detection, and immutable audit trails.',
+    results: [
+      { metric: 'Coverage', value: '96%', context: '141 of 147 agents' },
+      { metric: 'Deployment', value: '<3 min', context: 'Full fleet enforcement' },
+      { metric: 'Protocol', value: 'No Fiction', context: 'Zero tolerance' },
+      { metric: 'Audit Trail', value: '100%', context: 'Immutable logging' },
+    ],
+    duration: '2 weeks',
   },
   {
     id: 'smartslate',
@@ -214,9 +272,9 @@ export const projectsData: Project[] = [
     technologies: ['React', 'TypeScript', 'Vite', 'Supabase', 'PostgreSQL', 'Claude', 'GPT-4', 'Perplexity API', 'Framer Motion', 'Tailwind CSS', 'Zustand', 'React Query', 'TipTap'],
     techCategories: [
       { name: 'Frontend', items: ['React 18', 'TypeScript', 'Vite', 'Framer Motion'], color: '#22d3ee' },
-      { name: 'AI/ML', items: ['Claude 3.5', 'GPT-4o', 'Perplexity'], color: '#a78bfa' },
-      { name: 'Backend', items: ['Supabase', 'PostgreSQL', 'Edge Functions'], color: '#f472b6' },
-      { name: 'Pipeline', items: ['Webhook Workers', 'Job Queue', 'Real-time'], color: '#22c55e' },
+      { name: 'AI/ML', items: ['Claude 3.5', 'GPT-4o', 'Perplexity'], color: '#14b8a6' },
+      { name: 'Backend', items: ['Supabase', 'PostgreSQL', 'Edge Functions'], color: '#22d3ee' },
+      { name: 'Pipeline', items: ['Webhook Workers', 'Job Queue', 'Real-time'], color: '#14b8a6' },
     ],
     keyInnovations: [
       'Human-in-the-Loop validation gates at every stage',
@@ -244,16 +302,34 @@ export const projectsData: Project[] = [
     ],
     metrics: [
       { id: 'stages', label: 'Questionnaire Stages', value: 7, unit: 'stages', description: 'Contextual discovery flow', trend: 'stable', trendValue: '7', color: '#22d3ee' },
-      { id: 'providers', label: 'AI Providers', value: 3, unit: 'providers', description: 'Multi-provider redundancy', trend: 'up', trendValue: '+1', color: '#a78bfa' },
-      { id: 'jobs', label: 'Async Jobs', value: 500, unit: 'daily', description: 'Daily background processing', trend: 'up', trendValue: '+150', color: '#22c55e' },
-      { id: 'time', label: 'Report Gen', value: 45, unit: 'sec', description: 'Average generation time', trend: 'down', trendValue: '-15s', color: '#f472b6' },
+      { id: 'providers', label: 'AI Providers', value: 3, unit: 'providers', description: 'Multi-provider redundancy', trend: 'up', trendValue: '+1', color: '#14b8a6' },
+      { id: 'jobs', label: 'Async Jobs', value: 500, unit: 'daily', description: 'Daily background processing', trend: 'up', trendValue: '+150', color: '#22d3ee' },
+      { id: 'time', label: 'Report Gen', value: 45, unit: 'sec', description: 'Average generation time', trend: 'down', trendValue: '-15s', color: '#14b8a6' },
     ],
     liveUrl: 'https://smartslate.io',
     learnMoreUrl: '/projects/smartslate',
     theme: {
       primary: '#22d3ee',
-      secondary: '#a78bfa',
-      gradient: 'from-cyan-400 via-purple-400 to-pink-400',
+      secondary: '#14b8a6',
+      gradient: 'from-cyan-400 to-teal-400',
+    },
+    client: 'Smartslate',
+    industry: 'EdTech',
+    category: 'AI Automation',
+    challenge: 'Traditional L&D workflows are manual, slow, and fail to scale. Organizations need automated discovery-to-delivery pipelines that maintain quality through human oversight.',
+    solution: 'Designed and built a Human-in-the-Loop AI learning ecosystem that automates the entire L&D lifecycle — from discovery (Polaris) through instructional design (Constellation), content development (Nova), LMS delivery (Orbit), AI tutoring (Nebula), to analytics (Spectrum).',
+    results: [
+      { metric: 'Pipeline', value: 'HITL', context: 'Human-in-the-Loop' },
+      { metric: 'AI Providers', value: '3', context: 'Claude, GPT-4o, Perplexity' },
+      { metric: 'Modules', value: '6', context: 'Full L&D lifecycle' },
+      { metric: 'Validation', value: 'SME', context: 'Expert review gates' },
+    ],
+    duration: '8 months',
+    testimonial: {
+      quote: 'The HITL pipeline transformed how we approach learning design. What used to take weeks now happens in hours with better quality.',
+      author: 'L&D Director',
+      role: 'Head of Learning',
+      company: 'Smartslate',
     },
   },
   {
@@ -268,9 +344,9 @@ export const projectsData: Project[] = [
     technologies: ['Next.js 14', 'TypeScript', 'Supabase', 'PostgreSQL', 'Prisma', 'TanStack Query', 'Zustand', 'React Hook Form', 'Zod', 'DnD Kit', 'FullCalendar', 'Framer Motion'],
     techCategories: [
       { name: 'Frontend', items: ['Next.js 14', 'TypeScript', 'Tailwind', 'Radix UI'], color: '#22d3ee' },
-      { name: 'State', items: ['TanStack Query', 'Zustand', 'React Hook Form', 'Zod'], color: '#a78bfa' },
-      { name: 'Backend', items: ['Supabase', 'PostgreSQL', 'Prisma'], color: '#f472b6' },
-      { name: 'Features', items: ['DnD Kit', 'FullCalendar', 'Framer Motion'], color: '#22c55e' },
+      { name: 'State', items: ['TanStack Query', 'Zustand', 'React Hook Form', 'Zod'], color: '#14b8a6' },
+      { name: 'Backend', items: ['Supabase', 'PostgreSQL', 'Prisma'], color: '#22d3ee' },
+      { name: 'Features', items: ['DnD Kit', 'FullCalendar', 'Framer Motion'], color: '#14b8a6' },
     ],
     keyInnovations: [
       'End-to-end job card lifecycle management',
@@ -298,16 +374,34 @@ export const projectsData: Project[] = [
     ],
     metrics: [
       { id: 'jobs', label: 'Job Cards', value: 500, unit: 'monthly', description: 'Average monthly job cards', trend: 'up', trendValue: '+12%', color: '#22d3ee' },
-      { id: 'inventory', label: 'Inventory', value: 10, unit: 'K+ items', description: 'Parts tracked in system', trend: 'up', trendValue: '+2K', color: '#a78bfa' },
-      { id: 'vehicles', label: 'Vehicles', value: 5, unit: 'K+ tracked', description: 'Active vehicle records', trend: 'up', trendValue: '+800', color: '#22c55e' },
-      { id: 'uptime', label: 'Uptime', value: 99.5, unit: '%', description: 'Platform availability', trend: 'stable', trendValue: '99.5%', color: '#f472b6' },
+      { id: 'inventory', label: 'Inventory', value: 10, unit: 'K+ items', description: 'Parts tracked in system', trend: 'up', trendValue: '+2K', color: '#14b8a6' },
+      { id: 'vehicles', label: 'Vehicles', value: 5, unit: 'K+ tracked', description: 'Active vehicle records', trend: 'up', trendValue: '+800', color: '#22d3ee' },
+      { id: 'uptime', label: 'Uptime', value: 99.5, unit: '%', description: 'Platform availability', trend: 'stable', trendValue: '99.5%', color: '#14b8a6' },
     ],
     liveUrl: 'https://glitchzero.com',
     learnMoreUrl: '/projects/revos',
     theme: {
       primary: '#22d3ee',
-      secondary: '#22c55e',
-      gradient: 'from-cyan-400 to-emerald-400',
+      secondary: '#14b8a6',
+      gradient: 'from-cyan-400 to-teal-400',
+    },
+    client: 'GlitchZero',
+    industry: 'Automotive',
+    category: 'Full-Stack',
+    challenge: 'Automotive workshops run on paper job cards, manual inventory tracking, and disconnected customer records. This creates bottlenecks, lost parts, missed follow-ups, and zero data visibility.',
+    solution: 'Built a comprehensive digital workshop management platform covering the full service lifecycle — from vehicle intake through job card management, parts inventory, customer CRM, employee scheduling, and analytics.',
+    results: [
+      { metric: 'Modules', value: '8+', context: 'Full workshop lifecycle' },
+      { metric: 'Inventory', value: 'Auto', context: 'Parts tracking' },
+      { metric: 'Vehicles', value: 'Registry', context: 'Service histories' },
+      { metric: 'Platform', value: 'Live', context: 'Production deployment' },
+    ],
+    duration: '5 months',
+    testimonial: {
+      quote: 'RevOS eliminated our paper chaos. We now track every job, every part, and every customer interaction digitally.',
+      author: 'Workshop Owner',
+      role: 'Managing Director',
+      company: 'GlitchZero',
     },
   },
   {
@@ -322,9 +416,9 @@ export const projectsData: Project[] = [
     technologies: ['Next.js 14', 'TypeScript', 'Supabase', 'Leaflet', 'Zustand', 'React-Leaflet', 'OpenStreetMap', 'PostgreSQL', 'Realtime', 'Framer Motion'],
     techCategories: [
       { name: 'Frontend', items: ['Next.js 14', 'React', 'TypeScript', 'Tailwind'], color: '#22d3ee' },
-      { name: 'Maps', items: ['Leaflet', 'React-Leaflet', 'OpenStreetMap'], color: '#a78bfa' },
-      { name: 'Backend', items: ['Supabase', 'PostgreSQL', 'Realtime'], color: '#f472b6' },
-      { name: 'State', items: ['Zustand', 'Framer Motion'], color: '#22c55e' },
+      { name: 'Maps', items: ['Leaflet', 'React-Leaflet', 'OpenStreetMap'], color: '#14b8a6' },
+      { name: 'Backend', items: ['Supabase', 'PostgreSQL', 'Realtime'], color: '#22d3ee' },
+      { name: 'State', items: ['Zustand', 'Framer Motion'], color: '#14b8a6' },
     ],
     keyInnovations: [
       'Anonymous workspace participation',
@@ -352,16 +446,28 @@ export const projectsData: Project[] = [
     ],
     metrics: [
       { id: 'networks', label: 'Networks', value: 50, unit: 'active', description: 'Active community networks', trend: 'up', trendValue: '+12', color: '#22d3ee' },
-      { id: 'workspaces', label: 'Workspaces', value: 200, unit: 'created', description: 'Total workspaces', trend: 'up', trendValue: '+45', color: '#a78bfa' },
-      { id: 'privacy', label: 'Privacy', value: 100, unit: '%', description: 'Identity protection', trend: 'stable', trendValue: '100%', color: '#22c55e' },
-      { id: 'uptime', label: 'Uptime', value: 99.9, unit: '%', description: 'Platform availability', trend: 'stable', trendValue: '99.9%', color: '#f472b6' },
+      { id: 'workspaces', label: 'Workspaces', value: 200, unit: 'created', description: 'Total workspaces', trend: 'up', trendValue: '+45', color: '#14b8a6' },
+      { id: 'privacy', label: 'Privacy', value: 100, unit: '%', description: 'Identity protection', trend: 'stable', trendValue: '100%', color: '#22d3ee' },
+      { id: 'uptime', label: 'Uptime', value: 99.9, unit: '%', description: 'Platform availability', trend: 'stable', trendValue: '99.9%', color: '#14b8a6' },
     ],
     githubUrl: 'https://github.com/notjitin-1994/commune',
     learnMoreUrl: '/projects/commune',
     theme: {
       primary: '#22d3ee',
-      secondary: '#a78bfa',
-      gradient: 'from-cyan-400 via-purple-400 to-pink-400',
+      secondary: '#14b8a6',
+      gradient: 'from-cyan-400 to-teal-400',
     },
+    client: 'Independent Project',
+    industry: 'Social Platform',
+    category: 'Full-Stack',
+    challenge: 'Communities need privacy-preserving collaboration tools that protect user identity while enabling geographic discovery and meaningful connection.',
+    solution: 'Created a map-based community platform with anonymous workspaces where users participate via roles rather than personal information, enabling safe community building.',
+    results: [
+      { metric: 'Privacy', value: '100%', context: 'Anonymous participation' },
+      { metric: 'Discovery', value: 'Map', context: 'Location-based' },
+      { metric: 'Workspaces', value: '200+', context: 'Active collaboration' },
+      { metric: 'Networks', value: '50+', context: 'Communities' },
+    ],
+    duration: '4 months',
   },
 ];
