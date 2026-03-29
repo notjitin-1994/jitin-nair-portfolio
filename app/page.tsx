@@ -1425,7 +1425,7 @@ function MobileJourney() {
     {
       year: "2022",
       period: "3 Years",
-      title: "Moody's Analytics",
+      title: "Moody's Ratings",
       role: "Instructional Designer",
       description: "Automated video production pipelines saving 1000+ hours annually. Built scalable learning infrastructure for global financial training programs.",
       highlights: ["Video Automation", "1000+ Hours Saved", "Global Scale"],
@@ -3306,7 +3306,7 @@ function DesktopJourney() {
     },
     {
       year: "2022",
-      title: "Moody's Analytics - Instructional Designer",
+      title: "Moody's Ratings - Instructional Designer",
       role: "Video & Automation Lead",
       period: "Sept 2022 - March 2025",
       description: "Pioneered video-based learning development at a global ratings agency. Built standardized templates, automated workflows, and scalable production pipelines - transforming how financial knowledge is disseminated across global teams.",

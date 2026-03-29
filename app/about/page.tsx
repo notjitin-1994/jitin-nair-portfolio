@@ -17,7 +17,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 const journey = [
   { year: "2025", title: "Independent — AI Systems Architect", role: "Agentic AI & Automation", description: "200+ autonomous agents, multi-agent orchestration, Reality-Check governance", icon: Brain, color: "#22d3ee" },
-  { year: "2022", title: "Moody's Analytics", role: "Instructional Designer", description: "Video production automation, 1000+ hours saved annually, global L&D", icon: Video, color: "#f59e0b" },
+  { year: "2022", title: "Moody's Ratings", role: "Instructional Designer", description: "Video production automation, 1000+ hours saved annually, global L&D", icon: Video, color: "#f59e0b" },
   { year: "2019", title: "Accenture", role: "Instructor Analyst → Analyst", description: "Promoted in 9 months, Fortune 500 training, $140K cost savings", icon: Award, color: "#a78bfa" },
   { year: "2017", title: "247.ai — Electronic Arts", role: "Senior Executive", description: "QA automation, mobile app testing, top performer 3x consecutive", icon: Headphones, color: "#22c55e" },
   { year: "2015", title: "Sindhi College — B.Com", role: "Commerce Graduate", description: "Business foundation, self-taught programming", icon: GraduationCap, color: "#ec4899" },
