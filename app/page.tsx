@@ -2990,7 +2990,6 @@ function MobileBottomNav() {
   ];
 
   const pageLinks = [
-    { label: "Case Studies", href: "/case-studies" },
     { label: "AI Agents", href: "/agents" },
     { label: "Insights", href: "/insights" },
     { label: "About Me", href: "/about" },
@@ -3098,7 +3097,6 @@ function DesktopNav() {
             ))}
             <span className="w-px h-4 bg-white/10" />
             {[
-              { label: "Case Studies", href: "/case-studies" },
               { label: "Agents", href: "/agents" },
               { label: "Insights", href: "/insights" },
               { label: "About", href: "/about" },
@@ -3265,12 +3263,6 @@ function DesktopProjects() {
   return (
     <section id="projects" className="py-10 md:py-12">
       <DesktopProjectCarousel />
-      <div className="max-w-7xl mx-auto px-6 mt-12 flex justify-center">
-        <Link href="/case-studies" className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all text-sm text-slate-400 hover:text-cyan-400">
-          View All Case Studies
-          <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-        </Link>
-      </div>
     </section>
   );
 }
