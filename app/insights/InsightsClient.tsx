@@ -31,7 +31,7 @@ export default function InsightsPage() {
   return (
     <PageLayout>
       {/* Hero Section */}
-      <Section withAurora className="pt-32 pb-16">
+      <Section withAurora className="pt-24 pb-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -49,7 +49,7 @@ export default function InsightsPage() {
       </Section>
 
       {/* Insights Grid */}
-      <Section className="py-16">
+      <Section className="py-10 md:py-12">
         <FilterContainer
           totalCount={blogPosts.length}
           filteredCount={filtered.length}

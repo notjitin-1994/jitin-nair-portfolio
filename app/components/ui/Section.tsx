@@ -62,7 +62,7 @@ export function Section({
     <section
       id={id}
       className={cn(
-        "relative py-24 md:py-32 overflow-hidden",
+        "relative py-10 md:py-12 overflow-hidden",
         withSpotlight && "spotlight-section",
         className
       )}
@@ -142,7 +142,7 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        "mb-12 md:mb-16",
+        "mb-8 md:mb-10",
         alignClasses[align],
         maxWidthClasses[align],
         className
@@ -292,8 +292,8 @@ export function HeroSection({
     <Section
       withAurora
       className={cn(
-        "relative flex flex-col justify-center",
-        minHeight && "min-h-[60vh] md:min-h-[70vh]",
+        "relative flex flex-col justify-center py-20 md:py-24",
+        minHeight && "min-h-[50vh] md:min-h-[60vh]",
         className
       )}
       containerClassName={cn("flex flex-col", alignClasses[align])}

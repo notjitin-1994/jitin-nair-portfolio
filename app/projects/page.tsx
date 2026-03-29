@@ -29,7 +29,7 @@ export default function ProjectsPage() {
   return (
     <PageLayout>
       {/* Hero Section */}
-      <Section withAurora className="pt-32 pb-16">
+      <Section withAurora className="pt-24 pb-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -50,7 +50,7 @@ export default function ProjectsPage() {
       </Section>
 
       {/* Projects Grid */}
-      <Section className="py-16">
+      <Section className="py-10 md:py-12">
         <FilterContainer
           totalCount={projectsData.length}
           filteredCount={filteredProjects.length}
@@ -148,7 +148,7 @@ export default function ProjectsPage() {
       </Section>
 
       {/* CTA Section */}
-      <Section className="py-24 border-t border-white/[0.08]">
+      <Section className="py-10 md:py-12 border-t border-white/[0.08]">
         <div className="max-w-3xl mx-auto text-center">
           <SectionHeader
             title="Ready to build something exceptional?"

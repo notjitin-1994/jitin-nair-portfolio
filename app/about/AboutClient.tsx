@@ -88,7 +88,7 @@ export default function AboutClient() {
   return (
     <PageLayout>
       {/* Hero Section */}
-      <Section withAurora className="pt-32 pb-16">
+      <Section withAurora className="pt-24 pb-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -117,7 +117,7 @@ export default function AboutClient() {
       </Section>
 
       {/* Skills Matrix */}
-      <Section className="py-16 border-t border-white/[0.08]">
+      <Section className="py-10 md:py-12 border-t border-white/[0.08]">
         <SectionHeader
           title="Skills Matrix"
           description={`${skillsData.reduce(
@@ -214,7 +214,7 @@ export default function AboutClient() {
       </Section>
 
       {/* Career Timeline */}
-      <Section className="py-16 border-t border-white/[0.08]">
+      <Section className="py-10 md:py-12 border-t border-white/[0.08]">
         <SectionHeader
           title="Career Timeline"
           description="A decade of evolution from support to AI architecture"
@@ -275,7 +275,7 @@ export default function AboutClient() {
       </Section>
 
       {/* Resources */}
-      <Section className="py-16 border-t border-white/[0.08]">
+      <Section className="py-10 md:py-12 border-t border-white/[0.08]">
         <SectionHeader
           title="Resources"
           description="Templates, blueprints, and guides from my work in AI enablement."
@@ -321,7 +321,7 @@ export default function AboutClient() {
       </Section>
 
       {/* Languages */}
-      <Section className="py-16 border-t border-white/[0.08]">
+      <Section className="py-10 md:py-12 border-t border-white/[0.08]">
         <SectionHeader
           title="Languages"
           description="Multilingual communication for global collaboration"

@@ -572,7 +572,7 @@ function MobileBento() {
   // Skeleton loader for initial render
   if (!mounted) {
     return (
-      <section className="py-20 overflow-hidden">
+      <section className="py-10 md:py-12 overflow-hidden">
         <div className="mb-10 px-5">
           <SkeletonLoader className="h-4 w-32 mb-3" />
           <SkeletonLoader className="h-8 w-64 mb-3" />
@@ -588,7 +588,7 @@ function MobileBento() {
   }
 
   return (
-    <section className="py-20 overflow-hidden relative">
+    <section className="py-10 md:py-12 overflow-hidden relative">
       {/* Section Header - CSS Animated, SSR Safe */}
       <div className="mb-10 px-5" suppressHydrationWarning>
         <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>
@@ -657,7 +657,7 @@ function DesktopBento() {
   ];
 
   return (
-    <section id="expertise" className="py-32">
+    <section id="expertise" className="py-10 md:py-12">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <motion.div
@@ -1193,7 +1193,7 @@ function MobileCapabilities() {
   const goToNext = () => setActiveIndex((prev) => Math.min(prev + 1, categories.length - 1));
 
   return (
-    <section className="py-16 overflow-hidden relative">
+    <section className="py-10 md:py-12 overflow-hidden relative">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#0d0d12] to-[#0a0a0f]"></div>
@@ -1358,7 +1358,7 @@ function MobileProjects() {
   }, []);
 
   return (
-    <section id="projects" className="py-16 md:py-24 relative">
+    <section id="projects" className="py-10 md:py-12 relative">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute w-[600px] h-[600px] rounded-full opacity-[0.06]"
@@ -1480,7 +1480,7 @@ function MobileJourney() {
   };
 
   return (
-    <section className="py-16 px-5 overflow-hidden relative">
+    <section className="py-10 md:py-12 px-5 overflow-hidden relative">
       {/* Header */}
       {/* Header - CSS Animated, SSR Safe */}
       <div className="mb-8" suppressHydrationWarning>
@@ -1702,7 +1702,7 @@ function MobileTechStack() {
   }
 
   return (
-    <section id="techstack" className="py-12 overflow-hidden relative">
+    <section id="techstack" className="py-10 md:py-12 overflow-hidden relative">
       <div className="px-5 mb-6" suppressHydrationWarning>
         <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>
           Technical Arsenal
@@ -2251,7 +2251,7 @@ function DesktopTechStack() {
   );
 
   return (
-    <section id="techstack" className="py-32">
+    <section id="techstack" className="py-10 md:py-12">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="mb-12">
@@ -2462,7 +2462,7 @@ function DesktopTechStack() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-20"
+            className="text-center py-10 md:py-12"
           >
             <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4">
               <Search className="w-6 h-6 text-slate-500" />
@@ -2545,7 +2545,7 @@ function DesktopContact() {
   ];
 
   return (
-    <section id="contact" className="py-14 px-6">
+    <section id="contact" className="py-10 md:py-12 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left - Header */}
@@ -2778,7 +2778,7 @@ function MobileContact() {
   ];
 
   return (
-    <section id="contact" className="py-16 px-5 pb-32 relative">
+    <section id="contact" className="py-10 md:py-12 px-5 pb-20 relative">
       <div>
         <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-4 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>
           Get In Touch
@@ -3212,7 +3212,7 @@ function DesktopHero() {
 
 function DesktopCapabilities() {
   return (
-    <section className="py-32 relative">
+    <section className="py-10 md:py-12 relative">
       {/* Background Image with Blur */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -3263,7 +3263,7 @@ function DesktopCapabilities() {
 }
 function DesktopProjects() {
   return (
-    <section id="projects" className="py-20 lg:py-32">
+    <section id="projects" className="py-10 md:py-12">
       <DesktopProjectCarousel />
       <div className="max-w-7xl mx-auto px-6 mt-12 flex justify-center">
         <Link href="/case-studies" className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all text-sm text-slate-400 hover:text-cyan-400">
@@ -3362,7 +3362,7 @@ function DesktopJourney() {
   );
 
   return (
-    <section ref={containerRef} className="py-20 px-6 relative">
+    <section ref={containerRef} className="py-10 md:py-12 px-6 relative">
       {/* Animated Background Gradient */}
       <motion.div
         className="absolute inset-0 opacity-30"

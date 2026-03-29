@@ -222,7 +222,7 @@ export default function AgentsPage() {
   return (
     <PageLayout>
       {/* Hero Section */}
-      <Section withAurora className="pt-32 pb-16">
+      <Section withAurora className="pt-24 pb-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -242,7 +242,7 @@ export default function AgentsPage() {
       </Section>
 
       {/* Metrics */}
-      <Section className="py-8">
+      <Section className="py-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {metrics.map((m, i) => (
             <motion.div
@@ -274,7 +274,7 @@ export default function AgentsPage() {
       </Section>
 
       {/* Architecture Diagram */}
-      <Section className="py-8">
+      <Section className="py-6">
         <Card variant="ghost" className="p-8">
           <h3 className="text-xl font-bold mb-6 text-center text-white">
             Multi-Agent Orchestration Architecture
@@ -413,7 +413,7 @@ export default function AgentsPage() {
       </Section>
 
       {/* Agent Grid with Filter */}
-      <Section className="py-16">
+      <Section className="py-10 md:py-12">
         <FilterContainer
           totalCount={agents.length}
           filteredCount={filtered.length}
