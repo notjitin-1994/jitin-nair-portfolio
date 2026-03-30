@@ -158,41 +158,58 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
                 >
                   <div className="px-3 pb-3 border-t border-white/[0.05]">
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-3">
-                      <div>
-                        <div className="flex items-center gap-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">
-                          <Cpu className="w-2.5 h-2.5" /> CPU
+                      {agent.cpu !== undefined && (
+                        <div>
+                          <div className="flex items-center gap-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">
+                            <Cpu className="w-2.5 h-2.5" /> CPU
+                          </div>
+                          <MicroBar value={agent.cpu} color={cfg.accentBg} />
+                          <div className="text-[10px] font-mono text-slate-400 mt-0.5">{agent.cpu !== undefined && agent.cpu !== null ? `${Number(agent.cpu).toFixed(1)}%` : '--'}</div>
                         </div>
-                        <MicroBar value={agent.cpu} color={cfg.accentBg} />
-                        <div className="text-[10px] font-mono text-slate-400 mt-0.5">{agent.cpu !== undefined && agent.cpu !== null ? `${Number(agent.cpu).toFixed(1)}%` : '--'}</div>
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">
-                          <MemoryStick className="w-2.5 h-2.5" /> MEM
+                      )}
+                      {agent.memory !== undefined && (
+                        <div>
+                          <div className="flex items-center gap-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">
+                            <MemoryStick className="w-2.5 h-2.5" /> MEM
+                          </div>
+                          <MicroBar value={agent.memory} max={512} color={cfg.accentBg} />
+                          <div className="text-[10px] font-mono text-slate-400 mt-0.5">{agent.memory !== undefined && agent.memory !== null ? `${(Number(agent.memory) / 1024).toFixed(1)} MB` : '--'}</div>
                         </div>
-                        <MicroBar value={agent.memory} max={512} color={cfg.accentBg} />
-                        <div className="text-[10px] font-mono text-slate-400 mt-0.5">{agent.memory !== undefined && agent.memory !== null ? `${(Number(agent.memory) / 1024).toFixed(1)} MB` : '--'}</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">
-                          <Clock className="w-2.5 h-2.5 inline mr-1" />Uptime
+                      )}
+                      {agent.uptime !== undefined && (
+                        <div>
+                          <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">
+                            <Clock className="w-2.5 h-2.5 inline mr-1" />Uptime
+                          </div>
+                          <div className="text-xs font-mono text-slate-300">{agent.uptime || '--'}</div>
                         </div>
-                        <div className="text-xs font-mono text-slate-300">{agent.uptime || '--'}</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">
-                          <Terminal className="w-2.5 h-2.5 inline mr-1" />PID
+                      )}
+                      {agent.pid !== undefined && (
+                        <div>
+                          <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">
+                            <Terminal className="w-2.5 h-2.5 inline mr-1" />PID
+                          </div>
+                          <div className="text-xs font-mono text-slate-300">{agent.pid || 'N/A'}</div>
                         </div>
-                        <div className="text-xs font-mono text-slate-300">{agent.pid || 'N/A'}</div>
-                      </div>
+                      )}
                     </div>
 
-                    {/* Agent output */}
-                    <div className="mt-2 p-2 rounded bg-void/50 border border-white/[0.04] text-[10px] font-mono text-slate-400">
-                      {agent.name === 'Data Ingestion' && <span>Bars ingested: {agent.barsToday || 0}. Target: XAUUSD M5</span>}
-                      {agent.name === 'Regime Detection' && <span>Regime: <b className="text-slate-200">{agent.lastRegime || 'N/A'}</b> • Conf: {agent.confidence ? `${(Number(agent.confidence) * 100).toFixed(1)}%` : '--'}</span>}
-                      {agent.name === 'Strategy Selector' && <span>{agent.isActive ? `Active: ${agent.strategy?.replace?.(/_/g, ' ') || 'UNKNOWN'}` : 'Pending confidence threshold'}</span>}
-                      {agent.name === 'Sentinel Oracle' && <span>Signal: <b className="text-slate-200">{agent.lastSignal || 'NONE'}</b></span>}
-                    </div>
+                    {/* Agent output - only show if we have data */}
+                    {(agent.barsToday !== undefined || agent.lastRegime !== undefined || agent.strategy !== undefined || agent.lastSignal !== undefined) && (
+                      <div className="mt-2 p-2 rounded bg-void/50 border border-white/[0.04] text-[10px] font-mono text-slate-400">
+                        {agent.name === 'Data Ingestion' && agent.barsToday !== undefined && <span>Bars ingested: {agent.barsToday || 0}. Target: XAUUSD M5</span>}
+                        {agent.name === 'Regime Detection' && agent.lastRegime && <span>Regime: <b className="text-slate-200">{agent.lastRegime || 'N/A'}</b> • Conf: {agent.confidence ? `${(Number(agent.confidence) * 100).toFixed(1)}%` : '--'}</span>}
+                        {agent.name === 'Strategy Selector' && <span>{agent.isActive ? `Active: ${agent.strategy?.replace?.(/_/g, ' ') || 'UNKNOWN'}` : 'Pending confidence threshold'}</span>}
+                        {agent.name === 'Sentinel Oracle' && agent.lastSignal && <span>Signal: <b className="text-slate-200">{agent.lastSignal || 'NONE'}</b></span>}
+                      </div>
+                    )}
+
+                    {/* Show telemetry unavailable message when no detailed data */}
+                    {agent.cpu === undefined && agent.memory === undefined && agent.pid === undefined && (
+                      <div className="mt-2 p-2 rounded bg-void/50 border border-white/[0.04] text-[10px] font-mono text-slate-500 italic">
+                        Telemetry unavailable - agent reporting basic status only
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}
