@@ -48,6 +48,13 @@ const agentConfig: Record<string, { icon: any; accent: string; accentBg: string 
 };
 
 function MicroBar({ value, max = 100, color }: { value: number | undefined; max?: number; color: string }) {
+  const pct = value !== undefined && value !== null ? Math.min((value / max) * 100, 100) : 0;
+  return (
+    <div className="flex-1 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+      <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
+    </div>
+  );
+}
 
 export default function AgentStatusPanel({ agents, isLoading, error }: AgentStatusPanelProps) {
   const [expandedAgent, setExpandedAgent] = useState<string | null>(null);

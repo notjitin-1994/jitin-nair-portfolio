@@ -295,7 +295,7 @@ export default function DashboardPage() {
                     <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
                       <div className="text-[9px] text-slate-500 uppercase tracking-wider">Confidence</div>
                       <div className="text-[11px] text-cyan-400/80 font-mono mt-1">
-                        {(Number(statusData.strategy.current.confidence_score) * 100 || 0).toFixed(0)}%
+                        {(Number(statusData.strategy.current.confidence_score ?? 0) * 100).toFixed(0)}%
                       </div>
                     </div>
                     <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
