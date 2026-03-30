@@ -57,7 +57,7 @@ function RiskBadge({ status }: { status: string }) {
 
 export default function ExecutionPanel() {
   const { data, isLoading, error } = useSWR<ExecutionStatus>('/api/execution/status', fetcher, {
-    refreshInterval: 5000,
+    refreshInterval: 1000, // 1 second
     errorRetryCount: 3,
   });
 

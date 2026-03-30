@@ -111,7 +111,7 @@ function PositionCard({ position, index }: { position: Position; index: number }
 
 export default function OpenPositions() {
   const { data, isLoading, error } = useSWR<Position[]>('/api/execution/positions', fetcher, {
-    refreshInterval: 5000,
+    refreshInterval: 1000, // 1 second
     errorRetryCount: 3,
   });
 

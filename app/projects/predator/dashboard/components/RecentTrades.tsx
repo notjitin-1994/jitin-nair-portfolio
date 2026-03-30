@@ -91,7 +91,7 @@ function TradeRow({ trade, index }: { trade: Trade; index: number }) {
 
 export default function RecentTrades() {
   const { data, isLoading, error } = useSWR<Trade[]>('/api/execution/trades', fetcher, {
-    refreshInterval: 10000,
+    refreshInterval: 1000, // 1 second
     errorRetryCount: 3,
   });
 

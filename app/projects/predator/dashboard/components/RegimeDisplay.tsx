@@ -179,16 +179,28 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
               <div className="text-sm font-mono text-slate-300 mt-0.5">{Number(regime.features.volatility).toFixed(2)}</div>
             </div>
           )}
-          {regime.features.trend !== undefined && regime.features.trend !== null && (
+          {(regime.features as any).trendStrength !== undefined && (regime.features as any).trendStrength !== null && (
+            <div className="bg-void/30 rounded-lg p-2 text-center border border-white/[0.03]">
+              <div className="text-[9px] text-slate-500 uppercase tracking-wider">Trend Str</div>
+              <div className="text-sm font-mono text-slate-300 mt-0.5">{Number((regime.features as any).trendStrength).toFixed(2)}</div>
+            </div>
+          )}
+          {(regime.features as any).trend !== undefined && (regime.features as any).trend !== null && (
             <div className="bg-void/30 rounded-lg p-2 text-center border border-white/[0.03]">
               <div className="text-[9px] text-slate-500 uppercase tracking-wider">Trend</div>
-              <div className="text-sm font-mono text-slate-300 mt-0.5">{Number(regime.features.trend).toFixed(2)}</div>
+              <div className="text-sm font-mono text-slate-300 mt-0.5">{Number((regime.features as any).trend).toFixed(2)}</div>
+            </div>
+          )}
+          {(regime.features as any).barsProcessed !== undefined && (regime.features as any).barsProcessed !== null && (
+            <div className="bg-void/30 rounded-lg p-2 text-center border border-white/[0.03]">
+              <div className="text-[9px] text-slate-500 uppercase tracking-wider">Bars</div>
+              <div className="text-sm font-mono text-slate-300 mt-0.5">{Number((regime.features as any).barsProcessed).toLocaleString()}</div>
             </div>
           )}
           {regime.features.volume !== undefined && regime.features.volume !== null && (
             <div className="bg-void/30 rounded-lg p-2 text-center border border-white/[0.03]">
-              <div className="text-[9px] text-slate-500 uppercase tracking-wider">Volm</div>
-              <div className="text-sm font-mono text-slate-300 mt-0.5">{Number(regime.features.volume).toFixed(0)}</div>
+              <div className="text-[9px] text-slate-500 uppercase tracking-wider">Volume</div>
+              <div className="text-sm font-mono text-slate-300 mt-0.5">{Number(regime.features.volume).toLocaleString()}</div>
             </div>
           )}
         </div>

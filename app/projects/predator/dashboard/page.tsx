@@ -3,31 +3,48 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowLeft, RefreshCw, AlertTriangle } from 'lucide-react';
-import TradingViewChart from './components/TradingViewChart';
-import AgentStatusPanel from './components/AgentStatusPanel';
+import { ArrowLeft } from 'lucide-react';
+import { DashboardProvider } from './context/DashboardContext';
+import PriceTicker from './components/PriceTicker';
+import AgentCluster from './components/AgentCluster';
+import RegimeGauge from './components/RegimeGauge';
+import SignalCard from './components/SignalCard';
+import PositionFlow from './components/PositionFlow';
+import TradeHistory from './components/TradeHistory';
+import RiskMonitor from './components/RiskMonitor';
 import ConnectionStatus from './components/ConnectionStatus';
-import CurrentPriceDisplay from './components/CurrentPriceDisplay';
-import RegimeDisplay from './components/RegimeDisplay';
-import SignalDisplay from './components/SignalDisplay';
-import ExecutionPanel from './components/ExecutionPanel';
-import OpenPositions from './components/OpenPositions';
-import RecentTrades from './components/RecentTrades';
-import { 
-  useApiHealth, 
-  useCurrentPrice, 
-  useAgentStatus, 
-  useCurrentRegime,
-  useSentinelSignal,
-  usePriceHistory
-} from './hooks/useApi';
-import { AgentStatus } from './types/dashboard';
+import TradingViewChart from './components/TradingViewChart';
 import { Footer } from '../../../components/Footer';
 
-// --- Error Boundary ---
+// Animation wrapper that only animates once per session
+function AnimatedCard({
+  children,
+  delay = 0,
+  className = ''
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
-class DashboardErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean, error: Error | null}> {
-  constructor(props: {children: ReactNode}) {
+// ============================================================================
+// Error Boundary
+// ============================================================================
+
+class DashboardErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
+  constructor(props: { children: ReactNode }) {
     super(props);
     this.state = { hasError: false, error: null };
   }
@@ -37,38 +54,43 @@ class DashboardErrorBoundary extends Component<{children: ReactNode}, {hasError:
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Dashboard component crash:", error, errorInfo);
+    console.error('Dashboard error:', error);
+    console.error('Error info:', errorInfo);
+    console.error('Error stack:', error.stack);
   }
 
   render() {
     if (this.state.hasError) {
+      const errorMessage = this.state.error?.message || 'Unknown error';
       return (
-        <div className="min-h-[400px] flex flex-col items-center justify-center p-10 text-center bg-midnight border border-white/[0.06] rounded-xl my-10">
-          <AlertTriangle className="w-12 h-12 text-amber-400 mb-4" />
-          <h2 className="text-xl font-bold mb-2">Dashboard Error</h2>
-          <p className="text-slate-400 text-sm mb-6 max-w-md">
-            A client-side exception occurred while rendering the dashboard. 
-            This is usually caused by malformed API data.
-          </p>
-          <div className="flex gap-3">
-            <button 
-              onClick={() => this.setState({ hasError: false, error: null })}
-              className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-sm font-medium"
-            >
-              Try Again
-            </button>
-            <button 
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 rounded-lg transition-colors text-sm font-medium"
-            >
-              Reload Page
-            </button>
+        <div className="min-h-screen bg-void flex items-center justify-center p-6">
+          <div className="max-w-md w-full bg-midnight border border-white/[0.06] rounded-xl p-8 text-center">
+            <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl">⚠️</span>
+            </div>
+            <h2 className="text-lg font-semibold text-white mb-2">Dashboard Error</h2>
+            <p className="text-sm text-slate-500 mb-4">
+              Something went wrong loading the dashboard.
+            </p>
+            <div className="bg-void/50 rounded-lg p-3 mb-6 text-left">
+              <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Error Details</p>
+              <p className="text-xs text-red-400 font-mono break-all">{errorMessage}</p>
+            </div>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => this.setState({ hasError: false, error: null })}
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-sm text-white"
+              >
+                Try Again
+              </button>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 rounded-lg transition-colors text-sm"
+              >
+                Reload Page
+              </button>
+            </div>
           </div>
-          {this.state.error && (
-            <pre className="mt-8 p-4 bg-black/40 rounded border border-white/5 text-[10px] text-red-400/60 font-mono text-left max-w-full overflow-auto">
-              {this.state.error.toString()}
-            </pre>
-          )}
         </div>
       );
     }
@@ -76,265 +98,133 @@ class DashboardErrorBoundary extends Component<{children: ReactNode}, {hasError:
   }
 }
 
-// --- Components ---
-
-function PipelineBar({ agents }: { agents: AgentStatus[] }) {
-  if (!agents || !Array.isArray(agents)) return null;
-
-  const pipelineAgents = [
-    { id: 'ingestion', name: 'Ingest', match: (a: AgentStatus) => a.name === 'Data Ingestion', color: '#22d3ee' },
-    { id: 'regime', name: 'Regime', match: (a: AgentStatus) => a.name === 'Regime Detection', color: '#818cf8' },
-    { id: 'strategy', name: 'Strategy', match: (a: AgentStatus) => a.name === 'Strategy Selector', color: '#fbbf24' },
-    { id: 'sentinel', name: 'Sentinel', match: (a: AgentStatus) => a.name === 'Sentinel Oracle', color: '#34d399' },
-    { id: 'execution', name: 'Execute', match: (a: AgentStatus) => a.name === 'Execution Engine', color: '#f472b6' },
-  ];
-
-  return (
-    <div className="flex items-center gap-0">
-      {pipelineAgents.map((step, i) => {
-        const agent = agents.find(step.match);
-        const isActive = agent?.status === 'running' || agent?.status === 'active';
-        const isFailed = agent?.status === 'failed';
-
-        return (
-          <div key={step.id} className="flex items-center">
-            <div className="flex flex-col items-center">
-              <div
-                className="w-2.5 h-2.5 rounded-full transition-all duration-500"
-                style={{
-                  backgroundColor: isFailed ? '#f87171' : isActive ? step.color : '#334155',
-                  boxShadow: isActive ? `0 0 8px ${step.color}40` : 'none',
-                }}
-              />
-              <span className="text-[9px] text-slate-500 mt-1 hidden sm:block">{step.name}</span>
-            </div>
-            {i < pipelineAgents.length - 1 && (
-              <div className="w-8 sm:w-12 h-px mx-0.5" style={{
-                backgroundColor: isActive ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.04)',
-              }} />
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
+// ============================================================================
+// Main Dashboard Page - Institutional Layout
+// ============================================================================
+// Layout Philosophy:
+// - Hero chart as focal point (center-right, largest real estate)
+// - Critical metrics sidebar (left, stacked vertically)
+// - Portfolio & execution panel (right column)
+// - System status footer (bottom, full-width)
+// - Minimal gaps (8-12px), dense information hierarchy
+// ============================================================================
 
 export default function DashboardPage() {
-  const { data: health, isLoading: healthLoading } = useApiHealth();
-  const { data: price, isLoading: priceLoading } = useCurrentPrice();
-  const { data: agents, isLoading: agentsLoading, error: agentsError } = useAgentStatus();
-  const { data: regime, isLoading: regimeLoading } = useCurrentRegime();
-  const { data: statusData, isLoading: sentinelLoading } = useSentinelSignal();
-  const { data: history } = usePriceHistory(288); // 24h of 5m bars
-
-  // Calculate 24h high/low from real history
-  let high24h, low24h;
-  if (history && history.length > 0) {
-    high24h = Math.max(...history.map(b => Number(b.high)));
-    low24h = Math.min(...history.map(b => Number(b.low)));
-  }
-
-  const sentinel = statusData?.sentinel;
-  const lastUpdate = price?.timestamp || health?.timestamp;
-  const activeAgents = Array.isArray(agents) ? agents.filter(a => a.status === 'active' || a.status === 'running').length : 0;
-
   return (
-    <div className="min-h-screen bg-void text-white">
+    <DashboardProvider>
       <DashboardErrorBoundary>
-        {/* Header - Inline (non-sticky) */}
-        <motion.header
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="border-b border-white/[0.06] bg-void"
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-14">
-              <div className="flex items-center gap-4">
-                <Link
-                  href="/projects/predator"
-                  className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span className="text-sm hidden sm:inline">Back</span>
-                </Link>
-                <div className="h-4 w-px bg-white/10" />
-                <h1 className="text-sm font-semibold tracking-tight text-white">
-                  Predator<span className="text-cyan-400 ml-1">Dashboard</span>
-                </h1>
-              </div>
+        <div className="min-h-screen bg-void text-white">
+          {/* Compact Header */}
+          <motion.header
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="border-b border-white/[0.06] bg-midnight/80 backdrop-blur-xl sticky top-0 z-50"
+          >
+            <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6">
+              <div className="flex items-center justify-between h-12">
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/projects/predator"
+                    className="flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span className="text-xs hidden sm:inline">Back</span>
+                  </Link>
+                  <div className="h-3 w-px bg-white/10" />
+                  <h1 className="text-sm font-semibold tracking-tight text-white">
+                    Predator<span className="text-cyan-400">Pro</span>
+                  </h1>
+                  <span className="text-[10px] text-slate-600 hidden sm:inline">v2.4.1</span>
+                </div>
 
-              <div className="flex items-center gap-5">
-                <PipelineBar agents={agents || []} />
-                <div className="h-4 w-px bg-white/10" />
-                <ConnectionStatus health={health || null} isLoading={healthLoading} />
-                {lastUpdate && (
-                  <div className="hidden md:flex items-center gap-1.5 text-[10px] text-slate-600 font-mono">
-                    <RefreshCw className="w-3 h-3" />
-                    <span>
-                      {(() => {
-                        try {
-                          return new Date(lastUpdate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                        } catch (e) {
-                          return '--:--:--';
-                        }
-                      })()}
-                    </span>
-                  </div>
-                )}
+                <ConnectionStatus />
               </div>
             </div>
-          </div>
-        </motion.header>
+          </motion.header>
 
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            
-            {/* Row 1: Signal | Regime | CurrentPrice (existing chart card) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 }}
-              className="lg:col-span-2 space-y-5"
-            >
-              {/* Price + Chart Card */}
-              <div className="bg-midnight border border-white/[0.06] rounded-xl p-5">
-                <div className="flex items-center justify-between mb-5">
-                  <CurrentPriceDisplay 
-                    price={price || null} 
-                    isLoading={priceLoading}
-                    high24h={high24h}
-                    low24h={low24h}
-                  />
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Live</span>
-                  </div>
-                </div>
-                <div className="bg-void/50 rounded-lg border border-white/[0.04] overflow-hidden">
-                  <TradingViewChart height={480} />
-                </div>
+          {/* Main Dashboard Grid */}
+          <main className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6 py-4">
+            {/* ========================================================================
+               PRIMARY GRID: 12-column asymmetric layout
+               - Left sidebar (3 cols): Price + Signal + Regime stacked
+               - Center (6 cols): Main chart
+               - Right sidebar (3 cols): Risk + Positions stacked
+               ======================================================================== */}
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 mb-3">
+              {/* LEFT SIDEBAR: Critical Trading Metrics */}
+              <div className="xl:col-span-3 flex flex-col gap-3">
+                <AnimatedCard delay={0.05}>
+                  <PriceTicker />
+                </AnimatedCard>
+
+                <AnimatedCard delay={0.1}>
+                  <SignalCard />
+                </AnimatedCard>
+
+                <AnimatedCard delay={0.15}>
+                  <RegimeGauge />
+                </AnimatedCard>
+
+                {/* Compact System Status Mini-Card (Desktop) */}
+                <AnimatedCard delay={0.2} className="hidden xl:block flex-1 min-h-0">
+                  <AgentCluster />
+                </AnimatedCard>
               </div>
 
-              {/* Regime Card */}
-              <div className="bg-midnight border border-white/[0.06] rounded-xl p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    Market Regime
-                  </h3>
-                  {regime && regime.confidence !== undefined && (
-                    <div className={`text-[10px] font-mono px-2 py-0.5 rounded ${
-                      regime.confidence > 0.7 ? 'bg-emerald-400/10 text-emerald-400' :
-                      regime.confidence > 0.4 ? 'bg-amber-400/10 text-amber-400' :
-                      'bg-red-400/10 text-red-400'
-                    }`}>
-                      {Math.round(Number(regime.confidence) * 100)}% conf
-                    </div>
-                  )}
-                </div>
-                <RegimeDisplay regime={regime || null} isLoading={regimeLoading} />
-              </div>
-
-              {/* Row 2: Execution Panel | Open Positions */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <ExecutionPanel />
-                <OpenPositions />
-              </div>
-
-              {/* Row 3: Recent Trades | Agent Status */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <RecentTrades />
-                <div className="bg-midnight border border-white/[0.06] rounded-xl p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                      Agent Cluster
-                    </h3>
-                    <span className="text-[10px] font-mono text-slate-500">
-                      {activeAgents}/{Array.isArray(agents) ? agents.length : 0} online
-                    </span>
-                  </div>
-                  <AgentStatusPanel agents={agents || []} isLoading={agentsLoading} error={agentsError} />
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Right Column — Signal + System */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="space-y-5"
-            >
-              {/* Sentinel Oracle */}
-              <SignalDisplay data={sentinel || null} isLoading={sentinelLoading} />
-
-              {/* Strategy Info */}
-              {statusData?.strategy?.current && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15 }}
-                  className="bg-midnight border border-white/[0.06] rounded-xl p-5"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                      Active Strategy
-                    </h3>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-400/10 text-amber-400">
-                      {statusData.strategy.current.regime || 'UNKNOWN'}
-                    </span>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
-                      <div className="text-[9px] text-slate-500 uppercase tracking-wider">Strategy</div>
-                      <div className="text-[11px] text-white font-mono mt-1">
-                        {statusData.strategy.current.strategy_id?.replace?.(/_/g, ' ') || 'NONE'}
+              {/* CENTER: Hero Chart */}
+              <div className="xl:col-span-6 flex flex-col">
+                <AnimatedCard delay={0.1} className="h-full">
+                  <div className="bg-midnight border border-white/[0.06] rounded-xl overflow-hidden h-full flex flex-col">
+                    {/* Chart Header */}
+                    <div className="px-4 py-3 border-b border-white/[0.06] flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                          XAU/USD
+                        </h3>
+                        <span className="text-[10px] text-slate-600">5M</span>
+                        <span className="text-[10px] text-slate-600">OANDA</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-slate-500">Live</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       </div>
                     </div>
-                    <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
-                      <div className="text-[9px] text-slate-500 uppercase tracking-wider">Confidence</div>
-                      <div className="text-[11px] text-cyan-400/80 font-mono mt-1">
-                        {(Number(statusData.strategy.current.confidence_score ?? 0) * 100).toFixed(0)}%
-                      </div>
+                    {/* Chart Container */}
+                    <div className="flex-1 bg-void/30 p-1">
+                      <TradingViewChart height={520} />
                     </div>
-                    <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
-                      <div className="text-[9px] text-slate-500 uppercase tracking-wider">Profit Target</div>
-                      <div className="text-[11px] text-emerald-400/80 font-mono mt-1">
-                        {statusData.strategy.current.parameters?.profit_target || 'N/A'}
-                      </div>
-                    </div>
-                    {statusData.strategy.current.selection_reason && (
-                      <div className="text-[10px] text-slate-500 italic leading-relaxed">
-                        {statusData.strategy.current.selection_reason}
-                      </div>
-                    )}
                   </div>
-                </motion.div>
-              )}
-
-              {/* System Telemetry */}
-              <div className="bg-midnight border border-white/[0.06] rounded-xl p-5">
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
-                  System Telemetry
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
-                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">API Endpoint</div>
-                    <div className="text-[11px] text-cyan-400/80 font-mono mt-1">api.glitchzerolabs.com</div>
-                  </div>
-                  <div className="bg-void/30 rounded-lg p-3 border border-white/[0.03]">
-                    <div className="text-[9px] text-slate-500 uppercase tracking-wider">Refresh Rate</div>
-                    <div className="text-[11px] text-slate-300 font-mono mt-1">1s price / 10s agents</div>
-                  </div>
-                </div>
+                </AnimatedCard>
               </div>
-            </motion.div>
-          </div>
-        </main>
 
-        <Footer />
+              {/* RIGHT SIDEBAR: Portfolio & Risk */}
+              <div className="xl:col-span-3 flex flex-col gap-3">
+                <AnimatedCard delay={0.15}>
+                  <RiskMonitor />
+                </AnimatedCard>
+
+                <AnimatedCard delay={0.2}>
+                  <PositionFlow />
+                </AnimatedCard>
+
+                <AnimatedCard delay={0.25}>
+                  <TradeHistory />
+                </AnimatedCard>
+              </div>
+            </div>
+
+            {/* MOBILE/TABLET: Agent Cluster (shown only below xl) */}
+            <div className="xl:hidden mb-3">
+              <AnimatedCard delay={0.3}>
+                <AgentCluster />
+              </AnimatedCard>
+            </div>
+          </main>
+
+          <Footer />
+        </div>
       </DashboardErrorBoundary>
-    </div>
+    </DashboardProvider>
   );
 }
