@@ -125,10 +125,11 @@ const AgentCluster = memo(function AgentCluster() {
 
   const agentConfig = [
     { key: 0, icon: Database, color: '#22d3ee', name: 'Data Ingestion' },
-    { key: 1, icon: Brain, color: '#818cf8', name: 'Regime Detection' },
-    { key: 2, icon: GitBranch, color: '#fbbf24', name: 'Strategy Selector' },
-    { key: 3, icon: Eye, color: '#34d399', name: 'Sentinel Oracle' },
-    { key: 4, icon: Play, color: '#f472b6', name: 'Execution Engine' },
+    { key: 1, icon: Zap, color: '#10b981', name: 'cTrader Ingestion' },
+    { key: 2, icon: Brain, color: '#818cf8', name: 'Regime Detection' },
+    { key: 3, icon: GitBranch, color: '#fbbf24', name: 'Strategy Selector' },
+    { key: 4, icon: Eye, color: '#34d399', name: 'Sentinel Oracle' },
+    { key: 5, icon: Play, color: '#f472b6', name: 'Execution Engine' },
   ];
 
   const runningCount = agents.filter(a => a.status === 'running').length;
