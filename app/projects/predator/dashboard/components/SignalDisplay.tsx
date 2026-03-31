@@ -141,7 +141,8 @@ export default function SignalDisplay({ data, isLoading }: SignalDisplayProps) {
             )}
           </div>
           <div className="text-xs text-slate-500 mt-0.5">
-            {data.regime?.replace(/_/g, ' ') || 'UNKNOWN'}
+            {data.regime?.replace?.(/_/g, ' ') || 'UNKNOWN'}
+
           </div>
         </div>
       </div>

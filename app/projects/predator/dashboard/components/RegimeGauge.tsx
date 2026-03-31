@@ -31,7 +31,7 @@ const TimeframeBar = memo(function TimeframeBar({
     <div className="space-y-0.5">
       <div className="flex items-center justify-between text-[9px]">
         <span className="text-slate-500 font-mono">{label}</span>
-        <span className="text-slate-400 truncate max-w-[80px]">{regime?.replace(/_/g, ' ') || 'UNKNOWN'}</span>
+        <span className="text-slate-400 truncate max-w-[80px]">{regime?.replace?.(/_/g, ' ') || 'UNKNOWN'}</span>
       </div>
       <div className="h-1 bg-white/[0.04] rounded-full overflow-hidden">
         <div
@@ -111,7 +111,7 @@ const RegimeGauge = memo(function RegimeGauge() {
               </h3>
               {regime && (
                 <p className={`text-[9px] ${getRegimeColor()}`}>
-                  {regime.regime.replace(/_/g, ' ')}
+                  {regime?.regime?.replace?.(/_/g, ' ') || 'UNKNOWN'}
                 </p>
               )}
             </div>

@@ -45,8 +45,8 @@ export const useDashboard = () => {
 // ============================================================================
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-// WebSocket URL: replace http/https with ws/wss
-const WS_URL = API_URL.replace(/^http/, 'ws') + '/api/v1/pulse';
+// WebSocket URL: replace http/https with ws/wss with safety check
+const WS_URL = (API_URL || '').replace(/^http/, 'ws') + '/api/v1/pulse';
 
 export function DashboardProvider({ children }: { children: React.ReactNode }) {
   // Data state
