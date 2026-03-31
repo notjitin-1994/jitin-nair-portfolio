@@ -95,6 +95,10 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "Jitin Nair",
   },
+  applicationName: "Jitin Nair",
+  formatDetection: {
+    telephone: false,
+  },
   other: {
     "google-site-verification": "",
   },

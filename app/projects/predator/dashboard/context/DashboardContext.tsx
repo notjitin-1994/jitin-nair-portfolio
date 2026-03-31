@@ -70,40 +70,35 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 1. Initial Data Fetch (Synchronized Snapshot)
+  // 1. Snapshot Fetch (Unified)
   const fetchSnapshot = useCallback(async () => {
     try {
-      // Use the new v1 status endpoint for atomic state
+      setConnectionStatus('connecting');
+      // Single call to get the entire system state
       const res = await fetch(`${API_URL}/api/v1/status`);
-      if (!res.ok) throw new Error('API failed');
+      if (!res.ok) throw new Error(`API failed: ${res.status}`);
       
       const snapshot = await res.json();
       
-      const [executionRes, macroRes, priceRes, positionsRes, tradesRes] = await Promise.all([
-        fetch(`${API_URL}/api/v1/execution/status`),
-        fetch(`${API_URL}/api/v1/macro/current`),
-        fetch(`${API_URL}/api/v1/price/current`),
+      // Secondary execution data (until unified in status)
+      const [positionsRes, tradesRes] = await Promise.all([
         fetch(`${API_URL}/api/v1/execution/positions`),
         fetch(`${API_URL}/api/v1/execution/trades?limit=20`)
       ]);
 
-      const execution = executionRes.ok ? await executionRes.json() : null;
-      const macroData = macroRes.ok ? await macroRes.json() : {};
-      const price = priceRes.ok ? await priceRes.json() : null;
       const positions = positionsRes.ok ? await positionsRes.json() : [];
       const trades = tradesRes.ok ? await tradesRes.json() : [];
 
       setData(prev => ({
         ...prev,
-        price: price || snapshot.price,
+        price: snapshot.price,
         agents: snapshot.agents || [],
         regime: snapshot.regime,
         signal: snapshot.sentinel,
-        execution: execution,
-        macro: macroData,
+        macro: snapshot.macro || {},
+        news: snapshot.news || [],
         positions: positions,
         trades: trades,
-        strategy: snapshot.strategy,
         health: { status: 'healthy', timestamp: new Date().toISOString() }
       }));
       
@@ -124,7 +119,6 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
     ws.onopen = () => {
       console.log('✅ Connected to Predator Pulse stream');
-      setConnectionStatus('connected');
     };
 
     ws.onmessage = (event) => {
@@ -133,14 +127,16 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         if (update.type === 'PULSE_UPDATE') {
           setData(prev => ({
             ...prev,
-            price: update.data.price,
-            macro: update.data.macro,
+            price: update.data.price || prev.price,
+            macro: update.data.macro || prev.macro,
             regime: update.data.regime || prev.regime,
             signal: update.data.signal || prev.signal,
             news: update.data.news || prev.news,
-            agents: update.data.agents || prev.agents
+            agents: update.data.agents || prev.agents,
+            execution: update.data.execution || prev.execution
           }));
           setLastUpdate(new Date().toLocaleTimeString());
+          setConnectionStatus('connected');
         }
       } catch (err) {
         console.error('Pulse update error:', err);
