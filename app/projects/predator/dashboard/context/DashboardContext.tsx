@@ -180,7 +180,7 @@ function deepEqual<T>(a: T, b: T): boolean {
 // Provider
 // ============================================================================
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.glitchzerolabs.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 const POLL_INTERVAL = 2000; // 2 seconds for real-time feel
 
 export function DashboardProvider({ children }: { children: React.ReactNode }) {

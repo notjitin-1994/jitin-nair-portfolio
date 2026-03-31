@@ -20,17 +20,20 @@ import { Footer } from '../../../components/Footer';
 function AnimatedCard({
   children,
   delay = 0,
-  className = ''
+  className = '',
+  animate = true
 }: {
   children: ReactNode;
   delay?: number;
   className?: string;
+  animate?: boolean;
 }) {
+  if (!animate) return <div className={className}>{children}</div>;
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
       className={className}
     >
@@ -154,20 +157,20 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 mb-3">
               {/* LEFT SIDEBAR: Critical Trading Metrics */}
               <div className="xl:col-span-3 flex flex-col gap-3">
-                <AnimatedCard delay={0.05}>
+                <AnimatedCard delay={0.05} animate={false}>
                   <PriceTicker />
                 </AnimatedCard>
 
-                <AnimatedCard delay={0.1}>
+                <AnimatedCard delay={0.1} animate={false}>
                   <SignalCard />
                 </AnimatedCard>
 
-                <AnimatedCard delay={0.15}>
+                <AnimatedCard delay={0.15} animate={false}>
                   <RegimeGauge />
                 </AnimatedCard>
 
                 {/* Compact System Status Mini-Card (Desktop) */}
-                <AnimatedCard delay={0.2} className="hidden xl:block flex-1 min-h-0">
+                <AnimatedCard delay={0.2} animate={false} className="hidden xl:block flex-1 min-h-0">
                   <AgentCluster />
                 </AnimatedCard>
               </div>
@@ -200,15 +203,15 @@ export default function DashboardPage() {
 
               {/* RIGHT SIDEBAR: Portfolio & Risk */}
               <div className="xl:col-span-3 flex flex-col gap-3">
-                <AnimatedCard delay={0.15}>
+                <AnimatedCard delay={0.15} animate={false}>
                   <RiskMonitor />
                 </AnimatedCard>
 
-                <AnimatedCard delay={0.2}>
+                <AnimatedCard delay={0.2} animate={false}>
                   <PositionFlow />
                 </AnimatedCard>
 
-                <AnimatedCard delay={0.25}>
+                <AnimatedCard delay={0.25} animate={false}>
                   <TradeHistory />
                 </AnimatedCard>
               </div>
