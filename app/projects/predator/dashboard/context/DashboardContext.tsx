@@ -3,9 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { 
   DashboardData, 
-  CurrentPrice, 
   AgentStatus, 
-  RegimeData, 
   SentinelData, 
   ExecutionMetrics,
   Position,
@@ -45,7 +43,6 @@ export const useDashboard = () => {
 // ============================================================================
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-// WebSocket URL: replace http/https with ws/wss with safety check
 const WS_URL = (API_URL || '').replace(/^http/, 'ws') + '/api/v1/pulse';
 
 export function DashboardProvider({ children }: { children: React.ReactNode }) {
@@ -69,26 +66,19 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hasReceivedInitialPulse = useRef<boolean>(false);
 
-  // 1. Snapshot Fetch (Unified)
+  // 1. Snapshot Fetch (Fallback/Initial)
   const fetchSnapshot = useCallback(async () => {
+    // If pulse is already connected and delivering, skip expensive REST fetch
+    if (hasReceivedInitialPulse.current) return;
+
     try {
-      setConnectionStatus('connecting');
-      // Single call to get the entire system state
       const res = await fetch(`${API_URL}/api/v1/status`);
       if (!res.ok) throw new Error(`API failed: ${res.status}`);
       
       const snapshot = await res.json();
       
-      // Secondary execution data (until unified in status)
-      const [positionsRes, tradesRes] = await Promise.all([
-        fetch(`${API_URL}/api/v1/execution/positions`),
-        fetch(`${API_URL}/api/v1/execution/trades?limit=20`)
-      ]);
-
-      const positions = positionsRes.ok ? await positionsRes.json() : [];
-      const trades = tradesRes.ok ? await tradesRes.json() : [];
-
       setData(prev => ({
         ...prev,
         price: snapshot.price,
@@ -97,16 +87,14 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         signal: snapshot.sentinel,
         macro: snapshot.macro || {},
         news: snapshot.news || [],
-        positions: positions,
-        trades: trades,
+        execution: snapshot.execution,
         health: { status: 'healthy', timestamp: new Date().toISOString() }
       }));
       
       setLastUpdate(new Date().toLocaleTimeString());
-      setConnectionStatus('connected');
     } catch (err) {
-      console.error('Failed to fetch dashboard snapshot:', err);
-      setConnectionStatus('error');
+      console.error('Initial snapshot fetch failed:', err);
+      // Don't set error status here, let WS try to connect
     }
   }, []);
 
@@ -114,23 +102,22 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   const connectPulse = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
+    console.log('📡 Attempting connection to Predator Pulse...');
     const ws = new WebSocket(WS_URL);
     wsRef.current = ws;
 
     ws.onopen = () => {
       console.log('✅ Connected to Predator Pulse stream');
+      setConnectionStatus('connected');
     };
 
     ws.onmessage = (event) => {
       try {
         const update: any = JSON.parse(event.data);
         
-        if (update.type === 'PING') {
-          ws.send(JSON.stringify({ type: 'PONG', timestamp: Date.now() }));
-          return;
-        }
-
+        // Handle protocol-level pulse updates
         if (update.type === 'PULSE_UPDATE') {
+          hasReceivedInitialPulse.current = true;
           setData(prev => ({
             ...prev,
             price: update.data.price || prev.price,
@@ -145,21 +132,31 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
           setConnectionStatus('connected');
         }
       } catch (err) {
-        console.error('Pulse update error:', err);
+        console.error('Pulse update processing error:', err);
       }
     };
 
-    ws.onclose = () => {
-      console.warn('🔌 Pulse stream disconnected. Reconnecting...');
+    ws.onclose = (event) => {
+      if (event.wasClean) {
+        console.log('🔌 Pulse stream closed cleanly');
+      } else {
+        console.warn('🔌 Pulse stream lost. Reconnecting in 5s...');
+      }
       setConnectionStatus('disconnected');
-      // Exponential backoff or simple delay
-      reconnectTimeoutRef.current = setTimeout(connectPulse, 3000);
+      hasReceivedInitialPulse.current = false;
+      
+      // Clear existing timeout
+      if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
+      
+      // Reconnect with 5s delay to prevent hammering
+      reconnectTimeoutRef.current = setTimeout(() => {
+        connectPulse();
+      }, 5000);
     };
 
     ws.onerror = (err) => {
-      console.error('Pulse stream error:', err);
+      console.error('Pulse stream WebSocket error:', err);
       setConnectionStatus('error');
-      ws.close();
     };
   }, []);
 
@@ -169,7 +166,10 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     connectPulse();
 
     return () => {
-      if (wsRef.current) wsRef.current.close();
+      if (wsRef.current) {
+        wsRef.current.onclose = null; // Prevent reconnect on unmount
+        wsRef.current.close();
+      }
       if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
     };
   }, [fetchSnapshot, connectPulse]);
@@ -177,11 +177,12 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   // Public Interface
   const reconnect = useCallback(() => {
     if (wsRef.current) wsRef.current.close();
-    fetchSnapshot();
+    hasReceivedInitialPulse.current = false;
     connectPulse();
-  }, [fetchSnapshot, connectPulse]);
+  }, [connectPulse]);
 
   const refresh = useCallback(async () => {
+    hasReceivedInitialPulse.current = false;
     await fetchSnapshot();
   }, [fetchSnapshot]);
 
