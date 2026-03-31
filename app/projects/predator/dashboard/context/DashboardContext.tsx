@@ -123,7 +123,13 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
     ws.onmessage = (event) => {
       try {
-        const update: PulseUpdate = JSON.parse(event.data);
+        const update: any = JSON.parse(event.data);
+        
+        if (update.type === 'PING') {
+          ws.send(JSON.stringify({ type: 'PONG', timestamp: Date.now() }));
+          return;
+        }
+
         if (update.type === 'PULSE_UPDATE') {
           setData(prev => ({
             ...prev,
