@@ -77,10 +77,19 @@ const MacroIndicator = memo(function MacroIndicator({
 });
 
 const SignalCard = memo(function SignalCard() {
-  const { signal, connectionStatus } = useDashboard();
+  const { signal, macro, connectionStatus } = useDashboard();
 
   const isLoading = connectionStatus === 'connecting';
   const hasError = connectionStatus === 'error';
+
+  const dxyChange = signal?.data_used?.dxy_change ?? 0;
+  const eurChange = macro?.EURUSD?.change24h ?? 0;
+  const jpyChange = macro?.USDJPY?.change24h ?? 0;
+
+  // Alignment: DXY up is bearish for Gold (red), DXY down is bullish (emerald)
+  const dxyAlignment = dxyChange <= 0;
+  const eurAlignment = eurChange >= 0; // Strong EUR usually means weak DXY
+  const jpyAlignment = jpyChange <= 0; // Strong JPY usually means weak DXY
 
   const getSignalIcon = () => {
     if (!signal) return <Minus className="w-5 h-5 text-slate-500" />;
@@ -178,12 +187,12 @@ const SignalCard = memo(function SignalCard() {
                 <span className="text-[8px] text-slate-500 uppercase tracking-wider">
                   Macro
                 </span>
-                <div className={`ml-auto w-1 h-1 rounded-full ${signal.macroAlignment ? 'bg-emerald-400' : 'bg-red-400'}`} />
+                <div className={`ml-auto w-1 h-1 rounded-full ${signal.data_used?.macro_alignment ? 'bg-emerald-400' : 'bg-red-400'}`} />
               </div>
               <div className="bg-void/50 rounded-lg px-2.5">
-                <MacroIndicator label="DXY" value={signal.dxyChange} alignment={(signal.dxyChange ?? 0) < 0} />
-                <MacroIndicator label="EUR" value={signal.eurUsdChange} alignment={(signal.eurUsdChange ?? 0) > 0} />
-                <MacroIndicator label="JPY" value={signal.usdJpyChange} alignment={(signal.usdJpyChange ?? 0) < 0} />
+                <MacroIndicator label="DXY" value={dxyChange} alignment={dxyAlignment} />
+                <MacroIndicator label="EUR" value={eurChange} alignment={eurAlignment} />
+                <MacroIndicator label="JPY" value={jpyChange} alignment={jpyAlignment} />
               </div>
             </div>
           </div>

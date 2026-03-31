@@ -9,6 +9,7 @@ import PriceTicker from './components/PriceTicker';
 import AgentCluster from './components/AgentCluster';
 import RegimeGauge from './components/RegimeGauge';
 import SignalCard from './components/SignalCard';
+import NewsStream from './components/NewsStream';
 import PositionFlow from './components/PositionFlow';
 import TradeHistory from './components/TradeHistory';
 import RiskMonitor from './components/RiskMonitor';
@@ -169,8 +170,12 @@ export default function DashboardPage() {
                   <RegimeGauge />
                 </AnimatedCard>
 
+                <AnimatedCard delay={0.2} animate={false}>
+                  <NewsStream />
+                </AnimatedCard>
+
                 {/* Compact System Status Mini-Card (Desktop) */}
-                <AnimatedCard delay={0.2} animate={false} className="hidden xl:block flex-1 min-h-0">
+                <AnimatedCard delay={0.25} animate={false} className="hidden xl:block flex-1 min-h-0">
                   <AgentCluster />
                 </AnimatedCard>
               </div>

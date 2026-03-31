@@ -77,6 +77,11 @@ export interface SentinelData {
   usdJpyChange?: number;
   timestamp: string;
   indicators?: Record<string, any>;
+  data_used?: {
+    dxy_change?: number;
+    macro_alignment?: number;
+    [key: string]: any;
+  };
 }
 
 export interface Position {
@@ -138,6 +143,16 @@ export interface StrategyState {
   };
 }
 
+export interface MarketNews {
+  timestamp: string;
+  headline: string;
+  source: string;
+  url?: string;
+  summary?: string;
+  category?: string;
+  sentiment_score?: number;
+}
+
 export interface DashboardData {
   price: CurrentPrice | null;
   macro: {
@@ -151,6 +166,7 @@ export interface DashboardData {
   trades: Trade[];
   execution: ExecutionMetrics | null;
   strategy: StrategyState | null;
+  news: MarketNews[];
   health: ApiHealth | null;
 }
 
@@ -162,6 +178,10 @@ export interface PulseUpdate {
       EURUSD: MacroData;
       USDJPY: MacroData;
     };
+    regime: RegimeData;
+    signal: SentinelData;
+    news: MarketNews[];
+    agents: AgentStatus[];
   };
   timestamp: string;
 }

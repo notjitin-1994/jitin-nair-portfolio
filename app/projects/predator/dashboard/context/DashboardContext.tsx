@@ -60,6 +60,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     trades: [],
     execution: null,
     strategy: null,
+    news: [],
     health: null,
   });
 
@@ -133,7 +134,11 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
           setData(prev => ({
             ...prev,
             price: update.data.price,
-            macro: update.data.macro
+            macro: update.data.macro,
+            regime: update.data.regime || prev.regime,
+            signal: update.data.signal || prev.signal,
+            news: update.data.news || prev.news,
+            agents: update.data.agents || prev.agents
           }));
           setLastUpdate(new Date().toLocaleTimeString());
         }
