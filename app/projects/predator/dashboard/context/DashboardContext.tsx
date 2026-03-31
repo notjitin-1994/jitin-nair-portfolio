@@ -120,13 +120,8 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
           hasReceivedInitialPulse.current = true;
           setData(prev => ({
             ...prev,
-            price: update.data.price || prev.price,
-            macro: update.data.macro || prev.macro,
-            regime: update.data.regime || prev.regime,
-            signal: update.data.signal || prev.signal,
-            news: update.data.news || prev.news,
-            agents: update.data.agents || prev.agents,
-            execution: update.data.execution || prev.execution
+            ...update.data,
+            health: { status: 'healthy', timestamp: new Date().toISOString() }
           }));
           setLastUpdate(new Date().toLocaleTimeString());
           setConnectionStatus('connected');
