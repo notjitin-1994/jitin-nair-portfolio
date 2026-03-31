@@ -21,9 +21,10 @@ interface Trade {
   exitPrice: number;
   pnl: number;
   pnlPercent?: number;
-  closeReason: 'TP' | 'SL' | 'MANUAL';
+  closeReason: 'TP' | 'SL' | 'MANUAL' | string;
   duration: string;
   closedAt: string;
+  strategy?: string;
 }
 
 const TradeRow = memo(function TradeRow({ trade }: { trade: Trade }) {

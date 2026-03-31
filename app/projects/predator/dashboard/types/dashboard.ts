@@ -45,6 +45,8 @@ export interface RegimeData {
   regime: string;
   confidence: number;
   timestamp: string;
+  volatility?: number;
+  trendStrength?: number;
   features?: {
     volatility?: number;
     trend?: number;
@@ -69,8 +71,44 @@ export interface SentinelData {
   confidence: number;
   regime: string;
   macro?: any;
+  macroAlignment?: boolean;
+  dxyChange?: number;
+  eurUsdChange?: number;
+  usdJpyChange?: number;
   timestamp: string;
   indicators?: Record<string, any>;
+}
+
+export interface Position {
+  id: string;
+  symbol?: string;
+  direction: 'LONG' | 'SHORT';
+  entryPrice: number;
+  currentPrice: number;
+  size?: number;
+  position_size?: number;
+  pnl: number;
+  pnlPercent?: number;
+  sl: number;
+  tp: number;
+  progress?: number;
+  strategy?: string;
+  regime?: string;
+  openedAt?: string;
+  entry_time?: string;
+}
+
+export interface Trade {
+  id: string;
+  direction: 'LONG' | 'SHORT';
+  entryPrice: number;
+  exitPrice: number;
+  pnl: number;
+  pnlPercent?: number;
+  closeReason: 'TP' | 'SL' | 'MANUAL' | string;
+  duration: string;
+  closedAt: string;
+  strategy?: string;
 }
 
 export interface ExecutionMetrics {
@@ -78,7 +116,9 @@ export interface ExecutionMetrics {
   balance: number;
   peakBalance?: number;
   dailyPnl: number;
+  dailyPnlPercent?: number;
   winRate: number;
+  totalTrades?: number;
   openPositions: number;
   dailyLossUsed: number;
   dailyLossLimit: number;
@@ -86,6 +126,16 @@ export interface ExecutionMetrics {
   maxDrawdown: number;
   riskStatus: 'CLEAR' | 'CAUTION' | 'BLOCKED';
   cooldown: string | null;
+}
+
+export interface StrategyState {
+  current?: {
+    strategy_id: string;
+    regime: string;
+    confidence_score: number;
+    parameters?: Record<string, any>;
+    selection_reason?: string;
+  };
 }
 
 export interface DashboardData {
@@ -96,8 +146,11 @@ export interface DashboardData {
   };
   agents: AgentStatus[];
   regime: RegimeData | null;
-  sentinel: SentinelData | null;
+  signal: SentinelData | null;
+  positions: Position[];
+  trades: Trade[];
   execution: ExecutionMetrics | null;
+  strategy: StrategyState | null;
   health: ApiHealth | null;
 }
 

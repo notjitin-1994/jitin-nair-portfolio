@@ -9,6 +9,7 @@ import {
   GitBranch,
   Eye,
   Play,
+  Zap,
   Cpu,
   MemoryStick,
   Activity,
@@ -24,7 +25,7 @@ import {
 
 interface Agent {
   name: string;
-  status: 'running' | 'stopped' | 'failed' | 'degraded';
+  status: 'running' | 'stopped' | 'failed' | 'degraded' | 'active' | 'inactive';
   pid?: number;
   cpu?: number;
   memory?: number;

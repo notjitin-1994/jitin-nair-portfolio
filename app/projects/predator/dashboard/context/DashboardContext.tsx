@@ -8,6 +8,9 @@ import {
   RegimeData, 
   SentinelData, 
   ExecutionMetrics,
+  Position,
+  Trade,
+  StrategyState,
   PulseUpdate
 } from '../types/dashboard';
 
@@ -16,6 +19,11 @@ import {
 // ============================================================================
 
 interface DashboardContextType extends DashboardData {
+  positions: Position[];
+  trades: Trade[];
+  signal: SentinelData | null;
+  execution: ExecutionMetrics | null;
+  strategy: StrategyState | null;
   connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error';
   lastUpdate: string;
   reconnect: () => void;
@@ -47,8 +55,11 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     macro: {},
     agents: [],
     regime: null,
-    sentinel: null,
+    signal: null,
+    positions: [],
+    trades: [],
     execution: null,
+    strategy: null,
     health: null,
   });
 
@@ -66,22 +77,32 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       if (!res.ok) throw new Error('API failed');
       
       const snapshot = await res.json();
-      const executionRes = await fetch(`${API_URL}/api/v1/execution/status`);
-      const execution = executionRes.ok ? await executionRes.json() : null;
-      const macroRes = await fetch(`${API_URL}/api/v1/macro/current`);
-      const macroData = macroRes.ok ? await macroRes.json() : {};
+      
+      const [executionRes, macroRes, priceRes, positionsRes, tradesRes] = await Promise.all([
+        fetch(`${API_URL}/api/v1/execution/status`),
+        fetch(`${API_URL}/api/v1/macro/current`),
+        fetch(`${API_URL}/api/v1/price/current`),
+        fetch(`${API_URL}/api/v1/execution/positions`),
+        fetch(`${API_URL}/api/v1/execution/trades?limit=20`)
+      ]);
 
-      const priceRes = await fetch(`${API_URL}/api/v1/price/current`);
+      const execution = executionRes.ok ? await executionRes.json() : null;
+      const macroData = macroRes.ok ? await macroRes.json() : {};
       const price = priceRes.ok ? await priceRes.json() : null;
+      const positions = positionsRes.ok ? await positionsRes.json() : [];
+      const trades = tradesRes.ok ? await tradesRes.json() : [];
 
       setData(prev => ({
         ...prev,
         price: price || snapshot.price,
         agents: snapshot.agents || [],
         regime: snapshot.regime,
-        sentinel: snapshot.sentinel,
+        signal: snapshot.sentinel,
         execution: execution,
         macro: macroData,
+        positions: positions,
+        trades: trades,
+        strategy: snapshot.strategy,
         health: { status: 'healthy', timestamp: new Date().toISOString() }
       }));
       
