@@ -89,6 +89,9 @@ export interface SentinelData {
     ofi?: number;
     sentiment?: number;
     bayesian_prob?: number;
+    prob_long?: number;
+    prob_short?: number;
+    prob_wait?: number;
     macro_alignment?: number;
     [key: string]: any;
   };
