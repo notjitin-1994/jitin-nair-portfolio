@@ -47,6 +47,9 @@ export interface RegimeData {
   timestamp: string;
   volatility?: number;
   trendStrength?: number;
+  hmm_confidence?: number;
+  changePointProb?: number;
+  runLength?: number;
   features?: {
     volatility?: number;
     trend?: number;

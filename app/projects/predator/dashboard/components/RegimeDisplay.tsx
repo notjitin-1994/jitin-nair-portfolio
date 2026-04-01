@@ -14,6 +14,7 @@ const regimeConfig: Record<string, { color: string; bgColor: string; icon: typeo
   TREND_DOWN: { color: 'text-red-400', bgColor: 'bg-red-400', icon: TrendingDown, arrow: 'down' },
   RANGE: { color: 'text-amber-400', bgColor: 'bg-amber-400', icon: Activity, arrow: 'flat' },
   VOLATILE: { color: 'text-red-400', bgColor: 'bg-red-400', icon: BarChart3, arrow: 'down' },
+  UNCERTAIN: { color: 'text-slate-400', bgColor: 'bg-slate-400', icon: Brain, arrow: 'flat' },
   UNKNOWN: { color: 'text-slate-400', bgColor: 'bg-slate-400', icon: Brain, arrow: 'flat' },
 };
 
@@ -99,7 +100,7 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
 
   const config = regimeConfig[regime.regime] || regimeConfig.UNKNOWN;
   const Icon = config.icon;
-  const isBreaking = (regime as any).change_point_prob > 0.7;
+  const isBreaking = (regime.changePointProb || 0) > 0.7;
 
   return (
     <motion.div
@@ -112,12 +113,12 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
         <div className="flex items-center gap-1.5 text-blue-400">
           <Cpu className="w-2.5 h-2.5" />
           <span className="text-[8px] font-bold uppercase tracking-widest">
-            {regime.features?.barsProcessed ? 'Nexus V3' : 'Nexus V3'}
+            Nexus V3
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="text-[8px] font-mono text-slate-600 uppercase">Run Length:</span>
-          <span className="text-[8px] font-mono text-blue-400 font-bold">{ (regime as any).run_length || 0 } bars</span>
+          <span className="text-[8px] font-mono text-blue-400 font-bold">{ regime.runLength || 0 } bars</span>
         </div>
       </div>
 
@@ -158,14 +159,14 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
           {/* HMM Persistence (State Stability) */}
           <TimeframeBar 
             label="Persistence" 
-            value={(regime as any).hmm_confidence || 0} 
+            value={regime.hmm_confidence || 0} 
             colorClass="bg-blue-400" 
           />
           
           {/* BOCPD Break Probability (Inversed for Bar display - higher bar = safer) */}
           <TimeframeBar 
             label="Integrity" 
-            value={1 - ((regime as any).change_point_prob || 0)} 
+            value={1 - (regime.changePointProb || 0)} 
             colorClass={isBreaking ? "bg-red-400" : "bg-emerald-400"} 
           />
         </div>
@@ -174,13 +175,13 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
           <div>
             <div className="text-[8px] text-slate-600 uppercase font-bold mb-1">State Stability</div>
             <div className="text-[10px] text-slate-400 italic leading-tight">
-              HMM confirms state persistence with {Math.round(((regime as any).hmm_confidence || 0) * 100)}% probability.
+              HMM confirms state persistence with {Math.round((regime.hmm_confidence || 0) * 100)}% probability.
             </div>
           </div>
           <div className="text-right">
             <div className="text-[8px] text-slate-600 uppercase font-bold mb-1">Break Alarm</div>
             <div className={`text-[10px] font-bold ${isBreaking ? 'text-red-400' : 'text-slate-500'}`}>
-              {Math.round(((regime as any).change_point_prob || 0) * 100)}% BREAK CHANCE
+              {Math.round((regime.changePointProb || 0) * 100)}% BREAK CHANCE
             </div>
           </div>
         </div>
@@ -190,11 +191,11 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-white/[0.02] rounded-lg p-2 text-center border border-white/[0.03]">
           <div className="text-[8px] text-slate-500 uppercase tracking-wider">Volatility</div>
-          <div className="text-xs font-mono text-slate-300 mt-0.5">{(regime as any).volatility?.toFixed(2) || '0.00'}</div>
+          <div className="text-xs font-mono text-slate-300 mt-0.5">{((regime.volatility || 0) * 100).toFixed(2)}%</div>
         </div>
         <div className="bg-white/[0.02] rounded-lg p-2 text-center border border-white/[0.03]">
           <div className="text-[8px] text-slate-500 uppercase tracking-wider">Trend Str</div>
-          <div className="text-xs font-mono text-slate-300 mt-0.5">{(regime as any).trendStrength?.toFixed(2) || '0.00'}</div>
+          <div className="text-xs font-mono text-slate-300 mt-0.5">{((regime.trendStrength || 0) * 100).toFixed(1)}%</div>
         </div>
         <div className="bg-white/[0.02] rounded-lg p-2 text-center border border-white/[0.03]">
           <div className="text-[8px] text-slate-500 uppercase tracking-wider">M1 Pulse</div>
