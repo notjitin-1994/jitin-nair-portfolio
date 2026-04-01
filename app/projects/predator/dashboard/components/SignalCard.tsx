@@ -162,7 +162,7 @@ const SignalCard = memo(function SignalCard() {
           </div>
           <div>
             <h3 className="text-[12px] font-black text-slate-200 uppercase tracking-[0.2em]">
-              Oracle Verdict
+              Apollo&apos;s Decree
             </h3>
             <div className="flex items-center gap-1.5 mt-0.5">
               <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />

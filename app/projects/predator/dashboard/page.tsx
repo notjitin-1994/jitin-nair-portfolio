@@ -61,8 +61,13 @@ function DashboardContent() {
         
         <div className="flex flex-col lg:flex-row gap-6 items-start">
           
+          {/* MOBILE ONLY: Apollo's Decree (Oracle) - First below chart */}
+          <div className="w-full lg:hidden order-first">
+            <SignalCard />
+          </div>
+
           {/* LEFT COLUMN: Intelligence & Strategy (Independent Scroll) */}
-          <div className="w-full lg:w-[450px] lg:sticky lg:top-[88px] lg:h-[calc(100vh-120px)] lg:overflow-y-auto no-scrollbar space-y-6 pb-12">
+          <div className="w-full lg:w-[450px] lg:sticky lg:top-[88px] lg:h-[calc(100vh-120px)] lg:overflow-y-auto no-scrollbar space-y-6 pb-12 order-2 lg:order-none">
             <StrategyCommandCenter />
             <RegimeGauge />
             <RegimeDisplay regime={regime} isLoading={isLoading} />
@@ -70,9 +75,12 @@ function DashboardContent() {
           </div>
 
           {/* RIGHT COLUMN: Market & Execution (Independent Scroll) */}
-          <div className="w-full lg:flex-1 lg:sticky lg:top-[88px] lg:h-[calc(100vh-120px)] lg:overflow-y-auto no-scrollbar space-y-6 pb-12">
+          <div className="w-full lg:flex-1 lg:sticky lg:top-[88px] lg:h-[calc(100vh-120px)] lg:overflow-y-auto no-scrollbar space-y-6 pb-12 order-3 lg:order-none">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <SignalCard />
+              {/* DESKTOP ONLY: SignalCard stays here */}
+              <div className="hidden lg:block">
+                <SignalCard />
+              </div>
               <NewsStream />
             </div>
             <div className="grid grid-cols-1 gap-6">

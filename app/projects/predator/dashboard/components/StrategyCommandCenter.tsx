@@ -27,7 +27,7 @@ const StrategyCommandCenter = memo(() => {
             <Target className="w-3.5 h-3.5 text-violet-400" />
           </div>
           <span className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
-            Active Strategy
+            Athena&apos;s Tactician Matrix
           </span>
         </div>
         <div className="flex items-center gap-1.5">

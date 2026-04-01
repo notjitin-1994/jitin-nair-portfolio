@@ -47,9 +47,16 @@ function TradingViewChart() {
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full h-[500px] bg-midnight border border-white/[0.06] rounded-xl overflow-hidden shadow-2xl mb-6 relative"
+      className="w-full h-[350px] sm:h-[450px] md:h-[550px] lg:h-[600px] bg-midnight border border-white/[0.06] rounded-xl overflow-hidden shadow-2xl mb-6 relative group"
     >
         <div id="tv_chart_container" ref={container} className="absolute inset-0"></div>
+        {/* Mobile View Indicator */}
+        <div className="absolute top-3 right-3 lg:hidden bg-void/60 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 pointer-events-none z-10">
+           <div className="flex items-center gap-1.5">
+             <div className="w-1 h-1 rounded-full bg-blue-400 animate-pulse" />
+             <span className="text-[8px] text-slate-300 uppercase font-black tracking-tighter">Mobile Pulse Active</span>
+           </div>
+        </div>
     </motion.div>
   );
 }
