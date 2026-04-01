@@ -141,6 +141,7 @@ export interface StrategyState {
     parameters?: Record<string, any>;
     selection_reason?: string;
   };
+  candidates?: any[];
 }
 
 export interface MarketNews {
