@@ -26,7 +26,6 @@ function DashboardContent() {
     <div className="min-h-screen bg-void text-slate-200 font-sans selection:bg-violet-500/30 overflow-x-hidden">
       {/* Main Background Texture */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(17,24,39,1)_0%,_rgba(2,6,23,1)_100%)] z-0" />
-      <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none z-0" />
 
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 bg-void/80 backdrop-blur-md border-b border-white/[0.06]">

@@ -34,8 +34,8 @@ function TradingViewChart() {
           save_image: false,
           container_id: "tv_chart_container",
           studies: [
-            "BollingerBands@tv-basicstudies",
-            "RSI@tv-basicstudies"
+            "STD;Bollinger_Bands",
+            "STD;RSI"
           ]
         });
       }
