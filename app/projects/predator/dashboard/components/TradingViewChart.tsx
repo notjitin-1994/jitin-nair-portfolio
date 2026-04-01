@@ -1,89 +1,57 @@
 'use client';
 
-import { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
+import { motion } from 'framer-motion';
 
-interface TradingViewChartProps {
-  height?: number;
-}
-
-const TradingViewChart = memo(({ height = 450 }: TradingViewChartProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+function TradingViewChart() {
+  const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const chartId = 'tradingview_predator_5m';
-    const widgetContainer = document.createElement('div');
-    widgetContainer.id = chartId;
-    widgetContainer.style.height = `${height}px`;
-    widgetContainer.style.width = '100%';
+    if (!container.current) return;
     
-    container.innerHTML = '';
-    container.appendChild(widgetContainer);
-
-    let script: HTMLScriptElement | null = null;
-
-    const initWidget = () => {
+    // Clean up
+    container.current.innerHTML = '';
+    
+    const script = document.createElement("script");
+    script.src = "https://s3.tradingview.com/tv.js";
+    script.type = "text/javascript";
+    script.async = true;
+    script.onload = () => {
       if (typeof window !== 'undefined' && (window as any).TradingView) {
-        try {
-          new (window as any).TradingView.widget({
-            "autosize": true,
-            "symbol": "OANDA:XAUUSD",
-            "interval": "5",
-            "timezone": "Etc/UTC",
-            "theme": "dark",
-            "style": "1",
-            "locale": "en",
-            "toolbar_bg": "#f1f3f6",
-            "enable_publishing": false,
-            "hide_top_toolbar": false,
-            "hide_legend": false,
-            "save_image": false,
-            "container_id": chartId,
-            "backgroundColor": "rgba(10, 10, 15, 1)",
-            "gridColor": "rgba(42, 46, 57, 0.06)",
-            "withdateranges": true,
-            "allow_symbol_change": true,
-            "details": true,
-            "hotlist": true,
-            "calendar": true,
-            "show_popup_button": true,
-            "popup_width": "1000",
-            "popup_height": "650"
-          });
-        } catch (e) {
-          console.error("TradingView widget init error:", e);
-        }
+        new (window as any).TradingView.widget({
+          autosize: true,
+          symbol: "OANDA:XAUUSD",
+          interval: "5",
+          timezone: "Etc/UTC",
+          theme: "dark",
+          style: "1", // Candle
+          locale: "en",
+          enable_publishing: false,
+          backgroundColor: "rgba(2, 6, 23, 1)", // void/midnight
+          gridColor: "rgba(255, 255, 255, 0.03)",
+          hide_top_toolbar: false,
+          hide_legend: false,
+          save_image: false,
+          container_id: "tv_chart_container",
+          studies: [
+            "BollingerBands@tv-basicstudies",
+            "RSI@tv-basicstudies"
+          ]
+        });
       }
     };
-
-    if (!(window as any).TradingView) {
-      script = document.createElement('script');
-      script.src = 'https://s3.tradingview.com/tv.js';
-      script.type = 'text/javascript';
-      script.async = true;
-      script.onload = initWidget;
-      document.head.appendChild(script);
-    } else {
-      initWidget();
-    }
-
-    return () => {
-      if (script && script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-      if (container) {
-        container.innerHTML = '';
-      }
-    };
-  }, [height]);
+    container.current.appendChild(script);
+  }, []);
 
   return (
-    <div ref={containerRef} className="w-full rounded-xl overflow-hidden border border-white/[0.05]" />
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full h-[500px] bg-midnight border border-white/[0.06] rounded-xl overflow-hidden shadow-2xl mb-6 relative"
+    >
+        <div id="tv_chart_container" ref={container} className="absolute inset-0"></div>
+    </motion.div>
   );
-});
+}
 
-TradingViewChart.displayName = 'TradingViewChart';
-
-export default TradingViewChart;
+export default memo(TradingViewChart);

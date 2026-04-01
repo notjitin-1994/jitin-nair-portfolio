@@ -73,15 +73,22 @@ export interface SentinelData {
   signal: 'LONG' | 'SHORT' | 'HOLD' | 'EXIT_LONG' | 'EXIT_SHORT' | 'WAIT' | 'None' | string;
   confidence: number;
   regime: string;
+  logic?: string;
   macro?: any;
   macroAlignment?: boolean;
   dxyChange?: number;
   eurUsdChange?: number;
   usdJpyChange?: number;
+  ofi?: number;
+  sentiment?: number;
+  bayesianProb?: number;
   timestamp: string;
   indicators?: Record<string, any>;
   data_used?: {
     dxy_change?: number;
+    ofi?: number;
+    sentiment?: number;
+    bayesian_prob?: number;
     macro_alignment?: number;
     [key: string]: any;
   };

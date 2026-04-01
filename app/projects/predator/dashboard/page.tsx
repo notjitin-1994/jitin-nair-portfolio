@@ -15,6 +15,7 @@ import NewsStream from './components/NewsStream';
 import AgentStatusPanel from './components/AgentStatusPanel';
 import RegimeDisplay from './components/RegimeDisplay';
 import StrategyCommandCenter from './components/StrategyCommandCenter';
+import TradingViewChart from './components/TradingViewChart';
 import { Footer } from '../../../components/Footer';
 
 function DashboardContent() {
@@ -57,6 +58,8 @@ function DashboardContent() {
 
       {/* Main Content Area */}
       <main className="relative z-10 max-w-[1600px] mx-auto px-4 py-6">
+        <TradingViewChart />
+        
         <div className="flex flex-col lg:flex-row gap-6 items-start">
           
           {/* LEFT COLUMN: Intelligence & Strategy (Independent Scroll) */}
