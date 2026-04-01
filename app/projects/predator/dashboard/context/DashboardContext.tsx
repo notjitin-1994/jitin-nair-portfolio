@@ -88,6 +88,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         macro: snapshot.macro || {},
         news: snapshot.news || [],
         execution: snapshot.execution,
+        strategy: snapshot.strategy,
         health: { status: 'healthy', timestamp: new Date().toISOString() }
       }));
       

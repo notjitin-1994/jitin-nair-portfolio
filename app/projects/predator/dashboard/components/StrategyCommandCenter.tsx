@@ -24,24 +24,26 @@ const StrategyCommandCenter = memo(() => {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-midnight border border-white/[0.06] rounded-xl overflow-hidden flex flex-col h-full"
+      className="bg-midnight border border-white/[0.06] rounded-xl overflow-hidden flex flex-col h-[400px] w-full shadow-2xl"
     >
       {/* Header */}
-      <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between bg-void/20">
+      <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between bg-void/40 backdrop-blur-sm">
         <div className="flex items-center gap-2">
-          <LayoutGrid className="w-4 h-4 text-violet-400" />
+          <div className="w-7 h-7 rounded-lg bg-violet-500/10 flex items-center justify-center">
+            <LayoutGrid className="w-4 h-4 text-violet-400" />
+          </div>
           <span className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
             Strategy Command Center
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[9px] font-mono text-emerald-500/80 uppercase">Matrix Live</span>
+          <span className="text-[9px] font-mono text-emerald-500/80 uppercase">Active Matrix</span>
         </div>
       </div>
 
       {/* Matrix */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2 bg-void/20">
         {candidates.length > 0 ? (
           candidates.sort((a, b) => b.final_score - a.final_score).map((candidate, idx) => (
             <motion.div
