@@ -153,23 +153,22 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       
       setData(prev => ({
         ...prev,
-        price: snapshot.price,
-        agents: snapshot.agents || [],
-        regime: snapshot.regime,
-        signal: snapshot.sentinel,
-        macro: snapshot.macro || {},
-        news: snapshot.news || [],
-        positions: snapshot.positions || [],
-        trades: snapshot.trades || [],
-        ares: snapshot.ares || snapshot.execution,
-        strategy: snapshot.strategy,
+        price: snapshot.price || prev.price,
+        agents: snapshot.agents || prev.agents,
+        regime: snapshot.regime || prev.regime,
+        signal: snapshot.sentinel || snapshot.signal || prev.signal,
+        macro: snapshot.macro || prev.macro,
+        news: snapshot.news || prev.news,
+        positions: snapshot.positions || prev.positions,
+        trades: snapshot.trades || prev.trades,
+        ares: snapshot.ares || snapshot.execution || prev.ares,
+        strategy: snapshot.strategy || prev.strategy,
         health: { status: 'healthy', timestamp: new Date().toISOString() }
       }));
       
       setLastUpdate(new Date().toLocaleTimeString());
       setConnectionStatus('connected');
     } catch (err) {
-      // In portfolio mode, we keep mock data but set status to disconnected to show it's a demo
       console.log('API not reachable, maintaining high-quality mock state for demo.');
       setConnectionStatus('disconnected');
     }
