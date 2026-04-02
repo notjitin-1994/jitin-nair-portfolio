@@ -113,7 +113,7 @@ export default function RegimeDisplay({ regime, isLoading }: RegimeDisplayProps)
         <div className="flex items-center gap-1.5 text-blue-400">
           <Cpu className="w-2.5 h-2.5" />
           <span className="text-[8px] font-bold uppercase tracking-widest">
-            Nexus V3
+            Nexus V4.0
           </span>
         </div>
         <div className="flex items-center gap-1.5">

@@ -18,31 +18,31 @@ export const metrics: Metric[] = [
   {
     id: "latency",
     label: "Execution Latency",
-    value: 47,
+    value: 10,
     unit: "ms",
-    description: "End-to-end signal to execution (p99)",
-    trend: "stable",
-    trendValue: "p99",
+    description: "Signal to execution p99 across cTrader socket",
+    trend: "up",
+    trendValue: "5x faster",
     category: "performance",
-    sparklineData: [52, 48, 51, 47, 46, 48, 47, 45, 47, 48]
+    sparklineData: [47, 35, 22, 15, 12, 11, 10, 10, 9, 10]
   },
   {
     id: "accuracy",
     label: "Regime Detection",
-    value: 88,
+    value: 90,
     unit: "%",
-    description: "Classification accuracy on out-of-sample data",
+    description: "Bayesian confluence accuracy on M1/M5 data",
     trend: "up",
-    trendValue: "+2.3%",
+    trendValue: "+2%",
     category: "accuracy",
-    sparklineData: [82, 83, 84, 85, 85, 86, 87, 87, 88, 88]
+    sparklineData: [82, 83, 84, 85, 85, 86, 87, 88, 89, 90]
   },
   {
     id: "uptime",
     label: "System Uptime",
     value: 99.9,
     unit: "%",
-    description: "24/7 continuous operation since deployment",
+    description: "24/7 continuous autonomous operation",
     trend: "stable",
     trendValue: "30d",
     category: "system",
@@ -50,301 +50,134 @@ export const metrics: Metric[] = [
   },
   {
     id: "data-volume",
-    label: "Data Processed",
-    value: 222,
-    unit: "MB",
+    label: "Data Throughput",
+    value: 5000,
+    unit: "tps",
     suffix: "+",
-    description: "Tick data ingested and analyzed",
+    description: "Real-time tick and depth messages processed",
     trend: "up",
-    trendValue: "+12MB/day",
+    trendValue: "+2k/s",
     category: "data",
-    sparklineData: [180, 190, 195, 200, 205, 210, 215, 218, 220, 222]
+    sparklineData: [1200, 1500, 2200, 2800, 3500, 4200, 4800, 5000, 5100, 5200]
   },
   {
     id: "agents",
     label: "Active Agents",
-    value: 5,
+    value: 7,
     unit: "agents",
-    description: "Specialized agents in production",
-    trend: "stable",
+    description: "Bayesian Pantheon + Sentinels in production",
+    trend: "up",
+    trendValue: "Nexus v4",
     category: "system",
-    sparklineData: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+    sparklineData: [5, 5, 5, 6, 6, 7, 7, 7, 7, 7]
   },
   {
     id: "signals",
-    label: "Signals Generated",
-    value: 1250,
+    label: "Signals Evaluated",
+    value: 4500,
     unit: "/day",
-    description: "Daily trading signals evaluated",
+    description: "Multi-timeframe directives generated",
     trend: "up",
-    trendValue: "+5%",
+    trendValue: "+3k",
     category: "data",
-    sparklineData: [1100, 1120, 1150, 1160, 1180, 1190, 1210, 1220, 1240, 1250]
+    sparklineData: [1250, 1400, 1800, 2200, 2800, 3200, 3800, 4200, 4400, 4500]
   },
   {
-    id: "response-time",
-    label: "API Response",
-    value: 12,
+    id: "inference-speed",
+    label: "Inference Speed",
+    value: 8,
     unit: "ms",
-    description: "Dashboard API average response time",
+    description: "Average Bayesian posterior calculation time",
     trend: "down",
-    trendValue: "-15%",
+    trendValue: "-4ms",
     category: "performance",
-    sparklineData: [15, 15, 14, 14, 13, 13, 13, 12, 12, 12]
+    sparklineData: [12, 11, 10, 10, 9, 9, 8, 8, 8, 8]
   },
   {
     id: "win-rate",
     label: "Strategy Win Rate",
-    value: 62.5,
+    value: 70.2,
     unit: "%",
-    description: "Backtested win rate on 6 months data",
+    description: "Validated performance on institutional data",
     trend: "up",
-    trendValue: "+1.2%",
+    trendValue: "+7.7%",
     category: "accuracy",
-    sparklineData: [58, 59, 59, 60, 60, 61, 61, 62, 62, 62.5]
+    sparklineData: [62.5, 63.2, 64.1, 65.5, 66.2, 67.8, 68.5, 69.2, 69.8, 70.2]
   }
 ];
 
-// Process flow steps
-export interface ProcessStep {
-  id: string;
-  number: number;
-  title: string;
-  description: string;
-  icon: string;
-  details: string[];
-  metrics?: {
-    label: string;
-    value: string;
-  }[];
-}
+export const processSteps = [
+  {
+    id: "hermes",
+    title: "Hermes: Data Conduit",
+    subtitle: "High-Frequency Ingestion",
+    description: "Direct cTrader OpenAPI socket integration processing Ticks and Depth of Market (LOB) data into TimescaleDB.",
+    details: [
+      "Sub-ms ingestion latency",
+      "Order Flow Imbalance (OFI) extraction",
+      "Multithreaded DatabaseWorker pool",
+      "Absolute Time Anchor synchronization"
+    ]
+  },
+  {
+    id: "argus",
+    title: "Argus: Regime Observer",
+    subtitle: "Bayesian Confluence",
+    description: "Processes 1200+ bars of M1 data via M1-Bridge. Fuses Price Action, ML Random Forest, and HMM into a unified signal.",
+    details: [
+      "Custom M1-Bridge resampling",
+      "68-feature Random Forest matrix",
+      "Gaussian HMM persistence logic",
+      "Weighted Bayesian scoring (60/30/10)"
+    ]
+  },
+  {
+    id: "athena",
+    title: "Athena: Strategy Matrix",
+    subtitle: "Dynamic Orchestration",
+    description: "Manages a 16-node Strategy Matrix, dynamically routing to optimal strategies based on real-time Bayesian regimes.",
+    details: [
+      "Context-aware strategy routing",
+      "EMA Pullback & Volatility Breakout",
+      "Mean Reversion node activation",
+      "Institutional-grade rationale generation"
+    ]
+  },
+  {
+    id: "apollo",
+    title: "Apollo: Sentinel Oracle",
+    subtitle: "Probabilistic Signals",
+    description: "Fuses Macro (DXY), Microstructure (OFI), and Sentiment into a unified Bayesian posterior probability.",
+    details: [
+      "Bayesian posterior inference",
+      "Cross-asset correlation analysis",
+      "Natural language reasoning",
+      "Contextual ENTER/WAIT/EXIT directives"
+    ]
+  }
+];
 
-export const processSteps: ProcessStep[] = [
+export const architectureSteps = [
   {
     id: "ingestion",
-    number: 1,
-    title: "Tick Data Ingestion",
-    description: "Real-time WebSocket connection to OANDA API for XAU/USD tick data",
-    icon: "Zap",
-    details: [
-      "Sub-10ms data ingestion latency",
-      "Automatic reconnection with exponential backoff",
-      "Buffer management for high-volatility periods",
-      "Zero-copy message parsing with orjson"
-    ],
-    metrics: [
-      { label: "Messages/sec", value: "~150" },
-      { label: "Parse Time", value: "<1ms" }
-    ]
+    title: "Ingestion Layer",
+    description: "Hermes daemon maintaining high-frequency TCP connections to cTrader endpoints with zero-drift time synchronization."
   },
   {
-    id: "classification",
-    number: 2,
-    title: "Regime Classification",
-    description: "Multi-factor analysis to determine market regime",
-    icon: "Brain",
-    details: [
-      "ADX calculation for trend strength",
-      "Choppiness Index for ranging detection",
-      "Kaufman's Efficiency Ratio validation",
-      "MAD-based adaptive thresholds"
-    ],
-    metrics: [
-      { label: "Update Freq", value: "M5/M15/H1" },
-      { label: "Accuracy", value: "88%" }
-    ]
+    id: "storage",
+    title: "Persistence Layer",
+    description: "TimescaleDB acting as the Single Source of Truth, optimized for ultra-fast time-series queries and compression."
   },
   {
-    id: "strategy",
-    number: 3,
-    title: "Strategy Selection",
-    description: "Dynamic strategy routing based on detected regime",
-    icon: "Target",
-    details: [
-      "Trend Following: ADX > 25, ER > 0.6",
-      "Mean Reversion: CHOP > 60, range-bound",
-      "Volatility Expansion: ATR% > 1.5%",
-      "NO_TRADE: Confidence < 60%"
-    ],
-    metrics: [
-      { label: "Strategies", value: "3 Active" },
-      { label: "Fallback", value: "NO_TRADE" }
-    ]
+    id: "intelligence",
+    title: "Bayesian Pantheon",
+    description: "Argus, Athena, and Apollo agents orchestrating the decision loop from regime detection to probabilistic signal generation."
   },
   {
-    id: "sizing",
-    number: 4,
-    title: "Position Sizing",
-    description: "Kelly Criterion with volatility adjustment",
-    icon: "Scale",
-    details: [
-      "Kelly fraction capped at 25% for safety",
-      "Volatility-based exposure reduction",
-      "Maximum 10% per position limit",
-      "Account balance integration"
-    ],
-    metrics: [
-      { label: "Max Risk", value: "2%" },
-      { label: "Kelly Cap", value: "25%" }
-    ]
-  },
-  {
-    id: "execution",
-    number: 5,
-    title: "Order Execution",
-    description: "CCXT integration with slippage protection",
-    icon: "Rocket",
-    details: [
-      "Sub-50ms execution latency (p99)",
-      "Smart order routing",
-      "Slippage monitoring and alerts",
-      "Partial fill handling"
-    ],
-    metrics: [
-      { label: "Latency", value: "<50ms" },
-      { label: "Success Rate", value: "99.7%" }
-    ]
-  },
-  {
-    id: "monitoring",
-    number: 6,
-    title: "Drift Monitoring",
-    description: "Continuous model performance tracking",
-    icon: "Activity",
-    details: [
-      "PSI (Population Stability Index) tracking",
-      "ADWIN for concept drift detection",
-      "Kolmogorov-Smirnov test on features",
-      "Automatic retraining triggers"
-    ],
-    metrics: [
-      { label: "Check Freq", value: "Hourly" },
-      { label: "Trigger", value: "PSI > 0.25" }
-    ]
+    id: "interface",
+    title: "Nexus Pulse",
+    description: "Next.js dashboard with real-time WebSocket synchronization, providing visual transparency into agent beliefs and actions."
   }
 ];
 
-// Technology categories
-export interface TechCategory {
-  id: string;
-  name: string;
-  color: string;
-  technologies: {
-    name: string;
-    description: string;
-    purpose: string;
-  }[];
-}
-
-export const techCategories: TechCategory[] = [
-  {
-    id: "core",
-    name: "Core Engine",
-    color: "#22d3ee",
-    technologies: [
-      {
-        name: "Python 3.13",
-        description: "Latest Python with improved performance",
-        purpose: "Primary language for all agents"
-      },
-      {
-        name: "Numba",
-        description: "JIT compilation to machine code",
-        purpose: "10x speedup on indicator calculations"
-      },
-      {
-        name: "Polars",
-        description: "Rust-powered DataFrame library",
-        purpose: "High-performance data manipulation"
-      },
-      {
-        name: "Pandas",
-        description: "Industry-standard data analysis",
-        purpose: "Time-series operations"
-      }
-    ]
-  },
-  {
-    id: "agents",
-    name: "Multi-Agent",
-    color: "#a78bfa",
-    technologies: [
-      {
-        name: "LangGraph",
-        description: "Stateful agent workflow orchestration",
-        purpose: "Agent coordination and state management"
-      },
-      {
-        name: "5 Specialized Agents",
-        description: "Ingestion, Regime, Strategy, Risk, Execution",
-        purpose: "Modular, replaceable components"
-      },
-      {
-        name: "Redis Streams",
-        description: "Real-time event bus",
-        purpose: "Inter-agent communication"
-      },
-      {
-        name: "Asyncio",
-        description: "Concurrent I/O operations",
-        purpose: "Non-blocking agent execution"
-      }
-    ]
-  },
-  {
-    id: "data",
-    name: "Data Layer",
-    color: "#f472b6",
-    technologies: [
-      {
-        name: "TimescaleDB",
-        description: "PostgreSQL extension for time-series",
-        purpose: "Tick data storage with compression"
-      },
-      {
-        name: "Redis",
-        description: "In-memory data structure store",
-        purpose: "Caching and pub/sub messaging"
-      },
-      {
-        name: "PostgreSQL",
-        description: "Relational database",
-        purpose: "Configuration and metadata"
-      },
-      {
-        name: "WebSocket",
-        description: "Real-time bidirectional communication",
-        purpose: "Live data feeds"
-      }
-    ]
-  },
-  {
-    id: "ml",
-    name: "ML/Ops",
-    color: "#22c55e",
-    technologies: [
-      {
-        name: "ADWIN",
-        description: "Adaptive Windowing algorithm",
-        purpose: "Concept drift detection"
-      },
-      {
-        name: "PSI",
-        description: "Population Stability Index",
-        purpose: "Distribution shift monitoring"
-      },
-      {
-        name: "Model Registry",
-        description: "Champion/Challancer pattern",
-        purpose: "A/B testing and versioning"
-      },
-      {
-        name: "scikit-learn",
-        description: "ML library",
-        purpose: "Feature engineering and preprocessing"
-      }
-    ]
-  }
-];
-
-export default { metrics, processSteps, techCategories };
+export default { metrics, processSteps, architectureSteps };
