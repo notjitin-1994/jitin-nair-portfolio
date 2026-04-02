@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Github, ArrowLeft, ExternalLink, LayoutDashboard } from 'lucide-react';
+import { Github, ExternalLink, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import { Footer } from '../../components/Footer';
 import HeroSection from './components/HeroSection';
+import BayesianPantheon from './components/BayesianPantheon';
 import ArchitectureDiagram from './components/ArchitectureDiagram';
 import MetricsDashboard from './components/MetricsDashboard';
 import CodeShowcase from './components/CodeShowcase';
@@ -25,11 +26,11 @@ function CTASection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="p-6 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-cyan-500/10 to-transparent border border-cyan-500/20"
+            className="p-6 sm:p-8 md:p-12 rounded-[2.5rem] bg-gradient-to-b from-cyan-500/10 to-transparent border border-cyan-500/20"
           >
-            <h2 className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 sm:mb-4">Explore the Code</h2>
+            <h2 className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 sm:mb-4">Explore the Nexus</h2>
             <p className="text-slate-400 mb-6 sm:mb-8 max-w-xl text-sm sm:text-base">
-              The Predator system is open source. View the complete implementation, documentation, and deployment guides on GitHub.
+              The Predator Nexus V4.0 system is open source. View the complete Bayesian implementation, MLOps documentation, and deployment guides on GitHub.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 sm:gap-4">
@@ -47,7 +48,7 @@ function CTASection() {
                 className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-white/[0.03] text-slate-300 border border-white/[0.08] hover:border-cyan-500/20 hover:text-cyan-400 transition-all text-sm sm:text-base"
               >
                 <LayoutDashboard className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>Live Dashboard</span>
+                <span>Nexus Live Pulse</span>
               </Link>
             </div>
           </motion.div>
@@ -59,7 +60,7 @@ function CTASection() {
             className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-white/[0.08]"
           >
             <p className="text-slate-500 text-xs sm:text-sm">
-              Predator Scalping System · Built with Python, LangGraph, and TimescaleDB
+              Predator Nexus V4.0 · Bayesian Multi-Agent Pantheon · Python & LangGraph
             </p>
             <p className="text-slate-600 text-[10px] sm:text-xs mt-1 sm:mt-2">© 2026 Jitin Nair. All rights reserved.</p>
           </motion.div>
@@ -73,14 +74,20 @@ function CTASection() {
 
 export default function PredatorPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-white">
+    <main className="min-h-screen bg-[#0a0a0f] text-white selection:bg-cyan-500/30">
       <HeroSection />
-      <ProcessFlow />
-      <MetricsDashboard />
-      <CodeShowcase />
-      <TechStackGrid />
-      <CitationsSection />
-      <CTASection />
+      
+      <div className="space-y-24 sm:space-y-36 md:space-y-48 pb-24 sm:pb-40">
+        <BayesianPantheon />
+        <ProcessFlow />
+        <ArchitectureDiagram />
+        <MetricsDashboard />
+        <CodeShowcase />
+        <TechStackGrid />
+        <CitationsSection />
+        <CTASection />
+      </div>
+
       <Footer />
     </main>
   );

@@ -13,87 +13,98 @@ const iconMap = {
 
 const processSteps = [
   {
-    id: "ingestion",
+    id: "hermes",
     number: '01',
-    title: "Tick Data Ingestion",
-    subtitle: "Data Feed",
-    description: "Real-time WebSocket connection to OANDA API for XAU/USD tick data with sub-millisecond parsing.",
+    title: "Hermes: Data Conduit",
+    subtitle: "High-Frequency Ingestion",
+    description: "Real-time socket connection to cTrader OpenAPI, processing Ticks and Depth of Market (LOB) data into TimescaleDB.",
     icon: "Zap",
     color: "#22d3ee",
-    details: ["Sub-10ms data ingestion latency", "Automatic reconnection with exponential backoff", "Buffer management for high-volatility periods", "Zero-copy message parsing with orjson"],
+    details: [
+      "Sub-ms ingestion latency", 
+      "Order Flow Imbalance (OFI) extraction", 
+      "Multithreaded DatabaseWorker pool", 
+      "Absolute Time Anchor logic"
+    ],
     metrics: [
-      { label: "Messages/sec", value: "~150" }, 
-      { label: "Parse Time", value: "<1ms" }
+      { label: "Throughput", value: "5000+ tps" }, 
+      { label: "LOB Levels", value: "Top 5" }
     ]
   },
   {
-    id: "classification",
+    id: "argus",
     number: '02',
-    title: "Regime Classification",
-    subtitle: "AI Analysis",
-    description: "Multi-factor analysis determining market regime with 88% accuracy on out-of-sample data.",
+    title: "Argus: Regime Observer",
+    subtitle: "Bayesian Confluence",
+    description: "Determines market regime by fusing Price Action, Random Forest Classifier, and Gaussian Hidden Markov Models.",
     icon: "Brain",
     color: "#14b8a6",
-    details: ["ADX calculation for trend strength", "Choppiness Index for ranging detection", "Kaufman's Efficiency Ratio validation", "MAD-based adaptive thresholds"],
+    details: [
+      "Custom M1-Bridge resampling", 
+      "68-feature Random Forest matrix", 
+      "Gaussian HMM persistence logic", 
+      "Weighted Bayesian scoring"
+    ],
     metrics: [
-      { label: "Update Freq", value: "M5/M15/H1" }, 
-      { label: "Accuracy", value: "88%" }
+      { label: "Update Freq", value: "M1/M5/M15/H1" }, 
+      { label: "Accuracy", value: "90%" }
     ]
   },
   {
-    id: "strategy",
+    id: "athena",
     number: '03',
-    title: "Strategy Selection",
-    subtitle: "Dynamic Routing",
-    description: "Context-aware strategy routing based on detected regime with intelligent fallback mechanisms.",
+    title: "Athena: Strategy Matrix",
+    subtitle: "Dynamic Orchestration",
+    description: "Manages a 16-node Strategy Matrix, dynamically routing to optimal strategies based on real-time regimes.",
     icon: "Target",
     color: "#2dd4bf",
-    details: ["Trend Following: ADX > 25, ER > 0.6", "Mean Reversion: CHOP > 60, range-bound", "Volatility Expansion: ATR% > 1.5%", "NO_TRADE: Confidence < 60%"],
+    details: [
+      "Context-aware strategy routing", 
+      "EMA Pullback & Volatility Breakout", 
+      "Mean Reversion node activation", 
+      "Institutional rationale generation"
+    ],
     metrics: [
-      { label: "Strategies", value: "3 Active" }, 
-      { label: "Fallback", value: "NO_TRADE" }
+      { label: "Active Nodes", value: "16" }, 
+      { label: "Routing Latency", value: "<1ms" }
     ]
   },
   {
-    id: "sizing",
+    id: "apollo",
     number: '04',
-    title: "Position Sizing",
-    subtitle: "Risk Engine",
-    description: "Kelly Criterion with volatility adjustment and institutional-grade risk controls.",
-    icon: "Scale",
-    color: "#06b6d4",
-    details: ["Kelly fraction capped at 25% for safety", "Volatility-based exposure reduction", "Maximum 10% per position limit", "Account balance integration"],
-    metrics: [
-      { label: "Max Risk", value: "2%" }, 
-      { label: "Kelly Cap", value: "25%" }
-    ]
-  },
-  {
-    id: "execution",
-    number: '05',
-    title: "Order Execution",
-    subtitle: "Trade Engine",
-    description: "CCXT integration with smart order routing and comprehensive slippage protection.",
-    icon: "Rocket",
-    color: "#0ea5e9",
-    details: ["Sub-50ms execution latency (p99)", "Smart order routing", "Slippage monitoring and alerts", "Partial fill handling"],
-    metrics: [
-      { label: "Latency", value: "<50ms" }, 
-      { label: "Success Rate", value: "99.7%" }
-    ]
-  },
-  {
-    id: "monitoring",
-    number: '06',
-    title: "Drift Monitoring",
-    subtitle: "ML Ops",
-    description: "Continuous model performance tracking with automated retraining triggers.",
+    title: "Apollo: Sentinel Oracle",
+    subtitle: "Probabilistic Signals",
+    description: "Fuses Macro (DXY), Microstructure (OFI), and Sentiment into a unified Bayesian posterior probability.",
     icon: "Activity",
-    color: "#5eead4",
-    details: ["PSI (Population Stability Index) tracking", "ADWIN for concept drift detection", "Kolmogorov-Smirnov test on features", "Automatic retraining triggers"],
+    color: "#06b6d4",
+    details: [
+      "Bayesian posterior inference", 
+      "Cross-asset correlation analysis", 
+      "Natural language reasoning", 
+      "Contextual ENTER/WAIT directives"
+    ],
     metrics: [
-      { label: "Check Freq", value: "Hourly" }, 
-      { label: "Trigger", value: "PSI > 0.25" }
+      { label: "Posterior P", value: "Confidence" }, 
+      { label: "Latency", value: "10ms p99" }
+    ]
+  },
+  {
+    id: "sentinel",
+    number: '05',
+    title: "Sentinel: Guard Rails",
+    subtitle: "MLOps & Integrity",
+    description: "Continuous monitoring for feature drift and model stability with automated circuit breakers.",
+    icon: "Scale",
+    color: "#0ea5e9",
+    details: [
+      "PSI Drift Detection", 
+      "ADWIN Concept Drift tracking", 
+      "Automated Daily Loss limits", 
+      "Prometheus/Grafana observability"
+    ],
+    metrics: [
+      { label: "Drift Trigger", value: "PSI > 0.25" }, 
+      { label: "Circuit Brk", value: "3% Loss" }
     ]
   }
 ];

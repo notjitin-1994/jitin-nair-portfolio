@@ -7,157 +7,102 @@ import CodeBlock from './ui/CodeBlock';
 
 const codeSnippets = [
   {
-    id: "regime-detection",
-    title: "Regime Detection",
-    filePath: "agents/regime_agent/detection.py",
+    id: "bayesian-confluence",
+    title: "Bayesian Confluence",
+    filePath: "agents/regime_agent/confluence.py",
     language: "python",
-    description: "Adaptive regime classification using ADX, Choppiness Index, and Efficiency Ratio with hysteresis filtering.",
-    code: `def detect_regime(self, data: pd.DataFrame) -> RegimeClassification:
-    adx = self.calculate_adx(data['high'], data['low'], data['close'])
-    chop = self.choppiness_index(data['high'], data['low'], data['close'])
-    er = self.efficiency_ratio(data['close'])
+    description: "Argus Bayesian engine fusing Price Action, RF Classifier, and Gaussian HMM into a weighted regime confidence score.",
+    code: `def calculate_confluence(self, pa_regime, ml_regime, hmm_regime) -> dict:
+    # Bayesian Prior Weights
+    PA_WEIGHT, ML_WEIGHT, HMM_WEIGHT = 0.60, 0.30, 0.10
     
-    adx_threshold = self.adaptive_threshold(adx, window=20)
+    regime_probs = {r: 0.0 for r in RegimeType}
     
-    if adx > adx_threshold and er > 0.6:
-        regime = Regime.TRENDING
-        confidence = min(adx / 50, 1.0) * er
-    elif chop > 60 and adx < adx_threshold * 0.7:
-        regime = Regime.RANGING
-        confidence = (chop / 100) * (1 - adx / adx_threshold)
-    elif self.atr_percent(data) > 1.5:
-        regime = Regime.VOLATILE
-        confidence = min(self.atr_percent(data) / 3.0, 1.0)
-    else:
-        regime = Regime.UNCERTAIN
-        confidence = 0.35
+    # Apply evidence fusion
+    regime_probs[pa_regime] += PA_WEIGHT
+    regime_probs[ml_regime] += ML_WEIGHT
+    regime_probs[hmm_regime] += HMM_WEIGHT
     
-    return RegimeClassification(
-        regime=regime,
-        confidence=confidence,
-        timestamp=datetime.utcnow(),
-        features={'adx': adx, 'chop': chop, 'er': er}
-    )`
+    # Select mode and calculate entropy-based confidence
+    final_regime = max(regime_probs, key=regime_probs.get)
+    confidence = regime_probs[final_regime]
+    
+    return {
+        "regime": final_regime,
+        "confidence": confidence,
+        "is_stable": confidence >= 0.70
+    }`
   },
   {
-    id: "risk-management",
-    title: "Risk Management",
-    filePath: "agents/strategy_agent/risk.py",
+    id: "strategy-matrix",
+    title: "Strategy Matrix",
+    filePath: "agents/strategy_agent/matrix.py",
     language: "python",
-    description: "Kelly Criterion position sizing with maximum drawdown circuit breakers and volatility-adjusted exposure limits.",
-    code: `class RiskManager:
-    def __init__(self, max_risk_per_trade: float = 0.02):
-        self.max_risk = max_risk_per_trade
-        self.circuit_breaker = CircuitBreaker(
-            daily_loss_limit=0.05,
-            consecutive_losses=3
-        )
-    
-    def calculate_position_size(self, signal: Signal, account_balance: float, current_exposure: float) -> PositionSizing:
-        win_rate = signal.backtest_metrics.win_rate
-        avg_win = signal.backtest_metrics.avg_profit
-        avg_loss = abs(signal.backtest_metrics.avg_loss)
+    description: "Athena dynamic node switching system that activates specific strategy logic based on the Bayesian regime.",
+    code: `class StrategyMatrix:
+    def __init__(self):
+        self.nodes = {
+            Regime.TREND_UP: EMAPullbackNode(direction="LONG"),
+            Regime.TREND_DOWN: EMAPullbackNode(direction="SHORT"),
+            Regime.RANGE: MeanReversionNode(threshold=2.0),
+            Regime.VOLATILE: BreakoutNode(atr_mult=1.5)
+        }
+
+    async def get_directive(self, state: AgentState) -> StrategyDirective:
+        regime = state["regime_consensus"]
+        node = self.nodes.get(regime, self.nodes[Regime.VOLATILE])
         
-        kelly = (win_rate * avg_win - (1 - win_rate) * avg_loss) / avg_win
-        kelly_capped = min(max(kelly, 0), 0.25)
+        # Execute logic for active node
+        decision = await node.evaluate(state["features"])
         
-        vol_factor = 1.0 / (1 + signal.volatility_index * 2)
-        
-        risk_amount = account_balance * self.max_risk * kelly_capped * vol_factor
-        position_size = risk_amount / signal.stop_loss_distance
-        
-        max_position = account_balance * 0.1
-        position_size = min(position_size, max_position)
-        
-        return PositionSizing(
-            size=position_size,
-            risk_pct=risk_amount / account_balance,
-            kelly_fraction=kelly_capped,
-            confidence=signal.confidence
+        return StrategyDirective(
+            node_id=node.id,
+            decision=decision,
+            rationale=node.generate_rationale(state)
         )`
   },
   {
-    id: "circuit-breaker",
-    title: "Circuit Breaker",
-    filePath: "core/circuit_breaker.py",
+    id: "ofi-extraction",
+    title: "OFI Extraction",
+    filePath: "agents/ingestion_agent/hermes.py",
     language: "python",
-    description: "Three-state circuit breaker with automatic recovery and exponential backoff for system protection.",
-    code: `class CircuitBreaker:
-    def __init__(self, failure_threshold: int = 5, recovery_timeout: int = 300, half_open_max_calls: int = 3):
-        self.failure_threshold = failure_threshold
-        self.recovery_timeout = recovery_timeout
-        self.half_open_max_calls = half_open_max_calls
-        self.state = CircuitState.CLOSED
-        self.failure_count = 0
-        self.last_failure_time: Optional[datetime] = None
-        self.half_open_calls = 0
-        self._lock = asyncio.Lock()
+    description: "Hermes Level 2 microstructure analysis extracting Order Flow Imbalance from the top 5 levels of the LOB.",
+    code: `def calculate_ofi(self, snapshot: DepthSnapshot) -> float:
+    \"\"\"Calculates Order Flow Imbalance (OFI) across LOB levels.\"\"\"
+    ofi_sum = 0.0
     
-    async def call(self, func: Callable, *args, **kwargs):
-        async with self._lock:
-            if self.state == CircuitState.OPEN:
-                if self.should_attempt_reset():
-                    self.state = CircuitState.HALF_OPEN
-                    self.half_open_calls = 0
-                else:
-                    raise CircuitBreakerOpen(f"Circuit open. Retry after {self.get_remaining_timeout()}s")
-            
-            if self.state == CircuitState.HALF_OPEN:
-                if self.half_open_calls >= self.half_open_max_calls:
-                    raise CircuitBreakerOpen("Half-open limit reached")
-                self.half_open_calls += 1
+    for level in range(5):
+        bid_delta = snapshot.bids[level].size - self.prev_snap.bids[level].size
+        ask_delta = snapshot.asks[level].size - self.prev_snap.asks[level].size
         
-        try:
-            result = await func(*args, **kwargs)
-            await self.on_success()
-            return result
-        except Exception as e:
-            await self.on_failure()
-            raise e`
+        # OFI logic: Increase in bid volume or decrease in ask volume is bullish
+        weight = 1.0 / (level + 1)
+        ofi_sum += (bid_delta - ask_delta) * weight
+        
+    self.prev_snap = snapshot
+    return np.tanh(ofi_sum / self.norm_factor)  # Normalized [-1, 1]`
   },
   {
-    id: "websocket-handler",
-    title: "WebSocket Handler",
-    filePath: "agents/ingestion_agent/websocket.py",
+    id: "state-graph",
+    title: "LangGraph Workflow",
+    filePath: "graph.py",
     language: "python",
-    description: "High-performance WebSocket connection with automatic reconnection, buffering, and sub-50ms latency guarantee.",
-    code: `class TickWebSocketHandler:
-    def __init__(self, buffer_size: int = 1000):
-        self.buffer = asyncio.Queue(maxsize=buffer_size)
-        self.latency_tracker = LatencyTracker()
-        self.reconnect_policy = ExponentialBackoff(base_delay=1.0, max_delay=60.0, max_retries=10)
-        self._running = False
-        self._ws: Optional[websockets.WebSocketClientProtocol] = None
+    description: "Stateful agent orchestration using LangGraph to manage the Bayesian Pantheon's decision loop.",
+    code: `def build_nexus_graph():
+    builder = StateGraph(AgentState)
     
-    async def connect(self, uri: str):
-        self._running = True
-        while self._running:
-            try:
-                async with websockets.connect(uri, compression=None, ping_interval=20, ping_timeout=10) as ws:
-                    self._ws = ws
-                    self.reconnect_policy.reset()
-                    await self._handle_messages(ws)
-            except websockets.exceptions.ConnectionClosed:
-                pass
-            except Exception as e:
-                logger.error(f"WebSocket error: {e}")
-            
-            if self._running:
-                delay = self.reconnect_policy.next_delay()
-                await asyncio.sleep(delay)
+    builder.add_node("hermes", ingest_data)
+    builder.add_node("argus", detect_regime)
+    builder.add_node("athena", select_strategy)
+    builder.add_node("apollo", generate_signal)
     
-    async def _handle_messages(self, ws):
-        async for message in ws:
-            receive_time = time.time_ns()
-            tick = self._parse_tick(message)
-            tick.received_at = receive_time
-            try:
-                self.buffer.put_nowait(tick)
-            except asyncio.QueueFull:
-                self.buffer.get_nowait()
-                self.buffer.put_nowait(tick)
-            latency_ms = (receive_time - tick.timestamp) / 1_000_000
-            self.latency_tracker.record(latency_ms)`
+    builder.set_entry_point("hermes")
+    builder.add_edge("hermes", "argus")
+    builder.add_edge("argus", "athena")
+    builder.add_edge("athena", "apollo")
+    builder.add_edge("apollo", END)
+    
+    return builder.compile()`
   }
 ];
 

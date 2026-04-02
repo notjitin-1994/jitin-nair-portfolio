@@ -12,43 +12,43 @@ const techCategories = [
     name: "Core Engine",
     color: "#22d3ee",
     technologies: [
-      { name: "Python 3.13", description: "Latest Python with improved performance", purpose: "Primary language for all agents" },
-      { name: "Numba", description: "JIT compilation to machine code", purpose: "10x speedup on indicator calculations" },
-      { name: "Polars", description: "Rust-powered DataFrame library", purpose: "High-performance data manipulation" },
-      { name: "Pandas", description: "Industry-standard data analysis", purpose: "Time-series operations" }
+      { name: "Python 3.13", description: "Async-first implementation", purpose: "Logic Orchestration" },
+      { name: "LangGraph", description: "Stateful agent workflow orchestration", purpose: "Multi-Agent Logic" },
+      { name: "cTrader OpenAPI", description: "Direct socket API access", purpose: "High-Freq Execution" },
+      { name: "Numba", description: "JIT compiled machine code", purpose: "10x Fast Calculations" }
     ]
   },
   {
     id: "agents",
-    name: "Multi-Agent",
+    name: "The Pantheon",
     color: "#14b8a6",
     technologies: [
-      { name: "LangGraph", description: "Stateful agent workflow orchestration", purpose: "Agent coordination and state management" },
-      { name: "5 Specialized Agents", description: "Ingestion, Regime, Strategy, Risk, Execution", purpose: "Modular, replaceable components" },
-      { name: "Redis Streams", description: "Real-time event bus", purpose: "Inter-agent communication" },
-      { name: "Asyncio", description: "Concurrent I/O operations", purpose: "Non-blocking agent execution" }
+      { name: "Hermes", description: "Data ingestion daemon", purpose: "Ticks & Depth of Market" },
+      { name: "Argus", description: "Regime detection engine", purpose: "Bayesian Confluence" },
+      { name: "Athena", description: "16-node strategy matrix", purpose: "Dynamic Node Switching" },
+      { name: "Apollo", description: "Sentinel signal oracle", purpose: "Probabilistic Signals" }
     ]
   },
   {
     id: "data",
-    name: "Data Layer",
+    name: "Data & Pulse",
     color: "#2dd4bf",
     technologies: [
-      { name: "TimescaleDB", description: "PostgreSQL extension for time-series", purpose: "Tick data storage with compression" },
-      { name: "Redis", description: "In-memory data structure store", purpose: "Caching and pub/sub messaging" },
-      { name: "PostgreSQL", description: "Relational database", purpose: "Configuration and metadata" },
-      { name: "WebSocket", description: "Real-time bidirectional communication", purpose: "Live data feeds" }
+      { name: "TimescaleDB", description: "Time-series SQL storage", purpose: "Single Source of Truth" },
+      { name: "Redis Streams", description: "High-throughput event bus", purpose: "Inter-agent Comms" },
+      { name: "WebSockets", description: "Real-time state pulse", purpose: "Dashboard Sync" },
+      { name: "Absolute Time", description: "Anchor logic synchronization", purpose: "Drift-free Ordering" }
     ]
   },
   {
     id: "ml",
-    name: "ML/Ops",
+    name: "Intelligence",
     color: "#06b6d4",
     technologies: [
-      { name: "ADWIN", description: "Adaptive Windowing algorithm", purpose: "Concept drift detection" },
-      { name: "PSI", description: "Population Stability Index", purpose: "Distribution shift monitoring" },
-      { name: "Model Registry", description: "Champion/Challenger pattern", purpose: "A/B testing and versioning" },
-      { name: "scikit-learn", description: "ML library", purpose: "Feature engineering and preprocessing" }
+      { name: "Random Forest", description: "68-feature classifier matrix", purpose: "Trend Classification" },
+      { name: "Gaussian HMM", description: "Hidden Markov Model", purpose: "Regime Persistence" },
+      { name: "Bayesian Fusion", description: "Posterior probability logic", purpose: "Signal Confluence" },
+      { name: "ADWIN/PSI", description: "Concept drift monitors", purpose: "Model Integrity" }
     ]
   }
 ];
