@@ -124,22 +124,22 @@ const WinRateChart = memo(function WinRateChart({ winRate, totalTrades }: { winR
 });
 
 const RiskMonitor = memo(function RiskMonitor() {
-  const { execution, connectionStatus, positions } = useDashboard();
+  const { ares, connectionStatus, positions } = useDashboard();
 
   const isLoading = connectionStatus === 'connecting';
   const hasError = connectionStatus === 'error';
 
   const getRiskStatusColor = () => {
-    if (!execution) return 'text-slate-500';
-    if (execution.riskStatus === 'BLOCKED') return 'text-red-400';
-    if (execution.riskStatus === 'CAUTION') return 'text-amber-400';
+    if (!ares) return 'text-slate-500';
+    if (ares.riskStatus === 'BLOCKED') return 'text-red-400';
+    if (ares.riskStatus === 'CAUTION') return 'text-amber-400';
     return 'text-emerald-400';
   };
 
   const getRiskStatusBg = () => {
-    if (!execution) return 'bg-slate-500/10';
-    if (execution.riskStatus === 'BLOCKED') return 'bg-red-500/10';
-    if (execution.riskStatus === 'CAUTION') return 'bg-amber-500/10';
+    if (!ares) return 'bg-slate-500/10';
+    if (ares.riskStatus === 'BLOCKED') return 'bg-red-500/10';
+    if (ares.riskStatus === 'CAUTION') return 'bg-amber-500/10';
     return 'bg-emerald-500/10';
   };
 
@@ -162,15 +162,15 @@ const RiskMonitor = memo(function RiskMonitor() {
                 Risk Monitor
               </h3>
               <p className={`text-[9px] ${getRiskStatusColor()}`}>
-                {execution?.riskStatus || 'UNKNOWN'}
+                {ares?.riskStatus || 'UNKNOWN'}
               </p>
             </div>
           </div>
-          {execution?.mode && (
+          {ares?.mode && (
             <div className={`px-1.5 py-0.5 rounded text-[8px] font-medium ${
-              execution.mode === 'live' ? 'bg-red-500/10 text-red-400' : 'bg-cyan-500/10 text-cyan-400'
+              ares.mode === 'live' ? 'bg-red-500/10 text-red-400' : 'bg-cyan-500/10 text-cyan-400'
             }`}>
-              {execution.mode.toUpperCase()}
+              {ares.mode.toUpperCase()}
             </div>
           )}
         </div>
@@ -189,35 +189,35 @@ const RiskMonitor = memo(function RiskMonitor() {
             <AlertTriangle className="w-6 h-6 text-red-400/50 mx-auto mb-2" />
             <p className="text-[10px] text-slate-500">Risk data unavailable</p>
           </div>
-        ) : execution ? (
+        ) : ares ? (
           <div className="space-y-3">
             {/* Compact Metrics Grid */}
             <div className="grid grid-cols-2 gap-2">
               <MetricCard
                 icon={Wallet}
                 label="Balance"
-                value={`$${(execution.balance ?? 0).toLocaleString()}`}
-                subvalue={`Peak: $${(execution.peakBalance ?? execution.balance ?? 0).toLocaleString()}`}
+                value={`$${(ares.balance ?? 0).toLocaleString()}`}
+                subvalue={`Peak: $${(ares.peakBalance ?? ares.balance ?? 0).toLocaleString()}`}
                 color="cyan"
               />
               <MetricCard
                 icon={Activity}
                 label="Daily P&L"
-                value={`${(execution.dailyPnl ?? 0) >= 0 ? '+' : ''}$${(execution.dailyPnl ?? 0).toFixed(2)}`}
-                subvalue={`${(execution.dailyPnlPercent ?? 0) >= 0 ? '+' : ''}${(execution.dailyPnlPercent ?? 0).toFixed(2)}%`}
-                color={(execution.dailyPnl ?? 0) >= 0 ? 'emerald' : 'red'}
+                value={`${(ares.dailyPnl ?? 0) >= 0 ? '+' : ''}$${(ares.dailyPnl ?? 0).toFixed(2)}`}
+                subvalue={`${(ares.dailyPnlPercent ?? 0) >= 0 ? '+' : ''}${(ares.dailyPnlPercent ?? 0).toFixed(2)}%`}
+                color={(ares.dailyPnl ?? 0) >= 0 ? 'emerald' : 'red'}
               />
               <MetricCard
                 icon={TrendingDown}
                 label="Drawdown"
-                value={`${(execution.drawdown ?? 0).toFixed(2)}%`}
-                subvalue={`Max: ${(execution.maxDrawdown ?? 0).toFixed(2)}%`}
-                color={(execution.drawdown ?? 0) > 5 ? 'amber' : 'emerald'}
+                value={`${(ares.drawdown ?? 0).toFixed(2)}%`}
+                subvalue={`Max: ${(ares.maxDrawdown ?? 0).toFixed(2)}%`}
+                color={(ares.drawdown ?? 0) > 5 ? 'amber' : 'emerald'}
               />
               <MetricCard
                 icon={Target}
                 label="Positions"
-                value={(execution.openPositions ?? 0).toString()}
+                value={(ares.openPositions ?? 0).toString()}
                 subvalue={`Limit: ${(positions?.length ?? 0) + 3}`}
                 color="violet"
               />
@@ -226,18 +226,18 @@ const RiskMonitor = memo(function RiskMonitor() {
             {/* Compact Win Rate + Gauges */}
             <div className="pt-3 border-t border-white/[0.04]">
               <div className="flex items-center gap-3">
-                <WinRateChart winRate={execution.winRate ?? 0} totalTrades={execution.totalTrades ?? 0} />
+                <WinRateChart winRate={ares.winRate ?? 0} totalTrades={ares.totalTrades ?? 0} />
                 <div className="flex-1 space-y-2">
                   <RiskGauge
-                    value={execution.dailyLossUsed ?? 0}
-                    max={execution.dailyLossLimit ?? 1000}
+                    value={ares.dailyLossUsed ?? 0}
+                    max={ares.dailyLossLimit ?? 1000}
                     label="Daily Loss"
                     warningThreshold={0.6}
                     dangerThreshold={0.85}
                   />
                   <RiskGauge
-                    value={execution.drawdown ?? 0}
-                    max={Math.max((execution.maxDrawdown ?? 0) * 1.5, 10)}
+                    value={ares.drawdown ?? 0}
+                    max={Math.max((ares.maxDrawdown ?? 0) * 1.5, 10)}
                     label="Drawdown"
                     warningThreshold={0.5}
                     dangerThreshold={0.8}
@@ -247,16 +247,16 @@ const RiskMonitor = memo(function RiskMonitor() {
             </div>
 
             {/* Compact Risk Status Alert */}
-            {execution.riskStatus !== 'CLEAR' && (
+            {ares.riskStatus !== 'CLEAR' && (
               <div className={`p-2 rounded-lg ${getRiskStatusBg()}`}>
                 <div className="flex items-start gap-2">
                   <AlertTriangle className={`w-3.5 h-3.5 ${getRiskStatusColor()} flex-shrink-0 mt-0.5`} />
                   <div>
                     <p className={`text-[10px] font-medium ${getRiskStatusColor()}`}>
-                      Risk {execution.riskStatus === 'BLOCKED' ? 'Blocked' : 'Caution'}
+                      Risk {ares.riskStatus === 'BLOCKED' ? 'Blocked' : 'Caution'}
                     </p>
                     <p className="text-[8px] text-slate-400 mt-0.5">
-                      {execution.riskStatus === 'BLOCKED'
+                      {ares.riskStatus === 'BLOCKED'
                         ? 'Trading halted'
                         : 'Approaching thresholds'
                       }
@@ -267,13 +267,13 @@ const RiskMonitor = memo(function RiskMonitor() {
             )}
 
             {/* Compact Cooldown */}
-            {execution.cooldown && (
+            {ares.cooldown && (
               <div className="flex items-center justify-between p-2 bg-amber-500/10 rounded-lg border border-amber-500/20">
                 <div className="flex items-center gap-1.5">
                   <Activity className="w-3 h-3 text-amber-400" />
                   <span className="text-[10px] text-amber-400">Cooldown</span>
                 </div>
-                <span className="text-[9px] font-mono text-amber-400/80">{execution.cooldown}</span>
+                <span className="text-[9px] font-mono text-amber-400/80">{ares.cooldown}</span>
               </div>
             )}
           </div>

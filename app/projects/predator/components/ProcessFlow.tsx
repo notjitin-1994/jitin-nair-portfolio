@@ -317,7 +317,7 @@ export function ProcessFlow() {
             { label: 'Data Ingestion', color: '#22d3ee' },
             { label: 'AI Processing', color: '#14b8a6' },
             { label: 'Risk Control', color: '#2dd4bf' },
-            { label: 'Execution', color: '#06b6d4' },
+            { label: 'Ares', color: '#06b6d4' },
             { label: 'Monitoring', color: '#0ea5e9' },
           ].map((item) => (
             <div key={item.label} className="flex items-center gap-2">

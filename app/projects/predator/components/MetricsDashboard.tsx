@@ -5,7 +5,7 @@ import { TrendingUp, TrendingDown, Minus, Activity, Database, Cpu, Gauge } from 
 import AnimatedCounter from './ui/AnimatedCounter';
 
 const metrics = [
-  { id: "latency", label: "Execution Latency", value: 10, unit: "ms", description: "Signal to execution p99 across cTrader socket", trend: "up", trendValue: "5x faster", category: "performance", color: "#22d3ee" },
+  { id: "latency", label: "Ares Latency", value: 10, unit: "ms", description: "Signal to execution p99 across cTrader socket", trend: "up", trendValue: "5x faster", category: "performance", color: "#22d3ee" },
   { id: "accuracy", label: "Regime Detection", value: 90, unit: "%", description: "Bayesian confluence accuracy on M1/M5", trend: "up", trendValue: "+2%", category: "accuracy", color: "#14b8a6" },
   { id: "uptime", label: "System Uptime", value: 99.9, unit: "%", description: "Continuous 24/7 autonomous operation", trend: "stable", trendValue: "30d", category: "system", color: "#2dd4bf" },
   { id: "data-volume", label: "Data Throughput", value: 5000, unit: "tps", suffix: "+", description: "Real-time tick and depth messages processed", trend: "up", trendValue: "+2k/s", category: "data", color: "#06b6d4" },

@@ -17,7 +17,7 @@ export interface Metric {
 export const metrics: Metric[] = [
   {
     id: "latency",
-    label: "Execution Latency",
+    label: "Ares Latency",
     value: 10,
     unit: "ms",
     description: "Signal to execution p99 across cTrader socket",
@@ -153,6 +153,18 @@ export const processSteps = [
       "Cross-asset correlation analysis",
       "Natural language reasoning",
       "Contextual ENTER/WAIT/EXIT directives"
+    ]
+  },
+  {
+    id: "ares",
+    title: "Ares: Battlefield Commander",
+    subtitle: "Low-Latency Execution",
+    description: "Acts on Apollo's directives with precision. Manages order lifecycle, dynamic SL/TP, and institutional-grade risk forge.",
+    details: [
+      "Sub-50ms execution latency",
+      "Dynamic position sizing",
+      "Broker-side SL/TP synchronization",
+      "Real-time state persistence"
     ]
   }
 ];

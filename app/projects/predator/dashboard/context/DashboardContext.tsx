@@ -5,7 +5,7 @@ import {
   DashboardData, 
   AgentStatus, 
   SentinelData, 
-  ExecutionMetrics,
+  AresMetrics,
   Position,
   Trade,
   StrategyState,
@@ -20,7 +20,7 @@ interface DashboardContextType extends DashboardData {
   positions: Position[];
   trades: Trade[];
   signal: SentinelData | null;
-  execution: ExecutionMetrics | null;
+  ares: AresMetrics | null;
   strategy: StrategyState | null;
   connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error';
   lastUpdate: string;
@@ -55,7 +55,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     signal: null,
     positions: [],
     trades: [],
-    execution: null,
+    ares: null,
     strategy: null,
     news: [],
     health: null,
@@ -87,7 +87,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         signal: snapshot.sentinel,
         macro: snapshot.macro || {},
         news: snapshot.news || [],
-        execution: snapshot.execution,
+        ares: snapshot.execution,
         strategy: snapshot.strategy,
         health: { status: 'healthy', timestamp: new Date().toISOString() }
       }));

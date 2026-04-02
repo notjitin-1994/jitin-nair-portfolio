@@ -129,7 +129,7 @@ export interface Trade {
   strategy?: string;
 }
 
-export interface ExecutionMetrics {
+export interface AresMetrics {
   mode: 'paper' | 'live';
   balance: number;
   peakBalance?: number;
@@ -178,7 +178,7 @@ export interface DashboardData {
   signal: SentinelData | null;
   positions: Position[];
   trades: Trade[];
-  execution: ExecutionMetrics | null;
+  ares: AresMetrics | null;
   strategy: StrategyState | null;
   news: MarketNews[];
   health: ApiHealth | null;

@@ -124,11 +124,11 @@ export default function ExecutionPanel() {
       <div className="grid grid-cols-2 gap-2 mb-4">
         <div className="bg-void/20 rounded-lg p-2 border border-white/[0.03]">
           <div className="text-[8px] text-slate-500 uppercase tracking-wider">Account Balance</div>
-          <div className="text-xs font-bold font-mono text-slate-300">${Number(data.balance || 10000).toFixed(2)}</div>
+          <div className="text-xs font-bold font-mono text-slate-300">${Number(data.balance || 20).toFixed(2)}</div>
         </div>
         <div className="bg-void/20 rounded-lg p-2 border border-white/[0.03]">
           <div className="text-[8px] text-slate-500 uppercase tracking-wider">Peak Balance</div>
-          <div className="text-xs font-bold font-mono text-slate-400">${Number(data.peakBalance || 10000).toFixed(2)}</div>
+          <div className="text-xs font-bold font-mono text-slate-400">${Number(data.peakBalance || 20).toFixed(2)}</div>
         </div>
       </div>
 
