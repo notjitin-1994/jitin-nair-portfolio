@@ -172,18 +172,18 @@ const RegimeGauge = memo(function RegimeGauge() {
               </div>
               <TimeframeBar
                 label="M5"
-                regime={regime.features?.m5?.regime || regime.regime}
-                confidence={regime.features?.m5?.confidence ?? regime.confidence}
+                regime={regime.features?.m5?.regime || 'UNCERTAIN'}
+                confidence={regime.features?.m5?.confidence ?? 0}
               />
               <TimeframeBar
                 label="M15"
-                regime={regime.features?.m15?.regime || regime.regime}
-                confidence={regime.features?.m15?.confidence ?? regime.confidence * 0.8}
+                regime={regime.features?.m15?.regime || 'UNCERTAIN'}
+                confidence={regime.features?.m15?.confidence ?? 0}
               />
               <TimeframeBar
                 label="H1"
-                regime={regime.features?.h1?.regime || regime.regime}
-                confidence={regime.features?.h1?.confidence ?? regime.confidence * 0.85}
+                regime={regime.features?.h1?.regime || 'UNCERTAIN'}
+                confidence={regime.features?.h1?.confidence ?? 0}
               />
             </div>
 
