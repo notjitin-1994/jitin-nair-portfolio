@@ -103,7 +103,7 @@ export default function ExecutionPanel() {
         <div className="flex items-center gap-2">
           <Zap className="w-4 h-4 text-amber-400" />
           <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-medium">
-            Execution Engine
+            Ares: Battlefield Commander
           </span>
         </div>
         <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${

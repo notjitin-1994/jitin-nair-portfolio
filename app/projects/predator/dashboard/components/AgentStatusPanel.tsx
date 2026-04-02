@@ -72,14 +72,13 @@ const agentPantheon: Record<string, { god: string; title: string; icon: any; acc
     accent: 'text-emerald-400', 
     accentBg: 'bg-emerald-400' 
   },
-  'Execution Agent': { 
-    god: 'Ares', 
-    title: 'The Battlefield Commander', 
-    icon: ShieldCheck, 
-    accent: 'text-red-400', 
-    accentBg: 'bg-red-400' 
-  },
-  'News Ingestion': { 
+  'Ares': {
+    god: 'Ares',
+    title: 'The Battlefield Commander',
+    icon: ShieldCheck,
+    accent: 'text-red-400',
+    accentBg: 'bg-red-400'
+  },  'News Ingestion': { 
     god: 'Pheme', 
     title: 'The Voice of Sentiment', 
     icon: MessageSquare, 
