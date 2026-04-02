@@ -9,8 +9,7 @@ import { DashboardProvider, useDashboard } from './context/DashboardContext';
 // Components
 import RegimeGauge from './components/RegimeGauge';
 import SignalCard from './components/SignalCard';
-import OpenPositions from './components/OpenPositions';
-import RecentTrades from './components/RecentTrades';
+import AresCommandCenter from './components/AresCommandCenter';
 import NewsStream from './components/NewsStream';
 import AgentStatusPanel from './components/AgentStatusPanel';
 import RegimeDisplay from './components/RegimeDisplay';
@@ -84,8 +83,7 @@ function DashboardContent() {
               <NewsStream />
             </div>
             <div className="grid grid-cols-1 gap-6">
-              <OpenPositions />
-              <RecentTrades />
+              <AresCommandCenter />
             </div>
           </div>
 
