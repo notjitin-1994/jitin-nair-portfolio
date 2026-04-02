@@ -127,8 +127,13 @@ const TradeRow = ({ trade }: any) => {
 export default function AresCommandCenter() {
   const { ares, positions, trades, connectionStatus } = useDashboard();
   const [activeTab, setActiveTab] = useState<'live' | 'history'>('live');
+  const [isClient, setIsClient] = useState(false);
 
-  if (!ares) return null;
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!ares || !isClient) return null;
 
   const totalPnl = trades.reduce((sum, t) => sum + t.pnl, 0);
   const totalPnlColor = totalPnl >= 0 ? 'emerald' : 'red';
