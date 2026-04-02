@@ -45,15 +45,15 @@ export const useDashboard = () => {
 
 const MOCK_ARES: AresMetrics = {
   mode: 'paper',
-  balance: 102450.75,
-  peakBalance: 105000.00,
-  dailyPnl: 1250.25,
-  dailyPnlPercent: 1.22,
+  balance: 20.00,
+  peakBalance: 25.00,
+  dailyPnl: 2.25,
+  dailyPnlPercent: 11.25,
   winRate: 70.2,
   totalTrades: 142,
   openPositions: 2,
-  dailyLossUsed: 450.00,
-  dailyLossLimit: 102450.75, // 100% Risk Appetite
+  dailyLossUsed: 0.45,
+  dailyLossLimit: 20.00, // 100% Risk Appetite
   drawdown: 0.45,
   maxDrawdown: 100.0, // 100% allowed
   riskStatus: 'CLEAR',
@@ -101,14 +101,14 @@ const MOCK_SIGNAL: SentinelData = {
 };
 
 const MOCK_TRADES: Trade[] = [
-  { id: 't1', direction: 'LONG', entryPrice: 2150.20, exitPrice: 2155.40, pnl: 520.00, pnlPercent: 0.24, closeReason: 'TP', duration: '45m', closedAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(), strategy: 'EMA_PULLBACK' },
-  { id: 't2', direction: 'SHORT', entryPrice: 2158.10, exitPrice: 2156.30, pnl: 180.00, pnlPercent: 0.08, closeReason: 'MANUAL', duration: '12m', closedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(), strategy: 'SCALPER_V4' },
-  { id: 't3', direction: 'LONG', entryPrice: 2145.50, exitPrice: 2142.10, pnl: -340.00, pnlPercent: -0.15, closeReason: 'SL', duration: '1h 5m', closedAt: new Date(Date.now() - 1000 * 60 * 240).toISOString(), strategy: 'BREAKOUT' },
-  { id: 't4', direction: 'LONG', entryPrice: 2140.20, exitPrice: 2148.90, pnl: 870.00, pnlPercent: 0.41, closeReason: 'TP', duration: '2h 10m', closedAt: new Date(Date.now() - 1000 * 60 * 480).toISOString(), strategy: 'EMA_PULLBACK' }
+  { id: 't1', direction: 'LONG', entryPrice: 2150.20, exitPrice: 2155.40, pnl: 0.52, pnlPercent: 0.24, closeReason: 'TP', duration: '45m', closedAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(), strategy: 'EMA_PULLBACK' },
+  { id: 't2', direction: 'SHORT', entryPrice: 2158.10, exitPrice: 2156.30, pnl: 0.18, pnlPercent: 0.08, closeReason: 'MANUAL', duration: '12m', closedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(), strategy: 'SCALPER_V4' },
+  { id: 't3', direction: 'LONG', entryPrice: 2145.50, exitPrice: 2142.10, pnl: -0.34, pnlPercent: -0.15, closeReason: 'SL', duration: '1h 5m', closedAt: new Date(Date.now() - 1000 * 60 * 240).toISOString(), strategy: 'BREAKOUT' },
+  { id: 't4', direction: 'LONG', entryPrice: 2140.20, exitPrice: 2148.90, pnl: 0.87, pnlPercent: 0.41, closeReason: 'TP', duration: '2h 10m', closedAt: new Date(Date.now() - 1000 * 60 * 480).toISOString(), strategy: 'EMA_PULLBACK' }
 ];
 
 const MOCK_POSITIONS: Position[] = [
-  { id: 'p1', direction: 'LONG', entryPrice: 2160.40, currentPrice: 2162.15, pnl: 175.00, pnlPercent: 0.08, sl: 2155.00, tp: 2175.00, progress: 35, strategy: 'EMA_PULLBACK', openedAt: new Date(Date.now() - 1000 * 60 * 20).toISOString() }
+  { id: 'p1', direction: 'LONG', entryPrice: 2160.40, currentPrice: 2162.15, pnl: 0.17, pnlPercent: 0.08, sl: 2155.00, tp: 2175.00, progress: 35, strategy: 'EMA_PULLBACK', openedAt: new Date(Date.now() - 1000 * 60 * 20).toISOString() }
 ];
 
 // ============================================================================
@@ -121,7 +121,7 @@ const WS_URL = (API_URL || '').replace(/^http/, 'ws') + '/api/v1/pulse';
 export function DashboardProvider({ children }: { children: React.ReactNode }) {
   // Data state initialized with high-quality mock for portfolio presentation
   const [data, setData] = useState<DashboardData>({
-    price: { symbol: 'XAUUSD', price: 2162.15, timestamp: new Date().toISOString(), source: 'cTrader', change: 12.5, changePercent: 0.58 },
+    price: { symbol: 'XAUUSD', price: 2162.15, timestamp: new Date().toISOString(), source: 'cTrader', change: 0.25, changePercent: 0.01 },
     macro: {},
     agents: MOCK_AGENTS,
     regime: MOCK_REGIME,
