@@ -183,7 +183,7 @@ export default function AresCommandCenter() {
         <StatCard 
           label="Today's Spoils" 
           value={`${ares.dailyPnl >= 0 ? '+' : ''}$${ares.dailyPnl.toFixed(2)}`} 
-          subvalue={`${ares.dailyPnlPercent >= 0 ? '+' : ''}${ares.dailyPnlPercent.toFixed(2)}%`}
+          subvalue={`${(ares.dailyPnlPercent ?? 0) >= 0 ? '+' : ''}${(ares.dailyPnlPercent ?? 0).toFixed(2)}%`}
           icon={Activity} 
           color={dailyPnlColor} 
         />

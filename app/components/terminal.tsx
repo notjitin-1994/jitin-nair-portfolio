@@ -536,6 +536,8 @@ const isValidEmail = (email: string): boolean => {
   return emailRegex.test(email.trim());
 };
 
+const buttons = ["download", "projects"] as const;
+
 export function Terminal({
   className,
   username = "jitin",
@@ -571,7 +573,6 @@ export function Terminal({
 
   // Keyboard navigation
   const [selectedButton, setSelectedButton] = useState(0);
-  const buttons = ["download", "projects"] as const;
 
   const getPrompt = useCallback(() => `${username}@${hostname}:~$ `, [username, hostname]);
 

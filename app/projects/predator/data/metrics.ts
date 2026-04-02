@@ -192,4 +192,5 @@ export const architectureSteps = [
   }
 ];
 
-export default { metrics, processSteps, architectureSteps };
+const metricsData = { metrics, processSteps, architectureSteps };
+export default metricsData;

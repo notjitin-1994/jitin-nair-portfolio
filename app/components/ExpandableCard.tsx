@@ -128,11 +128,11 @@ export default function ExpandableCard({
   const handleClose = useCallback(() => {
     setIsExpanded(false);
     setActiveTab('overview');
-  }, []);
+  }, [setIsExpanded]);
 
   const handleExpand = useCallback(() => {
     setIsExpanded(true);
-  }, []);
+  }, [setIsExpanded]);
 
   if (isDesktop) {
     return (
