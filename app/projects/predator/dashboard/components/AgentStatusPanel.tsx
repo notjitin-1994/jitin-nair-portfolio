@@ -44,28 +44,28 @@ const statusLabel: Record<string, string> = {
 
 // Pantheon Mapping & Configuration
 const agentPantheon: Record<string, { god: string; title: string; icon: any; accent: string; accentBg: string }> = {
-  'Data Ingestion': { 
+  'Hermes': { 
     god: 'Hermes', 
     title: 'The Swift Messenger', 
     icon: Database, 
     accent: 'text-cyan-400', 
     accentBg: 'bg-cyan-400' 
   },
-  'Regime Detection': { 
+  'Argus': { 
     god: 'Argus', 
     title: 'The All-Seeing Observer', 
     icon: Eye, 
     accent: 'text-indigo-400', 
     accentBg: 'bg-indigo-400' 
   },
-  'Strategy Selector': { 
+  'Athena': { 
     god: 'Athena', 
     title: 'The Strategic Tactician', 
     icon: StrategyIcon, 
     accent: 'text-amber-400', 
     accentBg: 'bg-amber-400' 
   },
-  'Sentinel Oracle': { 
+  'Apollo': { 
     god: 'Apollo', 
     title: 'The Bayesian Prophet', 
     icon: Activity, 
@@ -78,13 +78,21 @@ const agentPantheon: Record<string, { god: string; title: string; icon: any; acc
     icon: ShieldCheck,
     accent: 'text-red-400',
     accentBg: 'bg-red-400'
-  },  'News Ingestion': { 
+  },
+  'Pheme': { 
     god: 'Pheme', 
     title: 'The Voice of Sentiment', 
     icon: MessageSquare, 
     accent: 'text-violet-400', 
     accentBg: 'bg-violet-400' 
   },
+  'Sentinel': {
+    god: 'Sentinel',
+    title: 'The MLOps Guardian',
+    icon: ShieldCheck,
+    accent: 'text-blue-400',
+    accentBg: 'bg-blue-400'
+  }
 };
 
 function MicroBar({ value, max = 100, color }: { value: number | undefined; max?: number; color: string }) {
@@ -173,16 +181,16 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
 
               {/* Key metric */}
               <div className="hidden sm:flex items-center gap-2 text-[10px] text-slate-500 font-mono font-bold">
-                {agent.name === 'Data Ingestion' && agent.barsToday !== undefined && (
+                {agent.name === 'Hermes' && agent.barsToday !== undefined && (
                   <span className="text-cyan-400/80">{agent.barsToday} bars</span>
                 )}
-                {agent.name === 'Regime Detection' && agent.lastRegime && (
+                {agent.name === 'Argus' && agent.lastRegime && (
                   <span className="text-indigo-400/80">{agent.lastRegime}</span>
                 )}
-                {agent.name === 'Strategy Selector' && agent.strategy && (
+                {agent.name === 'Athena' && agent.strategy && (
                   <span className="text-amber-400/80 truncate max-w-[80px]">{agent.strategy}</span>
                 )}
-                {agent.name === 'Sentinel Oracle' && agent.lastSignal && (
+                {agent.name === 'Apollo' && agent.lastSignal && (
                   <span className="text-emerald-400/80">{agent.lastSignal}</span>
                 )}
               </div>
@@ -243,10 +251,10 @@ export default function AgentStatusPanel({ agents, isLoading, error }: AgentStat
                     {(agent.barsToday !== undefined || agent.lastRegime !== undefined || agent.strategy !== undefined || agent.lastSignal !== undefined) && (
                       <div className="mt-4 p-3 rounded-lg bg-void/60 border border-white/[0.04] text-[10px] font-mono text-slate-400 leading-relaxed shadow-inner">
                         <div className="text-slate-500 uppercase text-[8px] font-black mb-1 tracking-tighter">Live Telemetry Output</div>
-                        {agent.name === 'Data Ingestion' && agent.barsToday !== undefined && <span>Status: {cfg.god} is streaming market consciousness. {agent.barsToday || 0} bars synced.</span>}
-                        {agent.name === 'Regime Detection' && agent.lastRegime && <span>Classification: {cfg.god} identifies <b className="text-slate-200">{agent.lastRegime}</b> with {agent.confidence ? `${(Number(agent.confidence) * 100).toFixed(1)}%` : '--'} structural confidence.</span>}
-                        {agent.name === 'Strategy Selector' && <span>Directive: {cfg.god} has authorized <b className="text-slate-200">{agent.strategy?.replace?.(/_/g, ' ') || 'NEUTRAL'}</b> from the node pool.</span>}
-                        {agent.name === 'Sentinel Oracle' && agent.lastSignal && <span>Oracle Consensus: {cfg.god} has issued a <b className="text-slate-200">{agent.lastSignal || 'WAIT'}</b> decree.</span>}
+                        {agent.name === 'Hermes' && agent.barsToday !== undefined && <span>Status: {cfg.god} is streaming market consciousness. {agent.barsToday || 0} bars synced.</span>}
+                        {agent.name === 'Argus' && agent.lastRegime && <span>Classification: {cfg.god} identifies <b className="text-slate-200">{agent.lastRegime}</b> with {agent.confidence ? `${(Number(agent.confidence) * 100).toFixed(1)}%` : '--'} structural confidence.</span>}
+                        {agent.name === 'Athena' && <span>Directive: {cfg.god} has authorized <b className="text-slate-200">{agent.strategy?.replace?.(/_/g, ' ') || 'NEUTRAL'}</b> from the node pool.</span>}
+                        {agent.name === 'Apollo' && agent.lastSignal && <span>Oracle Consensus: {cfg.god} has issued a <b className="text-slate-200">{agent.lastSignal || 'WAIT'}</b> decree.</span>}
                       </div>
                     )}
 

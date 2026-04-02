@@ -131,6 +131,7 @@ const RiskMonitor = memo(function RiskMonitor() {
 
   const getRiskStatusColor = () => {
     if (!ares) return 'text-slate-500';
+    if (ares.mode === 'paper') return 'text-cyan-400';
     if (ares.riskStatus === 'BLOCKED') return 'text-red-400';
     if (ares.riskStatus === 'CAUTION') return 'text-amber-400';
     return 'text-emerald-400';
@@ -138,6 +139,7 @@ const RiskMonitor = memo(function RiskMonitor() {
 
   const getRiskStatusBg = () => {
     if (!ares) return 'bg-slate-500/10';
+    if (ares.mode === 'paper') return 'bg-cyan-500/10';
     if (ares.riskStatus === 'BLOCKED') return 'bg-red-500/10';
     if (ares.riskStatus === 'CAUTION') return 'bg-amber-500/10';
     return 'bg-emerald-500/10';
@@ -162,7 +164,7 @@ const RiskMonitor = memo(function RiskMonitor() {
                 Risk Monitor
               </h3>
               <p className={`text-[9px] ${getRiskStatusColor()}`}>
-                {ares?.riskStatus || 'UNKNOWN'}
+                {ares?.mode === 'paper' ? 'AGGRESSIVE' : (ares?.riskStatus || 'UNKNOWN')}
               </p>
             </div>
           </div>
@@ -212,13 +214,13 @@ const RiskMonitor = memo(function RiskMonitor() {
                 label="Drawdown"
                 value={`${(ares.drawdown ?? 0).toFixed(2)}%`}
                 subvalue={`Max: ${(ares.maxDrawdown ?? 0).toFixed(2)}%`}
-                color={(ares.drawdown ?? 0) > 5 ? 'amber' : 'emerald'}
+                color={(ares.drawdown ?? 0) > 5 && ares.mode !== 'paper' ? 'amber' : 'emerald'}
               />
               <MetricCard
                 icon={Target}
                 label="Positions"
                 value={(ares.openPositions ?? 0).toString()}
-                subvalue={`Limit: ${(positions?.length ?? 0) + 3}`}
+                subvalue={ares.mode === 'paper' ? 'Limit: 50' : `Limit: ${(positions?.length ?? 0) + 3}`}
                 color="violet"
               />
             </div>
@@ -230,35 +232,37 @@ const RiskMonitor = memo(function RiskMonitor() {
                 <div className="flex-1 space-y-2">
                   <RiskGauge
                     value={ares.dailyLossUsed ?? 0}
-                    max={ares.dailyLossLimit ?? 1000}
-                    label="Daily Loss"
-                    warningThreshold={0.6}
-                    dangerThreshold={0.85}
+                    max={ares.mode === 'paper' ? ares.balance : (ares.dailyLossLimit ?? 1000)}
+                    label={ares.mode === 'paper' ? "Paper Loss Used" : "Daily Loss"}
+                    warningThreshold={ares.mode === 'paper' ? 0.99 : 0.6}
+                    dangerThreshold={ares.mode === 'paper' ? 1.0 : 0.85}
                   />
                   <RiskGauge
                     value={ares.drawdown ?? 0}
-                    max={Math.max((ares.maxDrawdown ?? 0) * 1.5, 10)}
-                    label="Drawdown"
-                    warningThreshold={0.5}
-                    dangerThreshold={0.8}
+                    max={ares.mode === 'paper' ? 100 : Math.max((ares.maxDrawdown ?? 0) * 1.5, 10)}
+                    label={ares.mode === 'paper' ? "Full Drawdown" : "Drawdown"}
+                    warningThreshold={ares.mode === 'paper' ? 0.9 : 0.5}
+                    dangerThreshold={ares.mode === 'paper' ? 0.98 : 0.8}
                   />
                 </div>
               </div>
             </div>
 
             {/* Compact Risk Status Alert */}
-            {ares.riskStatus !== 'CLEAR' && (
+            {(ares.riskStatus !== 'CLEAR' || ares.mode === 'paper') && (
               <div className={`p-2 rounded-lg ${getRiskStatusBg()}`}>
                 <div className="flex items-start gap-2">
                   <AlertTriangle className={`w-3.5 h-3.5 ${getRiskStatusColor()} flex-shrink-0 mt-0.5`} />
                   <div>
                     <p className={`text-[10px] font-medium ${getRiskStatusColor()}`}>
-                      Risk {ares.riskStatus === 'BLOCKED' ? 'Blocked' : 'Caution'}
+                      {ares.mode === 'paper' ? 'Paper Mode Active' : `Risk ${ares.riskStatus === 'BLOCKED' ? 'Blocked' : 'Caution'}`}
                     </p>
-                    <p className="text-[8px] text-slate-400 mt-0.5">
-                      {ares.riskStatus === 'BLOCKED'
-                        ? 'Trading halted'
-                        : 'Approaching thresholds'
+                    <p className="text-[8px] text-slate-400 mt-0.5 leading-tight">
+                      {ares.mode === 'paper' 
+                        ? '100% Risk Appetite - Capturing maximum data points for model optimization.'
+                        : ares.riskStatus === 'BLOCKED'
+                          ? 'Trading halted'
+                          : 'Approaching thresholds'
                       }
                     </p>
                   </div>
@@ -267,7 +271,7 @@ const RiskMonitor = memo(function RiskMonitor() {
             )}
 
             {/* Compact Cooldown */}
-            {ares.cooldown && (
+            {ares.cooldown && ares.mode !== 'paper' && (
               <div className="flex items-center justify-between p-2 bg-amber-500/10 rounded-lg border border-amber-500/20">
                 <div className="flex items-center gap-1.5">
                   <Activity className="w-3 h-3 text-amber-400" />

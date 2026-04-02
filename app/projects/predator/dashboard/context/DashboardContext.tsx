@@ -9,7 +9,8 @@ import {
   Position,
   Trade,
   StrategyState,
-  PulseUpdate
+  PulseUpdate,
+  RegimeData
 } from '../types/dashboard';
 
 // ============================================================================
@@ -39,6 +40,78 @@ export const useDashboard = () => {
 };
 
 // ============================================================================
+// Mock Data (V4.0 - Paper Mode 100% Risk)
+// ============================================================================
+
+const MOCK_ARES: AresMetrics = {
+  mode: 'paper',
+  balance: 102450.75,
+  peakBalance: 105000.00,
+  dailyPnl: 1250.25,
+  dailyPnlPercent: 1.22,
+  winRate: 70.2,
+  totalTrades: 142,
+  openPositions: 2,
+  dailyLossUsed: 450.00,
+  dailyLossLimit: 102450.75, // 100% Risk Appetite
+  drawdown: 0.45,
+  maxDrawdown: 100.0, // 100% allowed
+  riskStatus: 'CLEAR',
+  cooldown: null
+};
+
+const MOCK_AGENTS: AgentStatus[] = [
+  { name: 'Hermes', status: 'active', uptime: '14d 2h', cpu: 1.2, memory: 45, lastSeen: new Date().toISOString() },
+  { name: 'Argus', status: 'active', uptime: '14d 2h', cpu: 4.5, memory: 120, lastSeen: new Date().toISOString(), lastRegime: 'TREND_UP' },
+  { name: 'Athena', status: 'active', uptime: '14d 2h', cpu: 2.1, memory: 85, lastSeen: new Date().toISOString(), strategy: 'EMA_PULLBACK' },
+  { name: 'Apollo', status: 'active', uptime: '14d 2h', cpu: 3.8, memory: 150, lastSeen: new Date().toISOString(), lastSignal: 'LONG' },
+  { name: 'Sentinel', status: 'active', uptime: '14d 2h', cpu: 0.5, memory: 30, lastSeen: new Date().toISOString() }
+];
+
+const MOCK_REGIME: RegimeData = {
+  regime: 'TREND_UP',
+  confidence: 0.88,
+  timestamp: new Date().toISOString(),
+  volatility: 0.0012,
+  trendStrength: 0.75,
+  hmm_confidence: 0.92,
+  changePointProb: 0.05,
+  runLength: 14,
+  features: {
+    m5: { regime: 'TREND_UP', confidence: 0.88 },
+    m15: { regime: 'TREND_UP', confidence: 0.82 },
+    h1: { regime: 'RANGE', confidence: 0.65 }
+  }
+};
+
+const MOCK_SIGNAL: SentinelData = {
+  signal: 'ENTER_LONG',
+  confidence: 0.85,
+  regime: 'TREND_UP',
+  logic: 'Strong bullish alignment across M5/M15 with positive OFI (+0.42) and macro support from DXY weakness.',
+  timestamp: new Date().toISOString(),
+  data_used: {
+    dxy_change: -0.15,
+    ofi: 0.42,
+    sentiment: 0.65,
+    prob_long: 0.85,
+    prob_short: 0.05,
+    prob_wait: 0.10
+  }
+};
+
+const MOCK_TRADES: Trade[] = [
+  { id: 't1', direction: 'LONG', entryPrice: 2150.20, exitPrice: 2155.40, pnl: 520.00, pnlPercent: 0.24, closeReason: 'TP', duration: '45m', closedAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(), strategy: 'EMA_PULLBACK' },
+  { id: 't2', direction: 'SHORT', entryPrice: 2158.10, exitPrice: 2156.30, pnl: 180.00, pnlPercent: 0.08, closeReason: 'MANUAL', duration: '12m', closedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(), strategy: 'SCALPER_V4' },
+  { id: 't3', direction: 'LONG', entryPrice: 2145.50, exitPrice: 2142.10, pnl: -340.00, pnlPercent: -0.15, closeReason: 'SL', duration: '1h 5m', closedAt: new Date(Date.now() - 1000 * 60 * 240).toISOString(), strategy: 'BREAKOUT' },
+  { id: 't4', direction: 'LONG', entryPrice: 2140.20, exitPrice: 2148.90, pnl: 870.00, pnlPercent: 0.41, closeReason: 'TP', duration: '2h 10m', closedAt: new Date(Date.now() - 1000 * 60 * 480).toISOString(), strategy: 'EMA_PULLBACK' }
+];
+
+const MOCK_POSITIONS: Position[] = [
+  { id: 'p1', direction: 'LONG', entryPrice: 2160.40, currentPrice: 2162.15, pnl: 175.00, pnlPercent: 0.08, sl: 2155.00, tp: 2175.00, progress: 35, strategy: 'EMA_PULLBACK', openedAt: new Date(Date.now() - 1000 * 60 * 20).toISOString() }
+];
+
+// ============================================================================
 // Provider
 // ============================================================================
 
@@ -46,23 +119,23 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 const WS_URL = (API_URL || '').replace(/^http/, 'ws') + '/api/v1/pulse';
 
 export function DashboardProvider({ children }: { children: React.ReactNode }) {
-  // Data state
+  // Data state initialized with high-quality mock for portfolio presentation
   const [data, setData] = useState<DashboardData>({
-    price: null,
+    price: { symbol: 'XAUUSD', price: 2162.15, timestamp: new Date().toISOString(), source: 'cTrader', change: 12.5, changePercent: 0.58 },
     macro: {},
-    agents: [],
-    regime: null,
-    signal: null,
-    positions: [],
-    trades: [],
-    ares: null,
-    strategy: null,
+    agents: MOCK_AGENTS,
+    regime: MOCK_REGIME,
+    signal: MOCK_SIGNAL,
+    positions: MOCK_POSITIONS,
+    trades: MOCK_TRADES,
+    ares: MOCK_ARES,
+    strategy: { current: { strategy_id: 'EMA_PULLBACK', regime: 'TREND_UP', confidence_score: 0.85, selection_reason: 'Trend persistence' } },
     news: [],
-    health: null,
+    health: { status: 'healthy', timestamp: new Date().toISOString(), version: '4.0.0' },
   });
 
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected' | 'error'>('connecting');
-  const [lastUpdate, setLastUpdate] = useState<string>('');
+  const [lastUpdate, setLastUpdate] = useState<string>(new Date().toLocaleTimeString());
 
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -70,7 +143,6 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
   // 1. Snapshot Fetch (Fallback/Initial)
   const fetchSnapshot = useCallback(async () => {
-    // If pulse is already connected and delivering, skip expensive REST fetch
     if (hasReceivedInitialPulse.current) return;
 
     try {
@@ -95,9 +167,11 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       }));
       
       setLastUpdate(new Date().toLocaleTimeString());
+      setConnectionStatus('connected');
     } catch (err) {
-      console.error('Initial snapshot fetch failed:', err);
-      // Don't set error status here, let WS try to connect
+      // In portfolio mode, we keep mock data but set status to disconnected to show it's a demo
+      console.log('API not reachable, maintaining high-quality mock state for demo.');
+      setConnectionStatus('disconnected');
     }
   }, []);
 
@@ -105,67 +179,48 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   const connectPulse = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
-    console.log('📡 Attempting connection to Predator Pulse...');
-    const ws = new WebSocket(WS_URL);
-    wsRef.current = ws;
+    try {
+      const ws = new WebSocket(WS_URL);
+      wsRef.current = ws;
 
-    ws.onopen = () => {
-      console.log('✅ Connected to Predator Pulse stream');
-      setConnectionStatus('connected');
-    };
+      ws.onopen = () => {
+        setConnectionStatus('connected');
+      };
 
-    ws.onmessage = (event) => {
-      try {
-        const update: any = JSON.parse(event.data);
-        
-        // Handle protocol-level pulse updates
-        if (update.type === 'PULSE_UPDATE') {
-          hasReceivedInitialPulse.current = true;
-          setData(prev => ({
-            ...prev,
-            ...update.data,
-            health: { status: 'healthy', timestamp: new Date().toISOString() }
-          }));
-          setLastUpdate(new Date().toLocaleTimeString());
-          setConnectionStatus('connected');
+      ws.onmessage = (event) => {
+        try {
+          const update: any = JSON.parse(event.data);
+          if (update.type === 'PULSE_UPDATE') {
+            hasReceivedInitialPulse.current = true;
+            setData(prev => ({
+              ...prev,
+              ...update.data
+            }));
+            setLastUpdate(new Date().toLocaleTimeString());
+          }
+        } catch (err) {
+          console.error('Pulse error:', err);
         }
-      } catch (err) {
-        console.error('Pulse update processing error:', err);
-      }
-    };
+      };
 
-    ws.onclose = (event) => {
-      if (event.wasClean) {
-        console.log('🔌 Pulse stream closed cleanly');
-      } else {
-        console.warn('🔌 Pulse stream lost. Reconnecting in 5s...');
-      }
+      ws.onclose = () => {
+        if (!hasReceivedInitialPulse.current) {
+          setConnectionStatus('disconnected');
+        }
+      };
+    } catch (e) {
       setConnectionStatus('disconnected');
-      hasReceivedInitialPulse.current = false;
-      
-      // Clear existing timeout
-      if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
-      
-      // Reconnect with 5s delay to prevent hammering
-      reconnectTimeoutRef.current = setTimeout(() => {
-        connectPulse();
-      }, 5000);
-    };
-
-    ws.onerror = (err) => {
-      console.error('Pulse stream WebSocket error:', err);
-      setConnectionStatus('error');
-    };
+    }
   }, []);
 
   // Lifecycle
   useEffect(() => {
     fetchSnapshot();
-    connectPulse();
+    // connectPulse(); // Disabled for static portfolio to avoid error noise, let manual reconnect handle it
 
     return () => {
       if (wsRef.current) {
-        wsRef.current.onclose = null; // Prevent reconnect on unmount
+        wsRef.current.onclose = null;
         wsRef.current.close();
       }
       if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
@@ -174,13 +229,11 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
   // Public Interface
   const reconnect = useCallback(() => {
-    if (wsRef.current) wsRef.current.close();
-    hasReceivedInitialPulse.current = false;
+    setConnectionStatus('connecting');
     connectPulse();
   }, [connectPulse]);
 
   const refresh = useCallback(async () => {
-    hasReceivedInitialPulse.current = false;
     await fetchSnapshot();
   }, [fetchSnapshot]);
 

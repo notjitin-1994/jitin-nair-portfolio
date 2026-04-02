@@ -201,10 +201,10 @@ export default function AresCommandCenter() {
         />
         <StatCard 
           label="Combat Stress" 
-          value={`${ares.drawdown.toFixed(2)}%`} 
-          subvalue={`Max: ${ares.maxDrawdown.toFixed(1)}%`}
+          value={ares.mode === 'paper' ? 'UNRESTRICTED' : `${ares.drawdown.toFixed(2)}%`} 
+          subvalue={ares.mode === 'paper' ? 'MAX: 100%' : `Max: ${ares.maxDrawdown.toFixed(1)}%`}
           icon={Shield} 
-          color={ares.drawdown > 3 ? 'amber' : 'emerald'} 
+          color={ares.mode === 'paper' ? 'emerald' : (ares.drawdown > 3 ? 'amber' : 'emerald')} 
         />
       </div>
 
@@ -278,12 +278,12 @@ export default function AresCommandCenter() {
             <span className="text-[8px] text-slate-600 uppercase font-black tracking-widest">Risk Authority</span>
             <div className="flex items-center gap-1.5 mt-0.5">
               <div className={`w-1.5 h-1.5 rounded-full ${
-                ares.riskStatus === 'CLEAR' ? 'bg-emerald-400' : ares.riskStatus === 'CAUTION' ? 'bg-amber-400' : 'bg-red-400'
+                ares.mode === 'paper' ? 'bg-cyan-400' : (ares.riskStatus === 'CLEAR' ? 'bg-emerald-400' : ares.riskStatus === 'CAUTION' ? 'bg-amber-400' : 'bg-red-400')
               }`} />
               <span className={`text-[10px] font-black font-mono ${
-                ares.riskStatus === 'CLEAR' ? 'text-emerald-400' : ares.riskStatus === 'CAUTION' ? 'text-amber-400' : 'text-red-400'
+                ares.mode === 'paper' ? 'text-cyan-400' : (ares.riskStatus === 'CLEAR' ? 'text-emerald-400' : ares.riskStatus === 'CAUTION' ? 'text-amber-400' : 'text-red-400')
               }`}>
-                {ares.riskStatus}
+                {ares.mode === 'paper' ? 'AGGRESSIVE' : ares.riskStatus}
               </span>
             </div>
           </div>
@@ -295,12 +295,12 @@ export default function AresCommandCenter() {
             <div className="flex items-center gap-2 mt-0.5">
               <div className="w-24 h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-red-500/40 rounded-full" 
-                  style={{ width: `${Math.min((ares.dailyLossUsed / ares.dailyLossLimit) * 100, 100)}%` }} 
+                  className={`h-full rounded-full ${ares.mode === 'paper' ? 'bg-cyan-500/40' : 'bg-red-500/40'}`}
+                  style={{ width: `${ares.mode === 'paper' ? 100 : Math.min((ares.dailyLossUsed / ares.dailyLossLimit) * 100, 100)}%` }} 
                 />
               </div>
               <span className="text-[9px] font-bold font-mono text-slate-400">
-                ${ares.dailyLossUsed.toFixed(0)} / ${ares.dailyLossLimit.toFixed(0)}
+                {ares.mode === 'paper' ? 'UNRESTRICTED' : `$${ares.dailyLossUsed.toFixed(0)} / $${ares.dailyLossLimit.toFixed(0)}`}
               </span>
             </div>
           </div>
