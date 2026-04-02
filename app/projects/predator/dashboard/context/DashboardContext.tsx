@@ -87,7 +87,9 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         signal: snapshot.sentinel,
         macro: snapshot.macro || {},
         news: snapshot.news || [],
-        ares: snapshot.execution,
+        positions: snapshot.positions || [],
+        trades: snapshot.trades || [],
+        ares: snapshot.ares || snapshot.execution,
         strategy: snapshot.strategy,
         health: { status: 'healthy', timestamp: new Date().toISOString() }
       }));
