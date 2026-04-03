@@ -4,20 +4,28 @@ import { useEffect, useState, useMemo } from "react";
 import { usePredatorSocket } from "@/lib/predator/usePredatorSocket";
 import { PredatorChart } from "@/components/predator/PredatorChart";
 import { AgentCommandCenter } from "@/components/predator/AgentCommandCenter";
-import { Activity, Cpu, ShieldAlert, Crosshair, AlertTriangle, Clock } from "lucide-react";
+import { Activity, Cpu, ShieldAlert, Crosshair, AlertTriangle, Clock, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 
 export default function DashboardPage() {
   const { isConnected, lastTick, lastRegime, lastSignal, setLastRegime, setLastSignal } = usePredatorSocket();
   const [ticks, setTicks] = useState<any[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [account, setAccount] = useState<any>(null);
 
   const API_BASE_URL = "https://api.glitchzerolabs.com";
+
+  const fetchAccountStats = () => {
+    fetch(`${API_BASE_URL}/api/v1/execution/account`)
+      .then(res => res.json())
+      .then(data => setAccount(data))
+      .catch(() => {});
+  };
 
   useEffect(() => {
     setIsMounted(true);
     
-    // 1. Initial Market data fetch
+    // Initial fetch
     fetch(`${API_BASE_URL}/api/v1/market/current`)
       .then((res) => res.json())
       .then((data) => {
@@ -28,7 +36,6 @@ export default function DashboardPage() {
       })
       .catch((err) => console.error("Initial fetch failed", err));
 
-    // 2. Initial Intelligence fetch (Bootstrap state)
     fetch(`${API_BASE_URL}/api/v1/intelligence/regime`)
       .then(res => res.json())
       .then(data => { if (data && data.regime) setLastRegime(data); })
@@ -39,6 +46,9 @@ export default function DashboardPage() {
       .then(data => { if (data && data.signal) setLastSignal(data); })
       .catch(() => {});
 
+    fetchAccountStats();
+    const interval = setInterval(fetchAccountStats, 10000); // Polling account stats every 10s
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -47,12 +57,6 @@ export default function DashboardPage() {
       setLastUpdate(new Date());
     }
   }, [lastTick]);
-
-  useEffect(() => {
-    if (lastRegime || lastSignal) {
-      setLastUpdate(new Date());
-    }
-  }, [lastRegime, lastSignal]);
 
   const latestPrice = ticks.length > 0 ? (ticks[ticks.length - 1].bid || ticks[ticks.length - 1].price) : 0;
   
@@ -92,16 +96,16 @@ export default function DashboardPage() {
       icon: <ShieldAlert size={18} />,
       metrics: {
         "Mode": "PAPER",
-        "Risk": "1.0% per trade",
-        "Open Trades": "0"
+        "Balance": account ? `$${parseFloat(account.balance).toFixed(2)}` : "$0.00",
+        "Open Trades": account?.open_positions || "0"
       }
     }
-  ], [isConnected, lastRegime, lastSignal]);
+  ], [isConnected, lastRegime, lastSignal, account]);
 
   if (!isMounted) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-serif text-white uppercase tracking-tighter">
           Tactical Command <span className="text-cyan-400">Matrix</span>
@@ -130,10 +134,57 @@ export default function DashboardPage() {
         <PredatorChart data={ticks} />
       </div>
 
+      {/* Ares Capital Matrix (Detailed View) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <div className="bg-surface/40 border border-cyan-400/10 p-6 rounded-xl backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-4">
+               <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Total Capital</span>
+               <DollarSign size={14} className="text-cyan-400" />
+            </div>
+            <div className="text-3xl font-mono text-white font-bold tracking-tighter">
+               ${account ? parseFloat(account.balance).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}
+            </div>
+            <div className="mt-4 flex items-center space-x-2">
+               <span className="text-[9px] font-mono text-zinc-600 uppercase">Peak Balance:</span>
+               <span className="text-[10px] font-mono text-zinc-400">${account ? parseFloat(account.peak_balance).toFixed(2) : "0.00"}</span>
+            </div>
+         </div>
+
+         <div className="bg-surface/40 border border-cyan-400/10 p-6 rounded-xl backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-4">
+               <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Daily PnL</span>
+               {account?.daily_pnl >= 0 ? <TrendingUp size={14} className="text-green-400" /> : <TrendingDown size={14} className="text-red-400" />}
+            </div>
+            <div className={`text-3xl font-mono font-bold tracking-tighter ${account?.daily_pnl >= 0 ? "text-green-400" : "text-red-400"}`}>
+               {account?.daily_pnl >= 0 ? "+" : ""}${account ? account.daily_pnl.toFixed(2) : "0.00"}
+            </div>
+            <div className="mt-4 flex items-center space-x-2">
+               <div className="h-1 flex-1 bg-zinc-900 rounded-full overflow-hidden">
+                  <div className={`h-full ${account?.daily_pnl >= 0 ? "bg-green-500" : "bg-red-500"}`} style={{ width: '40%' }} />
+               </div>
+            </div>
+         </div>
+
+         <div className="bg-surface/40 border border-cyan-400/10 p-6 rounded-xl backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-4">
+               <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">System Drawdown</span>
+               <ShieldAlert size={14} className="text-yellow-500" />
+            </div>
+            <div className="text-3xl font-mono text-white font-bold tracking-tighter">
+               {account ? (((account.peak_balance - account.balance) / account.peak_balance) * 100).toFixed(2) : "0.00"}%
+            </div>
+            <div className="mt-4 flex items-center space-x-2 text-[9px] font-mono uppercase">
+               <span className={account?.open_positions > 0 ? "text-cyan-400 animate-pulse" : "text-zinc-600"}>
+                  Active Exposure: {account?.open_positions || 0} Positions
+               </span>
+            </div>
+         </div>
+      </div>
+
       <AgentCommandCenter agents={agentStatus as any} />
       
       {(lastSignal?.metadata || lastSignal?.probabilities || lastSignal?.signal) && (
-        <div className="bg-surface/30 border border-zinc-800/50 rounded-xl p-6 mt-6 backdrop-blur-sm">
+        <div className="bg-surface/30 border border-zinc-800/50 rounded-xl p-6 backdrop-blur-sm shadow-xl">
           <h3 className="text-xs font-mono text-zinc-500 uppercase mb-6 flex items-center tracking-[0.2em]">
             <AlertTriangle size={14} className="mr-2 text-yellow-500" />
             Bayesian Probability Engine
@@ -141,7 +192,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
              <div className="p-4 bg-void/50 rounded-lg border border-green-500/10 hover:border-green-500/30 transition-colors">
                <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Long)</div>
-               <div className="text-2xl text-green-400 font-mono font-bold">{( (lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100).toFixed(2)}%</div>
+               <div className="text-2xl text-green-400 font-mono font-bold">{((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100).toFixed(2)}%</div>
                <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
                   <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100)}%` }} />
                </div>
