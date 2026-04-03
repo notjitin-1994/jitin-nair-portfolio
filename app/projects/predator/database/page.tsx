@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Database, Table, ChevronLeft, ChevronRight, Hash } from "lucide-react";
 
 export default function DatabasePage() {
@@ -24,7 +24,8 @@ export default function DatabasePage() {
     { id: "market_bars_m5", name: "M5 Candles" },
     { id: "order_book_depth", name: "L2 Order Book" },
     { id: "regime_consensus", name: "Regime History" },
-    { id: "apollo_signals", name: "Signal History" }
+    { id: "apollo_signals", name: "Signal History" },
+    { id: "system_logs", name: "System Logs" }
   ];
 
   useEffect(() => {
@@ -36,8 +37,8 @@ export default function DatabasePage() {
         if (json.pagination) {
           setPagination(prev => ({
             ...prev,
-            total: json.pagination.total,
-            totalPages: json.pagination.totalPages
+            total: json.pagination.total || 0,
+            totalPages: json.pagination.totalPages || 0
           }));
         }
         setLoading(false);
@@ -55,7 +56,7 @@ export default function DatabasePage() {
   };
 
   const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && newPage <= pagination.totalPages) {
+    if (newPage >= 1 && (pagination.totalPages === 0 || newPage <= pagination.totalPages)) {
       setPagination(prev => ({ ...prev, page: newPage }));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -70,6 +71,15 @@ export default function DatabasePage() {
       setJumpPage("");
     }
   };
+
+  // INSTITUTIONAL FIX: Safely calculate page numbers to avoid RangeError
+  const pagesToShow = useMemo(() => {
+    const total = pagination.totalPages;
+    if (!total || total <= 0) return [];
+    const count = Math.min(5, total);
+    const start = Math.max(1, Math.min(pagination.page - 2, Math.max(1, total - 4)));
+    return Array.from({ length: count }, (_, i) => start + i).filter(p => p <= total);
+  }, [pagination.totalPages, pagination.page]);
 
   return (
     <div className="space-y-6">
@@ -123,13 +133,13 @@ export default function DatabasePage() {
             <tbody className="divide-y divide-zinc-800/30">
               {loading ? (
                 <tr>
-                  <td colSpan={15} className="px-6 py-24 text-center text-zinc-600 animate-pulse italic">
+                  <td colSpan={20} className="px-6 py-24 text-center text-zinc-600 animate-pulse italic">
                     Executing secure paged query...
                   </td>
                 </tr>
               ) : data.length === 0 ? (
                 <tr>
-                  <td colSpan={15} className="px-6 py-24 text-center text-zinc-600">
+                  <td colSpan={20} className="px-6 py-24 text-center text-zinc-600">
                     Query returned 0 results.
                   </td>
                 </tr>
@@ -148,7 +158,6 @@ export default function DatabasePage() {
           </table>
         </div>
 
-        {/* INSTITUTIONAL PAGINATION CONTROLS */}
         <div className="px-6 py-4 border-t border-zinc-800/50 bg-surface/30 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-[10px] font-mono text-zinc-500 uppercase flex items-center space-x-4">
             <span>Page {pagination.page} of {pagination.totalPages || 1}</span>
@@ -174,23 +183,19 @@ export default function DatabasePage() {
             </button>
             
             <div className="flex items-center space-x-1">
-               {[...Array(Math.min(5, pagination.totalPages))].map((_, i) => {
-                 const pageNum = Math.max(1, Math.min(pagination.page - 2, pagination.totalPages - 4)) + i;
-                 if (pageNum <= 0 || pageNum > pagination.totalPages) return null;
-                 return (
-                   <button
-                     key={pageNum}
-                     onClick={() => handlePageChange(pageNum)}
-                     className={`w-8 h-8 rounded text-[10px] font-mono transition-all ${
-                       pagination.page === pageNum 
-                       ? "bg-cyan-400/20 text-cyan-400 border border-cyan-400/40"
-                       : "text-zinc-600 hover:text-zinc-300"
-                     }`}
-                   >
-                     {pageNum}
-                   </button>
-                 );
-               })}
+               {pagesToShow.map((pageNum) => (
+                 <button
+                   key={pageNum}
+                   onClick={() => handlePageChange(pageNum)}
+                   className={`w-8 h-8 rounded text-[10px] font-mono transition-all ${
+                     pagination.page === pageNum 
+                     ? "bg-cyan-400/20 text-cyan-400 border border-cyan-400/40"
+                     : "text-zinc-600 hover:text-zinc-300"
+                   }`}
+                 >
+                   {pageNum}
+                 </button>
+               ))}
             </div>
 
             <button
