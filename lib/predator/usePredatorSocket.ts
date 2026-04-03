@@ -11,22 +11,40 @@ export function usePredatorSocket() {
   const [lastSystemLog, setLastSystemLog] = useState<any>(null);
 
   useEffect(() => {
+    // Load persisted state from localStorage on mount
+    const savedRegime = localStorage.getItem('predator_last_regime');
+    const savedSignal = localStorage.getItem('predator_last_signal');
+    
+    if (savedRegime) setLastRegime(JSON.parse(savedRegime));
+    if (savedSignal) setLastSignal(JSON.parse(savedSignal));
+
     const socket = socketService.connect();
 
     function onConnect() {
-      console.log("Hook: Socket connected");
       setIsConnected(true);
     }
 
     function onDisconnect() {
-      console.log("Hook: Socket disconnected");
       setIsConnected(false);
     }
 
-    function onTick(data: any) { setLastTick(data); }
-    function onRegime(data: any) { setLastRegime(data); }
-    function onSignal(data: any) { setLastSignal(data); }
-    function onSystemLog(data: any) { setLastSystemLog(data); }
+    function onTick(data: any) { 
+      setLastTick(data); 
+    }
+
+    function onRegime(data: any) { 
+      setLastRegime(data);
+      localStorage.setItem('predator_last_regime', JSON.stringify(data));
+    }
+
+    function onSignal(data: any) { 
+      setLastSignal(data);
+      localStorage.setItem('predator_last_signal', JSON.stringify(data));
+    }
+
+    function onSystemLog(data: any) { 
+      setLastSystemLog(data); 
+    }
 
     if (socket.connected) {
       setIsConnected(true);
@@ -49,5 +67,5 @@ export function usePredatorSocket() {
     };
   }, []);
 
-  return { isConnected, lastTick, lastRegime, lastSignal, lastSystemLog };
+  return { isConnected, lastTick, lastRegime, lastSignal, lastSystemLog, setLastRegime, setLastSignal };
 }

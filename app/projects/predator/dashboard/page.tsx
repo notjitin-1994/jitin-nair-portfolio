@@ -7,7 +7,7 @@ import { AgentCommandCenter } from "@/components/predator/AgentCommandCenter";
 import { Activity, Cpu, ShieldAlert, Crosshair, AlertTriangle, Clock } from "lucide-react";
 
 export default function DashboardPage() {
-  const { isConnected, lastTick, lastRegime, lastSignal } = usePredatorSocket();
+  const { isConnected, lastTick, lastRegime, lastSignal, setLastRegime, setLastSignal } = usePredatorSocket();
   const [ticks, setTicks] = useState<any[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
@@ -16,15 +16,31 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setIsMounted(true);
+    
+    // 1. Initial Market data fetch
     fetch(`${API_BASE_URL}/api/v1/market/current`)
       .then((res) => res.json())
       .then((data) => {
-        if (data && (data.timestamp || data.ts)) setTicks([data]);
+        if (data && (data.timestamp || data.ts)) {
+           setTicks([data]);
+           setLastUpdate(new Date());
+        }
       })
       .catch((err) => console.error("Initial fetch failed", err));
+
+    // 2. Initial Intelligence fetch (Bootstrap state)
+    fetch(`${API_BASE_URL}/api/v1/intelligence/regime`)
+      .then(res => res.json())
+      .then(data => { if (data && data.regime) setLastRegime(data); })
+      .catch(() => {});
+
+    fetch(`${API_BASE_URL}/api/v1/intelligence/signal`)
+      .then(res => res.json())
+      .then(data => { if (data && data.signal) setLastSignal(data); })
+      .catch(() => {});
+
   }, []);
 
-  // Update ticks array when new tick arrives from hook
   useEffect(() => {
     if (lastTick) {
       setTicks((prev) => [...prev.slice(-99), lastTick]);
@@ -67,7 +83,7 @@ export default function DashboardPage() {
       metrics: {
         "Latest Signal": lastSignal?.signal || "N/A",
         "Confidence": lastSignal ? `${(lastSignal.confidence * 100).toFixed(1)}%` : "N/A",
-        "OFI": typeof lastSignal?.metadata?.ofi_used === 'number' ? lastSignal.metadata.ofi_used.toFixed(3) : (lastSignal?.metadata?.ofi_used || "N/A")
+        "OFI": typeof (lastSignal?.metadata?.ofi_used || lastSignal?.ofi_used) === 'number' ? (lastSignal?.metadata?.ofi_used || lastSignal?.ofi_used).toFixed(3) : "N/A"
       }
     },
     {
@@ -116,7 +132,7 @@ export default function DashboardPage() {
 
       <AgentCommandCenter agents={agentStatus as any} />
       
-      {lastSignal && lastSignal.metadata && (
+      {(lastSignal?.metadata || lastSignal?.probabilities) && (
         <div className="bg-surface/30 border border-zinc-800/50 rounded-xl p-6 mt-6 backdrop-blur-sm">
           <h3 className="text-xs font-mono text-zinc-500 uppercase mb-6 flex items-center tracking-[0.2em]">
             <AlertTriangle size={14} className="mr-2 text-yellow-500" />
@@ -125,23 +141,23 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
              <div className="p-4 bg-void/50 rounded-lg border border-green-500/10 hover:border-green-500/30 transition-colors">
                <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Long)</div>
-               <div className="text-2xl text-green-400 font-mono font-bold">{(lastSignal.metadata.probabilities?.long * 100 || 0).toFixed(2)}%</div>
+               <div className="text-2xl text-green-400 font-mono font-bold">{((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100).toFixed(2)}%</div>
                <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${(lastSignal.metadata.probabilities?.long * 100 || 0)}%` }} />
+                  <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100)}%` }} />
                </div>
              </div>
              <div className="p-4 bg-void/50 rounded-lg border border-red-500/10 hover:border-red-500/30 transition-colors">
                <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Short)</div>
-               <div className="text-2xl text-red-400 font-mono font-bold">{(lastSignal.metadata.probabilities?.short * 100 || 0).toFixed(2)}%</div>
+               <div className="text-2xl text-red-400 font-mono font-bold">{((lastSignal.metadata?.probabilities?.short || lastSignal.probabilities?.short || 0) * 100).toFixed(2)}%</div>
                <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-500 transition-all duration-500" style={{ width: `${(lastSignal.metadata.probabilities?.short * 100 || 0)}%` }} />
+                  <div className="h-full bg-red-500 transition-all duration-500" style={{ width: `${((lastSignal.metadata?.probabilities?.short || lastSignal.probabilities?.short || 0) * 100)}%` }} />
                </div>
              </div>
              <div className="p-4 bg-void/50 rounded-lg border border-yellow-500/10 hover:border-yellow-500/30 transition-colors">
                <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Wait)</div>
-               <div className="text-2xl text-yellow-400 font-mono font-bold">{(lastSignal.metadata.probabilities?.wait * 100 || 0).toFixed(2)}%</div>
+               <div className="text-2xl text-yellow-400 font-mono font-bold">{((lastSignal.metadata?.probabilities?.wait || lastSignal.probabilities?.wait || 0) * 100).toFixed(2)}%</div>
                <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-yellow-500 transition-all duration-500" style={{ width: `${(lastSignal.metadata.probabilities?.wait * 100 || 0)}%` }} />
+                  <div className="h-full bg-yellow-500 transition-all duration-500" style={{ width: `${((lastSignal.metadata?.probabilities?.wait || lastSignal.probabilities?.wait || 0) * 100)}%` }} />
                </div>
              </div>
           </div>
