@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { socketService } from "@/lib/predator/socket";
+import { useEffect, useState, useMemo } from "react";
+import { usePredatorSocket } from "@/lib/predator/usePredatorSocket";
 import { PredatorChart } from "@/components/predator/PredatorChart";
 import { AgentCommandCenter } from "@/components/predator/AgentCommandCenter";
 import { Activity, Cpu, ShieldAlert, Crosshair, AlertTriangle, Clock } from "lucide-react";
 
 export default function DashboardPage() {
+  const { isConnected, lastTick, lastRegime, lastSignal } = usePredatorSocket();
   const [ticks, setTicks] = useState<any[]>([]);
-  const [regime, setRegime] = useState<any>(null);
-  const [signal, setSignal] = useState<any>(null);
-  const [isConnected, setIsConnected] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
@@ -18,68 +16,31 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setIsMounted(true);
-    
-    // Initial data fetch
     fetch(`${API_BASE_URL}/api/v1/market/current`)
       .then((res) => res.json())
       .then((data) => {
-        if (data && (data.timestamp || data.ts)) {
-           setTicks([data]);
-           setLastUpdate(new Date());
-        }
+        if (data && (data.timestamp || data.ts)) setTicks([data]);
       })
       .catch((err) => console.error("Initial fetch failed", err));
-
-    const socket = socketService.connect();
-
-    const onConnect = () => {
-      console.log("WebSocket connected");
-      setIsConnected(true);
-    };
-
-    const onDisconnect = () => {
-      console.log("WebSocket disconnected");
-      setIsConnected(false);
-    };
-
-    const onTick = (data: any) => {
-      setTicks((prev) => [...prev.slice(-99), data]);
-      setLastUpdate(new Date());
-    };
-
-    const onRegime = (data: any) => {
-      setRegime(data);
-      setLastUpdate(new Date());
-    };
-
-    const onSignal = (data: any) => {
-      setSignal(data);
-      setLastUpdate(new Date());
-    };
-
-    // Initialize state
-    if (socket.connected) setIsConnected(true);
-
-    // Attach listeners
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("xauusd_ticks", onTick);
-    socket.on("predator:regime", onRegime);
-    socket.on("predator:signals", onSignal);
-
-    return () => {
-      // INSTITUTIONAL CLEANUP: Remove specific listeners to avoid singleton leakage
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("xauusd_ticks", onTick);
-      socket.off("predator:regime", onRegime);
-      socket.off("predator:signals", onSignal);
-    };
   }, []);
+
+  // Update ticks array when new tick arrives from hook
+  useEffect(() => {
+    if (lastTick) {
+      setTicks((prev) => [...prev.slice(-99), lastTick]);
+      setLastUpdate(new Date());
+    }
+  }, [lastTick]);
+
+  useEffect(() => {
+    if (lastRegime || lastSignal) {
+      setLastUpdate(new Date());
+    }
+  }, [lastRegime, lastSignal]);
 
   const latestPrice = ticks.length > 0 ? (ticks[ticks.length - 1].bid || ticks[ticks.length - 1].price) : 0;
   
-  const agentStatus = [
+  const agentStatus = useMemo(() => [
     {
       name: "Hermes (Ingestion)",
       status: isConnected ? "ONLINE" : "OFFLINE",
@@ -91,22 +52,22 @@ export default function DashboardPage() {
     },
     {
       name: "Argus (Regime)",
-      status: isConnected && regime ? "ONLINE" : "SYNCING",
+      status: lastRegime ? "ONLINE" : "SYNCING",
       icon: <Cpu size={18} />,
       metrics: {
-        "Consensus": regime?.regime || "N/A",
-        "Confidence": regime ? `${(regime.confidence * 100).toFixed(1)}%` : "N/A",
-        "DXY Proxy": regime ? (typeof regime.macro_dxy_proxy === 'number' ? regime.macro_dxy_proxy.toFixed(6) : regime.macro_dxy_proxy) : "N/A"
+        "Consensus": lastRegime?.regime || "N/A",
+        "Confidence": lastRegime ? `${(lastRegime.confidence * 100).toFixed(1)}%` : "N/A",
+        "DXY Proxy": lastRegime ? (typeof lastRegime.macro_dxy_proxy === 'number' ? lastRegime.macro_dxy_proxy.toFixed(6) : lastRegime.macro_dxy_proxy) : "N/A"
       }
     },
     {
       name: "Apollo (Oracle)",
-      status: isConnected && signal ? "ONLINE" : "SYNCING",
+      status: lastSignal ? "ONLINE" : "SYNCING",
       icon: <Crosshair size={18} />,
       metrics: {
-        "Latest Signal": signal?.signal || "N/A",
-        "Confidence": signal ? `${(signal.confidence * 100).toFixed(1)}%` : "N/A",
-        "OFI": typeof signal?.metadata?.ofi_used === 'number' ? signal.metadata.ofi_used.toFixed(3) : (signal?.metadata?.ofi_used || "N/A")
+        "Latest Signal": lastSignal?.signal || "N/A",
+        "Confidence": lastSignal ? `${(lastSignal.confidence * 100).toFixed(1)}%` : "N/A",
+        "OFI": typeof lastSignal?.metadata?.ofi_used === 'number' ? lastSignal.metadata.ofi_used.toFixed(3) : (lastSignal?.metadata?.ofi_used || "N/A")
       }
     },
     {
@@ -119,7 +80,7 @@ export default function DashboardPage() {
         "Open Trades": "0"
       }
     }
-  ];
+  ], [isConnected, lastRegime, lastSignal]);
 
   if (!isMounted) return null;
 
@@ -155,7 +116,7 @@ export default function DashboardPage() {
 
       <AgentCommandCenter agents={agentStatus as any} />
       
-      {signal && signal.metadata && (
+      {lastSignal && lastSignal.metadata && (
         <div className="bg-surface/30 border border-zinc-800/50 rounded-xl p-6 mt-6 backdrop-blur-sm">
           <h3 className="text-xs font-mono text-zinc-500 uppercase mb-6 flex items-center tracking-[0.2em]">
             <AlertTriangle size={14} className="mr-2 text-yellow-500" />
@@ -164,23 +125,23 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
              <div className="p-4 bg-void/50 rounded-lg border border-green-500/10 hover:border-green-500/30 transition-colors">
                <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Long)</div>
-               <div className="text-2xl text-green-400 font-mono font-bold">{(signal.metadata.probabilities?.long * 100 || 0).toFixed(2)}%</div>
+               <div className="text-2xl text-green-400 font-mono font-bold">{(lastSignal.metadata.probabilities?.long * 100 || 0).toFixed(2)}%</div>
                <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${(signal.metadata.probabilities?.long * 100 || 0)}%` }} />
+                  <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${(lastSignal.metadata.probabilities?.long * 100 || 0)}%` }} />
                </div>
              </div>
              <div className="p-4 bg-void/50 rounded-lg border border-red-500/10 hover:border-red-500/30 transition-colors">
                <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Short)</div>
-               <div className="text-2xl text-red-400 font-mono font-bold">{(signal.metadata.probabilities?.short * 100 || 0).toFixed(2)}%</div>
+               <div className="text-2xl text-red-400 font-mono font-bold">{(lastSignal.metadata.probabilities?.short * 100 || 0).toFixed(2)}%</div>
                <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-500 transition-all duration-500" style={{ width: `${(signal.metadata.probabilities?.short * 100 || 0)}%` }} />
+                  <div className="h-full bg-red-500 transition-all duration-500" style={{ width: `${(lastSignal.metadata.probabilities?.short * 100 || 0)}%` }} />
                </div>
              </div>
              <div className="p-4 bg-void/50 rounded-lg border border-yellow-500/10 hover:border-yellow-500/30 transition-colors">
                <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Wait)</div>
-               <div className="text-2xl text-yellow-400 font-mono font-bold">{(signal.metadata.probabilities?.wait * 100 || 0).toFixed(2)}%</div>
+               <div className="text-2xl text-yellow-400 font-mono font-bold">{(lastSignal.metadata.probabilities?.wait * 100 || 0).toFixed(2)}%</div>
                <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-yellow-500 transition-all duration-500" style={{ width: `${(signal.metadata.probabilities?.wait * 100 || 0)}%` }} />
+                  <div className="h-full bg-yellow-500 transition-all duration-500" style={{ width: `${(lastSignal.metadata.probabilities?.wait * 100 || 0)}%` }} />
                </div>
              </div>
           </div>
