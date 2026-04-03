@@ -11,11 +11,14 @@ export default function DashboardPage() {
   const [regime, setRegime] = useState<any>(null);
   const [signal, setSignal] = useState<any>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   // INSTITUTIONAL: Force the correct branded API URL
   const API_BASE_URL = "https://api.glitchzerolabs.com";
 
   useEffect(() => {
+    setIsMounted(true);
+    
     // Fetch initial historical data via REST
     fetch(`${API_BASE_URL}/api/v1/market/current`)
       .then((res) => res.json())
@@ -28,7 +31,7 @@ export default function DashboardPage() {
 
     const socket = socketService.connect();
 
-    // INSTITUTIONAL FIX: Check current connection state immediately
+    // Sync state immediately
     if (socket.connected) {
       setIsConnected(true);
     }
@@ -72,10 +75,13 @@ export default function DashboardPage() {
 
   const latestPrice = ticks.length > 0 ? (ticks[ticks.length - 1].bid || ticks[ticks.length - 1].price) : 0;
   
+  // Hydration safety: Don't render connection status until mounted on client
+  const connectionDisplay = isMounted ? (isConnected ? "CONNECTED" : "DISCONNECTED") : "INITIALIZING";
+
   const agentStatus = [
     {
       name: "Hermes (Ingestion)",
-      status: isConnected ? "ONLINE" : "OFFLINE",
+      status: isMounted && isConnected ? "ONLINE" : "OFFLINE",
       icon: <Activity size={18} />,
       metrics: {
         "Latency": "< 5ms",
@@ -84,7 +90,7 @@ export default function DashboardPage() {
     },
     {
       name: "Argus (Regime)",
-      status: regime ? "ONLINE" : "WAITING",
+      status: regime ? "ONLINE" : "SYNCING",
       icon: <Cpu size={18} />,
       metrics: {
         "Consensus": regime?.regime || "N/A",
@@ -94,7 +100,7 @@ export default function DashboardPage() {
     },
     {
       name: "Apollo (Oracle)",
-      status: signal ? "ONLINE" : "WAITING",
+      status: signal ? "ONLINE" : "SYNCING",
       icon: <Crosshair size={18} />,
       metrics: {
         "Latest Signal": signal?.signal || "N/A",
@@ -104,7 +110,7 @@ export default function DashboardPage() {
     },
     {
       name: "Ares (Execution)",
-      status: isConnected ? "ONLINE" : "OFFLINE",
+      status: isMounted && isConnected ? "ONLINE" : "OFFLINE",
       icon: <ShieldAlert size={18} />,
       metrics: {
         "Mode": "PAPER",
@@ -119,8 +125,8 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-serif text-white">Live Market Matrix</h2>
         <div className="flex items-center space-x-2">
-          <div className={`w-3 h-3 rounded-full ${isConnected ? "bg-green-500 animate-pulse" : "bg-red-500"}`} />
-          <span className="font-mono text-xs text-zinc-400">API: {isConnected ? "CONNECTED" : "DISCONNECTED"}</span>
+          <div className={`w-3 h-3 rounded-full ${isMounted && isConnected ? "bg-green-500 animate-pulse" : "bg-red-500"}`} />
+          <span className="font-mono text-xs text-zinc-400">API: {connectionDisplay}</span>
         </div>
       </div>
 
