@@ -8,6 +8,7 @@ export function usePredatorSocket() {
   const [lastTick, setLastTick] = useState<any>(null);
   const [lastRegime, setLastRegime] = useState<any>(null);
   const [lastSignal, setLastSignal] = useState<any>(null);
+  const [lastSystemLog, setLastSystemLog] = useState<any>(null);
 
   useEffect(() => {
     const socket = socketService.connect();
@@ -22,17 +23,10 @@ export function usePredatorSocket() {
       setIsConnected(false);
     }
 
-    function onTick(data: any) {
-      setLastTick(data);
-    }
-
-    function onRegime(data: any) {
-      setLastRegime(data);
-    }
-
-    function onSignal(data: any) {
-      setLastSignal(data);
-    }
+    function onTick(data: any) { setLastTick(data); }
+    function onRegime(data: any) { setLastRegime(data); }
+    function onSignal(data: any) { setLastSignal(data); }
+    function onSystemLog(data: any) { setLastSystemLog(data); }
 
     if (socket.connected) {
       setIsConnected(true);
@@ -43,6 +37,7 @@ export function usePredatorSocket() {
     socket.on('xauusd_ticks', onTick);
     socket.on('predator:regime', onRegime);
     socket.on('predator:signals', onSignal);
+    socket.on('predator:system_logs', onSystemLog);
 
     return () => {
       socket.off('connect', onConnect);
@@ -50,8 +45,9 @@ export function usePredatorSocket() {
       socket.off('xauusd_ticks', onTick);
       socket.off('predator:regime', onRegime);
       socket.off('predator:signals', onSignal);
+      socket.off('predator:system_logs', onSystemLog);
     };
   }, []);
 
-  return { isConnected, lastTick, lastRegime, lastSignal };
+  return { isConnected, lastTick, lastRegime, lastSignal, lastSystemLog };
 }

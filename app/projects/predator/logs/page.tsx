@@ -1,65 +1,169 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { socketService } from "@/lib/predator/socket";
-import { Terminal } from "lucide-react";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { usePredatorSocket } from "@/lib/predator/usePredatorSocket";
+import { Terminal, Filter, Trash2, Pause, Play, Download } from "lucide-react";
 
 export default function LogsPage() {
-  const [logs, setLogs] = useState<string[]>([]);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const { lastSystemLog } = usePredatorSocket();
+  const [logs, setLogs] = useState<any[]>([]);
+  const [filterSource, setFilterSource] = useState("ALL");
+  const [filterLevel, setFilterLevel] = useState("ALL");
+  const [isPaused, setIsPaused] = useState(false);
+  const [autoScroll, setAutoScroll] = useState(true);
+  
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const API_BASE_URL = "https://api.glitchzerolabs.com";
 
+  // Initial load
   useEffect(() => {
-    const socket = socketService.connect();
-
-    const handleLog = (channel: string, data: any) => {
-      const timestamp = new Date().toISOString().split("T")[1].slice(0, -1);
-      const formatted = `[${timestamp}] [${channel.toUpperCase()}] ${JSON.stringify(data)}`;
-      setLogs((prev) => [...prev.slice(-99), formatted]);
-    };
-
-    socket.on("xauusd_ticks", (d) => handleLog("hermes_tick", d));
-    socket.on("predator:regime", (d) => handleLog("argus_regime", d));
-    socket.on("predator:signals", (d) => handleLog("apollo_signal", d));
-
-    return () => {
-      socket.off("xauusd_ticks");
-      socket.off("predator:regime");
-      socket.off("predator:signals");
-    };
+    fetch(`${API_BASE_URL}/api/v1/system/logs`)
+      .then(res => res.json())
+      .then(data => setLogs(data.reverse()))
+      .catch(err => console.error("Log fetch failed", err));
   }, []);
 
+  // Handle live logs from WebSocket
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [logs]);
+    if (lastSystemLog && !isPaused) {
+      setLogs(prev => [...prev, lastSystemLog].slice(-500));
+    }
+  }, [lastSystemLog, isPaused]);
+
+  // Handle auto-scroll
+  useEffect(() => {
+    if (autoScroll && scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [logs, autoScroll]);
+
+  const filteredLogs = useMemo(() => {
+    return logs.filter(log => {
+      const sourceMatch = filterSource === "ALL" || log.service?.toUpperCase() === filterSource;
+      const levelMatch = filterLevel === "ALL" || log.level === filterLevel;
+      return sourceMatch && levelMatch;
+    });
+  }, [logs, filterSource, filterLevel]);
+
+  const getLevelColor = (level: string) => {
+    switch (level) {
+      case "ERROR": return "text-red-400 bg-red-400/10 border-red-400/20";
+      case "WARNING": return "text-yellow-400 bg-yellow-400/10 border-yellow-400/20";
+      case "CRITICAL": return "text-white bg-red-600 border-red-600";
+      default: return "text-cyan-400 bg-cyan-400/10 border-cyan-400/20";
+    }
+  };
+
+  const sources = ["ALL", "HERMES", "ARGUS", "APOLLO", "ARES", "NEXUS"];
+  const levels = ["ALL", "INFO", "WARNING", "ERROR"];
 
   return (
-    <div className="bg-void border border-zinc-800 rounded-lg overflow-hidden h-[80vh] flex flex-col font-mono text-sm shadow-2xl">
-      <div className="bg-zinc-900 px-4 py-2 flex items-center border-b border-zinc-800">
-        <Terminal size={16} className="text-zinc-400 mr-2" />
-        <span className="text-zinc-400">nexus_stream_tail_f</span>
-        <div className="ml-auto flex space-x-2">
-          <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
-          <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50 animate-pulse" />
+    <div className="flex flex-col h-[calc(100vh-120px)] space-y-4">
+      {/* Header & Controls */}
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-depth border border-cyan-400/10 p-4 rounded-xl backdrop-blur-md">
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-2">
+            <Filter size={14} className="text-zinc-500" />
+            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Source</span>
+            <div className="flex bg-void rounded-md border border-zinc-800 p-1">
+              {sources.map(s => (
+                <button
+                  key={s}
+                  onClick={() => setFilterSource(s)}
+                  className={`px-3 py-1 text-[10px] font-mono rounded transition-all ${filterSource === s ? "bg-cyan-400/20 text-cyan-400" : "text-zinc-600 hover:text-zinc-400"}`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2 border-l border-zinc-800 pl-6">
+            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Level</span>
+            <div className="flex bg-void rounded-md border border-zinc-800 p-1">
+              {levels.map(l => (
+                <button
+                  key={l}
+                  onClick={() => setFilterLevel(l)}
+                  className={`px-3 py-1 text-[10px] font-mono rounded transition-all ${filterLevel === l ? "bg-zinc-700 text-white" : "text-zinc-600 hover:text-zinc-400"}`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <button 
+            onClick={() => setIsPaused(!isPaused)}
+            className={`p-2 rounded-md border border-zinc-800 hover:border-zinc-600 transition-colors ${isPaused ? "text-yellow-400" : "text-zinc-400"}`}
+          >
+            {isPaused ? <Play size={16} /> : <Pause size={16} />}
+          </button>
+          <button 
+            onClick={() => setLogs([])}
+            className="p-2 rounded-md border border-zinc-800 hover:border-red-400/50 text-zinc-400 hover:text-red-400 transition-colors"
+          >
+            <Trash2 size={16} />
+          </button>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-1">
-        {logs.length === 0 ? (
-          <div className="text-zinc-600 animate-pulse">Waiting for data stream...</div>
-        ) : (
-          logs.map((log, i) => (
-            <div key={i} className="text-zinc-300 break-all hover:bg-zinc-900/50 px-1 rounded">
-              {log.includes("apollo_signal") ? (
-                <span className="text-yellow-400">{log}</span>
-              ) : log.includes("argus_regime") ? (
-                <span className="text-cyan-400">{log}</span>
-              ) : (
-                <span className="text-zinc-500">{log}</span>
-              )}
+
+      {/* Terminal Area */}
+      <div className="flex-1 bg-void border border-zinc-800 rounded-xl overflow-hidden flex flex-col shadow-inner">
+        <div className="bg-zinc-900/50 px-4 py-2 border-b border-zinc-800 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Terminal size={14} className="text-teal-500" />
+            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Predator_System_Output :: /dev/tty0</span>
+          </div>
+          <div className="flex items-center space-x-4">
+             <label className="flex items-center space-x-2 cursor-pointer group">
+                <input 
+                  type="checkbox" 
+                  checked={autoScroll} 
+                  onChange={(e) => setAutoScroll(e.target.checked)}
+                  className="w-3 h-3 rounded border-zinc-800 bg-void checked:bg-cyan-400 focus:ring-0"
+                />
+                <span className="text-[10px] font-mono text-zinc-600 group-hover:text-zinc-400 uppercase">Auto-Scroll</span>
+             </label>
+          </div>
+        </div>
+
+        <div 
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto p-4 font-mono text-[11px] leading-relaxed selection:bg-cyan-400/20"
+        >
+          {filteredLogs.length === 0 ? (
+            <div className="h-full flex items-center justify-center text-zinc-700 italic">
+              No system activity detected matching current filters...
             </div>
-          ))
-        )}
-        <div ref={bottomRef} />
+          ) : (
+            <div className="space-y-1">
+              {filteredLogs.map((log, i) => (
+                <div key={i} className="flex space-x-3 group hover:bg-white/[0.02] py-0.5 rounded transition-colors">
+                  <span className="text-zinc-600 shrink-0 select-none">
+                    {log.timestamp ? new Date(log.timestamp).toLocaleTimeString() : '00:00:00'}
+                  </span>
+                  <span className={`shrink-0 w-16 px-1.5 py-0.5 rounded-[3px] text-[9px] font-bold text-center border ${getLevelColor(log.level)}`}>
+                    {log.level}
+                  </span>
+                  <span className="text-zinc-500 shrink-0 font-bold w-20">
+                    [{log.service?.toUpperCase()}]
+                  </span>
+                  <span className="text-zinc-300 break-all">
+                    {log.event} 
+                    {log.data && Object.keys(log.data).length > 0 && (
+                      <span className="text-zinc-600 ml-2 italic">
+                        {JSON.stringify(log.data)}
+                      </span>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
