@@ -7,8 +7,10 @@ export default function DatabasePage() {
   const [trades, setTrades] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_NEXUS_API_URL || "https://api.glitchzerolabs.com";
+
   useEffect(() => {
-    fetch("https://fields-dish-intervals-maui.trycloudflare.com/api/v1/execution/trades")
+    fetch(`${API_BASE_URL}/api/v1/execution/trades`)
       .then((res) => res.json())
       .then((data) => {
         setTrades(data || []);
