@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Database, Table, ChevronLeft, ChevronRight } from "lucide-react";
+import { Database, Table, ChevronLeft, ChevronRight, Hash } from "lucide-react";
 
 export default function DatabasePage() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTable, setSelectedTable] = useState("trades");
+  const [jumpPage, setJumpPage] = useState("");
   const [pagination, setPagination] = useState({
     page: 1,
     total: 0,
@@ -50,12 +51,23 @@ export default function DatabasePage() {
   const handleTableChange = (tableId: string) => {
     setSelectedTable(tableId);
     setPagination(prev => ({ ...prev, page: 1 }));
+    setJumpPage("");
   };
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
       setPagination(prev => ({ ...prev, page: newPage }));
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleJumpSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const pageNum = parseInt(jumpPage);
+    if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= pagination.totalPages) {
+      handlePageChange(pageNum);
+    } else {
+      setJumpPage("");
     }
   };
 
@@ -125,7 +137,7 @@ export default function DatabasePage() {
                 data.map((row, i) => (
                   <tr key={i} className="hover:bg-cyan-400/5 transition-colors group">
                     {Object.values(row).map((val: any, j) => (
-                      <td key={j} className="px-6 py-2 text-zinc-400 group-hover:text-zinc-200 truncate max-w-[200px]">
+                      <td key={j} className="px-6 py-3 text-zinc-400 group-hover:text-zinc-200 truncate max-w-[200px]">
                         {typeof val === 'object' && val !== null ? JSON.stringify(val).substring(0, 30) + '...' : String(val)}
                       </td>
                     ))}
@@ -137,10 +149,21 @@ export default function DatabasePage() {
         </div>
 
         {/* INSTITUTIONAL PAGINATION CONTROLS */}
-        <div className="px-6 py-4 border-t border-zinc-800/50 bg-surface/30 flex items-center justify-between">
-          <div className="text-[10px] font-mono text-zinc-500 uppercase">
-            Page {pagination.page} of {pagination.totalPages || 1}
+        <div className="px-6 py-4 border-t border-zinc-800/50 bg-surface/30 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-[10px] font-mono text-zinc-500 uppercase flex items-center space-x-4">
+            <span>Page {pagination.page} of {pagination.totalPages || 1}</span>
+            <form onSubmit={handleJumpSubmit} className="flex items-center space-x-2 border-l border-zinc-800 pl-4">
+               <Hash size={12} className="text-zinc-600" />
+               <input 
+                 type="text"
+                 placeholder="JUMP TO"
+                 value={jumpPage}
+                 onChange={(e) => setJumpPage(e.target.value)}
+                 className="bg-void border border-zinc-800 text-[10px] px-2 py-1 rounded w-16 focus:outline-none focus:border-cyan-400/50 transition-colors text-zinc-300 placeholder:text-zinc-700"
+               />
+            </form>
           </div>
+          
           <div className="flex items-center space-x-2">
             <button
               onClick={() => handlePageChange(pagination.page - 1)}
@@ -150,7 +173,6 @@ export default function DatabasePage() {
               <ChevronLeft size={16} />
             </button>
             
-            {/* Simple page numbers */}
             <div className="flex items-center space-x-1">
                {[...Array(Math.min(5, pagination.totalPages))].map((_, i) => {
                  const pageNum = Math.max(1, Math.min(pagination.page - 2, pagination.totalPages - 4)) + i;
