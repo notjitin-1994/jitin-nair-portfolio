@@ -20,11 +20,18 @@ export default function DashboardPage() {
     fetch(`${API_BASE_URL}/api/v1/market/current`)
       .then((res) => res.json())
       .then((data) => {
-        if (data && (data.timestamp || data.ts)) setTicks([data]);
+        if (data && (data.timestamp || data.ts)) {
+           setTicks([data]);
+        }
       })
       .catch((err) => console.error("Failed to fetch history", err));
 
     const socket = socketService.connect();
+
+    // INSTITUTIONAL FIX: Check current connection state immediately
+    if (socket.connected) {
+      setIsConnected(true);
+    }
 
     socket.on("connect", () => {
       console.log("Connected to Nexus WebSocket");
@@ -68,7 +75,7 @@ export default function DashboardPage() {
   const agentStatus = [
     {
       name: "Hermes (Ingestion)",
-      status: isConnected && latestPrice ? "ONLINE" : "OFFLINE",
+      status: isConnected ? "ONLINE" : "OFFLINE",
       icon: <Activity size={18} />,
       metrics: {
         "Latency": "< 5ms",
