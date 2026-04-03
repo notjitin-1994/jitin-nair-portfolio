@@ -12,24 +12,36 @@ export default function DashboardPage() {
   const [signal, setSignal] = useState<any>(null);
   const [isConnected, setIsConnected] = useState(false);
 
+  // INSTITUTIONAL: Use environment variable for the API URL
+  const API_BASE_URL = process.env.NEXT_PUBLIC_NEXUS_API_URL || "http://localhost:3002";
+
   useEffect(() => {
     // Fetch initial historical data via REST
-    fetch("https://fields-dish-intervals-maui.trycloudflare.com/api/v1/market/current")
+    fetch(`${API_BASE_URL}/api/v1/market/current`)
       .then((res) => res.json())
       .then((data) => {
-        if (data && data.timestamp) setTicks([data]);
+        if (data && (data.timestamp || data.ts)) setTicks([data]);
       })
       .catch((err) => console.error("Failed to fetch history", err));
 
     const socket = socketService.connect();
 
-    socket.on("connect", () => setIsConnected(true));
+    socket.on("connect", () => {
+      console.log("Connected to Nexus WebSocket");
+      setIsConnected(true);
+    });
+    
+    socket.on("connect_error", (err) => {
+      console.error("WebSocket Connection Error:", err.message);
+      setIsConnected(false);
+    });
+
     socket.on("disconnect", () => setIsConnected(false));
 
     socket.on("xauusd_ticks", (data: any) => {
       setTicks((prev) => {
         const newTicks = [...prev, data];
-        return newTicks.slice(-100); // Keep last 100 for chart perf
+        return newTicks.slice(-100); 
       });
     });
 
@@ -46,11 +58,12 @@ export default function DashboardPage() {
       socket.off("predator:regime");
       socket.off("predator:signals");
       socket.off("connect");
+      socket.off("connect_error");
       socket.off("disconnect");
     };
-  }, []);
+  }, [API_BASE_URL]);
 
-  const latestPrice = ticks.length > 0 ? ticks[ticks.length - 1].bid : 0;
+  const latestPrice = ticks.length > 0 ? (ticks[ticks.length - 1].bid || ticks[ticks.length - 1].price) : 0;
   
   const agentStatus = [
     {
@@ -69,7 +82,7 @@ export default function DashboardPage() {
       metrics: {
         "Consensus": regime?.regime || "N/A",
         "Confidence": regime ? `${(regime.confidence * 100).toFixed(1)}%` : "N/A",
-        "DXY Proxy": regime ? regime.macro_dxy_proxy : "N/A"
+        "DXY Proxy": regime ? (typeof regime.macro_dxy_proxy === 'number' ? regime.macro_dxy_proxy.toFixed(6) : regime.macro_dxy_proxy) : "N/A"
       }
     },
     {
@@ -79,7 +92,7 @@ export default function DashboardPage() {
       metrics: {
         "Latest Signal": signal?.signal || "N/A",
         "Confidence": signal ? `${(signal.confidence * 100).toFixed(1)}%` : "N/A",
-        "OFI": signal?.metadata?.ofi_used || "N/A"
+        "OFI": typeof signal?.metadata?.ofi_used === 'number' ? signal.metadata.ofi_used.toFixed(3) : (signal?.metadata?.ofi_used || "N/A")
       }
     },
     {
@@ -104,21 +117,18 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Main Chart Area */}
       <div className="bg-depth border border-cyan-400/20 rounded-xl p-4 overflow-hidden relative">
          <div className="absolute top-6 left-6 z-10 bg-void/80 border border-cyan-400/30 p-3 rounded backdrop-blur-md">
             <h3 className="text-cyan-400 font-mono text-sm uppercase">XAUUSD Live</h3>
             <p className="text-2xl font-mono text-white mt-1">
-              {latestPrice ? latestPrice.toFixed(2) : "---.--"}
+              {latestPrice ? Number(latestPrice).toFixed(2) : "---.--"}
             </p>
          </div>
         <PredatorChart data={ticks} />
       </div>
 
-      {/* Agents Row */}
       <AgentCommandCenter agents={agentStatus as any} />
       
-      {/* Probabilistic Output Panel */}
       {signal && signal.metadata && signal.metadata.probabilities && (
         <div className="bg-surface/50 border border-zinc-800 rounded-lg p-4 mt-6">
           <h3 className="text-sm font-mono text-zinc-400 uppercase mb-4 flex items-center">

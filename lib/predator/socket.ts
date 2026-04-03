@@ -15,17 +15,25 @@ class SocketService {
 
   public connect(): Socket {
     if (!this.socket) {
-      this.socket = io('$PUBLIC_API', {
+      const API_URL = process.env.NEXT_PUBLIC_NEXUS_API_URL || 'http://localhost:3002';
+      console.log('Connecting to Nexus API at:', API_URL);
+      
+      this.socket = io(API_URL, {
         reconnectionDelayMax: 10000,
         transports: ['websocket', 'polling'],
+        withCredentials: true
       });
 
       this.socket.on('connect', () => {
-        console.log('Nexus API Connected:', this.socket?.id);
+        console.log('Nexus API WebSocket Connected:', this.socket?.id);
+      });
+
+      this.socket.on('connect_error', (err) => {
+        console.error('Nexus API WebSocket Error:', err.message);
       });
 
       this.socket.on('disconnect', () => {
-        console.log('Nexus API Disconnected');
+        console.log('Nexus API WebSocket Disconnected');
       });
     }
     return this.socket;
