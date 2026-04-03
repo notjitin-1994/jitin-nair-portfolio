@@ -15,7 +15,8 @@ class SocketService {
 
   public connect(): Socket {
     if (!this.socket) {
-      const API_URL = process.env.NEXT_PUBLIC_NEXUS_API_URL || 'http://localhost:3002';
+      // INSTITUTIONAL: Force the correct branded API URL
+      const API_URL = 'https://api.glitchzerolabs.com';
       console.log('Connecting to Nexus API at:', API_URL);
       
       this.socket = io(API_URL, {

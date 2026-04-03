@@ -12,8 +12,8 @@ export default function DashboardPage() {
   const [signal, setSignal] = useState<any>(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  // INSTITUTIONAL: Use environment variable for the API URL
-  const API_BASE_URL = process.env.NEXT_PUBLIC_NEXUS_API_URL || "http://localhost:3002";
+  // INSTITUTIONAL: Force the correct branded API URL
+  const API_BASE_URL = "https://api.glitchzerolabs.com";
 
   useEffect(() => {
     // Fetch initial historical data via REST
