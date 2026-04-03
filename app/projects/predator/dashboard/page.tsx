@@ -132,7 +132,7 @@ export default function DashboardPage() {
 
       <AgentCommandCenter agents={agentStatus as any} />
       
-      {(lastSignal?.metadata || lastSignal?.probabilities) && (
+      {(lastSignal?.metadata || lastSignal?.probabilities || lastSignal?.signal) && (
         <div className="bg-surface/30 border border-zinc-800/50 rounded-xl p-6 mt-6 backdrop-blur-sm">
           <h3 className="text-xs font-mono text-zinc-500 uppercase mb-6 flex items-center tracking-[0.2em]">
             <AlertTriangle size={14} className="mr-2 text-yellow-500" />
@@ -141,7 +141,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
              <div className="p-4 bg-void/50 rounded-lg border border-green-500/10 hover:border-green-500/30 transition-colors">
                <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Long)</div>
-               <div className="text-2xl text-green-400 font-mono font-bold">{((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100).toFixed(2)}%</div>
+               <div className="text-2xl text-green-400 font-mono font-bold">{( (lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100).toFixed(2)}%</div>
                <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
                   <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100)}%` }} />
                </div>
