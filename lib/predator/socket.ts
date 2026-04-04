@@ -1,55 +1,42 @@
+"use client";
+
 import { io, Socket } from 'socket.io-client';
 
 class SocketService {
   private socket: Socket | null = null;
-  private static instance: SocketService;
+  private readonly url: string;
 
-  private constructor() {}
-
-  public static getInstance(): SocketService {
-    if (!SocketService.instance) {
-      SocketService.instance = new SocketService();
-    }
-    return SocketService.instance;
+  constructor() {
+    // N-05 Fix: Properly handle environment variable
+    this.url = process.env.NEXT_PUBLIC_API_URL || 'https://api.glitchzerolabs.com';
   }
 
-  public connect(): Socket {
-    if (!this.socket) {
-      // INSTITUTIONAL: Force the correct branded API URL
-      const API_URL = 'https://api.glitchzerolabs.com';
-      console.log('Connecting to Nexus API at:', API_URL);
-      
-      this.socket = io(API_URL, {
-        reconnectionDelayMax: 10000,
-        transports: ['websocket', 'polling'],
-        withCredentials: true
-      });
+  connect(): Socket {
+    if (this.socket) return this.socket;
 
-      this.socket.on('connect', () => {
-        console.log('Nexus API WebSocket Connected:', this.socket?.id);
-      });
+    this.socket = io(this.url, {
+      reconnectionDelayMax: 10000,
+      transports: ['websocket', 'polling'],
+      withCredentials: true
+    });
 
-      this.socket.on('connect_error', (err) => {
-        console.error('Nexus API WebSocket Error:', err.message);
-      });
+    this.socket.on('connect', () => {
+      console.log('Socket connected to Nexus:', this.url);
+    });
 
-      this.socket.on('disconnect', () => {
-        console.log('Nexus API WebSocket Disconnected');
-      });
-    }
+    this.socket.on('connect_error', (error) => {
+      console.error('Socket connection error:', error);
+    });
+
     return this.socket;
   }
 
-  public disconnect() {
+  disconnect() {
     if (this.socket) {
       this.socket.disconnect();
       this.socket = null;
     }
   }
-
-  public getSocket(): Socket | null {
-    return this.socket;
-  }
 }
 
-export const socketService = SocketService.getInstance();
+export const socketService = new SocketService();
