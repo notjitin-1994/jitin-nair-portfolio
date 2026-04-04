@@ -22,7 +22,6 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setIsMounted(true);
-    // Initial fetch for historical context
     fetch(`${API_BASE_URL}/api/v1/market/current`)
       .then((res) => res.json())
       .then((data) => {
@@ -53,12 +52,15 @@ export default function DashboardPage() {
 
   const latestPrice = ticks.length > 0 ? (ticks[ticks.length - 1].bid || ticks[ticks.length - 1].price) : 0;
   
+  // Market Open Logic: If last tick is older than 5 mins, market is closed/stagnant
+  const isMarketOpen = lastUpdate ? (new Date().getTime() - lastUpdate.getTime()) < 300000 : false;
+
   const agentStatus = useMemo(() => [
     {
       name: "Hermes",
-      status: isConnected ? "ONLINE" : "OFFLINE",
+      status: isConnected ? (isMarketOpen ? "ONLINE" : "STANDBY") : "OFFLINE",
       icon: <Activity size={16} />,
-      metrics: { "Latency": "< 1ms", "Pipe": "L2/Tick" }
+      metrics: { "Latency": "< 1ms", "Status": isMarketOpen ? "Active" : "Market Closed" }
     },
     {
       name: "Argus",
@@ -70,7 +72,7 @@ export default function DashboardPage() {
       name: "Apollo",
       status: lastSignal ? "ONLINE" : "SYNCING",
       icon: <Crosshair size={16} />,
-      metrics: { "Signal": lastSignal?.signal || "WAIT", "DXY": lastRegime?.macro_dxy_proxy || 0.0 }
+      metrics: { "Signal": lastSignal?.signal || "WAIT", "DXY": lastRegime?.macro_dxy_proxy?.toFixed(6) || 0.0 }
     },
     {
       name: "Ares",
@@ -78,51 +80,54 @@ export default function DashboardPage() {
       icon: <ShieldAlert size={16} />,
       metrics: { "Mode": "PAPER", "Risk": "1.0%" }
     }
-  ], [isConnected, lastRegime, lastSignal]);
+  ], [isConnected, lastRegime, lastSignal, isMarketOpen]);
 
   if (!isMounted) return null;
 
   return (
     <div className="flex flex-col space-y-6 max-w-[1600px] mx-auto pb-20">
       {/* 1. Header Bar: Real-time Status */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-depth/50 p-4 rounded-xl border border-white/5 backdrop-blur-md">
-        <div className="flex items-center space-x-6">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-depth/50 p-6 rounded-2xl border border-white/5 backdrop-blur-md shadow-2xl">
+        <div className="flex items-center space-x-8">
           <div className="flex flex-col">
-            <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">XAUUSD :: SPOT</span>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-mono font-bold text-white tabular-nums tracking-tighter">
+            <span className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold mb-1">XAUUSD :: LIVE SPOT</span>
+            <div className="flex items-baseline space-x-3">
+              <span className="text-4xl font-mono font-bold text-white tabular-nums tracking-tighter leading-none">
                 {latestPrice ? Number(latestPrice).toFixed(2) : "0000.00"}
               </span>
-              <span className={`text-xs font-mono ${lastTick?.spread < 0.1 ? 'text-teal-400' : 'text-zinc-500'}`}>
-                +{lastTick?.spread || '0.00'}
+              <span className={`text-sm font-mono font-bold ${lastTick?.spread < 0.1 ? 'text-teal-400' : 'text-zinc-500'}`}>
+                {lastTick?.spread ? `+${Number(lastTick.spread).toFixed(2)}` : '0.00'}
               </span>
             </div>
           </div>
           
-          <div className="h-10 w-px bg-white/5 hidden md:block" />
+          <div className="h-12 w-px bg-white/10 hidden lg:block" />
           
           <div className="flex flex-col">
-            <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Market Intelligence</span>
-            <div className="flex items-center space-x-2 mt-1">
-              <div className={`px-2 py-0.5 rounded text-[10px] font-bold ${lastRegime?.regime === 'TREND_UP' ? 'bg-green-500/10 text-green-400' : lastRegime?.regime === 'TREND_DOWN' ? 'bg-red-500/10 text-red-400' : 'bg-zinc-800 text-zinc-400'}`}>
+            <span className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold mb-1">Current Intelligence</span>
+            <div className="flex items-center space-x-3 mt-1">
+              <div className={`px-3 py-1 rounded-md text-[11px] font-black tracking-wider uppercase ${lastRegime?.regime === 'TREND_UP' ? 'bg-green-500/20 text-green-400 border border-green-500/20' : lastRegime?.regime === 'TREND_DOWN' ? 'bg-red-500/20 text-red-400 border border-red-500/20' : 'bg-zinc-800/50 text-zinc-400 border border-white/5'}`}>
                 {lastRegime?.regime || 'INITIALIZING'}
               </div>
-              <span className="text-xs text-zinc-500 font-mono italic">{lastRegime?.session} Session</span>
+              <span className="text-xs text-zinc-400 font-mono font-medium opacity-60">
+                {lastRegime?.session ? `${lastRegime.session} SESSION` : 'WAKING AGENTS...'}
+              </span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center space-x-4">
-          {lastUpdate && (
-            <div className="flex items-center space-x-2 text-zinc-500 font-mono text-[10px] bg-void/50 px-3 py-1.5 rounded-full border border-white/5">
-              <Clock size={10} />
-              <span>SYNC: {lastUpdate.toLocaleTimeString()}</span>
-            </div>
-          )}
-          <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-full border ${isConnected ? 'bg-teal-500/5 border-teal-500/20' : 'bg-red-500/5 border-red-500/20'}`}>
-            <div className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-teal-400 animate-pulse shadow-[0_0_8px_rgba(45,212,191,0.5)]' : 'bg-red-400'}`} />
-            <span className={`text-[10px] uppercase font-bold tracking-widest ${isConnected ? 'text-teal-400' : 'text-red-400'}`}>
-              {isConnected ? 'Nexus Connected' : 'Nexus Link Lost'}
+          <div className={`flex flex-col items-end hidden sm:flex`}>
+             <span className="text-[9px] text-zinc-600 uppercase font-bold tracking-widest mb-1">System Health</span>
+             <div className="flex items-center space-x-2">
+                <span className="text-[10px] font-mono text-zinc-400">{isConnected ? 'Uptime: 100%' : 'Reconnecting...'}</span>
+                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.4)]' : 'bg-red-500'}`} />
+             </div>
+          </div>
+          
+          <div className={`px-4 py-2 rounded-xl border transition-all duration-500 ${isConnected ? 'bg-teal-500/5 border-teal-500/20' : 'bg-red-500/5 border-red-500/20'}`}>
+            <span className={`text-[11px] uppercase font-black tracking-[0.15em] ${isConnected ? 'text-teal-400' : 'text-red-400'}`}>
+              {isConnected ? 'Nexus Online' : 'Nexus Offline'}
             </span>
           </div>
         </div>
@@ -131,62 +136,71 @@ export default function DashboardPage() {
       {/* 2. Main Grid: Charts & Gauges */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         {/* Left: Chart Terminal (8/12) */}
-        <div className="xl:col-span-8 bg-depth border border-white/5 rounded-2xl overflow-hidden relative shadow-2xl min-h-[500px]">
-          <div className="absolute top-4 right-4 z-10 flex space-x-2">
-             <button className="px-3 py-1 bg-surface/80 border border-white/10 rounded text-[10px] text-zinc-400 font-mono hover:text-cyan-400 transition-colors uppercase tracking-wider">M1</button>
-             <button className="px-3 py-1 bg-void/80 border border-cyan-400/30 rounded text-[10px] text-cyan-400 font-mono uppercase tracking-wider">M5</button>
+        <div className="xl:col-span-8 bg-[#020617] border border-white/5 rounded-3xl overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+          <div className="absolute top-6 right-6 z-10 flex bg-void/40 backdrop-blur-md p-1 rounded-lg border border-white/5">
+             <button className="px-4 py-1.5 rounded-md text-[10px] text-zinc-500 font-bold font-mono hover:text-white transition-all uppercase tracking-widest">M1</button>
+             <button className="px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/20 rounded-md text-[10px] text-cyan-400 font-bold font-mono uppercase tracking-widest">M5</button>
           </div>
-          <div className="p-1 h-full">
+          
+          <div className="p-2 h-[550px]">
             <PredatorChart data={ticks} signals={signals} />
           </div>
         </div>
 
         {/* Right: Decision Intelligence (4/12) */}
         <div className="xl:col-span-4 flex flex-col space-y-6">
-          <div className="bg-depth border border-white/5 rounded-2xl p-6 shadow-2xl flex-1">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xs font-mono text-zinc-400 uppercase tracking-[0.2em] flex items-center">
-                <Zap size={14} className="mr-2 text-cyan-400" />
-                Bayesian Oracle
-              </h3>
-              <Info size={14} className="text-zinc-600 cursor-help" />
+          <div className="bg-depth/40 border border-white/5 rounded-3xl p-8 shadow-2xl flex-1 backdrop-blur-sm relative overflow-hidden group">
+            <div className="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl group-hover:bg-cyan-500/10 transition-all duration-1000" />
+            
+            <div className="flex items-center justify-between mb-10">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-cyan-500/10 rounded-lg border border-cyan-500/20">
+                  <Zap size={16} className="text-cyan-400" />
+                </div>
+                <h3 className="text-xs font-bold text-white uppercase tracking-[0.2em]">
+                  Bayesian Oracle
+                </h3>
+              </div>
+              <Info size={14} className="text-zinc-600 hover:text-zinc-400 transition-colors cursor-help" />
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-1 gap-4">
+            <div className="flex flex-col h-full justify-between">
               <div className="grid grid-cols-3 gap-4">
                 <BayesianGauge label="Long" value={lastSignal?.metadata?.probabilities?.long || 0} color="#22d3ee" />
                 <BayesianGauge label="Short" value={lastSignal?.metadata?.probabilities?.short || 0} color="#f87171" />
                 <BayesianGauge label="Wait" value={lastSignal?.metadata?.probabilities?.wait || 0} color="#71717a" />
               </div>
               
-              <div className="mt-8 space-y-4">
-                <div className="p-4 bg-void/40 rounded-xl border border-white/5 space-y-3">
+              <div className="space-y-5 mt-10">
+                <div className="p-5 bg-void/60 rounded-2xl border border-white/5 space-y-4 hover:border-white/10 transition-colors">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Sentiment Bias (FinBERT)</span>
-                    <span className={`text-xs font-mono ${lastSignal?.metadata?.sentiment_context < 0 ? 'text-red-400' : 'text-teal-400'}`}>
+                    <span className="text-[10px] text-zinc-500 uppercase font-black tracking-[0.1em]">NLP Sentiment (FinBERT)</span>
+                    <span className={`text-xs font-mono font-bold ${lastSignal?.metadata?.sentiment_context < 0 ? 'text-red-400' : 'text-teal-400'}`}>
                       {(lastSignal?.metadata?.sentiment_context || 0).toFixed(2)}
                     </span>
                   </div>
-                  <div className="h-1 bg-zinc-900 rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full transition-all duration-1000 ${lastSignal?.metadata?.sentiment_context < 0 ? 'bg-red-500' : 'bg-teal-500'}`}
-                      style={{ width: `${Math.abs(lastSignal?.metadata?.sentiment_context || 0) * 100}%` }} 
+                  <div className="h-1.5 bg-zinc-900/50 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.abs(lastSignal?.metadata?.sentiment_context || 0) * 100}%` }}
+                      className={`h-full transition-all duration-1000 ${lastSignal?.metadata?.sentiment_context < 0 ? 'bg-red-500' : 'bg-teal-500 shadow-[0_0_10px_rgba(45,212,191,0.3)]'}`}
                     />
                   </div>
                 </div>
 
-                <div className="p-4 bg-void/40 rounded-xl border border-white/5 space-y-3">
+                <div className="p-5 bg-void/60 rounded-2xl border border-white/5 space-y-4 hover:border-white/10 transition-colors">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Order Flow Imbalance (OFI)</span>
-                    <span className="text-xs font-mono text-white">
+                    <span className="text-[10px] text-zinc-500 uppercase font-black tracking-[0.1em]">Order Flow Imbalance</span>
+                    <span className="text-xs font-mono font-bold text-white">
                       {(lastSignal?.metadata?.ofi_used || 0).toFixed(3)}
                     </span>
                   </div>
-                  <div className="h-1 bg-zinc-900 rounded-full overflow-hidden flex justify-center">
-                    <div 
-                      className="h-full bg-cyan-400 transition-all duration-500" 
+                  <div className="h-1.5 bg-zinc-900/50 rounded-full overflow-hidden flex justify-center">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.abs(lastSignal?.metadata?.ofi_used || 0) * 100}%` }}
+                      className="h-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]" 
                       style={{ 
-                        width: `${Math.abs(lastSignal?.metadata?.ofi_used || 0) * 100}%`,
                         marginLeft: lastSignal?.metadata?.ofi_used < 0 ? '-100%' : '0'
                       }} 
                     />
