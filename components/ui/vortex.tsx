@@ -194,10 +194,15 @@ export function Vortex(props: VortexProps) {
     canvas: HTMLCanvasElement,
     ctx?: CanvasRenderingContext2D,
   ) => {
-    const { innerWidth, innerHeight } = window;
-
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
+    const container = containerRef.current;
+    if (container) {
+      const { width, height } = container.getBoundingClientRect();
+      canvas.width = width;
+      canvas.height = height;
+    } else {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
 
     center[0] = 0.5 * canvas.width;
     center[1] = 0.5 * canvas.height;

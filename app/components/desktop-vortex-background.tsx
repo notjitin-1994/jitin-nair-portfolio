@@ -16,7 +16,7 @@ export function DesktopVortexBackground({ children }: DesktopVortexBackgroundPro
       rangeSpeed={0.5}
       baseRadius={0.6}
       rangeRadius={1.2}
-      containerClassName="fixed inset-0 z-0 pointer-events-none"
+      containerClassName="absolute inset-0 z-0 pointer-events-none"
       className="w-full h-full"
     >
       {children}
