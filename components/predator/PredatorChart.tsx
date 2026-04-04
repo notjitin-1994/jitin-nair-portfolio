@@ -71,9 +71,6 @@ export function PredatorChart({
         timeVisible: true,
         secondsVisible: true,
       },
-      rightPriceScale: {
-        borderColor: "rgba(34, 211, 238, 0.1)",
-      },
     });
 
     seriesRef.current = chartRef.current.addSeries(AreaSeries, {
@@ -81,11 +78,6 @@ export function PredatorChart({
       topColor: areaTopColor,
       bottomColor: areaBottomColor,
       lineWidth: 2,
-      priceFormat: {
-        type: 'price',
-        precision: 2,
-        minMove: 0.01,
-      },
     });
 
     const updateChartData = () => {
@@ -99,16 +91,16 @@ export function PredatorChart({
       const uniqueData = Array.from(new Map(formattedData.map(item => [item.time, item])).values());
       seriesRef.current.setData(uniqueData);
 
-      // Add signal markers
       if (signals.length > 0) {
         const markers = signals.map(sig => ({
           time: Math.floor(new Date(sig.timestamp).getTime() / 1000) as any,
-          position: sig.signal === 'ENTER_LONG' ? 'belowBar' : 'aboveBar',
-          color: sig.signal === 'ENTER_LONG' ? '#22c55e' : '#ef4444',
-          shape: sig.signal === 'ENTER_LONG' ? 'arrowUp' : 'arrowDown',
-          text: sig.signal.split('_')[1],
+          position: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? 'belowBar' : 'aboveBar',
+          color: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? '#22c55e' : '#ef4444',
+          shape: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? 'arrowUp' : 'arrowDown',
+          text: (sig.signal || sig.direction).includes('LONG') ? 'LONG' : 'SHORT',
         }));
-        (seriesRef.current as any).setMarkers(markers as any);
+        // INSTITUTIONAL FIX: Bypass TS error for setMarkers on ISeriesApi
+        (seriesRef.current as any).setMarkers(markers);
       }
     };
 
