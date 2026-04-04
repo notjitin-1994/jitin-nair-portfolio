@@ -59,12 +59,34 @@ export default function DashboardPage() {
     }
   }, [lastTick]);
 
-  const getSentimentLabel = (score: number) => {
-    if (score > 0.5) return "STRONG BUY BIAS";
-    if (score > 0.1) return "CAUTIOUS BUY";
-    if (score < -0.5) return "STRONG SELL BIAS";
-    if (score < -0.1) return "CAUTIOUS SELL";
-    return "NEUTRAL MOOD";
+  // FIXED: COMPREHENSIVE TACTICAL BIAS (Matches Backend Signal Logic)
+  const getTacticalBias = (signal: any) => {
+    if (!signal) return "ANALYZING...";
+    
+    // 1. If Apollo is sending an active signal, that is the primary bias
+    if (signal.signal === "ENTER_LONG") return "ACTIVE LONG BIAS";
+    if (signal.signal === "ENTER_SHORT") return "ACTIVE SHORT BIAS";
+
+    // 2. If signal is WAIT, look at the probability weights
+    const probs = signal.probabilities || signal.metadata?.probabilities || {};
+    const long = probs.long || 0;
+    const short = probs.short || 0;
+    const wait = probs.wait || 0;
+
+    // 3. Determine semantic mood based on weight dominance
+    if (wait > 0.5) return "FLAT / NEUTRAL";
+    if (long > short) return "BULLISH LEAN";
+    if (short > long) return "BEARISH LEAN";
+    
+    return "NEUTRAL";
+  };
+
+  const getSentimentIntensity = (score: number) => {
+    if (score > 0.5) return "STRONG BULLISH";
+    if (score > 0.1) return "BULLISH";
+    if (score < -0.5) return "STRONG BEARISH";
+    if (score < -0.1) return "BEARISH";
+    return "NEUTRAL";
   };
 
   const getRegimeStrategy = (regime: string) => {
@@ -105,9 +127,9 @@ export default function DashboardPage() {
       status: lastSignal ? "ONLINE" : "SYNCING",
       icon: <Crosshair size={18} className={lastSignal ? "text-emerald-400" : "text-zinc-600"} />,
       metrics: {
-        "Action Bias": getSentimentLabel(lastSignal?.metadata?.sentiment_used || lastSignal?.sentiment_used || 0),
+        "News Mood": getSentimentIntensity(lastSignal?.metadata?.sentiment_used || lastSignal?.sentiment_used || 0),
         "Confidence": lastSignal ? `${((lastSignal.confidence || 0) * 100).toFixed(0)}%` : "N/A",
-        "Signal Age": "LIVE"
+        "OFI Delta": (lastSignal?.metadata?.ofi_used || lastSignal?.ofi_used || 0).toFixed(3)
       }
     },
     {
@@ -152,10 +174,10 @@ export default function DashboardPage() {
         <PredatorChart data={ticks} />
       </div>
 
-      {/* 2. AGENT COMMAND CENTER (Relocated Below Chart) */}
+      {/* 2. AGENT COMMAND CENTER */}
       <AgentCommandCenter agents={agentStatus as any} />
 
-      {/* 3. CAPITAL & BIAS HUD (Relocated Below Agents) */}
+      {/* 3. CAPITAL & BIAS HUD */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
          <div className="bg-surface/40 border border-zinc-800/50 p-6 rounded-xl backdrop-blur-sm group hover:border-cyan-400/30 transition-all">
             <div className="flex items-center justify-between mb-4">
@@ -183,17 +205,17 @@ export default function DashboardPage() {
                <Scale size={14} className="text-purple-400" />
             </div>
             <div className="text-xl font-mono text-white font-bold uppercase tracking-tighter mt-2">
-               {getSentimentLabel(lastSignal?.metadata?.sentiment_used || lastSignal?.sentiment_used || 0)}
+               {getTacticalBias(lastSignal)}
             </div>
          </div>
       </div>
       
-      {/* 4. BAYESIAN ENGINE (Granular Analysis) */}
+      {/* 4. BAYESIAN ENGINE */}
       {(lastSignal?.metadata || lastSignal?.probabilities || lastSignal?.signal) && (
         <div className="bg-surface/30 border border-zinc-800/50 rounded-xl p-6 backdrop-blur-sm shadow-xl">
           <h3 className="text-xs font-mono text-zinc-500 uppercase mb-6 flex items-center tracking-[0.2em]">
             <AlertTriangle size={14} className="mr-2 text-yellow-500" />
-            Bayesian Probability Engine
+            Bayesian Probability Engine (via Agent Apollo)
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
              <div className="p-4 bg-void/50 rounded-lg border border-green-500/10">
