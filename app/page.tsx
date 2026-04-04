@@ -1673,14 +1673,24 @@ function MobileJourney() {
 function MobileTechStack() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
+  const [categoryPages, setCategoryPages] = useState<Record<string, number>>({});
   const [mounted, setMounted] = useState(false);
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    setExpandedSkill(null);
+  }, [activeIndex, categoryPages]);
+
   const goToPrev = () => setActiveIndex((prev) => Math.max(prev - 1, 0));
   const goToNext = () => setActiveIndex((prev) => Math.min(prev + 1, toolCategories.length - 1));
+
+  const handlePageChange = (category: string, newPage: number) => {
+    setCategoryPages(prev => ({ ...prev, [category]: newPage }));
+  };
 
   const getLevelColor = (level: string) => {
     switch (level) {
@@ -1762,26 +1772,54 @@ function MobileTechStack() {
           >
             {toolCategories.map((cat) => {
               const Icon = cat.icon;
+              const currentPage = categoryPages[cat.category] || 1;
+              const totalPages = Math.ceil((cat.tools?.length || 0) / ITEMS_PER_PAGE);
+              const paginatedTools = (cat.tools || []).slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
               return (
                 <div
                   key={cat.category}
                   className="w-full flex-shrink-0 min-w-full px-5 py-6"
                 >
                   {/* Header */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center flex-shrink-0 border border-cyan-500/20">
-                      <Icon className="w-6 h-6 text-cyan-400" />
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center flex-shrink-0 border border-cyan-500/20">
+                        <Icon className="w-6 h-6 text-cyan-400" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-lg leading-tight">{cat.category}</h3>
+                        <p className="text-slate-500 text-xs">{cat.description}</p>
+                      </div>
                     </div>
-                    <div className="min-w-0">
-                      <h3 className="font-bold text-lg leading-tight">{cat.category}</h3>
-                      <p className="text-slate-500 text-xs">{cat.description}</p>
-                    </div>
+
+                    {totalPages > 1 && (
+                      <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] rounded-lg px-1.5 py-0.5">
+                        <button
+                          onClick={() => handlePageChange(cat.category, Math.max(currentPage - 1, 1))}
+                          disabled={currentPage === 1}
+                          className="p-0.5 hover:text-cyan-400 disabled:opacity-30 transition-colors"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="text-[9px] font-mono text-slate-500 min-w-[2rem] text-center">
+                          {currentPage}/{totalPages}
+                        </span>
+                        <button
+                          onClick={() => handlePageChange(cat.category, Math.min(currentPage + 1, totalPages))}
+                          disabled={currentPage === totalPages}
+                          className="p-0.5 hover:text-cyan-400 disabled:opacity-30 transition-colors"
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Skills List */}
-                  {cat.tools?.length > 0 ? (
+                  {paginatedTools.length > 0 ? (
                     <div className="space-y-2.5">
-                      {cat.tools.map((tool) => (
+                      {paginatedTools.map((tool) => (
                       <div
                         key={tool.name}
                         className={`p-3 rounded-xl border transition-all ${
@@ -2100,7 +2138,20 @@ function DesktopTechStack() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Primary Stack");
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
+  const [categoryPages, setCategoryPages] = useState<Record<string, number>>({});
+  const [mainPage, setMainPage] = useState(1);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const ITEMS_PER_PAGE = 10;
+
+  // Reset pagination when filter/search changes
+  useEffect(() => {
+    setMainPage(1);
+    setCategoryPages({});
+  }, [selectedCategory, searchQuery]);
+
+  const handlePageChange = (category: string, newPage: number) => {
+    setCategoryPages(prev => ({ ...prev, [category]: newPage }));
+  };
 
   // Flatten all skills for "All" view
   const allSkills = toolCategories.flatMap((cat) =>
@@ -2410,19 +2461,47 @@ function DesktopTechStack() {
             >
               {filteredCategories.map((cat) => {
                 const Icon = cat.icon;
+                const currentPage = categoryPages[cat.category] || 1;
+                const totalPages = Math.ceil(cat.tools.length / ITEMS_PER_PAGE);
+                const paginatedTools = cat.tools.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
                 return (
-                  <div key={cat.category}>
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                        <Icon className="w-5 h-5 text-cyan-400" />
+                  <div key={cat.category} className="group/section">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                          <Icon className="w-5 h-5 text-cyan-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold">{cat.category}</h3>
+                          <p className="text-xs text-slate-500">{cat.description}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold">{cat.category}</h3>
-                        <p className="text-xs text-slate-500">{cat.description}</p>
-                      </div>
+                      
+                      {totalPages > 1 && (
+                        <div className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.08] rounded-lg px-2 py-1">
+                          <button
+                            onClick={() => handlePageChange(cat.category, Math.max(currentPage - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="p-1 hover:text-cyan-400 disabled:opacity-30 disabled:hover:text-inherit transition-colors"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                          </button>
+                          <span className="text-[10px] font-mono text-slate-500 min-w-[3rem] text-center uppercase tracking-wider">
+                            Page {currentPage} / {totalPages}
+                          </span>
+                          <button
+                            onClick={() => handlePageChange(cat.category, Math.min(currentPage + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="p-1 hover:text-cyan-400 disabled:opacity-30 disabled:hover:text-inherit transition-colors"
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {cat.tools.map((tool, index) => (
+                      {paginatedTools.map((tool, index) => (
                         <SkillCard
                           key={tool.name}
                           tool={tool}
@@ -2443,17 +2522,57 @@ function DesktopTechStack() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+              className="space-y-8"
             >
-              {displaySkills.map((tool, index) => (
-                <SkillCard
-                  key={tool.name}
-                  tool={tool}
-                  category={tool.category}
-                  Icon={tool.Icon}
-                  index={index}
-                />
-              ))}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {displaySkills
+                  .slice((mainPage - 1) * ITEMS_PER_PAGE, mainPage * ITEMS_PER_PAGE)
+                  .map((tool, index) => (
+                    <SkillCard
+                      key={tool.name}
+                      tool={tool}
+                      category={tool.category}
+                      Icon={tool.Icon}
+                      index={index}
+                    />
+                  ))}
+              </div>
+
+              {Math.ceil(displaySkills.length / ITEMS_PER_PAGE) > 1 && (
+                <div className="flex items-center justify-center gap-4 pt-4">
+                  <button
+                    onClick={() => setMainPage(prev => Math.max(prev - 1, 1))}
+                    disabled={mainPage === 1}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-sm font-medium text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 disabled:opacity-30 disabled:hover:text-inherit transition-all"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Previous
+                  </button>
+                  <div className="flex items-center gap-2">
+                    {Array.from({ length: Math.ceil(displaySkills.length / ITEMS_PER_PAGE) }).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setMainPage(i + 1)}
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono transition-all ${
+                          mainPage === i + 1
+                            ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+                            : "bg-white/[0.03] text-slate-500 border border-white/[0.08] hover:text-slate-300"
+                        }`}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setMainPage(prev => Math.min(prev + 1, Math.ceil(displaySkills.length / ITEMS_PER_PAGE)))}
+                    disabled={mainPage === Math.ceil(displaySkills.length / ITEMS_PER_PAGE)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-sm font-medium text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 disabled:opacity-30 disabled:hover:text-inherit transition-all"
+                  >
+                    Next
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

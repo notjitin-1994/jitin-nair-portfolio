@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Code2, Workflow, Zap, Sparkles, Search, Target, Bot, Award } from 'lucide-react';
+import { Brain, Code2, Workflow, Zap, Sparkles, Search, Target, Bot, Award, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const capabilitiesData = {
   aiAndAgents: {
@@ -110,7 +110,12 @@ interface CapabilityCardProps {
 
 function CapabilityCard({ categoryKey, data, index }: CapabilityCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
   const Icon = data.icon;
+
+  const totalPages = Math.ceil(data.skills.length / ITEMS_PER_PAGE);
+  const paginatedSkills = data.skills.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (
     <motion.div
@@ -134,23 +139,47 @@ function CapabilityCard({ categoryKey, data, index }: CapabilityCardProps) {
         />
 
         {/* Header */}
-        <div className="flex items-center gap-3 mb-5">
-          <motion.div
-            className="w-10 h-10 rounded-lg bg-cyan-500/15 flex items-center justify-center border border-cyan-500/25"
-            animate={{ scale: isHovered ? 1.05 : 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Icon className="w-5 h-5 text-cyan-400" />
-          </motion.div>
-          <div>
-            <h3 className="font-semibold text-base text-white">{data.title}</h3>
-            <p className="text-slate-500 text-sm">{data.skills.length} skills</p>
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <motion.div
+              className="w-10 h-10 rounded-lg bg-cyan-500/15 flex items-center justify-center border border-cyan-500/25"
+              animate={{ scale: isHovered ? 1.05 : 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Icon className="w-5 h-5 text-cyan-400" />
+            </motion.div>
+            <div>
+              <h3 className="font-semibold text-base text-white">{data.title}</h3>
+              <p className="text-slate-500 text-sm">{data.skills.length} skills</p>
+            </div>
           </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] rounded-lg px-1.5 py-0.5" onClick={(e) => e.stopPropagation()}>
+              <button
+                onClick={(e) => { e.stopPropagation(); setCurrentPage(prev => Math.max(prev - 1, 1)); }}
+                disabled={currentPage === 1}
+                className="p-0.5 hover:text-cyan-400 disabled:opacity-30 transition-colors"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              <span className="text-[9px] font-mono text-slate-500 min-w-[2rem] text-center">
+                {currentPage}/{totalPages}
+              </span>
+              <button
+                onClick={(e) => { e.stopPropagation(); setCurrentPage(prev => Math.min(prev + 1, totalPages)); }}
+                disabled={currentPage === totalPages}
+                className="p-0.5 hover:text-cyan-400 disabled:opacity-30 transition-colors"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Skills */}
         <div className="space-y-4">
-          {data.skills.map((skill, idx) => (
+          {paginatedSkills.map((skill, idx) => (
             <motion.div
               key={skill.name}
               initial={{ opacity: 0, x: -10 }}
