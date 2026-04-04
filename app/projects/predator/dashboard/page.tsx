@@ -93,7 +93,8 @@ export default function DashboardPage() {
       metrics: {
         "Latest Signal": lastSignal?.signal || "N/A",
         "Confidence": lastSignal ? `${((lastSignal.confidence || 0) * 100).toFixed(1)}%` : "N/A",
-        "OFI": typeof (lastSignal?.metadata?.ofi_used || lastSignal?.ofi_used) === 'number' ? (lastSignal?.metadata?.ofi_used || lastSignal?.ofi_used).toFixed(3) : "N/A"
+        "OFI": typeof (lastSignal?.metadata?.ofi_used || lastSignal?.ofi_used) === 'number' ? (lastSignal?.metadata?.ofi_used || lastSignal?.ofi_used).toFixed(3) : "N/A",
+        "Sentiment": typeof (lastSignal?.metadata?.sentiment_used || lastSignal?.sentiment_used) === 'number' ? (lastSignal?.metadata?.sentiment_used || lastSignal?.sentiment_used).toFixed(2) : "0.00"
       }
     },
     {

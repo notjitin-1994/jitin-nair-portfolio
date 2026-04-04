@@ -23,6 +23,7 @@ export default function DataVaultPage() {
     { id: "market_bars_m1", name: "M1 Bars" },
     { id: "market_bars_m5", name: "M5 Bars" },
     { id: "order_book_depth", name: "L2 Depth" },
+    { id: "market_news", name: "Market News" }, // NEW DATASET
     { id: "apollo_signals", name: "Bayesian Signals" },
     { id: "regime_consensus", name: "Argus Regimes" },
     { id: "trades", name: "Trade History" },
