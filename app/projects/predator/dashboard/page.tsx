@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { usePredatorSocket } from "@/lib/predator/usePredatorSocket";
 import { PredatorChart } from "@/components/predator/PredatorChart";
 import { AgentCommandCenter } from "@/components/predator/AgentCommandCenter";
-import { Activity, Cpu, ShieldAlert, Crosshair, AlertTriangle, Clock, TrendingUp, TrendingDown, DollarSign, Zap, ZapOff, Scale } from "lucide-react";
+import { Activity, Cpu, ShieldAlert, Crosshair, AlertTriangle, Clock, TrendingUp, TrendingDown, DollarSign, Zap, Scale } from "lucide-react";
 
 export default function DashboardPage() {
   const { isConnected, lastTick, lastRegime, lastSignal, setLastRegime, setLastSignal } = usePredatorSocket();
@@ -59,7 +59,6 @@ export default function DashboardPage() {
     }
   }, [lastTick]);
 
-  // UX HELPERS
   const getSentimentLabel = (score: number) => {
     if (score > 0.5) return "STRONG BUY BIAS";
     if (score > 0.1) return "CAUTIOUS BUY";
@@ -139,7 +138,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* PRICE HUD */}
+      {/* 1. PRICE HUD & CHART */}
       <div className="bg-depth border border-cyan-400/20 rounded-xl p-4 overflow-hidden relative shadow-2xl">
          <div className="absolute top-6 left-6 z-10 bg-void/90 border border-cyan-400/30 p-4 rounded backdrop-blur-xl">
             <div className="flex items-center space-x-2 mb-1">
@@ -153,7 +152,10 @@ export default function DashboardPage() {
         <PredatorChart data={ticks} />
       </div>
 
-      {/* TOP LEVEL CAPITAL HUD */}
+      {/* 2. AGENT COMMAND CENTER (Relocated Below Chart) */}
+      <AgentCommandCenter agents={agentStatus as any} />
+
+      {/* 3. CAPITAL & BIAS HUD (Relocated Below Agents) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
          <div className="bg-surface/40 border border-zinc-800/50 p-6 rounded-xl backdrop-blur-sm group hover:border-cyan-400/30 transition-all">
             <div className="flex items-center justify-between mb-4">
@@ -185,9 +187,8 @@ export default function DashboardPage() {
             </div>
          </div>
       </div>
-
-      <AgentCommandCenter agents={agentStatus as any} />
       
+      {/* 4. BAYESIAN ENGINE (Granular Analysis) */}
       {(lastSignal?.metadata || lastSignal?.probabilities || lastSignal?.signal) && (
         <div className="bg-surface/30 border border-zinc-800/50 rounded-xl p-6 backdrop-blur-sm shadow-xl">
           <h3 className="text-xs font-mono text-zinc-500 uppercase mb-6 flex items-center tracking-[0.2em]">
@@ -195,7 +196,6 @@ export default function DashboardPage() {
             Bayesian Probability Engine
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-             {/* Bayesian Blocks with better labels */}
              <div className="p-4 bg-void/50 rounded-lg border border-green-500/10">
                <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Expansion | Bullish)</div>
                <div className="text-2xl text-green-400 font-mono font-bold">{((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100).toFixed(1)}%</div>
