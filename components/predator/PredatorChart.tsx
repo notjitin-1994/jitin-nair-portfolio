@@ -108,7 +108,7 @@ export function PredatorChart({
           shape: sig.signal === 'ENTER_LONG' ? 'arrowUp' : 'arrowDown',
           text: sig.signal.split('_')[1],
         }));
-        seriesRef.current.setMarkers(markers as any);
+        (seriesRef.current as any).setMarkers(markers as any);
       }
     };
 
