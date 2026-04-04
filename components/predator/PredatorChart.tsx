@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createChart, ColorType, IChartApi, ISeriesApi, AreaSeries } from "lightweight-charts";
 
 interface ChartProps {
@@ -27,6 +27,7 @@ export function PredatorChart({
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
+  const isInitialDataLoaded = useRef(false);
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
@@ -37,68 +38,80 @@ export function PredatorChart({
       });
     };
 
-    chartRef.current = createChart(chartContainerRef.current, {
-      layout: {
-        background: { type: ColorType.Solid, color: backgroundColor },
-        textColor,
-      },
-      grid: {
-        vertLines: { color: "rgba(45, 212, 191, 0.1)" },
-        horzLines: { color: "rgba(45, 212, 191, 0.1)" },
-      },
-      width: chartContainerRef.current.clientWidth,
-      height: 400,
-      timeScale: {
-        timeVisible: true,
-        secondsVisible: true,
-      },
-      crosshair: {
-        vertLine: {
-          color: "#22d3ee",
-          width: 1,
-          style: 3,
+    if (!chartRef.current) {
+      chartRef.current = createChart(chartContainerRef.current, {
+        layout: {
+          background: { type: ColorType.Solid, color: backgroundColor },
+          textColor,
         },
-        horzLine: {
-          color: "#22d3ee",
-          width: 1,
-          style: 3,
+        grid: {
+          vertLines: { color: "rgba(45, 212, 191, 0.1)" },
+          horzLines: { color: "rgba(45, 212, 191, 0.1)" },
         },
-      }
-    });
+        width: chartContainerRef.current.clientWidth,
+        height: 400,
+        timeScale: {
+          timeVisible: true,
+          secondsVisible: true,
+        },
+        crosshair: {
+          vertLine: {
+            color: "#22d3ee",
+            width: 1,
+            style: 3,
+          },
+          horzLine: {
+            color: "#22d3ee",
+            width: 1,
+            style: 3,
+          },
+        }
+      });
 
-    // UPDATED for v5.x: Use addSeries(AreaSeries, ...)
-    seriesRef.current = chartRef.current.addSeries(AreaSeries, {
-      lineColor,
-      topColor: areaTopColor,
-      bottomColor: areaBottomColor,
-    });
-
-    if (data && data.length > 0) {
-      const formattedData = data.map((item) => ({
-        time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as any,
-        value: item.bid ? parseFloat(item.bid) : parseFloat(item.price || item.close),
-      })).sort((a, b) => a.time - b.time);
-      
-      const uniqueData = Array.from(new Map(formattedData.map(item => [item.time, item])).values());
-      seriesRef.current.setData(uniqueData);
+      seriesRef.current = chartRef.current.addSeries(AreaSeries, {
+        lineColor,
+        topColor: areaTopColor,
+        bottomColor: areaBottomColor,
+      });
     }
 
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      chartRef.current?.remove();
     };
-  }, [data, backgroundColor, lineColor, textColor, areaTopColor, areaBottomColor]);
+  }, [backgroundColor, lineColor, textColor, areaTopColor, areaBottomColor]);
 
   useEffect(() => {
-    if (seriesRef.current && data.length > 0) {
-       const formattedData = data.map((item) => ({
-        time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as any,
-        value: item.bid ? parseFloat(item.bid) : parseFloat(item.price || item.close),
-      })).sort((a, b) => a.time - b.time);
-      const uniqueData = Array.from(new Map(formattedData.map(item => [item.time, item])).values());
+    return () => {
+        if (chartRef.current) {
+            chartRef.current.remove();
+            chartRef.current = null;
+            isInitialDataLoaded.current = false;
+        }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!seriesRef.current || !data || data.length === 0) return;
+
+    const formattedData = data.map((item) => ({
+      time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as any,
+      value: item.bid ? parseFloat(item.bid) : parseFloat(item.price || item.close),
+    })).sort((a, b) => a.time - b.time);
+    
+    const uniqueData = Array.from(new Map(formattedData.map(item => [item.time, item])).values());
+
+    if (!isInitialDataLoaded.current) {
+      // First load: Replace everything
       seriesRef.current.setData(uniqueData);
+      isInitialDataLoaded.current = true;
+    } else {
+      // Subsequent ticks: only update the newest tick to prevent memory/render lag
+      const latestTick = uniqueData[uniqueData.length - 1];
+      if (latestTick) {
+        seriesRef.current.update(latestTick);
+      }
     }
   }, [data]);
 
