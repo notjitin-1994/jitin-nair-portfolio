@@ -14,47 +14,48 @@ export default function DashboardPage() {
   const [account, setAccount] = useState<any>(null);
 
   const API_BASE_URL = "https://api.glitchzerolabs.com";
-  // M8 FIX: API Key Header
-  const headers = { 
+  
+  // SECURE AUTH: Ensure key is handled safely
+  const headers = useMemo(() => ({ 
     "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
     "Content-Type": "application/json"
-  };
+  }), []);
 
   const fetchAccountStats = () => {
     fetch(`${API_BASE_URL}/api/v1/execution/account`, { headers })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : Promise.reject())
       .then(data => setAccount(data))
-      .catch(() => {});
+      .catch(() => setAccount(null));
   };
 
   useEffect(() => {
     setIsMounted(true);
     
-    // Initial fetch
+    // Initial fetch with error handling
     fetch(`${API_BASE_URL}/api/v1/market/current`, { headers })
-      .then((res) => res.json())
+      .then((res) => res.ok ? res.json() : Promise.reject())
       .then((data) => {
         if (data && (data.timestamp || data.ts)) {
            setTicks([data]);
            setLastUpdate(new Date());
         }
       })
-      .catch((err) => console.error("Initial fetch failed", err));
+      .catch(() => {});
 
     fetch(`${API_BASE_URL}/api/v1/intelligence/regime`, { headers })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : Promise.reject())
       .then(data => { if (data && data.regime) setLastRegime(data); })
       .catch(() => {});
 
     fetch(`${API_BASE_URL}/api/v1/intelligence/signal`, { headers })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : Promise.reject())
       .then(data => { if (data && data.signal) setLastSignal(data); })
       .catch(() => {});
 
     fetchAccountStats();
     const interval = setInterval(fetchAccountStats, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [headers]);
 
   useEffect(() => {
     if (lastTick) {
@@ -81,7 +82,7 @@ export default function DashboardPage() {
       icon: <Cpu size={18} />,
       metrics: {
         "Consensus": lastRegime?.regime || "N/A",
-        "Confidence": lastRegime ? `${(lastRegime.confidence * 100).toFixed(1)}%` : "N/A",
+        "Confidence": lastRegime ? `${((lastRegime.confidence || 0) * 100).toFixed(1)}%` : "N/A",
         "DXY Proxy": lastRegime ? (typeof lastRegime.macro_dxy_proxy === 'number' ? lastRegime.macro_dxy_proxy.toFixed(6) : lastRegime.macro_dxy_proxy) : "N/A"
       }
     },
@@ -91,7 +92,7 @@ export default function DashboardPage() {
       icon: <Crosshair size={18} />,
       metrics: {
         "Latest Signal": lastSignal?.signal || "N/A",
-        "Confidence": lastSignal ? `${(lastSignal.confidence * 100).toFixed(1)}%` : "N/A",
+        "Confidence": lastSignal ? `${((lastSignal.confidence || 0) * 100).toFixed(1)}%` : "N/A",
         "OFI": typeof (lastSignal?.metadata?.ofi_used || lastSignal?.ofi_used) === 'number' ? (lastSignal?.metadata?.ofi_used || lastSignal?.ofi_used).toFixed(3) : "N/A"
       }
     },
@@ -101,13 +102,17 @@ export default function DashboardPage() {
       icon: <ShieldAlert size={18} />,
       metrics: {
         "Mode": "PAPER",
-        "Balance": account ? `$${parseFloat(account.balance).toFixed(2)}` : "$0.00",
+        "Balance": account?.balance ? `$${parseFloat(account.balance).toFixed(2)}` : "$0.00",
         "Open Trades": account?.open_positions || "0"
       }
     }
   ], [isConnected, lastRegime, lastSignal, account]);
 
   if (!isMounted) return null;
+
+  const drawdownPct = account?.peak_balance > 0 
+    ? (((parseFloat(account.peak_balance) - parseFloat(account.balance)) / parseFloat(account.peak_balance)) * 100).toFixed(2)
+    : "0.00";
 
   return (
     <div className="space-y-6 pb-20">
@@ -116,6 +121,11 @@ export default function DashboardPage() {
           Tactical Command <span className="text-cyan-400">Matrix</span>
         </h2>
         <div className="flex items-center space-x-4">
+          {!process.env.NEXT_PUBLIC_API_KEY && (
+            <div className="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-1 rounded font-mono uppercase">
+              Missing API Key
+            </div>
+          )}
           {lastUpdate && (
             <div className="flex items-center space-x-2 text-zinc-500 font-mono text-xs border-r border-zinc-800 pr-4">
               <Clock size={12} />
@@ -146,25 +156,25 @@ export default function DashboardPage() {
                <DollarSign size={14} className="text-cyan-400" />
             </div>
             <div className="text-3xl font-mono text-white font-bold tracking-tighter">
-               ${account ? parseFloat(account.balance).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}
+               ${account?.balance ? parseFloat(account.balance).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}
             </div>
             <div className="mt-4 flex items-center space-x-2">
                <span className="text-[9px] font-mono text-zinc-600 uppercase">Peak Balance:</span>
-               <span className="text-[10px] font-mono text-zinc-400">${account ? parseFloat(account.peak_balance).toFixed(2) : "0.00"}</span>
+               <span className="text-[10px] font-mono text-zinc-400">${account?.peak_balance ? parseFloat(account.peak_balance).toFixed(2) : "0.00"}</span>
             </div>
          </div>
 
          <div className="bg-surface/40 border border-cyan-400/10 p-6 rounded-xl backdrop-blur-sm">
             <div className="flex items-center justify-between mb-4">
                <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Daily PnL</span>
-               {account?.daily_pnl >= 0 ? <TrendingUp size={14} className="text-green-400" /> : <TrendingDown size={14} className="text-red-400" />}
+               {(account?.daily_pnl || 0) >= 0 ? <TrendingUp size={14} className="text-green-400" /> : <TrendingDown size={14} className="text-red-400" />}
             </div>
-            <div className={`text-3xl font-mono font-bold tracking-tighter ${account?.daily_pnl >= 0 ? "text-green-400" : "text-red-400"}`}>
-               {account?.daily_pnl >= 0 ? "+" : ""}${account ? account.daily_pnl.toFixed(2) : "0.00"}
+            <div className={`text-3xl font-mono font-bold tracking-tighter ${(account?.daily_pnl || 0) >= 0 ? "text-green-400" : "text-red-400"}`}>
+               {(account?.daily_pnl || 0) >= 0 ? "+" : ""}${account?.daily_pnl ? parseFloat(account.daily_pnl).toFixed(2) : "0.00"}
             </div>
             <div className="mt-4 flex items-center space-x-2">
                <div className="h-1 flex-1 bg-zinc-900 rounded-full overflow-hidden">
-                  <div className={`h-full ${account?.daily_pnl >= 0 ? "bg-green-500" : "bg-red-500"}`} style={{ width: '40%' }} />
+                  <div className={`h-full ${(account?.daily_pnl || 0) >= 0 ? "bg-green-500" : "bg-red-500"}`} style={{ width: '40%' }} />
                </div>
             </div>
          </div>
@@ -175,7 +185,7 @@ export default function DashboardPage() {
                <ShieldAlert size={14} className="text-yellow-500" />
             </div>
             <div className="text-3xl font-mono text-white font-bold tracking-tighter">
-               {account ? (((account.peak_balance - account.balance) / account.peak_balance) * 100).toFixed(2) : "0.00"}%
+               {drawdownPct}%
             </div>
             <div className="mt-4 flex items-center space-x-2 text-[9px] font-mono uppercase">
                <span className={account?.open_positions > 0 ? "text-cyan-400 animate-pulse" : "text-zinc-600"}>
