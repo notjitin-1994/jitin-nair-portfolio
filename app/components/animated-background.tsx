@@ -14,14 +14,14 @@ export function AnimatedBackground() {
   // Static gradient for SSR and initial render
   if (!mounted) {
     return (
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#0d0d12] to-[#0a0a0f]" />
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none gpu-accelerated">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none gpu-accelerated">
       {/* Base gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#0d0d12] to-[#0a0a0f]" />
       

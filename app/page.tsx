@@ -334,6 +334,7 @@ function MobileHero() {
 
   return (
     <section className="relative min-h-[100svh] flex flex-col justify-end pb-4 pt-4 overflow-hidden">
+      <AnimatedBackground />
       {/* Photo Background - Cinematic Ken Burns + Fade */}
       <motion.div
         className="absolute inset-0 will-change-transform"
@@ -2979,9 +2980,6 @@ function DesktopHero() {
       <div className="md:hidden absolute inset-0 z-0">
         <AnimatedBackground />
       </div>
-      <div className="md:hidden absolute inset-0">
-        <AnimatedBackground />
-      </div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
@@ -3559,7 +3557,6 @@ export default function Home() {
     <main className="bg-void min-h-screen">
       {isMobile ? (
         <>
-          <AnimatedBackground />
           <div id="top">
             <MobileHero />
           </div>
