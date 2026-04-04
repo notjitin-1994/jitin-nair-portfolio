@@ -4,244 +4,202 @@ import { useEffect, useState, useMemo } from "react";
 import { usePredatorSocket } from "@/lib/predator/usePredatorSocket";
 import { PredatorChart } from "@/components/predator/PredatorChart";
 import { AgentCommandCenter } from "@/components/predator/AgentCommandCenter";
-import { Activity, Cpu, ShieldAlert, Crosshair, AlertTriangle, Clock, TrendingUp, TrendingDown, DollarSign, Zap, Scale } from "lucide-react";
+import { BayesianGauge } from "@/components/predator/BayesianGauge";
+import { 
+  Activity, Cpu, ShieldAlert, Crosshair, 
+  AlertTriangle, Clock, TrendingUp, TrendingDown,
+  Globe, Info, Zap
+} from "lucide-react";
 
 export default function DashboardPage() {
-  const { isConnected, lastTick, lastRegime, lastSignal, setLastRegime, setLastSignal } = usePredatorSocket();
+  const { isConnected, lastTick, lastRegime, lastSignal } = usePredatorSocket();
   const [ticks, setTicks] = useState<any[]>([]);
+  const [signals, setSignals] = useState<any[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-  const [account, setAccount] = useState<any>(null);
 
   const API_BASE_URL = "https://api.glitchzerolabs.com";
-  const headers = useMemo(() => ({ 
-    "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
-    "Content-Type": "application/json"
-  }), []);
-
-  const fetchAccountStats = () => {
-    fetch(`${API_BASE_URL}/api/v1/execution/account`, { headers })
-      .then(res => res.ok ? res.json() : Promise.reject())
-      .then(data => setAccount(data))
-      .catch(() => setAccount(null));
-  };
 
   useEffect(() => {
     setIsMounted(true);
-    fetch(`${API_BASE_URL}/api/v1/market/current`, { headers })
-      .then((res) => res.ok ? res.json() : Promise.reject())
+    // Initial fetch for historical context
+    fetch(`${API_BASE_URL}/api/v1/market/current`)
+      .then((res) => res.json())
       .then((data) => {
-        if (data && (data.timestamp || data.ts)) {
-           setTicks([data]);
-           setLastUpdate(new Date());
-        }
-      }).catch(() => {});
-
-    fetch(`${API_BASE_URL}/api/v1/intelligence/regime`, { headers })
-      .then(res => res.ok ? res.json() : Promise.reject())
-      .then(data => { if (data && data.regime) setLastRegime(data); })
-      .catch(() => {});
-
-    fetch(`${API_BASE_URL}/api/v1/intelligence/signal`, { headers })
-      .then(res => res.ok ? res.json() : Promise.reject())
-      .then(data => { if (data && data.signal) setLastSignal(data); })
-      .catch(() => {});
-
-    fetchAccountStats();
-    const interval = setInterval(fetchAccountStats, 10000);
-    return () => clearInterval(interval);
-  }, [headers]);
+        if (data && (data.timestamp || data.ts)) setTicks([data]);
+      })
+      .catch((err) => console.error("Initial fetch failed", err));
+      
+    fetch(`${API_BASE_URL}/api/v1/execution/trades`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setSignals(data.slice(0, 10));
+      })
+      .catch((err) => console.error("Signal fetch failed", err));
+  }, []);
 
   useEffect(() => {
     if (lastTick) {
-      setTicks((prev) => [...prev.slice(-99), lastTick]);
+      setTicks((prev) => [...prev.slice(-199), lastTick]);
       setLastUpdate(new Date());
     }
   }, [lastTick]);
 
-  // FIXED: COMPREHENSIVE TACTICAL BIAS (Matches Backend Signal Logic)
-  const getTacticalBias = (signal: any) => {
-    if (!signal) return "ANALYZING...";
-    
-    // 1. If Apollo is sending an active signal, that is the primary bias
-    if (signal.signal === "ENTER_LONG") return "ACTIVE LONG BIAS";
-    if (signal.signal === "ENTER_SHORT") return "ACTIVE SHORT BIAS";
-
-    // 2. If signal is WAIT, look at the probability weights
-    const probs = signal.probabilities || signal.metadata?.probabilities || {};
-    const long = probs.long || 0;
-    const short = probs.short || 0;
-    const wait = probs.wait || 0;
-
-    // 3. Determine semantic mood based on weight dominance
-    if (wait > 0.5) return "FLAT / NEUTRAL";
-    if (long > short) return "BULLISH LEAN";
-    if (short > long) return "BEARISH LEAN";
-    
-    return "NEUTRAL";
-  };
-
-  const getSentimentIntensity = (score: number) => {
-    if (score > 0.5) return "STRONG BULLISH";
-    if (score > 0.1) return "BULLISH";
-    if (score < -0.5) return "STRONG BEARISH";
-    if (score < -0.1) return "BEARISH";
-    return "NEUTRAL";
-  };
-
-  const getRegimeStrategy = (regime: string) => {
-    switch (regime) {
-      case "TREND_UP": return "TREND FOLLOWING (LONG)";
-      case "TREND_DOWN": return "TREND FOLLOWING (SHORT)";
-      case "VOLATILE": return "MEAN REVERSION ACTIVE";
-      case "RANGE": return "SCALPING CHANNEL";
-      default: return "ANALYZING...";
+  useEffect(() => {
+    if (lastSignal && lastSignal.signal !== "WAIT") {
+      setSignals((prev) => [lastSignal, ...prev.slice(0, 9)]);
     }
-  };
+  }, [lastSignal]);
 
   const latestPrice = ticks.length > 0 ? (ticks[ticks.length - 1].bid || ticks[ticks.length - 1].price) : 0;
   
   const agentStatus = useMemo(() => [
     {
-      name: "Hermes (Ingestion)",
+      name: "Hermes",
       status: isConnected ? "ONLINE" : "OFFLINE",
-      icon: <Activity size={18} className={isConnected ? "text-cyan-400" : "text-zinc-600"} />,
-      metrics: {
-        "Data Stream": isConnected ? "L1/L2 BINARY" : "DISCONNECTED",
-        "Pipeline": "ULTRA-LOW LATENCY",
-        "Health": isConnected ? "100%" : "0%"
-      }
+      icon: <Activity size={16} />,
+      metrics: { "Latency": "< 1ms", "Pipe": "L2/Tick" }
     },
     {
-      name: "Argus (Regime)",
+      name: "Argus",
       status: lastRegime ? "ONLINE" : "SYNCING",
-      icon: <Cpu size={18} className={lastRegime ? "text-purple-400" : "text-zinc-600"} />,
-      metrics: {
-        "Strategy": getRegimeStrategy(lastRegime?.regime),
-        "Confidence": lastRegime ? `${((lastRegime.confidence || 0) * 100).toFixed(0)}%` : "N/A",
-        "Macro Bias": (lastRegime?.macro_dxy_proxy || 0) > 0 ? "DXY STRONG" : "DXY WEAK"
-      }
+      icon: <Cpu size={16} />,
+      metrics: { "Regime": lastRegime?.regime || "---", "Conf": lastRegime ? `${(lastRegime.confidence * 100).toFixed(0)}%` : "---" }
     },
     {
-      name: "Apollo (Oracle)",
+      name: "Apollo",
       status: lastSignal ? "ONLINE" : "SYNCING",
-      icon: <Crosshair size={18} className={lastSignal ? "text-emerald-400" : "text-zinc-600"} />,
-      metrics: {
-        "News Mood": getSentimentIntensity(lastSignal?.metadata?.sentiment_used || lastSignal?.sentiment_used || 0),
-        "Confidence": lastSignal ? `${((lastSignal.confidence || 0) * 100).toFixed(0)}%` : "N/A",
-        "OFI Delta": (lastSignal?.metadata?.ofi_used || lastSignal?.ofi_used || 0).toFixed(3)
-      }
+      icon: <Crosshair size={16} />,
+      metrics: { "Signal": lastSignal?.signal || "WAIT", "DXY": lastRegime?.macro_dxy_proxy || 0.0 }
     },
     {
-      name: "Ares (Execution)",
+      name: "Ares",
       status: isConnected ? "ONLINE" : "OFFLINE",
-      icon: <ShieldAlert size={18} className={isConnected ? "text-orange-400" : "text-zinc-600"} />,
-      metrics: {
-        "Risk Rule": "1.0% MAX",
-        "Drawdown": account?.balance ? `${(((parseFloat(account.peak_balance) - parseFloat(account.balance)) / parseFloat(account.peak_balance)) * 100).toFixed(2)}%` : "0.00%",
-        "Exposure": (account?.open_positions || 0) > 0 ? "ACTIVE" : "NONE"
-      }
+      icon: <ShieldAlert size={16} />,
+      metrics: { "Mode": "PAPER", "Risk": "1.0%" }
     }
-  ], [isConnected, lastRegime, lastSignal, account]);
+  ], [isConnected, lastRegime, lastSignal]);
 
   if (!isMounted) return null;
 
   return (
-    <div className="space-y-6 pb-20">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-serif text-white uppercase tracking-tighter">
-          Tactical Command <span className="text-cyan-400">Matrix</span>
-        </h2>
+    <div className="flex flex-col space-y-6 max-w-[1600px] mx-auto pb-20">
+      {/* 1. Header Bar: Real-time Status */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-depth/50 p-4 rounded-xl border border-white/5 backdrop-blur-md">
+        <div className="flex items-center space-x-6">
+          <div className="flex flex-col">
+            <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">XAUUSD :: SPOT</span>
+            <div className="flex items-baseline space-x-2">
+              <span className="text-3xl font-mono font-bold text-white tabular-nums tracking-tighter">
+                {latestPrice ? Number(latestPrice).toFixed(2) : "0000.00"}
+              </span>
+              <span className={`text-xs font-mono ${lastTick?.spread < 0.1 ? 'text-teal-400' : 'text-zinc-500'}`}>
+                +{lastTick?.spread || '0.00'}
+              </span>
+            </div>
+          </div>
+          
+          <div className="h-10 w-px bg-white/5 hidden md:block" />
+          
+          <div className="flex flex-col">
+            <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Market Intelligence</span>
+            <div className="flex items-center space-x-2 mt-1">
+              <div className={`px-2 py-0.5 rounded text-[10px] font-bold ${lastRegime?.regime === 'TREND_UP' ? 'bg-green-500/10 text-green-400' : lastRegime?.regime === 'TREND_DOWN' ? 'bg-red-500/10 text-red-400' : 'bg-zinc-800 text-zinc-400'}`}>
+                {lastRegime?.regime || 'INITIALIZING'}
+              </div>
+              <span className="text-xs text-zinc-500 font-mono italic">{lastRegime?.session} Session</span>
+            </div>
+          </div>
+        </div>
+
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <div className={`w-3 h-3 rounded-full ${isConnected ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" : "bg-red-500 animate-pulse"}`} />
-            <span className="font-mono text-xs text-zinc-400 uppercase tracking-widest">{isConnected ? "Connected" : "Disconnected"}</span>
+          {lastUpdate && (
+            <div className="flex items-center space-x-2 text-zinc-500 font-mono text-[10px] bg-void/50 px-3 py-1.5 rounded-full border border-white/5">
+              <Clock size={10} />
+              <span>SYNC: {lastUpdate.toLocaleTimeString()}</span>
+            </div>
+          )}
+          <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-full border ${isConnected ? 'bg-teal-500/5 border-teal-500/20' : 'bg-red-500/5 border-red-500/20'}`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-teal-400 animate-pulse shadow-[0_0_8px_rgba(45,212,191,0.5)]' : 'bg-red-400'}`} />
+            <span className={`text-[10px] uppercase font-bold tracking-widest ${isConnected ? 'text-teal-400' : 'text-red-400'}`}>
+              {isConnected ? 'Nexus Connected' : 'Nexus Link Lost'}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* 1. PRICE HUD & CHART */}
-      <div className="bg-depth border border-cyan-400/20 rounded-xl p-4 overflow-hidden relative shadow-2xl">
-         <div className="absolute top-6 left-6 z-10 bg-void/90 border border-cyan-400/30 p-4 rounded backdrop-blur-xl">
-            <div className="flex items-center space-x-2 mb-1">
-               <Zap size={12} className="text-yellow-400 fill-yellow-400" />
-               <h3 className="text-cyan-400 font-mono text-[10px] uppercase tracking-[0.2em]">XAUUSD :: LIVE FEED</h3>
+      {/* 2. Main Grid: Charts & Gauges */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        {/* Left: Chart Terminal (8/12) */}
+        <div className="xl:col-span-8 bg-depth border border-white/5 rounded-2xl overflow-hidden relative shadow-2xl min-h-[500px]">
+          <div className="absolute top-4 right-4 z-10 flex space-x-2">
+             <button className="px-3 py-1 bg-surface/80 border border-white/10 rounded text-[10px] text-zinc-400 font-mono hover:text-cyan-400 transition-colors uppercase tracking-wider">M1</button>
+             <button className="px-3 py-1 bg-void/80 border border-cyan-400/30 rounded text-[10px] text-cyan-400 font-mono uppercase tracking-wider">M5</button>
+          </div>
+          <div className="p-1 h-full">
+            <PredatorChart data={ticks} signals={signals} />
+          </div>
+        </div>
+
+        {/* Right: Decision Intelligence (4/12) */}
+        <div className="xl:col-span-4 flex flex-col space-y-6">
+          <div className="bg-depth border border-white/5 rounded-2xl p-6 shadow-2xl flex-1">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-xs font-mono text-zinc-400 uppercase tracking-[0.2em] flex items-center">
+                <Zap size={14} className="mr-2 text-cyan-400" />
+                Bayesian Oracle
+              </h3>
+              <Info size={14} className="text-zinc-600 cursor-help" />
             </div>
-            <p className="text-4xl font-mono text-white font-bold tracking-tighter">
-              {latestPrice ? Number(latestPrice).toFixed(2) : "0000.00"}
-            </p>
-         </div>
-        <PredatorChart data={ticks} />
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-1 gap-4">
+              <div className="grid grid-cols-3 gap-4">
+                <BayesianGauge label="Long" value={lastSignal?.metadata?.probabilities?.long || 0} color="#22d3ee" />
+                <BayesianGauge label="Short" value={lastSignal?.metadata?.probabilities?.short || 0} color="#f87171" />
+                <BayesianGauge label="Wait" value={lastSignal?.metadata?.probabilities?.wait || 0} color="#71717a" />
+              </div>
+              
+              <div className="mt-8 space-y-4">
+                <div className="p-4 bg-void/40 rounded-xl border border-white/5 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Sentiment Bias (FinBERT)</span>
+                    <span className={`text-xs font-mono ${lastSignal?.metadata?.sentiment_context < 0 ? 'text-red-400' : 'text-teal-400'}`}>
+                      {(lastSignal?.metadata?.sentiment_context || 0).toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="h-1 bg-zinc-900 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full transition-all duration-1000 ${lastSignal?.metadata?.sentiment_context < 0 ? 'bg-red-500' : 'bg-teal-500'}`}
+                      style={{ width: `${Math.abs(lastSignal?.metadata?.sentiment_context || 0) * 100}%` }} 
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 bg-void/40 rounded-xl border border-white/5 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Order Flow Imbalance (OFI)</span>
+                    <span className="text-xs font-mono text-white">
+                      {(lastSignal?.metadata?.ofi_used || 0).toFixed(3)}
+                    </span>
+                  </div>
+                  <div className="h-1 bg-zinc-900 rounded-full overflow-hidden flex justify-center">
+                    <div 
+                      className="h-full bg-cyan-400 transition-all duration-500" 
+                      style={{ 
+                        width: `${Math.abs(lastSignal?.metadata?.ofi_used || 0) * 100}%`,
+                        marginLeft: lastSignal?.metadata?.ofi_used < 0 ? '-100%' : '0'
+                      }} 
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* 2. AGENT COMMAND CENTER */}
+      {/* 3. Bottom Row: Command Center & System Pulse */}
       <AgentCommandCenter agents={agentStatus as any} />
-
-      {/* 3. CAPITAL & BIAS HUD */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-         <div className="bg-surface/40 border border-zinc-800/50 p-6 rounded-xl backdrop-blur-sm group hover:border-cyan-400/30 transition-all">
-            <div className="flex items-center justify-between mb-4">
-               <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Available Capital</span>
-               <DollarSign size={14} className="text-cyan-400" />
-            </div>
-            <div className="text-3xl font-mono text-white font-bold tracking-tighter">
-               ${account?.balance ? parseFloat(account.balance).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}
-            </div>
-         </div>
-
-         <div className="bg-surface/40 border border-zinc-800/50 p-6 rounded-xl backdrop-blur-sm group hover:border-emerald-400/30 transition-all">
-            <div className="flex items-center justify-between mb-4">
-               <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Realized Session PnL</span>
-               {(account?.daily_pnl || 0) >= 0 ? <TrendingUp size={14} className="text-green-400" /> : <TrendingDown size={14} className="text-red-400" />}
-            </div>
-            <div className={`text-3xl font-mono font-bold tracking-tighter ${(account?.daily_pnl || 0) >= 0 ? "text-green-400" : "text-red-400"}`}>
-               {(account?.daily_pnl || 0) >= 0 ? "+" : ""}${account?.daily_pnl ? parseFloat(account.daily_pnl).toFixed(2) : "0.00"}
-            </div>
-         </div>
-
-         <div className="bg-surface/40 border border-zinc-800/50 p-6 rounded-xl backdrop-blur-sm group hover:border-yellow-400/30 transition-all">
-            <div className="flex items-center justify-between mb-4">
-               <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Tactical Bias</span>
-               <Scale size={14} className="text-purple-400" />
-            </div>
-            <div className="text-xl font-mono text-white font-bold uppercase tracking-tighter mt-2">
-               {getTacticalBias(lastSignal)}
-            </div>
-         </div>
-      </div>
-      
-      {/* 4. BAYESIAN ENGINE */}
-      {(lastSignal?.metadata || lastSignal?.probabilities || lastSignal?.signal) && (
-        <div className="bg-surface/30 border border-zinc-800/50 rounded-xl p-6 backdrop-blur-sm shadow-xl">
-          <h3 className="text-xs font-mono text-zinc-500 uppercase mb-6 flex items-center tracking-[0.2em]">
-            <AlertTriangle size={14} className="mr-2 text-yellow-500" />
-            Bayesian Probability Engine (via Agent Apollo)
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-             <div className="p-4 bg-void/50 rounded-lg border border-green-500/10">
-               <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Expansion | Bullish)</div>
-               <div className="text-2xl text-green-400 font-mono font-bold">{((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100).toFixed(1)}%</div>
-               <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100)}%` }} />
-               </div>
-             </div>
-             <div className="p-4 bg-void/50 rounded-lg border border-red-500/10">
-               <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Contraction | Bearish)</div>
-               <div className="text-2xl text-red-400 font-mono font-bold">{((lastSignal.metadata?.probabilities?.short || lastSignal.probabilities?.short || 0) * 100).toFixed(1)}%</div>
-               <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-500 transition-all duration-500" style={{ width: `${((lastSignal.metadata?.probabilities?.short || lastSignal.probabilities?.short || 0) * 100)}%` }} />
-               </div>
-             </div>
-             <div className="p-4 bg-void/50 rounded-lg border border-yellow-500/10">
-               <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Wait | Sideways)</div>
-               <div className="text-2xl text-yellow-400 font-mono font-bold">{((lastSignal.metadata?.probabilities?.wait || lastSignal.probabilities?.wait || 0) * 100).toFixed(1)}%</div>
-               <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-yellow-500 transition-all duration-500" style={{ width: `${((lastSignal.metadata?.probabilities?.wait || lastSignal.probabilities?.wait || 0) * 100)}%` }} />
-               </div>
-             </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

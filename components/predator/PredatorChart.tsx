@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { createChart, ColorType, IChartApi, ISeriesApi, AreaSeries } from "lightweight-charts";
+import { useEffect, useRef } from "react";
+import { createChart, ColorType, IChartApi, ISeriesApi, AreaSeries, LineStyle, CrosshairMode } from "lightweight-charts";
 
 interface ChartProps {
   data: any[];
+  signals?: any[];
   colors?: {
     backgroundColor?: string;
     lineColor?: string;
@@ -16,18 +17,18 @@ interface ChartProps {
 
 export function PredatorChart({
   data,
+  signals = [],
   colors: {
     backgroundColor = "transparent",
     lineColor = "#22d3ee",
-    textColor = "#a1a1aa",
-    areaTopColor = "rgba(34, 211, 238, 0.4)",
+    textColor = "#71717a",
+    areaTopColor = "rgba(34, 211, 238, 0.2)",
     areaBottomColor = "rgba(34, 211, 238, 0.0)",
   } = {},
 }: ChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
-  const isInitialDataLoaded = useRef(false);
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
@@ -38,82 +39,87 @@ export function PredatorChart({
       });
     };
 
-    if (!chartRef.current) {
-      chartRef.current = createChart(chartContainerRef.current, {
-        layout: {
-          background: { type: ColorType.Solid, color: backgroundColor },
-          textColor,
+    chartRef.current = createChart(chartContainerRef.current, {
+      layout: {
+        background: { type: ColorType.Solid, color: backgroundColor },
+        textColor,
+        fontFamily: "'JetBrains Mono', monospace",
+      },
+      grid: {
+        vertLines: { color: "rgba(34, 211, 238, 0.05)" },
+        horzLines: { color: "rgba(34, 211, 238, 0.05)" },
+      },
+      width: chartContainerRef.current.clientWidth,
+      height: 400,
+      crosshair: {
+        mode: CrosshairMode.Normal,
+        vertLine: {
+          color: "rgba(34, 211, 238, 0.5)",
+          width: 1,
+          style: LineStyle.Dashed,
+          labelBackgroundColor: "#0891b2",
         },
-        grid: {
-          vertLines: { color: "rgba(45, 212, 191, 0.1)" },
-          horzLines: { color: "rgba(45, 212, 191, 0.1)" },
+        horzLine: {
+          color: "rgba(34, 211, 238, 0.5)",
+          width: 1,
+          style: LineStyle.Dashed,
+          labelBackgroundColor: "#0891b2",
         },
-        width: chartContainerRef.current.clientWidth,
-        height: 400,
-        timeScale: {
-          timeVisible: true,
-          secondsVisible: true,
-        },
-        crosshair: {
-          vertLine: {
-            color: "#22d3ee",
-            width: 1,
-            style: 3,
-          },
-          horzLine: {
-            color: "#22d3ee",
-            width: 1,
-            style: 3,
-          },
-        }
-      });
+      },
+      timeScale: {
+        borderColor: "rgba(34, 211, 238, 0.1)",
+        timeVisible: true,
+        secondsVisible: true,
+      },
+      rightPriceScale: {
+        borderColor: "rgba(34, 211, 238, 0.1)",
+      },
+    });
 
-      seriesRef.current = chartRef.current.addSeries(AreaSeries, {
-        lineColor,
-        topColor: areaTopColor,
-        bottomColor: areaBottomColor,
-      });
-    }
+    seriesRef.current = chartRef.current.addSeries(AreaSeries, {
+      lineColor,
+      topColor: areaTopColor,
+      bottomColor: areaBottomColor,
+      lineWidth: 2,
+      priceFormat: {
+        type: 'price',
+        precision: 2,
+        minMove: 0.01,
+      },
+    });
 
+    const updateChartData = () => {
+      if (!seriesRef.current || !data.length) return;
+      
+      const formattedData = data.map((item) => ({
+        time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as any,
+        value: Number(item.bid || item.price || item.close),
+      })).sort((a, b) => a.time - b.time);
+      
+      const uniqueData = Array.from(new Map(formattedData.map(item => [item.time, item])).values());
+      seriesRef.current.setData(uniqueData);
+
+      // Add signal markers
+      if (signals.length > 0) {
+        const markers = signals.map(sig => ({
+          time: Math.floor(new Date(sig.timestamp).getTime() / 1000) as any,
+          position: sig.signal === 'ENTER_LONG' ? 'belowBar' : 'aboveBar',
+          color: sig.signal === 'ENTER_LONG' ? '#22c55e' : '#ef4444',
+          shape: sig.signal === 'ENTER_LONG' ? 'arrowUp' : 'arrowDown',
+          text: sig.signal.split('_')[1],
+        }));
+        seriesRef.current.setMarkers(markers as any);
+      }
+    };
+
+    updateChartData();
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      chartRef.current?.remove();
     };
-  }, [backgroundColor, lineColor, textColor, areaTopColor, areaBottomColor]);
+  }, [data, signals, backgroundColor, lineColor, textColor, areaTopColor, areaBottomColor]);
 
-  useEffect(() => {
-    return () => {
-        if (chartRef.current) {
-            chartRef.current.remove();
-            chartRef.current = null;
-            isInitialDataLoaded.current = false;
-        }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!seriesRef.current || !data || data.length === 0) return;
-
-    const formattedData = data.map((item) => ({
-      time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as any,
-      value: item.bid ? parseFloat(item.bid) : parseFloat(item.price || item.close),
-    })).sort((a, b) => a.time - b.time);
-    
-    const uniqueData = Array.from(new Map(formattedData.map(item => [item.time, item])).values());
-
-    if (!isInitialDataLoaded.current) {
-      // First load: Replace everything
-      seriesRef.current.setData(uniqueData);
-      isInitialDataLoaded.current = true;
-    } else {
-      // Subsequent ticks: only update the newest tick to prevent memory/render lag
-      const latestTick = uniqueData[uniqueData.length - 1];
-      if (latestTick) {
-        seriesRef.current.update(latestTick);
-      }
-    }
-  }, [data]);
-
-  return <div ref={chartContainerRef} className="w-full h-[400px]" />;
+  return <div ref={chartContainerRef} className="w-full h-full min-h-[400px]" />;
 }

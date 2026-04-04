@@ -2138,7 +2138,6 @@ function DesktopTechStack() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Primary Stack");
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
-  const [categoryPages, setCategoryPages] = useState<Record<string, number>>({});
   const [mainPage, setMainPage] = useState(1);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const ITEMS_PER_PAGE = 10;
@@ -2146,30 +2145,12 @@ function DesktopTechStack() {
   // Reset pagination when filter/search changes
   useEffect(() => {
     setMainPage(1);
-    setCategoryPages({});
   }, [selectedCategory, searchQuery]);
-
-  const handlePageChange = (category: string, newPage: number) => {
-    setCategoryPages(prev => ({ ...prev, [category]: newPage }));
-  };
 
   // Flatten all skills for "All" view
   const allSkills = toolCategories.flatMap((cat) =>
     cat.tools.map((tool) => ({ ...tool, category: cat.category, Icon: cat.icon }))
   );
-
-  // Filter skills based on search and category
-  const filteredCategories = toolCategories
-    .map((cat) => ({
-      ...cat,
-      tools: cat.tools.filter(
-        (tool) =>
-          tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
-    }))
-    .filter((cat) => selectedCategory === "All" || selectedCategory === "Primary Stack" || cat.category === selectedCategory)
-    .filter((cat) => cat.tools.length > 0);
 
   // Get skills to display based on current selection
   const getDisplaySkills = () => {
@@ -2187,7 +2168,11 @@ function DesktopTechStack() {
     if (selectedCategory === "All") {
       return allSkills;
     }
-    // Specific category selected - return empty as we'll use filteredCategories
+    // Specific category selected
+    const cat = toolCategories.find(c => c.category === selectedCategory);
+    if (cat) {
+      return cat.tools.map(tool => ({ ...tool, category: cat.category, Icon: cat.icon }));
+    }
     return [];
   };
 
@@ -2412,7 +2397,7 @@ function DesktopTechStack() {
           animate={{ opacity: 1 }}
           className="mb-6 flex items-center justify-between"
         >
-          <p className="text-sm text-slate-500">
+          <div className="text-sm text-slate-500">
             {searchQuery ? (
               <span>
                 Found <span className="text-cyan-400">{displaySkills.length}</span> skills matching &quot;
@@ -2429,12 +2414,17 @@ function DesktopTechStack() {
             ) : (
               <span>
                 <span className="text-cyan-400">
-                  {filteredCategories[0]?.tools.length || 0}
+                  {displaySkills.length}
                 </span>{" "}
                 skills in {selectedCategory}
               </span>
             )}
-          </p>
+            {displaySkills.length > ITEMS_PER_PAGE && (
+              <span className="ml-2 px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider">
+                Page {mainPage} of {Math.ceil(displaySkills.length / ITEMS_PER_PAGE)}
+              </span>
+            )}
+          </div>
           {(searchQuery || selectedCategory !== "Primary Stack") && (
             <button
               onClick={() => {
@@ -2450,136 +2440,67 @@ function DesktopTechStack() {
 
         {/* Skills Grid */}
         <AnimatePresence mode="wait">
-          {selectedCategory !== "Primary Stack" && !searchQuery ? (
-            // Category view with headers for specific categories or "All"
-            <motion.div
-              key="categories"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="space-y-12"
-            >
-              {filteredCategories.map((cat) => {
-                const Icon = cat.icon;
-                const currentPage = categoryPages[cat.category] || 1;
-                const totalPages = Math.ceil(cat.tools.length / ITEMS_PER_PAGE);
-                const paginatedTools = cat.tools.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+          <motion.div
+            key={selectedCategory + searchQuery + mainPage}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="space-y-8"
+          >
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {displaySkills
+                .slice((mainPage - 1) * ITEMS_PER_PAGE, mainPage * ITEMS_PER_PAGE)
+                .map((tool, index) => (
+                  <SkillCard
+                    key={tool.name}
+                    tool={tool}
+                    category={tool.category}
+                    Icon={tool.Icon}
+                    index={index}
+                  />
+                ))}
+            </div>
 
-                return (
-                  <div key={cat.category} className="group/section">
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                          <Icon className="w-5 h-5 text-cyan-400" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold">{cat.category}</h3>
-                          <p className="text-xs text-slate-500">{cat.description}</p>
-                        </div>
-                      </div>
-                      
-                      {totalPages > 1 && (
-                        <div className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.08] rounded-lg px-2 py-1">
-                          <button
-                            onClick={() => handlePageChange(cat.category, Math.max(currentPage - 1, 1))}
-                            disabled={currentPage === 1}
-                            className="p-1 hover:text-cyan-400 disabled:opacity-30 disabled:hover:text-inherit transition-colors"
-                          >
-                            <ChevronLeft className="w-4 h-4" />
-                          </button>
-                          <span className="text-[10px] font-mono text-slate-500 min-w-[3rem] text-center uppercase tracking-wider">
-                            Page {currentPage} / {totalPages}
-                          </span>
-                          <button
-                            onClick={() => handlePageChange(cat.category, Math.min(currentPage + 1, totalPages))}
-                            disabled={currentPage === totalPages}
-                            className="p-1 hover:text-cyan-400 disabled:opacity-30 disabled:hover:text-inherit transition-colors"
-                          >
-                            <ChevronRight className="w-4 h-4" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {paginatedTools.map((tool, index) => (
-                        <SkillCard
-                          key={tool.name}
-                          tool={tool}
-                          category={cat.category}
-                          Icon={Icon}
-                          index={index}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </motion.div>
-          ) : (
-            // Grid view for Primary Stack or search results
-            <motion.div
-              key="grid"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="space-y-8"
-            >
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {displaySkills
-                  .slice((mainPage - 1) * ITEMS_PER_PAGE, mainPage * ITEMS_PER_PAGE)
-                  .map((tool, index) => (
-                    <SkillCard
-                      key={tool.name}
-                      tool={tool}
-                      category={tool.category}
-                      Icon={tool.Icon}
-                      index={index}
-                    />
+            {Math.ceil(displaySkills.length / ITEMS_PER_PAGE) > 1 && (
+              <div className="flex items-center justify-center gap-4 pt-4">
+                <button
+                  onClick={() => setMainPage(prev => Math.max(prev - 1, 1))}
+                  disabled={mainPage === 1}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-sm font-medium text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 disabled:opacity-30 disabled:hover:text-inherit transition-all"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Previous
+                </button>
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: Math.ceil(displaySkills.length / ITEMS_PER_PAGE) }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setMainPage(i + 1)}
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono transition-all ${
+                        mainPage === i + 1
+                          ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+                          : "bg-white/[0.03] text-slate-500 border border-white/[0.08] hover:text-slate-300"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
                   ))}
-              </div>
-
-              {Math.ceil(displaySkills.length / ITEMS_PER_PAGE) > 1 && (
-                <div className="flex items-center justify-center gap-4 pt-4">
-                  <button
-                    onClick={() => setMainPage(prev => Math.max(prev - 1, 1))}
-                    disabled={mainPage === 1}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-sm font-medium text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 disabled:opacity-30 disabled:hover:text-inherit transition-all"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    Previous
-                  </button>
-                  <div className="flex items-center gap-2">
-                    {Array.from({ length: Math.ceil(displaySkills.length / ITEMS_PER_PAGE) }).map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setMainPage(i + 1)}
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono transition-all ${
-                          mainPage === i + 1
-                            ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
-                            : "bg-white/[0.03] text-slate-500 border border-white/[0.08] hover:text-slate-300"
-                        }`}
-                      >
-                        {i + 1}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => setMainPage(prev => Math.min(prev + 1, Math.ceil(displaySkills.length / ITEMS_PER_PAGE)))}
-                    disabled={mainPage === Math.ceil(displaySkills.length / ITEMS_PER_PAGE)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-sm font-medium text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 disabled:opacity-30 disabled:hover:text-inherit transition-all"
-                  >
-                    Next
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
                 </div>
-              )}
-            </motion.div>
-          )}
+                <button
+                  onClick={() => setMainPage(prev => Math.min(prev + 1, Math.ceil(displaySkills.length / ITEMS_PER_PAGE)))}
+                  disabled={mainPage === Math.ceil(displaySkills.length / ITEMS_PER_PAGE)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-sm font-medium text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 disabled:opacity-30 disabled:hover:text-inherit transition-all"
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </motion.div>
         </AnimatePresence>
 
         {/* Empty State */}
-        {((displaySkills.length === 0 && (selectedCategory === "Primary Stack" || searchQuery)) ||
-         (filteredCategories.length === 0 && selectedCategory !== "Primary Stack" && selectedCategory !== "All" && !searchQuery)) && (
+        {displaySkills.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
