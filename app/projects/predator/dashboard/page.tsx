@@ -14,9 +14,14 @@ export default function DashboardPage() {
   const [account, setAccount] = useState<any>(null);
 
   const API_BASE_URL = "https://api.glitchzerolabs.com";
+  // M8 FIX: API Key Header
+  const headers = { 
+    "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
+    "Content-Type": "application/json"
+  };
 
   const fetchAccountStats = () => {
-    fetch(`${API_BASE_URL}/api/v1/execution/account`)
+    fetch(`${API_BASE_URL}/api/v1/execution/account`, { headers })
       .then(res => res.json())
       .then(data => setAccount(data))
       .catch(() => {});
@@ -26,7 +31,7 @@ export default function DashboardPage() {
     setIsMounted(true);
     
     // Initial fetch
-    fetch(`${API_BASE_URL}/api/v1/market/current`)
+    fetch(`${API_BASE_URL}/api/v1/market/current`, { headers })
       .then((res) => res.json())
       .then((data) => {
         if (data && (data.timestamp || data.ts)) {
@@ -36,18 +41,18 @@ export default function DashboardPage() {
       })
       .catch((err) => console.error("Initial fetch failed", err));
 
-    fetch(`${API_BASE_URL}/api/v1/intelligence/regime`)
+    fetch(`${API_BASE_URL}/api/v1/intelligence/regime`, { headers })
       .then(res => res.json())
       .then(data => { if (data && data.regime) setLastRegime(data); })
       .catch(() => {});
 
-    fetch(`${API_BASE_URL}/api/v1/intelligence/signal`)
+    fetch(`${API_BASE_URL}/api/v1/intelligence/signal`, { headers })
       .then(res => res.json())
       .then(data => { if (data && data.signal) setLastSignal(data); })
       .catch(() => {});
 
     fetchAccountStats();
-    const interval = setInterval(fetchAccountStats, 10000); // Polling account stats every 10s
+    const interval = setInterval(fetchAccountStats, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -134,7 +139,6 @@ export default function DashboardPage() {
         <PredatorChart data={ticks} />
       </div>
 
-      {/* Ares Capital Matrix (Detailed View) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
          <div className="bg-surface/40 border border-cyan-400/10 p-6 rounded-xl backdrop-blur-sm">
             <div className="flex items-center justify-between mb-4">
@@ -192,7 +196,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
              <div className="p-4 bg-void/50 rounded-lg border border-green-500/10 hover:border-green-500/30 transition-colors">
                <div className="text-[10px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">P(Long)</div>
-               <div className="text-2xl text-green-400 font-mono font-bold">{((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100).toFixed(2)}%</div>
+               <div className="text-2xl text-green-400 font-mono font-bold">{( (lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100).toFixed(2)}%</div>
                <div className="mt-2 h-1 bg-zinc-900 rounded-full overflow-hidden">
                   <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${((lastSignal.metadata?.probabilities?.long || lastSignal.probabilities?.long || 0) * 100)}%` }} />
                </div>

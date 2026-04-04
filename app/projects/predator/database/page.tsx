@@ -1,210 +1,184 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import { Database, Table, ChevronLeft, ChevronRight, Hash } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Database, Search, ChevronLeft, ChevronRight, Download, Filter } from "lucide-react";
 
-export default function DatabasePage() {
+export default function DataVaultPage() {
+  const [table, setTable] = useState("market_ticks");
   const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedTable, setSelectedTable] = useState("trades");
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [jumpPage, setJumpPage] = useState("");
-  const [pagination, setPagination] = useState({
-    page: 1,
-    total: 0,
-    totalPages: 0,
-    limit: 25
-  });
 
   const API_BASE_URL = "https://api.glitchzerolabs.com";
+  // M8 FIX: API Authentication
+  const headers = { 
+    "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
+    "Content-Type": "application/json"
+  };
 
   const tables = [
-    { id: "trades", name: "Executed Trades" },
-    { id: "market_ticks", name: "Real-time Ticks" },
-    { id: "market_bars_m1", name: "M1 Candles" },
-    { id: "market_bars_m5", name: "M5 Candles" },
-    { id: "order_book_depth", name: "L2 Order Book" },
-    { id: "regime_consensus", name: "Regime History" },
-    { id: "apollo_signals", name: "Signal History" },
-    { id: "system_logs", name: "System Logs" }
+    { id: "market_ticks", name: "Price Ticks" },
+    { id: "market_bars_m1", name: "M1 Bars" },
+    { id: "market_bars_m5", name: "M5 Bars" },
+    { id: "order_book_depth", name: "L2 Depth" },
+    { id: "apollo_signals", name: "Bayesian Signals" },
+    { id: "regime_consensus", name: "Argus Regimes" },
+    { id: "trades", name: "Trade History" },
+    { id: "system_logs", name: "System Audit" },
   ];
 
   useEffect(() => {
+    fetchData();
+  }, [table, page]);
+
+  const fetchData = async () => {
     setLoading(true);
-    fetch(`${API_BASE_URL}/api/v1/data/${selectedTable}?page=${pagination.page}&limit=25`)
-      .then((res) => res.json())
-      .then((json) => {
-        setData(json.data || []);
-        if (json.pagination) {
-          setPagination(prev => ({
-            ...prev,
-            total: json.pagination.total || 0,
-            totalPages: json.pagination.totalPages || 0
-          }));
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, [selectedTable, pagination.page]);
-
-  const handleTableChange = (tableId: string) => {
-    setSelectedTable(tableId);
-    setPagination(prev => ({ ...prev, page: 1 }));
-    setJumpPage("");
-  };
-
-  const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && (pagination.totalPages === 0 || newPage <= pagination.totalPages)) {
-      setPagination(prev => ({ ...prev, page: newPage }));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/v1/data/${table}?page=${page}&limit=25`, { headers });
+      const result = await res.json();
+      if (result.data) {
+        setData(result.data);
+        setTotalPages(result.pagination.totalPages);
+      }
+    } catch (err) {
+      console.error("Vault fetch failed", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleJumpSubmit = (e: React.FormEvent) => {
+  const handleJump = (e: React.FormEvent) => {
     e.preventDefault();
-    const pageNum = parseInt(jumpPage);
-    if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= pagination.totalPages) {
-      handlePageChange(pageNum);
-    } else {
+    const p = parseInt(jumpPage);
+    if (p >= 1 && p <= totalPages) {
+      setPage(p);
       setJumpPage("");
     }
   };
 
-  // INSTITUTIONAL FIX: Safely calculate page numbers to avoid RangeError
-  const pagesToShow = useMemo(() => {
-    const total = pagination.totalPages;
-    if (!total || total <= 0) return [];
-    const count = Math.min(5, total);
-    const start = Math.max(1, Math.min(pagination.page - 2, Math.max(1, total - 4)));
-    return Array.from({ length: count }, (_, i) => start + i).filter(p => p <= total);
-  }, [pagination.totalPages, pagination.page]);
-
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center space-x-3">
-          <Database className="text-cyan-400" size={24} />
-          <h2 className="text-2xl font-serif text-white tracking-tight uppercase">Predator <span className="text-cyan-400">Data Vault</span></h2>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-2 mb-6">
-        {tables.map((table) => (
-          <button
-            key={table.id}
-            onClick={() => handleTableChange(table.id)}
-            className={`px-4 py-2 rounded-md font-mono text-xs transition-all ${
-              selectedTable === table.id
-                ? "bg-cyan-400/20 text-cyan-400 border border-cyan-400/40"
-                : "bg-surface text-zinc-500 border border-zinc-800 hover:text-zinc-300"
-            }`}
-          >
-            {table.name}
-          </button>
-        ))}
-      </div>
-
-      <div className="bg-depth border border-cyan-400/10 rounded-xl overflow-hidden shadow-2xl flex flex-col min-h-[600px]">
-        <div className="px-6 py-4 border-b border-zinc-800/50 flex items-center justify-between bg-surface/30">
-          <h3 className="font-mono text-xs text-zinc-400 flex items-center uppercase tracking-widest">
-            <Table size={14} className="mr-2 text-cyan-400" />
-            vault.public.{selectedTable}
-          </h3>
-          <span className="text-[10px] font-mono text-zinc-600 italic">
-            Total Entries: {pagination.total.toLocaleString()}
-          </span>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-serif text-white uppercase tracking-tighter flex items-center">
+            <Database className="mr-3 text-cyan-400" size={24} />
+            Institutional <span className="text-cyan-400 ml-2">Data Vault</span>
+          </h2>
+          <p className="text-zinc-500 text-xs font-mono mt-1 uppercase tracking-widest">TimescaleDB Hypertable Explorer</p>
         </div>
         
-        <div className="flex-1 overflow-x-auto">
-          <table className="w-full text-left font-mono text-[11px] border-collapse">
-            <thead className="bg-surface/50 text-zinc-500 uppercase tracking-tighter sticky top-0 z-10 backdrop-blur-md">
-              <tr>
-                {data.length > 0 ? (
-                  Object.keys(data[0]).map((key) => (
-                    <th key={key} className="px-6 py-4 font-semibold border-b border-zinc-800">{key}</th>
-                  ))
-                ) : (
-                  <th className="px-6 py-4 border-b border-zinc-800 text-center">No Data Available</th>
-                )}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-800/30">
-              {loading ? (
-                <tr>
-                  <td colSpan={20} className="px-6 py-24 text-center text-zinc-600 animate-pulse italic">
-                    Executing secure paged query...
-                  </td>
-                </tr>
-              ) : data.length === 0 ? (
-                <tr>
-                  <td colSpan={20} className="px-6 py-24 text-center text-zinc-600">
-                    Query returned 0 results.
-                  </td>
-                </tr>
-              ) : (
-                data.map((row, i) => (
-                  <tr key={i} className="hover:bg-cyan-400/5 transition-colors group">
-                    {Object.values(row).map((val: any, j) => (
-                      <td key={j} className="px-6 py-3 text-zinc-400 group-hover:text-zinc-200 truncate max-w-[200px]">
-                        {typeof val === 'object' && val !== null ? JSON.stringify(val).substring(0, 30) + '...' : String(val)}
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+        <div className="flex items-center space-x-2">
+          <button className="p-2 bg-zinc-900 border border-zinc-800 rounded text-zinc-400 hover:text-white transition-colors">
+            <Download size={18} />
+          </button>
+          <div className="h-8 w-px bg-zinc-800 mx-2" />
+          <div className="flex bg-zinc-900 border border-zinc-800 rounded p-1">
+            {tables.slice(0, 3).map((t) => (
+              <button
+                key={t.id}
+                onClick={() => { setTable(t.id); setPage(1); }}
+                className={`px-3 py-1 text-[10px] font-mono uppercase rounded ${table === t.id ? "bg-cyan-500 text-void" : "text-zinc-500 hover:text-zinc-300"}`}
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-1 space-y-4">
+          <div className="bg-surface/30 border border-zinc-800 rounded-xl p-4">
+            <h3 className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-4 flex items-center">
+              <Filter size={12} className="mr-2" /> Select Dataset
+            </h3>
+            <div className="space-y-1">
+              {tables.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => { setTable(t.id); setPage(1); }}
+                  className={`w-full text-left px-3 py-2 rounded text-xs font-mono transition-colors ${table === t.id ? "bg-cyan-500/10 text-cyan-400 border border-cyan-400/20" : "text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300"}`}
+                >
+                  {t.name}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-zinc-800/50 bg-surface/30 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-[10px] font-mono text-zinc-500 uppercase flex items-center space-x-4">
-            <span>Page {pagination.page} of {pagination.totalPages || 1}</span>
-            <form onSubmit={handleJumpSubmit} className="flex items-center space-x-2 border-l border-zinc-800 pl-4">
-               <Hash size={12} className="text-zinc-600" />
-               <input 
-                 type="text"
-                 placeholder="JUMP TO"
-                 value={jumpPage}
-                 onChange={(e) => setJumpPage(e.target.value)}
-                 className="bg-void border border-zinc-800 text-[10px] px-2 py-1 rounded w-16 focus:outline-none focus:border-cyan-400/50 transition-colors text-zinc-300 placeholder:text-zinc-700"
-               />
-            </form>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => handlePageChange(pagination.page - 1)}
-              disabled={pagination.page <= 1 || loading}
-              className="p-2 rounded bg-void border border-zinc-800 text-zinc-400 disabled:opacity-30 hover:text-cyan-400 transition-colors"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            
-            <div className="flex items-center space-x-1">
-               {pagesToShow.map((pageNum) => (
-                 <button
-                   key={pageNum}
-                   onClick={() => handlePageChange(pageNum)}
-                   className={`w-8 h-8 rounded text-[10px] font-mono transition-all ${
-                     pagination.page === pageNum 
-                     ? "bg-cyan-400/20 text-cyan-400 border border-cyan-400/40"
-                     : "text-zinc-600 hover:text-zinc-300"
-                   }`}
-                 >
-                   {pageNum}
-                 </button>
-               ))}
+        <div className="lg:col-span-3 space-y-4">
+          <div className="bg-void border border-zinc-800 rounded-xl overflow-hidden shadow-2xl min-h-[600px] flex flex-col">
+            <div className="overflow-x-auto flex-1">
+              <table className="w-full text-left font-mono text-[11px]">
+                <thead className="bg-zinc-900/50 border-b border-zinc-800 text-zinc-500 uppercase tracking-widest">
+                  <tr>
+                    {data.length > 0 && Object.keys(data[0]).map((key) => (
+                      <th key={key} className="px-4 py-3 font-medium">{key}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-900">
+                  {loading ? (
+                    <tr>
+                      <td colSpan={10} className="px-4 py-20 text-center text-zinc-600 animate-pulse uppercase tracking-[0.2em]">
+                        Querying Hypertable...
+                      </td>
+                    </tr>
+                  ) : data.length === 0 ? (
+                    <tr>
+                      <td colSpan={10} className="px-4 py-20 text-center text-zinc-600 uppercase tracking-widest">
+                        No records found in this sequence
+                      </td>
+                    </tr>
+                  ) : (
+                    data.map((row, i) => (
+                      <tr key={i} className="hover:bg-zinc-900/30 transition-colors group">
+                        {Object.values(row).map((val: any, j) => (
+                          <td key={j} className="px-4 py-2 text-zinc-400 group-hover:text-zinc-200">
+                            {typeof val === 'object' ? JSON.stringify(val).slice(0, 20) + '...' : String(val)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
 
-            <button
-              onClick={() => handlePageChange(pagination.page + 1)}
-              disabled={pagination.page >= pagination.totalPages || loading}
-              className="p-2 rounded bg-void border border-zinc-800 text-zinc-400 disabled:opacity-30 hover:text-cyan-400 transition-colors"
-            >
-              <ChevronRight size={16} />
-            </button>
+            <div className="bg-zinc-900/50 border-t border-zinc-800 p-4 flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <button 
+                  disabled={page === 1 || loading}
+                  onClick={() => setPage(p => p - 1)}
+                  className="p-2 bg-void border border-zinc-800 rounded disabled:opacity-30 hover:bg-zinc-800 transition-colors"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <span className="text-xs font-mono text-zinc-500 uppercase">
+                  Page {page} <span className="mx-1">/</span> {totalPages}
+                </span>
+                <button 
+                  disabled={page === totalPages || loading}
+                  onClick={() => setPage(p => p + 1)}
+                  className="p-2 bg-void border border-zinc-800 rounded disabled:opacity-30 hover:bg-zinc-800 transition-colors"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+
+              <form onSubmit={handleJump} className="flex items-center space-x-2">
+                <input 
+                  type="text" 
+                  placeholder="Jump..."
+                  value={jumpPage}
+                  onChange={(e) => setJumpPage(e.target.value)}
+                  className="w-16 bg-void border border-zinc-800 rounded px-2 py-1 text-xs font-mono text-cyan-400 focus:outline-none focus:border-cyan-500/50"
+                />
+                <button type="submit" className="text-[10px] font-mono text-zinc-600 hover:text-zinc-400 uppercase tracking-widest">Go</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
