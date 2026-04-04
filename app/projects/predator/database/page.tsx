@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Database, Search, ChevronLeft, ChevronRight, Download, Filter } from "lucide-react";
+import { Database, Search, ChevronLeft, ChevronRight, Download, Filter, ExternalLink, Newspaper, Clock } from "lucide-react";
 
 export default function DataVaultPage() {
   const [table, setTable] = useState("market_ticks");
@@ -12,7 +12,6 @@ export default function DataVaultPage() {
   const [jumpPage, setJumpPage] = useState("");
 
   const API_BASE_URL = "https://api.glitchzerolabs.com";
-  // M8 FIX: API Authentication
   const headers = { 
     "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
     "Content-Type": "application/json"
@@ -23,7 +22,7 @@ export default function DataVaultPage() {
     { id: "market_bars_m1", name: "M1 Bars" },
     { id: "market_bars_m5", name: "M5 Bars" },
     { id: "order_book_depth", name: "L2 Depth" },
-    { id: "market_news", name: "Market News" }, // NEW DATASET
+    { id: "market_news", name: "Market News" },
     { id: "apollo_signals", name: "Bayesian Signals" },
     { id: "regime_consensus", name: "Argus Regimes" },
     { id: "trades", name: "Trade History" },
@@ -57,6 +56,11 @@ export default function DataVaultPage() {
       setPage(p);
       setJumpPage("");
     }
+  };
+
+  // Helper to strip HTML tags from news summary
+  const stripHtml = (html: string) => {
+    return html?.replace(/<[^>]*>?/gm, '') || "";
   };
 
   return (
@@ -111,42 +115,85 @@ export default function DataVaultPage() {
 
         <div className="lg:col-span-3 space-y-4">
           <div className="bg-void border border-zinc-800 rounded-xl overflow-hidden shadow-2xl min-h-[600px] flex flex-col">
-            <div className="overflow-x-auto flex-1">
-              <table className="w-full text-left font-mono text-[11px]">
-                <thead className="bg-zinc-900/50 border-b border-zinc-800 text-zinc-500 uppercase tracking-widest">
-                  <tr>
-                    {data.length > 0 && Object.keys(data[0]).map((key) => (
-                      <th key={key} className="px-4 py-3 font-medium">{key}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-900">
-                  {loading ? (
+            
+            {loading ? (
+              <div className="flex-1 flex flex-col items-center justify-center space-y-4">
+                <div className="w-12 h-12 border-2 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
+                <span className="text-xs font-mono text-zinc-600 uppercase tracking-widest">Accessing Secure Hypertable...</span>
+              </div>
+            ) : table === "market_news" ? (
+              // SPECIALIZED AESTHETIC NEWS VIEW
+              <div className="flex-1 p-6 space-y-6">
+                {data.length === 0 ? (
+                  <div className="h-full flex items-center justify-center text-zinc-700 uppercase tracking-widest">No intelligence found</div>
+                ) : (
+                  data.map((item, i) => (
+                    <div key={i} className="border-b border-zinc-900 pb-6 last:border-0 group">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <span className="text-[10px] font-mono bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded border border-cyan-500/20">
+                          {item.source || "Finnhub"}
+                        </span>
+                        <span className="text-[10px] font-mono text-zinc-600 flex items-center">
+                          <Clock size={10} className="mr-1" />
+                          {new Date(item.timestamp).toLocaleString()}
+                        </span>
+                        {item.category && (
+                          <span className="text-[10px] font-mono text-zinc-500 uppercase">:: {item.category}</span>
+                        )}
+                      </div>
+                      <h3 className="text-lg font-serif text-white group-hover:text-cyan-400 transition-colors leading-tight mb-2">
+                        {item.headline}
+                      </h3>
+                      <p className="text-sm text-zinc-400 font-sans line-clamp-2 leading-relaxed">
+                        {stripHtml(item.summary)}
+                      </p>
+                      {item.url && (
+                        <a 
+                          href={item.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="mt-3 inline-flex items-center text-[10px] font-mono text-zinc-500 hover:text-cyan-400 transition-colors uppercase tracking-widest"
+                        >
+                          Source Intel <ExternalLink size={10} className="ml-1" />
+                        </a>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            ) : (
+              // STANDARD TABLE VIEW
+              <div className="overflow-x-auto flex-1 text-nowrap">
+                <table className="w-full text-left font-mono text-[11px]">
+                  <thead className="bg-zinc-900/50 border-b border-zinc-800 text-zinc-500 uppercase tracking-widest">
                     <tr>
-                      <td colSpan={10} className="px-4 py-20 text-center text-zinc-600 animate-pulse uppercase tracking-[0.2em]">
-                        Querying Hypertable...
-                      </td>
+                      {data.length > 0 && Object.keys(data[0]).map((key) => (
+                        <th key={key} className="px-4 py-3 font-medium">{key}</th>
+                      ))}
                     </tr>
-                  ) : data.length === 0 ? (
-                    <tr>
-                      <td colSpan={10} className="px-4 py-20 text-center text-zinc-600 uppercase tracking-widest">
-                        No records found in this sequence
-                      </td>
-                    </tr>
-                  ) : (
-                    data.map((row, i) => (
-                      <tr key={i} className="hover:bg-zinc-900/30 transition-colors group">
-                        {Object.values(row).map((val: any, j) => (
-                          <td key={j} className="px-4 py-2 text-zinc-400 group-hover:text-zinc-200">
-                            {typeof val === 'object' ? JSON.stringify(val).slice(0, 20) + '...' : String(val)}
-                          </td>
-                        ))}
+                  </thead>
+                  <tbody className="divide-y divide-zinc-900">
+                    {data.length === 0 ? (
+                      <tr>
+                        <td colSpan={10} className="px-4 py-20 text-center text-zinc-600 uppercase tracking-widest">
+                          No records found in this sequence
+                        </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    ) : (
+                      data.map((row, i) => (
+                        <tr key={i} className="hover:bg-zinc-900/30 transition-colors group">
+                          {Object.values(row).map((val: any, j) => (
+                            <td key={j} className="px-4 py-2 text-zinc-400 group-hover:text-zinc-200">
+                              {typeof val === 'object' ? JSON.stringify(val).slice(0, 30) + '...' : String(val)}
+                            </td>
+                          ))}
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
             <div className="bg-zinc-900/50 border-t border-zinc-800 p-4 flex items-center justify-between">
               <div className="flex items-center space-x-4">
