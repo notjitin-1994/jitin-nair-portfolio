@@ -23,6 +23,7 @@ import {
   Cpu,
   Layers,
   ArrowUpRight,
+  ArrowRight,
   Monitor,
   Smartphone,
   Bot,
