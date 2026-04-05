@@ -76,7 +76,7 @@ export function PredatorChart({
     });
 
     chartRef.current = chart;
-    seriesRef.current = series;
+    seriesRef.current = series as any;
 
     const handleResize = () => {
       if (chartContainerRef.current) {
@@ -116,8 +116,11 @@ export function PredatorChart({
         shape: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? 'arrowUp' : 'arrowDown',
         text: (sig.signal || sig.direction).includes('LONG') ? 'LONG' : 'SHORT',
       }));
-      // @ts-ignore - Lightweight Charts ISeriesApi typing sometimes misses setMarkers depending on version
-      (seriesRef.current as any).setMarkers(markers);
+      
+      // Defensive check for runtime existence of setMarkers
+      if (seriesRef.current && 'setMarkers' in (seriesRef.current as any)) {
+        (seriesRef.current as any).setMarkers(markers);
+      }
     }
   }, [data, signals]);
 
