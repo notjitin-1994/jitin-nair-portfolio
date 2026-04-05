@@ -1361,9 +1361,9 @@ function MobileProjects() {
   }, []);
 
   return (
-    <section id="projects" className="py-10 md:py-12 relative">
+    <section id="projects" className="py-10 md:py-12 relative overflow-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none">
         <div className="absolute w-[600px] h-[600px] rounded-full opacity-[0.06]"
           style={{
             background: 'radial-gradient(circle, #22d3ee 0%, transparent 70%)',
@@ -1374,9 +1374,9 @@ function MobileProjects() {
         />
       </div>
 
-      <div className="relative z-10">
+      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6">
         {/* Section Header - CSS Animated, SSR Safe */}
-        <div className="px-5 mb-8" suppressHydrationWarning>
+        <div className="mb-8 text-left" suppressHydrationWarning>
           <p 
             className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}
           >
@@ -1388,13 +1388,13 @@ function MobileProjects() {
             Production Systems
           </h2>
           <p 
-            className={`text-slate-400 text-sm mt-2 ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}
+            className={`text-slate-400 text-sm mt-2 leading-relaxed max-w-2xl ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}
           >
-            Swipe to explore • Tap cards to flip
+            Enterprise-grade implementations spanning algorithmic trading, multi-agent orchestration, and intelligent AI infrastructure.
           </p>
         </div>
 
-        <div className="px-4">
+        <div className="px-0">
           <ProjectCarousel />
         </div>
       </div>

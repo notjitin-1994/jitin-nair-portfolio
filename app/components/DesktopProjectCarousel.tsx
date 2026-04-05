@@ -66,13 +66,13 @@ export function DesktopProjectCarousel() {
   };
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto px-12">
+    <div className="relative w-full max-w-7xl mx-auto px-6 lg:px-8">
       {/* Section Header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-left mb-16"
       >
         <motion.p
           initial={{ opacity: 0 }}
@@ -92,7 +92,7 @@ export function DesktopProjectCarousel() {
         >
           Production <span className="text-cyan-400 text-glow-cyan">Systems</span>
         </motion.h2>
-        <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
+        <p className="text-slate-400 max-w-2xl text-lg leading-relaxed">
           Enterprise-grade implementations spanning algorithmic trading, multi-agent orchestration,
           and intelligent AI infrastructure.
         </p>
