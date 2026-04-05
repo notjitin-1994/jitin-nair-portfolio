@@ -466,13 +466,13 @@ const portfolioData = {
   identity: {
     name: "Jitin Nair",
     role: "AI Product Owner | AI Systems Architect",
-    specialty: "Autonomous Agent Development",
+    specialty: "Autonomous & HITL Agents",
     experience: "10+ years",
     location: "Bangalore, India",
     status: "Available",
   },
   expertise: [
-    { name: "Autonomous Agentic Systems", level: 95, icon: Cpu },
+    { name: "Autonomous & HITL Agents", level: 95, icon: Cpu },
     { name: "AI-Native Applications", level: 90, icon: Zap },
     { name: "Intelligent Process Automation", level: 88, icon: Layers },
     { name: "Enterprise Integration", level: 85, icon: Globe },
@@ -846,7 +846,7 @@ export function Terminal({
         <StatusLine key="name" label="Name" value={portfolioData.identity.name} status="info" />,
         <StatusLine key="role" label="Role" value={portfolioData.identity.role} status="success" animate />,
         <StatusLine key="specialty" label="Focus" value={portfolioData.identity.specialty} status="info" />,
-        <StatusLine key="exp" label="Experience" value={portfolioData.identity.experience} status="neutral" />,
+        <StatusLine key="exp" label={isMobile ? "Exp" : "Experience"} value={portfolioData.identity.experience} status="neutral" />,
         <StatusLine key="loc" label="Location" value={portfolioData.identity.location} status="neutral" />,
       ]);
     }, delay);
@@ -879,7 +879,7 @@ export function Terminal({
       setLines((prev) => [
         ...prev,
         <SectionHeader key="stats-h" title="System Metrics" icon={Zap} color="cyan" />,
-        <AnimatedMetric key="years" label="Years Experience" value={portfolioData.stats.yearsExperience} suffix="+" delay={0} />,
+        <AnimatedMetric key="years" label={isMobile ? "Exp" : "Years Experience"} value={portfolioData.stats.yearsExperience} suffix="+" delay={0} />,
         <AnimatedMetric key="tech" label="Technologies" value={portfolioData.stats.technologies} delay={50} />,
         <AnimatedMetric key="industries" label="Industries Served" value={portfolioData.stats.industries} suffix="+" delay={100} />,
         <AnimatedMetric key="models" label="AI Models Integrated" value={portfolioData.stats.aiModels} suffix="+" delay={150} />,
