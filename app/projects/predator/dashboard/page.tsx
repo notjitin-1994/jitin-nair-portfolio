@@ -6,6 +6,7 @@ import { usePredatorSocket } from "@/lib/predator/usePredatorSocket";
 import { PredatorChart } from "@/components/predator/PredatorChart";
 import { AgentCommandCenter } from "@/components/predator/AgentCommandCenter";
 import { BayesianGauge } from "@/components/predator/BayesianGauge";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { 
   Activity, Cpu, ShieldAlert, Crosshair, 
   AlertTriangle, Clock, TrendingUp, TrendingDown,
@@ -176,7 +177,9 @@ export default function DashboardPage() {
                   Bayesian Oracle
                 </h3>
               </div>
-              <Info size={11} className="text-zinc-700 hover:text-zinc-400 transition-colors cursor-help" />
+              <Tooltip content="Synthesizes market regime with real-time order flow and sentiment to calculate posterior probabilities. Uses adaptive thresholding to filter noise.">
+                <Info size={11} className="text-zinc-700 hover:text-zinc-400 transition-colors cursor-help" />
+              </Tooltip>
             </div>
             
             <div className="flex-1 flex flex-col justify-between">
