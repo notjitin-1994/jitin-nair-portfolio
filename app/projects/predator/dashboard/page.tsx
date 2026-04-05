@@ -19,24 +19,38 @@ export default function DashboardPage() {
   const [isMounted, setIsMounted] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  const API_BASE_URL = "https://api.glitchzerolabs.com";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.glitchzerolabs.com";
+  const headers = useMemo(() => ({ 
+    "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
+    "Content-Type": "application/json"
+  }), []);
 
   useEffect(() => {
     setIsMounted(true);
-    fetch(`${API_BASE_URL}/api/v1/market/current`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && (data.timestamp || data.ts)) setTicks([data]);
-      })
-      .catch((err) => console.error("Initial fetch failed", err));
-      
-    fetch(`${API_BASE_URL}/api/v1/execution/trades`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) setSignals(data.slice(0, 10));
-      })
-      .catch((err) => console.error("Signal fetch failed", err));
-  }, []);
+    
+    const fetchInitialData = async () => {
+      try {
+        const [marketRes, tradeRes] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/v1/market/current`, { headers }),
+          fetch(`${API_BASE_URL}/api/v1/execution/trades`, { headers })
+        ]);
+
+        if (marketRes.ok) {
+          const data = await marketRes.json();
+          if (data && (data.timestamp || data.ts)) setTicks([data]);
+        }
+
+        if (tradeRes.ok) {
+          const data = await tradeRes.json();
+          if (Array.isArray(data)) setSignals(data.slice(0, 10));
+        }
+      } catch (err) {
+        console.error("Dashboard hydration failed:", err);
+      }
+    };
+
+    fetchInitialData();
+  }, [headers, API_BASE_URL]);
 
   useEffect(() => {
     if (lastTick) {
@@ -150,62 +164,62 @@ export default function DashboardPage() {
 
         {/* Right: Decision Intelligence (4/12) */}
         <div className="xl:col-span-4 flex flex-col space-y-6">
-          <div className="bg-depth/40 border border-white/5 rounded-3xl p-8 shadow-2xl flex-1 backdrop-blur-sm relative overflow-hidden group">
-            <div className="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl group-hover:bg-cyan-500/10 transition-all duration-1000" />
+          <div className="bg-[#020617]/80 border border-white/5 rounded-3xl p-5 shadow-2xl flex-1 backdrop-blur-xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl group-hover:bg-cyan-500/10 transition-all duration-1000" />
             
-            <div className="flex items-center justify-between mb-10">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-cyan-500/10 rounded-lg border border-cyan-500/20">
-                  <Zap size={16} className="text-cyan-400" />
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-2.5">
+                <div className="p-1.5 bg-cyan-500/10 rounded-lg border border-cyan-500/20 group-hover:border-cyan-500/40 transition-colors">
+                  <Zap size={14} className="text-cyan-400" />
                 </div>
-                <h3 className="text-xs font-bold text-white uppercase tracking-[0.2em]">
+                <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.25em]">
                   Bayesian Oracle
                 </h3>
               </div>
-              <Info size={14} className="text-zinc-600 hover:text-zinc-400 transition-colors cursor-help" />
+              <Info size={12} className="text-zinc-700 hover:text-zinc-400 transition-colors cursor-help" />
             </div>
             
-            <div className="flex flex-col h-full justify-between">
-              <div className="grid grid-cols-3 gap-4">
+            <div className="flex flex-col h-full">
+              <div className="grid grid-cols-3 gap-2 bg-void/40 p-3 rounded-2xl border border-white/5">
                 <BayesianGauge label="Long" value={lastSignal?.metadata?.probabilities?.long || 0} color="#22d3ee" />
                 <BayesianGauge label="Short" value={lastSignal?.metadata?.probabilities?.short || 0} color="#f87171" />
                 <BayesianGauge label="Wait" value={lastSignal?.metadata?.probabilities?.wait || 0} color="#71717a" />
               </div>
               
-              <div className="space-y-5 mt-10">
-                <div className="p-5 bg-void/60 rounded-2xl border border-white/5 space-y-4 hover:border-white/10 transition-colors">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-zinc-500 uppercase font-black tracking-[0.1em]">NLP Sentiment (FinBERT)</span>
-                    <span className={`text-xs font-mono font-bold ${lastSignal?.metadata?.sentiment_context < 0 ? 'text-red-400' : 'text-teal-400'}`}>
-                      {(lastSignal?.metadata?.sentiment_context || 0).toFixed(2)}
-                    </span>
+              <div className="grid grid-cols-1 gap-3 mt-4">
+                <div className="px-4 py-3 bg-void/40 rounded-xl border border-white/5 flex items-center justify-between group/metric hover:border-teal-500/30 transition-colors">
+                  <div className="flex flex-col">
+                    <span className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1.5">NLP Sentiment</span>
+                    <div className="h-1 w-32 bg-zinc-900/50 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.abs(lastSignal?.metadata?.sentiment_context || 0) * 100}%` }}
+                        className={`h-full transition-all duration-1000 ${lastSignal?.metadata?.sentiment_context < 0 ? 'bg-red-500' : 'bg-teal-500 shadow-[0_0_8px_rgba(45,212,191,0.3)]'}`}
+                      />
+                    </div>
                   </div>
-                  <div className="h-1.5 bg-zinc-900/50 rounded-full overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${Math.abs(lastSignal?.metadata?.sentiment_context || 0) * 100}%` }}
-                      className={`h-full transition-all duration-1000 ${lastSignal?.metadata?.sentiment_context < 0 ? 'bg-red-500' : 'bg-teal-500 shadow-[0_0_10px_rgba(45,212,191,0.3)]'}`}
-                    />
-                  </div>
+                  <span className={`text-sm font-mono font-black ${lastSignal?.metadata?.sentiment_context < 0 ? 'text-red-400' : 'text-teal-400'}`}>
+                    {(lastSignal?.metadata?.sentiment_context || 0).toFixed(2)}
+                  </span>
                 </div>
 
-                <div className="p-5 bg-void/60 rounded-2xl border border-white/5 space-y-4 hover:border-white/10 transition-colors">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-zinc-500 uppercase font-black tracking-[0.1em]">Order Flow Imbalance</span>
-                    <span className="text-xs font-mono font-bold text-white">
-                      {(lastSignal?.metadata?.ofi_used || 0).toFixed(3)}
-                    </span>
+                <div className="px-4 py-3 bg-void/40 rounded-xl border border-white/5 flex items-center justify-between group/metric hover:border-cyan-500/30 transition-colors">
+                  <div className="flex flex-col">
+                    <span className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1.5">Order Flow Imbalance</span>
+                    <div className="h-1 w-32 bg-zinc-900/50 rounded-full overflow-hidden flex justify-center">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.abs(lastSignal?.metadata?.ofi_used || 0) * 100}%` }}
+                        className="h-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.3)]" 
+                        style={{ 
+                          marginLeft: lastSignal?.metadata?.ofi_used < 0 ? '-100%' : '0'
+                        }} 
+                      />
+                    </div>
                   </div>
-                  <div className="h-1.5 bg-zinc-900/50 rounded-full overflow-hidden flex justify-center">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${Math.abs(lastSignal?.metadata?.ofi_used || 0) * 100}%` }}
-                      className="h-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]" 
-                      style={{ 
-                        marginLeft: lastSignal?.metadata?.ofi_used < 0 ? '-100%' : '0'
-                      }} 
-                    />
-                  </div>
+                  <span className="text-sm font-mono font-black text-white">
+                    {(lastSignal?.metadata?.ofi_used || 0).toFixed(3)}
+                  </span>
                 </div>
               </div>
             </div>

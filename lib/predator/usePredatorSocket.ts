@@ -11,12 +11,16 @@ export function usePredatorSocket() {
   const [lastSystemLog, setLastSystemLog] = useState<any>(null);
 
   useEffect(() => {
-    // Load persisted state from localStorage on mount
-    const savedRegime = localStorage.getItem('predator_last_regime');
-    const savedSignal = localStorage.getItem('predator_last_signal');
-    
-    if (savedRegime) setLastRegime(JSON.parse(savedRegime));
-    if (savedSignal) setLastSignal(JSON.parse(savedSignal));
+    // Safe localStorage hydration
+    try {
+      const savedRegime = localStorage.getItem('predator_last_regime');
+      const savedSignal = localStorage.getItem('predator_last_signal');
+      
+      if (savedRegime) setLastRegime(JSON.parse(savedRegime));
+      if (savedSignal) setLastSignal(JSON.parse(savedSignal));
+    } catch (e) {
+      console.warn("Failed to hydrate predator state from localStorage", e);
+    }
 
     const socket = socketService.connect();
 
@@ -34,12 +38,16 @@ export function usePredatorSocket() {
 
     function onRegime(data: any) { 
       setLastRegime(data);
-      localStorage.setItem('predator_last_regime', JSON.stringify(data));
+      try {
+        localStorage.setItem('predator_last_regime', JSON.stringify(data));
+      } catch (e) {}
     }
 
     function onSignal(data: any) { 
       setLastSignal(data);
-      localStorage.setItem('predator_last_signal', JSON.stringify(data));
+      try {
+        localStorage.setItem('predator_last_signal', JSON.stringify(data));
+      } catch (e) {}
     }
 
     function onSystemLog(data: any) { 
@@ -69,3 +77,4 @@ export function usePredatorSocket() {
 
   return { isConnected, lastTick, lastRegime, lastSignal, lastSystemLog, setLastRegime, setLastSignal };
 }
+

@@ -30,16 +30,11 @@ export function PredatorChart({
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
 
+  // 1. Initialize Chart (Once)
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
-    const handleResize = () => {
-      chartRef.current?.applyOptions({
-        width: chartContainerRef.current?.clientWidth || 800,
-      });
-    };
-
-    chartRef.current = createChart(chartContainerRef.current, {
+    const chart = createChart(chartContainerRef.current, {
       layout: {
         background: { type: ColorType.Solid, color: backgroundColor },
         textColor,
@@ -73,45 +68,58 @@ export function PredatorChart({
       },
     });
 
-    seriesRef.current = chartRef.current.addSeries(AreaSeries, {
+    const series = chart.addSeries(AreaSeries, {
       lineColor,
       topColor: areaTopColor,
       bottomColor: areaBottomColor,
       lineWidth: 2,
     });
 
-    const updateChartData = () => {
-      if (!seriesRef.current || !data.length) return;
-      
-      const formattedData = data.map((item) => ({
-        time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as any,
-        value: Number(item.bid || item.price || item.close),
-      })).sort((a, b) => a.time - b.time);
-      
-      const uniqueData = Array.from(new Map(formattedData.map(item => [item.time, item])).values());
-      seriesRef.current.setData(uniqueData);
+    chartRef.current = chart;
+    seriesRef.current = series;
 
-      if (signals.length > 0) {
-        const markers = signals.map(sig => ({
-          time: Math.floor(new Date(sig.timestamp).getTime() / 1000) as any,
-          position: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? 'belowBar' : 'aboveBar',
-          color: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? '#22c55e' : '#ef4444',
-          shape: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? 'arrowUp' : 'arrowDown',
-          text: (sig.signal || sig.direction).includes('LONG') ? 'LONG' : 'SHORT',
-        }));
-        // INSTITUTIONAL FIX: Bypass TS error for setMarkers on ISeriesApi
-        (seriesRef.current as any).setMarkers(markers);
+    const handleResize = () => {
+      if (chartContainerRef.current) {
+        chart.applyOptions({ width: chartContainerRef.current.clientWidth });
       }
     };
 
-    updateChartData();
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      chartRef.current?.remove();
+      chart.remove();
     };
-  }, [data, signals, backgroundColor, lineColor, textColor, areaTopColor, areaBottomColor]);
+  }, []); // Only run once
+
+  // 2. Update Data & Markers (On changes)
+  useEffect(() => {
+    if (!seriesRef.current || !data.length) return;
+
+    const formattedData = data.map((item) => ({
+      time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as any,
+      value: Number(item.bid || item.price || item.close),
+    })).sort((a, b) => a.time - b.time);
+    
+    // Ensure uniqueness for Lightweight Charts
+    const uniqueData = Array.from(
+      new Map(formattedData.map(item => [item.time, item])).values()
+    );
+
+    seriesRef.current.setData(uniqueData);
+
+    if (signals.length > 0) {
+      const markers = signals.map(sig => ({
+        time: Math.floor(new Date(sig.timestamp).getTime() / 1000) as any,
+        position: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? 'belowBar' : 'aboveBar',
+        color: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? '#22c55e' : '#ef4444',
+        shape: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? 'arrowUp' : 'arrowDown',
+        text: (sig.signal || sig.direction).includes('LONG') ? 'LONG' : 'SHORT',
+      }));
+      seriesRef.current.setMarkers(markers);
+    }
+  }, [data, signals]);
 
   return <div ref={chartContainerRef} className="w-full h-full min-h-[400px]" />;
 }
+
