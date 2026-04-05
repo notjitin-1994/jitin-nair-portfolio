@@ -11,6 +11,7 @@ import {
   TrendingDown,
   Minus,
   Zap,
+  Sparkles,
   Brain,
   Target,
   Scale,
