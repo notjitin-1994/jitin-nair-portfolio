@@ -482,10 +482,10 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
   const bgImage = getBackgroundImage(project.id);
 
   const tabs = [
-    { id: 'overview' as const, label: 'Overview', icon: Layers },
-    { id: 'tech' as const, label: 'Tech', icon: Code2 },
-    { id: 'process' as const, label: 'Process', icon: Workflow },
-    { id: 'metrics' as const, label: 'Metrics', icon: BarChart3 },
+    { id: 'overview' as const, label: 'Strategy', icon: Layers },
+    { id: 'tech' as const, label: 'Stack', icon: Code2 },
+    { id: 'process' as const, label: 'Flow', icon: Workflow },
+    { id: 'metrics' as const, label: 'Impact', icon: BarChart3 },
   ];
 
   const handleCardClick = () => {
@@ -500,83 +500,123 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
     <motion.div
       layout
       onClick={handleCardClick}
-      className="relative overflow-hidden rounded-3xl cursor-pointer h-full"
+      className="relative overflow-hidden rounded-[32px] cursor-pointer h-full"
       style={{
-        background: 'rgba(18, 18, 26, 0.8)',
-        border: `1px solid ${isExpanded ? CYAN : 'rgba(255,255,255,0.1)'}`,
-        boxShadow: isExpanded ? `0 0 60px ${CYAN}10` : 'none',
+        background: 'linear-gradient(145deg, rgba(18, 18, 26, 0.9) 0%, rgba(10, 10, 15, 0.95) 100%)',
+        border: `1px solid ${isExpanded ? CYAN : 'rgba(255,255,255,0.08)'}`,
+        boxShadow: isExpanded ? `0 0 80px ${CYAN}15` : '0 20px 40px rgba(0,0,0,0.4)',
       }}
       transition={{
-        layout: { type: "spring", stiffness: 400, damping: 35 }
+        layout: { type: "spring", stiffness: 350, damping: 35 }
       }}
       whileHover={{ 
-        borderColor: isExpanded ? CYAN : 'rgba(34, 211, 238, 0.3)',
-        boxShadow: isExpanded ? `0 0 60px ${CYAN}10` : `0 0 30px rgba(34, 211, 238, 0.05)`
+        borderColor: isExpanded ? CYAN : 'rgba(34, 211, 238, 0.25)',
+        y: isExpanded ? 0 : -8,
+        transition: { duration: 0.3 }
       }}
     >
-      {bgImage && (
-        <div className="absolute inset-0 opacity-10 pointer-events-none"
-          style={{
-            backgroundImage: `url(${bgImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'blur(30px) brightness(0.4)',
-          }}
-        />
-      )}
+      {/* Dynamic Background */}
+      <AnimatePresence>
+        {bgImage && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isExpanded ? 0.05 : 0.12 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundImage: `url(${bgImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'blur(40px) saturate(1.5)',
+            }}
+          />
+        )}
+      </AnimatePresence>
+      
+      {/* Glass Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
 
-      <div className="relative z-10 p-8">
-        <div className="flex items-start justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <span className="text-5xl font-bold text-white/10">{String(project.number).padStart(2, '0')}</span>
+      <div className="relative z-10 p-10">
+        <div className="flex items-start justify-between mb-8">
+          <div className="flex items-center gap-6">
+            <div className="relative">
+              <span className="text-6xl font-black text-white/5 select-none">{String(project.number).padStart(2, '0')}</span>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center backdrop-blur-sm">
+                <Layers className="w-6 h-6 text-cyan-400" />
+              </div>
+            </div>
             <div>
-              <h3 className="text-3xl font-bold text-white">{project.name}</h3>
-              <p className="text-sm" style={{ color: CYAN }}>{project.tagline}</p>
+              <h3 className="text-4xl font-black text-white tracking-tight mb-1">{project.name}</h3>
+              <div className="flex items-center gap-3">
+                <span className="h-px w-8 bg-cyan-500/40" />
+                <p className="text-sm font-bold uppercase tracking-[0.2em]" style={{ color: CYAN }}>{project.tagline}</p>
+              </div>
             </div>
           </div>
-          <span className="text-xs text-slate-500 font-medium">Click to expand</span>
+          <motion.div 
+            animate={{ 
+              rotate: isExpanded ? 180 : 0,
+              backgroundColor: isExpanded ? 'rgba(34, 211, 238, 0.1)' : 'rgba(255,255,255,0.03)'
+            }}
+            className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-slate-400"
+          >
+            <ChevronDown className="w-6 h-6" />
+          </motion.div>
         </div>
 
-        <p className="text-slate-300 text-base leading-relaxed">{project.description}</p>
+        <p className="text-slate-400 text-lg leading-relaxed max-w-3xl mb-8 font-medium italic">
+          &quot;{project.description}&quot;
+        </p>
 
-        <div className="flex flex-wrap gap-2 mt-4">
-          {project.techCategories.slice(0, 3).map((cat, idx) => (
-            <span key={cat.name} className="px-3 py-1.5 text-sm rounded-full border"
-              style={{ background: `${CYAN}15`, borderColor: `${CYAN}30`, color: idx === 0 ? CYAN : TEAL }}
+        <div className="flex flex-wrap gap-3 mt-4">
+          {project.techCategories.map((cat, idx) => (
+            <span key={cat.name} className="px-4 py-2 text-xs font-bold rounded-xl border uppercase tracking-widest transition-colors"
+              style={{ 
+                background: idx === 0 ? `${CYAN}15` : 'rgba(255,255,255,0.03)', 
+                borderColor: idx === 0 ? `${CYAN}30` : 'rgba(255,255,255,0.08)', 
+                color: idx === 0 ? CYAN : '#94a3b8' 
+              }}
             >{cat.name}</span>
           ))}
         </div>
       </div>
 
-      <AnimatePresence mode="popLayout">
+      <AnimatePresence>
         {isExpanded && (
           <motion.div 
-            layout
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ 
-              opacity: 0, 
-              y: -10,
-              transition: { duration: 0.15, ease: "easeIn" }
-            }}
-            transition={{ 
-              type: "spring",
-              stiffness: 400,
-              damping: 35
-            }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="border-t border-white/[0.05] bg-white/[0.01]"
           >
-            <div className="px-8 pt-4 border-b border-white/[0.08]" onClick={handleActionClick}>
-              <div className="flex gap-1">
-                {tabs.map((tab) => (
-                  <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === tab.id ? 'text-white' : 'text-slate-400 hover:text-white'}`}
-                    style={{ background: activeTab === tab.id ? `${CYAN}20` : 'transparent' }}
-                  >{tab.label}</button>
-                ))}
+            {/* Extended Navigation */}
+            <div className="px-10 pt-6" onClick={handleActionClick}>
+              <div className="flex gap-2 p-1.5 rounded-2xl bg-black/20 border border-white/[0.05] w-fit">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <button 
+                      key={tab.id} 
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2.5 px-6 py-2.5 text-sm font-bold rounded-xl transition-all duration-300 ${
+                        isActive ? 'text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                      style={{ 
+                        background: isActive ? CYAN : 'transparent',
+                        color: isActive ? '#0a0a0f' : undefined
+                      }}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {tab.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="p-8" onClick={handleActionClick}>
+            <div className="p-10 pt-8" onClick={handleActionClick}>
               <DesktopTabContent 
                 project={project} 
                 activeTab={activeTab}
@@ -585,21 +625,30 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
               />
             </div>
 
-            <div className="px-8 pb-8 pt-4 border-t border-white/[0.08] flex gap-4" onClick={handleActionClick}>
-              {project.learnMoreUrl && (
-                <a href={project.learnMoreUrl}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:scale-105"
-                  style={{ background: CYAN, color: '#0a0a0f' }}
-                  onClick={handleActionClick}>
-                  View Full Project <ArrowRight className="w-4 h-4" />
-                </a>
-              )}
-              {project.githubUrl && (
-                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all hover:scale-105 border border-white/20 text-white hover:bg-white/5"
-                  onClick={handleActionClick}>
-                  <Github className="w-4 h-4" /><span>Source</span>
-                </a>
-              )}
+            <div className="px-10 pb-10 pt-6 border-t border-white/[0.05] flex items-center justify-between" onClick={handleActionClick}>
+              <div className="flex gap-4">
+                {project.learnMoreUrl && (
+                  <a href={project.learnMoreUrl}
+                    className="flex items-center gap-3 px-8 py-4 rounded-2xl text-sm font-black transition-all hover:scale-105 active:scale-95 shadow-xl shadow-cyan-500/20"
+                    style={{ background: CYAN, color: '#0a0a0f' }}
+                    onClick={handleActionClick}>
+                    VIEW CASE STUDY <ArrowRight className="w-5 h-5" />
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" 
+                    className="flex items-center gap-3 px-8 py-4 rounded-2xl text-sm font-bold transition-all hover:scale-105 active:scale-95 border border-white/10 text-white bg-white/[0.03] hover:bg-white/[0.08]"
+                    onClick={handleActionClick}>
+                    <Github className="w-5 h-5" />
+                    <span>SOURCE CODE</span>
+                  </a>
+                )}
+              </div>
+              
+              <div className="hidden lg:flex items-center gap-3 text-slate-600">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em]">Production Ready</span>
+              </div>
             </div>
           </motion.div>
         )}
@@ -618,25 +667,34 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
   return (
     <AnimatePresence mode="wait">
       {activeTab === 'overview' && (
-        <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
-          <div className="p-5 rounded-2xl border border-white/[0.08]" style={{ background: 'rgba(255,255,255,0.03)' }}>
-            <h4 className="text-sm font-semibold text-cyan-400 uppercase tracking-wider mb-3">What It Does</h4>
-            <p className="text-slate-300 leading-relaxed">{project.whatItDoes}</p>
+        <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="grid grid-cols-2 gap-6">
+          <div className="p-6 rounded-[24px] border border-white/[0.05] bg-white/[0.02] shadow-inner">
+            <h4 className="text-xs font-black text-cyan-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+              <Zap className="w-4 h-4" />
+              Primary Purpose
+            </h4>
+            <p className="text-slate-300 leading-relaxed text-sm font-medium">{project.whatItDoes}</p>
           </div>
-          <div className="p-5 rounded-2xl border border-white/[0.08]" style={{ background: 'rgba(255,255,255,0.03)' }}>
-            <h4 className="text-sm font-semibold text-cyan-400 uppercase tracking-wider mb-3">How It Works</h4>
-            <p className="text-slate-300 leading-relaxed">{project.howItWorks}</p>
+          <div className="p-6 rounded-[24px] border border-white/[0.05] bg-white/[0.02] shadow-inner">
+            <h4 className="text-xs font-black text-cyan-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              Core Intelligence
+            </h4>
+            <p className="text-slate-300 leading-relaxed text-sm font-medium">{project.howItWorks}</p>
           </div>
-          <div>
-            <h4 className="text-sm font-semibold text-cyan-400 uppercase tracking-wider mb-4">Key Innovations</h4>
-            <div className="space-y-3">
+          <div className="col-span-2">
+            <h4 className="text-xs font-black text-cyan-400 uppercase tracking-[0.2em] mb-6 px-2 flex items-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              Key Innovations
+            </h4>
+            <div className="grid grid-cols-2 gap-4">
               {project.keyInnovations.map((innovation, i) => (
-                <div key={i} className="flex items-start gap-4 p-4 rounded-xl" style={{ background: 'rgba(34, 211, 238, 0.05)', border: '1px solid rgba(34, 211, 238, 0.1)' }}
+                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-cyan-500/[0.03] border border-cyan-500/10 hover:border-cyan-500/20 transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: `${CYAN}20` }}>
-                    <span className="text-sm font-bold" style={{ color: CYAN }}>{i + 1}</span>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 transition-colors">
+                    <span className="text-xs font-black">{i + 1}</span>
                   </div>
-                  <p className="text-slate-200 text-sm leading-relaxed pt-1">{innovation}</p>
+                  <p className="text-slate-300 text-sm leading-relaxed pt-1 font-medium">{innovation}</p>
                 </div>
               ))}
             </div>
@@ -645,16 +703,16 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
       )}
 
       {activeTab === 'tech' && (
-        <motion.div key="tech" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
+        <motion.div key="tech" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="grid grid-cols-2 gap-6">
           {project.techCategories.map((cat) => (
-            <div key={cat.name} className="p-5 rounded-2xl border border-white/[0.08]" style={{ background: 'rgba(255,255,255,0.03)' }}>
-              <h4 className="text-base font-semibold mb-4 flex items-center gap-2" style={{ color: CYAN }}>
-                <span className="w-2 h-2 rounded-full" style={{ background: CYAN }} />
-                {cat.name}
+            <div key={cat.name} className="p-6 rounded-[24px] border border-white/[0.05] bg-white/[0.02]">
+              <h4 className="text-sm font-black mb-5 flex items-center gap-3" style={{ color: CYAN }}>
+                <div className="w-2 h-2 rounded-full shadow-[0_0_8px_rgba(34,211,238,0.8)]" style={{ background: CYAN }} />
+                <span className="uppercase tracking-[0.15em]">{cat.name}</span>
               </h4>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2.5">
                 {cat.items.map((item) => (
-                  <span key={item} className="px-3 py-2 text-sm rounded-lg border" style={{ background: `${CYAN}08`, borderColor: `${CYAN}20`, color: CYAN }}>{item}</span>
+                  <span key={item} className="px-4 py-2 text-xs font-bold rounded-xl border border-white/[0.05] bg-white/[0.03] text-slate-300 hover:text-cyan-400 hover:border-cyan-500/30 transition-all duration-300">{item}</span>
                 ))}
               </div>
             </div>
@@ -663,25 +721,25 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
       )}
 
       {activeTab === 'process' && (
-        <motion.div key="process" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
+        <motion.div key="process" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4 max-w-4xl mx-auto">
           {project.processFlow.map((step, i) => {
             const Icon = processIcons[i % processIcons.length];
             return (
-              <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.08 }} className="relative pl-14"
+              <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.08 }} className="relative pl-16"
               >
                 {i < project.processFlow.length - 1 && (
-                  <div className="absolute left-5 top-12 w-0.5 h-full -ml-px" style={{ background: `linear-gradient(to bottom, ${CYAN}50, transparent)` }} />
+                  <div className="absolute left-[19px] top-14 w-0.5 h-full bg-gradient-to-b from-cyan-500/40 via-cyan-500/10 to-transparent" />
                 )}
-                <div className="absolute left-0 top-0 w-10 h-10 rounded-xl flex items-center justify-center z-10" style={{ background: `${CYAN}20`, border: `1px solid ${CYAN}40` }}
+                <div className="absolute left-0 top-0 w-10 h-10 rounded-2xl flex items-center justify-center z-10 shadow-lg shadow-cyan-500/10" style={{ background: `linear-gradient(135deg, ${CYAN}30 0%, ${CYAN}10 100%)`, border: `1px solid ${CYAN}40` }}
                 >
                   <Icon className="w-5 h-5" style={{ color: CYAN }} />
                 </div>
-                <div className="p-4 rounded-xl border border-white/[0.08]" style={{ background: 'rgba(255,255,255,0.03)' }}
+                <div className="p-5 rounded-[24px] border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-colors shadow-inner"
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: `${CYAN}15`, color: CYAN }}>STEP {i + 1}</span>
+                    <span className="text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest" style={{ background: `${CYAN}15`, color: CYAN }}>PHASE 0{i + 1}</span>
                   </div>
-                  <p className="text-slate-200 text-sm leading-relaxed">{step}</p>
+                  <p className="text-slate-200 text-sm font-medium leading-relaxed">{step}</p>
                 </div>
               </motion.div>
             );
@@ -690,20 +748,32 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
       )}
 
       {activeTab === 'metrics' && (
-        <motion.div key="metrics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="grid grid-cols-1 gap-4">
+        <motion.div key="metrics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="grid grid-cols-2 gap-6">
           {project.metrics.map((metric, i) => (
-            <motion.div key={metric.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="p-5 rounded-2xl border border-white/[0.08]" style={{ background: 'rgba(255,255,255,0.03)' }}
+            <motion.div key={metric.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="p-8 rounded-[32px] border border-white/[0.05] bg-white/[0.02] shadow-2xl group overflow-hidden relative"
             >
-              <div className="flex items-start justify-between mb-3">
-                <span className="text-xs font-mono uppercase tracking-wider" style={{ color: `${CYAN}80` }}>{metric.id}</span>
+              {/* Background Glow */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-cyan-500/10 transition-colors duration-500" />
+              
+              <div className="flex items-start justify-between mb-6 relative z-10">
+                <span className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: `${CYAN}80` }}>{metric.id}</span>
                 {metric.trend && <TrendBadge trend={metric.trend} value={metric.trendValue} />}
               </div>
-              <div className="text-3xl font-bold text-white mb-1">
+              
+              <div className="text-5xl font-black text-white mb-3 tracking-tighter relative z-10">
                 <AnimatedCounter value={metric.value} suffix={metric.unit} decimals={0} />
               </div>
-              <p className="text-sm text-slate-500">{metric.description}</p>
-              <div className="mt-4 h-1 rounded-full bg-white/10 overflow-hidden">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min((metric.value / (metric.value * 1.2)) * 100, 100)}%` }} transition={{ duration: 1, ease: 'easeOut' }} className="h-full rounded-full" style={{ background: CYAN }} />
+              
+              <p className="text-sm text-slate-500 font-medium relative z-10">{metric.description}</p>
+              
+              <div className="mt-8 h-1.5 rounded-full bg-white/5 overflow-hidden relative z-10">
+                <motion.div 
+                  initial={{ width: 0 }} 
+                  animate={{ width: `${Math.min((metric.value / (metric.value * 1.2)) * 100, 100)}%` }} 
+                  transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: i * 0.1 }} 
+                  className="h-full rounded-full shadow-[0_0_15px_rgba(34,211,238,0.5)]" 
+                  style={{ background: `linear-gradient(to right, ${CYAN}, ${TEAL})` }} 
+                />
               </div>
             </motion.div>
           ))}
