@@ -491,7 +491,7 @@ const portfolioData = {
   featuredProjects: [
     { name: "Predator Scalping System", type: "Trading & Finance", status: "Production" },
     { name: "AI Agency Ops", type: "Multi-Agentic Framework & Ecosystem", status: "Active" },
-    { name: "Reality-Check System", type: "Governance", status: "Deployed" },
+    { name: "LocalMind", type: "Local RAG Intelligence", status: "Active" },
     { name: "Smartslate", type: "L&D Platform", status: "Work in Progress" },
     { name: "Project Commune", type: "Community Platform", status: "Beta" },
     { name: "RevOS", type: "Garage Management", status: "Production" },

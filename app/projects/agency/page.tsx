@@ -132,7 +132,7 @@ function HeroSection() {
             transition={{ delay: 0.4, duration: 0.6 }}
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6"
           >
-            OpenClaw: <span className="text-cyan-400 text-glow-cyan">Reality Check Engine</span>
+            <span className="text-cyan-400 text-glow-cyan">Reality Check Engine</span>
           </motion.h1>
 
           <motion.p
@@ -141,7 +141,7 @@ function HeroSection() {
             transition={{ delay: 0.5, duration: 0.6 }}
             className="text-slate-400 text-base sm:text-lg md:text-xl max-w-4xl mb-8 sm:mb-12 leading-relaxed"
           >
-            A mission-critical reinforcement layer for the OpenClaw Gateway. Built from the ground up to eliminate agentic drift through a <span className="text-cyan-400">3-stage verification pipeline</span> and a hierarchical cognitive memory architecture.
+            A mission-critical reinforcement layer. Built from the ground up to eliminate agentic drift through a <span className="text-cyan-400">3-stage verification pipeline</span> and a hierarchical cognitive memory architecture.
           </motion.p>
 
           <motion.div
@@ -420,7 +420,7 @@ function CTASection() {
           className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-white/[0.08]"
         >
           <p className="text-slate-500 text-xs sm:text-sm">
-            OpenClaw Reality Check Engine · Native Plugin Architecture
+            Reality Check Engine · Native Plugin Architecture
           </p>
           <p className="text-slate-600 text-[10px] sm:text-xs mt-1 sm:mt-2">© 2026 Jitin Nair. All rights reserved.</p>
         </motion.div>

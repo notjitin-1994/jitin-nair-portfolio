@@ -898,52 +898,52 @@ const projectsData = [
     liveUrl: undefined,
   },
   {
-    name: "Reality-Check System",
-    shortName: "Reality",
+    name: "LocalMind",
+    shortName: "LocalMind",
     technologies: [
-      "Bash", "Node.js", "Python", "YAML", "Markdown", "Git", "Regex",
-      "File System APIs", "Process Management", "Audit Logging", "Policy Engine"
+      "Python", "Gemini", "ChromaDB", "RAG", "Hybrid Search", "CLI",
+      "Reciprocal Rank Fusion", "Incremental Indexing", "SHA-256", "AST Parsing"
     ],
     techCategories: [
-      { name: "Enforcement Engine", items: ["Bash Scripts", "Node.js", "Regex"], color: "#22d3ee" },
-      { name: "Policy Layer", items: ["GLOBAL_PROTOCOLS.md", "YAML Config"], color: "#22d3ee" },
-      { name: "Audit System", items: ["VIOLATIONS.log", "Real-time Tracking"], color: "#22d3ee" },
-      { name: "Coverage", items: ["141/147 Agents", "96% Enforced"], color: "#22d3ee" }
+      { name: "Core Engine", items: ["Python", "Incremental Indexing", "SHA-256"], color: "#22d3ee" },
+      { name: "Search & Retrieval", items: ["ChromaDB", "Hybrid Search", "RRF"], color: "#22d3ee" },
+      { name: "AI & Parsing", items: ["Gemini", "AST-based Code Parsing"], color: "#22d3ee" },
+      { name: "Interface", items: ["CLI-Native", "Citation System"], color: "#22d3ee" }
     ],
-    description: "Autonomous multi-agent governance platform enforcing truth-only protocols across 147 AI agents, eliminating fictional data generation through automated policy injection and real-time violation detection.",
-    whatItDoes: "Reality-Check is a distributed governance system that enforces a 'No Fiction Protocol' across an entire agent fleet. It automatically injects truth-verification mandates into agent system prompts, monitors outputs for hallucinations, and maintains an immutable audit trail of violations. The system achieved 96% coverage (141/147 agents) within minutes of deployment.",
-    howItWorks: "The system traverses all agent directories, injects protocol references into AGENTS.md files, and establishes a centralized GLOBAL_PROTOCOLS.md mandate. Each agent is now instructed to: verify before reporting, cite sources for every claim, say 'UNKNOWN' when uncertain, and never simulate data. Violations are logged to VIOLATIONS.log with full traceability.",
+    description: "High-performance local RAG system that enables natural language interaction with your desktop files, documents, and codebases—entirely offline and grounded in your personal data.",
+    whatItDoes: "LocalMind indexes your local filesystem and provides a chat interface to query your documents. It uses semantic and keyword search to retrieve relevant context from PDFs, code, notes, and data files, providing answers grounded in actual local content with full citations.",
+    howItWorks: "Scans directories using SHA-256 for incremental updates. Parses diverse file formats (AST-based for Python, regex for TS/JS). Generates recursive chunks with overlap. Stores embeddings in a local ChromaDB instance. Executes hybrid search using Reciprocal Rank Fusion (RRF) and passes top context to Gemini for final generation.",
     keyInnovations: [
-      "Automated policy injection across 147 independent agents",
-      "Immutable violation logging with full audit trails",
-      "Source-citation enforcement for every claim",
-      "Real-time compliance monitoring without human oversight",
-      "Cross-agent governance without centralized control",
-      "Self-documenting protocol enforcement system"
+      "Incremental indexing via SHA-256 file hashing",
+      "Hybrid Search (Semantic + Keyword) with RRF",
+      "AST-based intelligent parsing for source code",
+      "Recursive character splitting with overlap",
+      "Grounding with citations and source transparency",
+      "Zero-infrastructure local persistent storage"
     ],
     processFlow: [
-      "Agent Output Generation",
-      "Truth Verification Check",
-      "Source Citation Validation",
-      "Violation Detection & Flagging",
-      "Centralized Audit Logging",
-      "Compliance Report Generation"
+      "Filesystem Scanning & Hashing",
+      "Multi-format Content Parsing",
+      "Intelligent Recursive Chunking",
+      "Vector Embedding Generation",
+      "Hybrid Retrieval & RRF",
+      "Context-Grounded Generation"
     ],
     features: [
-      "96% fleet coverage (141/147 agents)",
-      "Automated AGENTS.md modification",
-      "Real-time violation tracking",
-      "Immutable audit trails",
-      "Self-healing policy enforcement",
-      "Zero-config agent onboarding"
+      "1000+ files/min indexing speed",
+      "<1s retrieval p99 latency",
+      "Support for 10+ file formats",
+      "Local ChromaDB persistence",
+      "Gemini-powered reasoning",
+      "CLI-native chat interface"
     ],
     metrics: [
-      { label: "Agents Enforced", value: "141", unit: "agents" },
-      { label: "Coverage", value: "96", unit: "%" },
-      { label: "Violation Logs", value: "0", unit: "entries" },
-      { label: "Enforcement Time", value: "3", unit: "minutes" }
+      { label: "Indexing Speed", value: "1000", unit: "files/min" },
+      { label: "Retrieval Latency", value: "<1", unit: "sec" },
+      { label: "Formats Supported", value: "12", unit: "+" },
+      { label: "Storage Efficiency", value: "1", unit: "GB/14K files" }
     ],
-    githubUrl: "https://github.com/notjitin-1994/anti-hallucination",
+    githubUrl: "https://github.com/jitinnair1",
     liveUrl: undefined,
   },
   {
