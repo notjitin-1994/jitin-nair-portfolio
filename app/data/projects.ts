@@ -235,7 +235,7 @@ export const projectsData: Project[] = [
     },
     client: 'Personal Project',
     industry: 'AI / Productivity',
-    category: 'Local RAG',
+    category: 'Agentic Systems',
     challenge: 'Building a privacy-first RAG system that runs entirely on local hardware while maintaining the accuracy and speed of cloud-based solutions.',
     solution: 'Implemented a high-speed incremental indexer and hybrid search pipeline that optimizes local compute resources while leveraging Gemini for high-quality grounding.',
     duration: 'Active Development',
