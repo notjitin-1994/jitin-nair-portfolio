@@ -112,14 +112,6 @@ function ExpertiseCard({ item, index, isPaused }: { item: ExpertiseItem; index: 
                 }`}
               />
             </motion.div>
-            {item.featured && (
-              <motion.div
-                animate={{ rotate: isHovered ? 180 : 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Sparkles className="w-5 h-5 text-cyan-400/60" />
-              </motion.div>
-            )}
           </div>
 
           {/* Content */}
@@ -146,20 +138,6 @@ function ExpertiseCard({ item, index, isPaused }: { item: ExpertiseItem; index: 
               </motion.span>
             ))}
           </div>
-        </div>
-
-        {/* Corner Accent */}
-        <div className="absolute top-0 left-0 w-16 h-16 pointer-events-none">
-          <motion.div
-            className="absolute top-4 left-4 h-px bg-gradient-to-r from-cyan-400/50 to-transparent"
-            animate={{ width: isHovered ? 32 : 20 }}
-            transition={{ duration: 0.3 }}
-          />
-          <motion.div
-            className="absolute top-4 left-4 w-px bg-gradient-to-b from-cyan-400/50 to-transparent"
-            animate={{ height: isHovered ? 32 : 20 }}
-            transition={{ duration: 0.3 }}
-          />
         </div>
       </motion.div>
     </motion.div>
