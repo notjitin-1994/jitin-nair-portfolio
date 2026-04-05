@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { Database, Search, ChevronLeft, ChevronRight, Download, Filter, ExternalLink, Newspaper, Clock } from "lucide-react";
 
 export default function DataVaultPage() {
@@ -12,10 +12,10 @@ export default function DataVaultPage() {
   const [jumpPage, setJumpPage] = useState("");
 
   const API_BASE_URL = "https://api.glitchzerolabs.com";
-  const headers = { 
+  const headers = useMemo(() => ({ 
     "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
     "Content-Type": "application/json"
-  };
+  }), []);
 
   const tables = [
     { id: "market_ticks", name: "Price Ticks" },
@@ -29,11 +29,7 @@ export default function DataVaultPage() {
     { id: "system_logs", name: "System Audit" },
   ];
 
-  useEffect(() => {
-    fetchData();
-  }, [table, page]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/api/v1/data/${table}?page=${page}&limit=25`, { headers });
@@ -47,7 +43,11 @@ export default function DataVaultPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [table, page, headers, API_BASE_URL]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleJump = (e: React.FormEvent) => {
     e.preventDefault();

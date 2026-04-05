@@ -90,7 +90,7 @@ export function PredatorChart({
       window.removeEventListener("resize", handleResize);
       chart.remove();
     };
-  }, []); // Only run once
+  }, [backgroundColor, textColor, lineColor, areaTopColor, areaBottomColor]); // Added missing color dependencies
 
   // 2. Update Data & Markers (On changes)
   useEffect(() => {
@@ -116,7 +116,8 @@ export function PredatorChart({
         shape: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? 'arrowUp' : 'arrowDown',
         text: (sig.signal || sig.direction).includes('LONG') ? 'LONG' : 'SHORT',
       }));
-      seriesRef.current.setMarkers(markers);
+      // @ts-ignore - Lightweight Charts ISeriesApi typing sometimes misses setMarkers depending on version
+      (seriesRef.current as any).setMarkers(markers);
     }
   }, [data, signals]);
 

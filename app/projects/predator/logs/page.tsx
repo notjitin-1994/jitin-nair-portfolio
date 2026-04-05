@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { Terminal, ShieldAlert, Cpu, Activity, Clock } from "lucide-react";
 
 export default function LogsPage() {
@@ -9,10 +9,10 @@ export default function LogsPage() {
   const API_BASE_URL = "https://api.glitchzerolabs.com";
 
   // M8 FIX: API Authentication
-  const headers = { 
+  const headers = useMemo(() => ({ 
     "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
     "Content-Type": "application/json"
-  };
+  }), []);
 
   useEffect(() => {
     const fetchLogs = () => {
@@ -27,7 +27,7 @@ export default function LogsPage() {
     fetchLogs();
     const interval = setInterval(fetchLogs, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [headers]); // Added headers dependency
 
   useEffect(() => {
     if (scrollRef.current) {
