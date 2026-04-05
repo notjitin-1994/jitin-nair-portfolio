@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Footer } from "./components/Footer";
 
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { ScrollReveal, StaggerReveal } from "./components/ScrollReveal";
 import {
@@ -951,12 +951,12 @@ const projectsData = [
     shortName: "Smartslate",
     technologies: [
       "React", "TypeScript", "Vite", "Supabase", "PostgreSQL", "Row Level Security",
-      "Anthropic Claude", "OpenAI GPT-4", "Perplexity API", "Webhook Workers",
+      "Claude", "ChatGPT", "Perplexity API", "Webhook Workers",
       "Framer Motion", "Tailwind CSS", "Zustand", "React Query", "TipTap Editor"
     ],
     techCategories: [
       { name: "Frontend Core", items: ["React 18", "TypeScript", "Vite", "Framer Motion"], color: "#22d3ee" },
-      { name: "AI/ML Layer", items: ["Claude 3.5 Sonnet", "GPT-4o", "Perplexity"], color: "#22d3ee" },
+      { name: "AI/ML Layer", items: ["Claude", "ChatGPT", "Perplexity"], color: "#22d3ee" },
       { name: "Backend & Data", items: ["Supabase", "PostgreSQL RLS", "Edge Functions"], color: "#22d3ee" },
       { name: "Async Pipeline", items: ["Webhook Workers", "Job Queue", "Real-time"], color: "#22d3ee" }
     ],
@@ -1104,7 +1104,7 @@ const capabilitiesData = {
     skills: [
       { name: "LangGraph Orchestration", level: 95 },
       { name: "Multi-Agent Systems", level: 95 },
-      { name: "LLM Integration (GPT-4, Claude, Gemini)", level: 90 },
+      { name: "LLM Integration (ChatGPT, Claude, Gemini)", level: 90 },
       { name: "RAG & Vector Databases", level: 88 },
       { name: "Chain-of-Verification", level: 92 },
       { name: "Autonomous Decision Systems", level: 90 },
@@ -1905,9 +1905,9 @@ const toolCategories = [
     icon: Brain,
     description: "State-of-the-art large language models and orchestration frameworks",
     tools: [
-      { name: "Claude Sonnet", level: "Expert", description: "Anthropic's latest reasoning models for complex agentic workflows" },
-      { name: "GPT-4o", level: "Expert", description: "OpenAI's multimodal models with advanced reasoning" },
-      { name: "Gemini Pro/Flash", level: "Expert", description: "Google's long-context multimodal AI system" },
+      { name: "Claude", level: "Expert", description: "Anthropic's latest reasoning models for complex agentic workflows" },
+      { name: "ChatGPT", level: "Expert", description: "OpenAI's multimodal models with advanced reasoning" },
+      { name: "Gemini", level: "Expert", description: "Google's long-context multimodal AI system" },
       { name: "Llama", level: "Advanced", description: "Meta's open-weight frontier model" },
       { name: "DeepSeek", level: "Advanced", description: "High-performance open reasoning models" },
       { name: "LangGraph", level: "Expert", description: "Stateful multi-agent workflow orchestration" },
@@ -1923,7 +1923,7 @@ const toolCategories = [
     icon: Boxes,
     description: "Multi-agent platforms, protocols, and memory systems",
     tools: [
-      { name: "OpenClaw", level: "Expert", description: "Custom agent infrastructure and orchestration platform" },
+      { name: "OpenClaw", level: "Expert", description: "Native anti-hallucination reinforcement and hierarchical cognitive memory architecture" },
       { name: "NemoClaw", level: "Expert", description: "Specialized multi-agent workflow system" },
       { name: "AutoGen", level: "Advanced", description: "Microsoft's conversational agent framework" },
       { name: "CrewAI", level: "Advanced", description: "Role-based multi-agent collaboration" },
@@ -1963,9 +1963,9 @@ const toolCategories = [
       { name: "Suno / Udio", level: "Advanced", description: "AI music generation platforms" },
       { name: "Runway ML", level: "Advanced", description: "AI video generation and editing" },
       { name: "Midjourney v6", level: "Expert", description: "High-fidelity AI image generation" },
-      { name: "Stable Diffusion 3.5", level: "Advanced", description: "Open image generation models" },
+      { name: "Stable Diffusion", level: "Advanced", description: "Open image generation models" },
       { name: "Flux", level: "Advanced", description: "State-of-the-art open image models" },
-      { name: "GPT-4 Vision", level: "Expert", description: "Multimodal image understanding" },
+      { name: "ChatGPT", level: "Expert", description: "Multimodal image understanding" },
       { name: "Whisper API", level: "Expert", description: "OpenAI's speech recognition" },
       { name: "FFmpeg", level: "Advanced", description: "Video/audio processing toolkit" },
       { name: "Content Pipelines", level: "Expert", description: "Automated media workflow systems" },
@@ -2098,12 +2098,12 @@ const toolCategories = [
 // Primary Stack - curated technologies organized by category
 const primaryStack = [
   // AI, ML & Frontier LLMs
-  { name: "Claude Sonnet", level: "Expert", description: "Advanced reasoning and agentic tasks", category: "AI, ML & Frontier", icon: Brain },
-  { name: "GPT-4o", level: "Expert", description: "Multimodal AI integration", category: "AI, ML & Frontier", icon: Brain },
+  { name: "Claude", level: "Expert", description: "Advanced reasoning and agentic tasks", category: "AI, ML & Frontier", icon: Brain },
+  { name: "ChatGPT", level: "Expert", description: "Multimodal AI integration", category: "AI, ML & Frontier", icon: Brain },
   { name: "DeepSeek", level: "Advanced", description: "Open reasoning model", category: "AI, ML & Frontier", icon: Brain },
   // Agentic Ecosystems
   { name: "LangGraph", level: "Expert", description: "Multi-agent orchestration", category: "Agentic", icon: Boxes },
-  { name: "OpenClaw", level: "Expert", description: "Custom agent platform", category: "Agentic", icon: Boxes },
+  { name: "OpenClaw", level: "Expert", description: "Fact-hardened agent platform", category: "Agentic", icon: Boxes },
   { name: "NemoClaw", level: "Expert", description: "Specialized agent system", category: "Agentic", icon: Boxes },
   { name: "Pinecone", level: "Expert", description: "Vector search database", category: "Agentic", icon: Boxes },
   // Automation
@@ -2141,26 +2141,27 @@ function DesktopTechStack() {
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [mainPage, setMainPage] = useState(1);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const ITEMS_PER_PAGE = 10;
+  const ITEMS_PER_PAGE = 12;
 
   // Reset pagination when filter/search changes
   useEffect(() => {
     setMainPage(1);
   }, [selectedCategory, searchQuery]);
 
-  // Flatten all skills for "All" view
-  const allSkills = toolCategories.flatMap((cat) =>
+  // Flatten all skills for "All" view - memoized for speed
+  const allSkills = useMemo(() => toolCategories.flatMap((cat) =>
     cat.tools.map((tool) => ({ ...tool, category: cat.category, Icon: cat.icon }))
-  );
+  ), []);
 
-  // Get skills to display based on current selection
-  const getDisplaySkills = () => {
+  // Memoized filtered skills for high performance
+  const displaySkills = useMemo(() => {
     if (searchQuery) {
+      const query = searchQuery.toLowerCase();
       // Search across all skills
       return allSkills.filter(
         (tool) =>
-          tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          tool.description.toLowerCase().includes(searchQuery.toLowerCase())
+          tool.name.toLowerCase().includes(query) ||
+          tool.description.toLowerCase().includes(query)
       );
     }
     if (selectedCategory === "Primary Stack") {
@@ -2175,9 +2176,7 @@ function DesktopTechStack() {
       return cat.tools.map(tool => ({ ...tool, category: cat.category, Icon: cat.icon }));
     }
     return [];
-  };
-
-  const displaySkills = getDisplaySkills();
+  }, [searchQuery, selectedCategory, allSkills]);
 
   // Keyboard shortcut: Cmd/Ctrl + K to focus search
   useEffect(() => {

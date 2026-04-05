@@ -230,7 +230,7 @@ function MetricsDashboard() {
 
 const techCategories = [
   { name: 'Frontend', items: ['React 18', 'TypeScript', 'Vite', 'Framer Motion'], color: '#22d3ee' },
-  { name: 'AI/ML', items: ['Claude 3.5', 'GPT-4o', 'Perplexity'], color: '#a78bfa' },
+  { name: 'AI/ML', items: ['Claude', 'ChatGPT', 'Perplexity'], color: '#a78bfa' },
   { name: 'Backend', items: ['Supabase', 'PostgreSQL', 'Edge Functions'], color: '#f472b6' },
   { name: 'Pipeline', items: ['Webhook Workers', 'Job Queue', 'Real-time'], color: '#22c55e' },
 ];

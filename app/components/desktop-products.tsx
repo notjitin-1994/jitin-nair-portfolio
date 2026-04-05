@@ -1057,7 +1057,7 @@ const projectsData: Project[] = [
   },
   {
     name: "AI-First Learning Management (smartslate.io)",
-    technologies: ["Next.js 15", "TypeScript", "Supabase", "OpenAI GPT-4", "LangChain", "SCORM/xAPI"],
+    technologies: ["Next.js 15", "TypeScript", "Supabase", "ChatGPT", "LangChain", "SCORM/xAPI"],
     description: "Enterprise learning platform with AI-generated personalized training pathways.",
     processFlow: ["Skills Assessment", "AI Content Generation", "Personalized Pathway", "Progress Tracking", "Certification"],
     features: ["AI content generation", "Competency analytics", "Adaptive learning paths", "SCORM/xAPI compliance", "Multi-tenant SaaS"],
@@ -1111,7 +1111,7 @@ const projectsData: Project[] = [
   },
   {
     name: "Intelligent Process Automation",
-    technologies: ["Python", "Playwright", "Gradio", "Docker", "GPT-4 Vision", "Browser-Use"],
+    technologies: ["Python", "Playwright", "Gradio", "Docker", "ChatGPT", "Browser-Use"],
     description: "Visual workflow automation platform enabling non-technical teams to deploy browser-based AI agents.",
     processFlow: ["Visual Workflow Design", "Agent Compilation", "Browser Execution", "Result Capture", "Audit Logging"],
     features: ["No-code workflow builder", "Multi-LLM integration", "Visual session capture", "Self-healing selectors", "Audit trail logging"],

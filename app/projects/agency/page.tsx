@@ -2,18 +2,15 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Github, ExternalLink, LayoutDashboard, Bot, Share2, Zap, Brain, Network, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Github, ExternalLink, LayoutDashboard, Bot, ShieldCheck, Zap, Brain, Database, Search, ChevronLeft, ChevronRight, HardDrive, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 import { Footer } from '../../components/Footer';
 
-// Pixel banner letters for AGENCY
+// Pixel banner letters for R C E (Reality Check Engine)
 const pixelLetters = [
-  [[0,1,1,1,1,0], [1,1,0,0,1,1], [1,1,1,1,1,1], [1,1,0,0,1,1], [1,1,0,0,1,1]],
-  [[0,1,1,1,1,0], [1,1,0,0,0,0], [1,1,1,1,1,0], [1,1,0,0,0,0], [1,1,1,1,1,1]],
-  [[0,1,1,1,1,0], [1,1,0,0,1,1], [1,1,0,0,0,0], [1,1,0,1,1,0], [1,1,0,0,1,1]],
-  [[1,1,1,1,1,1], [0,0,1,1,0,0], [0,0,1,1,0,0], [0,0,1,1,0,0], [0,0,1,1,0,0]],
-  [[1,1,0,0,0,1], [0,1,1,0,1,1], [0,0,1,1,1,0], [0,0,1,1,0,0], [0,0,1,1,0,0]],
-  [[1,1,1,1,1,0], [0,1,1,0,0,0], [0,1,1,1,1,0], [0,1,1,0,0,0], [1,1,1,1,1,0]],
+  [[1,1,1,1,1,0], [1,1,0,0,1,1], [1,1,1,1,1,0], [1,1,0,1,1,0], [1,1,0,0,1,1]], // R
+  [[0,1,1,1,1,0], [1,1,0,0,0,0], [1,1,0,0,0,0], [1,1,0,0,0,0], [0,1,1,1,1,0]], // C
+  [[1,1,1,1,1,1], [1,1,0,0,0,0], [1,1,1,1,1,0], [1,1,0,0,0,0], [1,1,1,1,1,1]], // E
 ];
 
 function PixelBanner() {
@@ -93,10 +90,10 @@ function AnimatedCounter({ value, suffix = '', decimals = 0 }: { value: number; 
 }
 
 const heroStats = [
-  { label: 'Agents', value: 34, suffix: '+', icon: Bot, color: '#22d3ee' },
-  { label: 'Tools', value: 47, suffix: '', icon: Share2, color: '#a78bfa' },
-  { label: 'Savings', value: 34, suffix: '%', icon: Zap, color: '#22c55e' },
-  { label: 'Response', value: 350, suffix: 'ms', icon: Brain, color: '#f472b6' },
+  { label: 'Hallucinations', value: 85, suffix: '% Reduction', icon: ShieldCheck, color: '#22d3ee' },
+  { label: 'Context Density', value: 400, suffix: '%', icon: Database, color: '#a78bfa' },
+  { label: 'Validation', value: 200, suffix: 'ms', icon: Zap, color: '#22c55e' },
+  { label: 'Uptime', value: 99.9, suffix: '%', icon: RefreshCcw, color: '#f472b6' },
 ];
 
 function HeroSection() {
@@ -125,9 +122,18 @@ function HeroSection() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
               </span>
-              Multi-Agent Orchestration Platform
+              Native Anti-Hallucination & Cognitive Memory Stack
             </span>
           </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6"
+          >
+            OpenClaw: <span className="text-cyan-400 text-glow-cyan">Reality Check Engine</span>
+          </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -135,9 +141,7 @@ function HeroSection() {
             transition={{ delay: 0.5, duration: 0.6 }}
             className="text-slate-400 text-base sm:text-lg md:text-xl max-w-4xl mb-8 sm:mb-12 leading-relaxed"
           >
-            Unified orchestration platform managing{' '}
-            <span className="text-cyan-400">30+ specialized AI agents</span>
-            {' '}through unified context management, real-time event streaming, and intelligent cross-agent coordination.
+            A mission-critical reinforcement layer for the OpenClaw Gateway. Built from the ground up to eliminate agentic drift through a <span className="text-cyan-400">3-stage verification pipeline</span> and a hierarchical cognitive memory architecture.
           </motion.p>
 
           <motion.div
@@ -166,7 +170,7 @@ function HeroSection() {
                     <span className="text-slate-500 text-[10px] sm:text-xs">{stat.label}</span>
                   </div>
                   <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
-                    <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                    <AnimatedCounter value={stat.value} suffix={stat.suffix} decimals={stat.label === 'Uptime' ? 1 : 0} />
                   </div>
                 </motion.div>
               );
@@ -179,10 +183,10 @@ function HeroSection() {
 }
 
 const metrics = [
-  { id: 'agents', label: 'Active Agents', value: 34, unit: '', description: 'Production agents across 3 clusters', trend: 'up', trendValue: '+4' },
-  { id: 'tools', label: 'Shared Tools', value: 47, unit: '', description: 'MCP-enabled cross-agent capabilities', trend: 'up', trendValue: '+12' },
-  { id: 'savings', label: 'Cost Savings', value: 34, unit: '%', description: 'Multi-LLM routing optimization', trend: 'up', trendValue: '+8%' },
-  { id: 'speed', label: 'Response Time', value: 350, unit: 'ms', description: 'Average end-to-end latency', trend: 'down', trendValue: '-120ms' },
+  { id: 'intent', label: 'Intent Accuracy', value: 98, unit: '%', description: 'Cross-verified tool-call precision', trend: 'up', trendValue: '+15%' },
+  { id: 'context', label: 'Context Window', value: 1500, unit: 'ch', description: 'Average density per reasoning turn', trend: 'up', trendValue: '4x expansion' },
+  { id: 'recall', label: 'Semantic Recall', value: 92, unit: '%', description: 'Hybrid vector + BM25 precision', trend: 'up', trendValue: '+22%' },
+  { id: 'bloat', label: 'Memory Efficiency', value: 65, unit: '%', description: 'Reduction via Dreamcycle pruning', trend: 'down', trendValue: '-40% bloat' },
 ];
 
 function MetricsDashboard() {
@@ -195,10 +199,10 @@ function MetricsDashboard() {
           viewport={{ once: true }}
           className="text-left mb-8"
         >
-          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Performance</p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Platform at a Glance</h2>
+          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Hardening Metrics</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Reality Check Efficacy</h2>
           <p className="text-slate-400 max-w-2xl text-sm sm:text-base">
-            Real-time metrics from the agent orchestration platform.
+            Quantifying the impact of the Reality Check Engine on agentic performance and reliability.
           </p>
         </motion.div>
 
@@ -226,10 +230,10 @@ function MetricsDashboard() {
 }
 
 const techCategories = [
-  { name: 'AI/ML', items: ['LangGraph', 'OpenAI', 'Anthropic'], color: '#a78bfa' },
-  { name: 'Orchestration', items: ['LangChain', 'Instructor', 'Pydantic'], color: '#22d3ee' },
-  { name: 'Data', items: ['PostgreSQL', 'pgvector', 'Redis'], color: '#22d3ee' },
-  { name: 'Protocol', items: ['MCP', 'FastAPI', 'WebSocket'], color: '#22d3ee' },
+  { name: 'Reinforcement', items: ['OpenClaw SDK', 'TypeScript', 'Sequential Hooks'], color: '#a78bfa' },
+  { name: 'Memory Architecture', items: ['QMD', 'LanceDB Pro', 'Hybrid Search'], color: '#22d3ee' },
+  { name: 'Audit Models', items: ['Gemini', 'GLM', 'SLM Guards'], color: '#22d3ee' },
+  { name: 'Infrastructure', items: ['Systemd', 'Local Loopback', 'Cron'], color: '#22d3ee' },
 ];
 
 function TechStackGrid() {
@@ -242,10 +246,10 @@ function TechStackGrid() {
           viewport={{ once: true }}
           className="text-left mb-8"
         >
-          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Technology</p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Built With</h2>
+          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Implementation</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Native Hardening Stack</h2>
           <p className="text-slate-400 max-w-2xl text-sm sm:text-base">
-            Modern stack for multi-agent orchestration.
+            Engineered as a zero-latency plugin using OpenClaw&apos;s internal event bus.
           </p>
         </motion.div>
 
@@ -279,11 +283,11 @@ function TechStackGrid() {
 }
 
 const processSteps = [
-  { title: 'Intent Recognition', desc: 'NLP parsing of user requests', color: '#22d3ee' },
-  { title: 'Agent Selection', desc: 'Matching to specialized agents', color: '#a78bfa' },
-  { title: 'Context Retrieval', desc: 'Vector memory lookup', color: '#22d3ee' },
-  { title: 'Tool Execution', desc: 'MCP capability invocation', color: '#a78bfa' },
-  { title: 'Coordination', desc: 'Cross-agent workflow sync', color: '#22d3ee' },
+  { title: 'Tool Interception', desc: 'Pauses execution on sensitive tool calls', color: '#22d3ee' },
+  { title: 'Intent Validation', desc: 'Cross-checks arguments against original prompt', color: '#a78bfa' },
+  { title: 'Response Auditing', desc: 'CoVe fact-checking before delivery', color: '#22d3ee' },
+  { title: 'Strict Grounding', desc: 'Source-only logic enforcement via prompt injection', color: '#a78bfa' },
+  { title: 'Dreamcycle', desc: 'Nightly memory distillation and pruning', color: '#22d3ee' },
 ];
 
 function ProcessFlow() {
@@ -296,10 +300,10 @@ function ProcessFlow() {
           viewport={{ once: true }}
           className="text-left mb-8"
         >
-          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Workflow</p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Orchestration Pipeline</h2>
+          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Reinforcement Pipeline</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">3-Stage Reality Check</h2>
           <p className="text-slate-400 max-w-2xl text-sm sm:text-base">
-            How agents coordinate to complete complex tasks.
+            A comprehensive pipeline designed to catch hallucinations at every lifecycle stage.
           </p>
         </motion.div>
 
@@ -330,12 +334,12 @@ function ProcessFlow() {
 }
 
 const innovations = [
-  'Model Context Protocols for cross-agent tool sharing',
-  'LangGraph state machines for complex workflows',
-  'Vector memory for context persistence',
-  'Real-time event bus with Redis Streams',
-  'Multi-LLM routing across 6 providers',
-  '30+ specialized agent templates',
+  '3-Stage Reality Check Engine (RCE) native plugin',
+  'Sequential hook orchestration for real-time validation',
+  'Chain-of-Verification (CoVe) claim extraction and auditing',
+  'Automated "Dreamcycle" memory consolidation via native cron',
+  'Hierarchical cognitive memory structure (MEMORY.md + Logs)',
+  'Strict RAG grounding policy injection at prompt build',
 ];
 
 function InnovationsSection() {
@@ -348,8 +352,8 @@ function InnovationsSection() {
           viewport={{ once: true }}
           className="text-left mb-8"
         >
-          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Innovation</p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Key Innovations</h2>
+          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Hardening</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Architectural Enhancements</h2>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -382,9 +386,9 @@ function CTASection() {
           viewport={{ once: true }}
           className="p-6 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-cyan-500/10 to-transparent border border-cyan-500/20"
         >
-          <h2 className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 sm:mb-4">Explore the Platform</h2>
+          <h2 className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 sm:mb-4">Fact-Hardened Infrastructure</h2>
           <p className="text-slate-400 mb-6 sm:mb-8 max-w-xl text-sm sm:text-base">
-            The AI Agency Ops platform is open source. View the complete implementation and agent templates on GitHub.
+            This reinforcement layer makes OpenClaw safe for production automation and high-stakes tasks like XAUUSD trading agents.
           </p>
           
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
@@ -395,16 +399,16 @@ function CTASection() {
               className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/30 transition-all text-sm sm:text-base"
             >
               <Github className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span>View on GitHub</span>
+              <span>View RCE Code</span>
               <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
             </a>
             
             <Link
-              href="/"
+              href="/projects"
               className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-white/[0.03] text-slate-300 border border-white/[0.08] hover:border-cyan-500/20 transition-all text-sm sm:text-base"
             >
               <LayoutDashboard className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span>Dashboard</span>
+              <span>Back to Projects</span>
             </Link>
           </div>
         </motion.div>
@@ -416,7 +420,7 @@ function CTASection() {
           className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-white/[0.08]"
         >
           <p className="text-slate-500 text-xs sm:text-sm">
-            AI Agency Ops · Built with LangGraph, Python, and Redis
+            OpenClaw Reality Check Engine · Native Plugin Architecture
           </p>
           <p className="text-slate-600 text-[10px] sm:text-xs mt-1 sm:mt-2">© 2026 Jitin Nair. All rights reserved.</p>
         </motion.div>

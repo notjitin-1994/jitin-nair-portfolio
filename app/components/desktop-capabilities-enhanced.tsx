@@ -12,7 +12,7 @@ const capabilitiesData = {
     skills: [
       { name: "LangGraph Orchestration", level: 95 },
       { name: "Multi-Agent Systems", level: 95 },
-      { name: "LLM Integration (GPT-4, Claude, Gemini)", level: 90 },
+      { name: "LLM Integration (ChatGPT, Claude, Gemini)", level: 90 },
       { name: "RAG & Vector Databases", level: 88 },
       { name: "Chain-of-Verification", level: 92 },
       { name: "Autonomous Decision Systems", level: 90 },
@@ -111,7 +111,7 @@ interface CapabilityCardProps {
 function CapabilityCard({ categoryKey, data, index }: CapabilityCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 10;
+  const ITEMS_PER_PAGE = 12;
   const Icon = data.icon;
 
   const totalPages = Math.ceil(data.skills.length / ITEMS_PER_PAGE);

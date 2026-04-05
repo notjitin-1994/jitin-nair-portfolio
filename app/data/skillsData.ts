@@ -16,9 +16,9 @@ export const skillsData: SkillCategory[] = [
     color: "#22d3ee",
     skills: [
       { name: "LangGraph", level: 95, description: "Stateful multi-agent workflow orchestration" },
-      { name: "Claude (Anthropic)", level: 95, description: "Advanced reasoning and agentic tasks" },
-      { name: "GPT-4o (OpenAI)", level: 90, description: "Multimodal AI integration" },
-      { name: "Gemini Pro", level: 90, description: "Google long-context multimodal AI" },
+      { name: "Claude", level: 95, description: "Advanced reasoning and agentic tasks" },
+      { name: "ChatGPT", level: 90, description: "Multimodal AI integration" },
+      { name: "Gemini", level: 90, description: "Google long-context multimodal AI" },
       { name: "RAG Architecture", level: 92, description: "Retrieval-augmented generation systems" },
       { name: "Prompt Engineering", level: 95, description: "Advanced prompt design and optimization" },
       { name: "Chain-of-Verification", level: 90, description: "Self-correction and fact-checking" },

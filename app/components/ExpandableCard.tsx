@@ -116,13 +116,14 @@ export default function ExpandableCard({
 
   // Use external state if provided, otherwise internal
   const isExpanded = externalExpanded !== undefined ? externalExpanded : internalExpanded;
-  const setIsExpanded = (v: boolean) => {
+  
+  const setIsExpanded = useCallback((v: boolean) => {
     if (externalExpanded === undefined) {
       setInternalExpanded(v);
     } else if (onExpand) {
       onExpand();
     }
-  };
+  }, [externalExpanded, onExpand]);
 
   // Reset tab when closing
   const handleClose = useCallback(() => {
