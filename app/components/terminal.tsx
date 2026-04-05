@@ -846,14 +846,28 @@ export function Terminal({
     setShowLearnMore(true);
     
     if (selectedFormat) {
-      const formatExtensions = { pdf: "pdf", doc: "doc", md: "md" };
+      const formatExtensions = { pdf: "pdf", doc: "docx", md: "md" };
       const extension = formatExtensions[selectedFormat];
-      const link = document.createElement("a");
-      link.href = `/resume.${extension}`;
-      link.download = `Jitin_Nair_Resume.${extension}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      
+      try {
+        const supabase = createClient();
+        const { data } = supabase
+          .storage
+          .from('resume')
+          .getPublicUrl(`resume.${extension}`);
+          
+        if (data?.publicUrl) {
+          const link = document.createElement("a");
+          link.href = data.publicUrl;
+          link.target = "_blank";
+          link.download = `Jitin_Nair_Resume.${extension}`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+        console.error("Failed to fetch resume from storage:", error);
+      }
     }
     
     setLines((prev) => {
