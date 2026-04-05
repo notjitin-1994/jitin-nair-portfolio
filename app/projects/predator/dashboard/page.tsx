@@ -33,7 +33,7 @@ export default function DashboardPage() {
       try {
         const [marketRes, tradeRes] = await Promise.all([
           fetch(`${API_BASE_URL}/api/v1/market/current`, { headers }),
-          fetch(`${API_BASE_URL}/api/v1/execution/trades`, { headers })
+          fetch(`${API_BASE_URL}/api/v1/data/trades?limit=10`, { headers })
         ]);
 
         if (marketRes.ok) {
@@ -42,8 +42,8 @@ export default function DashboardPage() {
         }
 
         if (tradeRes.ok) {
-          const data = await tradeRes.json();
-          if (Array.isArray(data)) setSignals(data.slice(0, 10));
+          const result = await tradeRes.json();
+          if (Array.isArray(result.data)) setSignals(result.data.slice(0, 10));
         }
       } catch (err) {
         console.error("Dashboard hydration failed:", err);
