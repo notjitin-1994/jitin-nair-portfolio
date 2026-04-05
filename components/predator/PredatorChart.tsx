@@ -45,7 +45,7 @@ export function PredatorChart({
         horzLines: { color: "rgba(34, 211, 238, 0.05)" },
       },
       width: chartContainerRef.current.clientWidth,
-      height: 400,
+      height: 380,
       crosshair: {
         mode: CrosshairMode.Normal,
         vertLine: {

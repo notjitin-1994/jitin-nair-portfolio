@@ -149,75 +149,75 @@ export default function DashboardPage() {
       </div>
 
       {/* 2. Main Grid: Charts & Gauges */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
         {/* Left: Chart Terminal (8/12) */}
         <div className="xl:col-span-8 bg-[#020617] border border-white/5 rounded-3xl overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-          <div className="absolute top-6 right-6 z-10 flex bg-void/40 backdrop-blur-md p-1 rounded-lg border border-white/5">
-             <button className="px-4 py-1.5 rounded-md text-[10px] text-zinc-500 font-bold font-mono hover:text-white transition-all uppercase tracking-widest">M1</button>
-             <button className="px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/20 rounded-md text-[10px] text-cyan-400 font-bold font-mono uppercase tracking-widest">M5</button>
+          <div className="absolute top-4 right-4 z-10 flex bg-void/40 backdrop-blur-md p-1 rounded-lg border border-white/5">
+             <button className="px-3 py-1 rounded-md text-[9px] text-zinc-500 font-bold font-mono hover:text-white transition-all uppercase tracking-widest">M1</button>
+             <button className="px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-md text-[9px] text-cyan-400 font-bold font-mono uppercase tracking-widest">M5</button>
           </div>
           
-          <div className="p-2 h-[550px]">
+          <div className="p-1 h-[380px]">
             <PredatorChart data={ticks} signals={signals} />
           </div>
         </div>
 
         {/* Right: Decision Intelligence (4/12) */}
-        <div className="xl:col-span-4 flex flex-col space-y-6">
-          <div className="bg-[#020617]/80 border border-white/5 rounded-3xl p-5 shadow-2xl flex-1 backdrop-blur-xl relative overflow-hidden group">
+        <div className="xl:col-span-4">
+          <div className="bg-[#020617]/80 border border-white/5 rounded-3xl p-4 shadow-2xl h-[380px] backdrop-blur-xl relative overflow-hidden group flex flex-col">
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl group-hover:bg-cyan-500/10 transition-all duration-1000" />
             
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-2.5">
-                <div className="p-1.5 bg-cyan-500/10 rounded-lg border border-cyan-500/20 group-hover:border-cyan-500/40 transition-colors">
-                  <Zap size={14} className="text-cyan-400" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <div className="p-1.5 bg-cyan-500/10 rounded-lg border border-cyan-500/20">
+                  <Zap size={12} className="text-cyan-400" />
                 </div>
-                <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.25em]">
+                <h3 className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.25em]">
                   Bayesian Oracle
                 </h3>
               </div>
-              <Info size={12} className="text-zinc-700 hover:text-zinc-400 transition-colors cursor-help" />
+              <Info size={11} className="text-zinc-700 hover:text-zinc-400 transition-colors cursor-help" />
             </div>
             
-            <div className="flex flex-col h-full">
-              <div className="grid grid-cols-3 gap-2 bg-void/40 p-3 rounded-2xl border border-white/5">
+            <div className="flex-1 flex flex-col justify-between">
+              <div className="grid grid-cols-3 gap-1.5 bg-void/40 p-2 rounded-2xl border border-white/5">
                 <BayesianGauge label="Long" value={lastSignal?.metadata?.probabilities?.long || 0} color="#22d3ee" />
                 <BayesianGauge label="Short" value={lastSignal?.metadata?.probabilities?.short || 0} color="#f87171" />
                 <BayesianGauge label="Wait" value={lastSignal?.metadata?.probabilities?.wait || 0} color="#71717a" />
               </div>
               
-              <div className="grid grid-cols-1 gap-3 mt-4">
-                <div className="px-4 py-3 bg-void/40 rounded-xl border border-white/5 flex items-center justify-between group/metric hover:border-teal-500/30 transition-colors">
+              <div className="grid grid-cols-1 gap-2 mt-auto">
+                <div className="px-3 py-2 bg-void/40 rounded-xl border border-white/5 flex items-center justify-between group/metric hover:border-teal-500/30 transition-colors">
                   <div className="flex flex-col">
-                    <span className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1.5">NLP Sentiment</span>
-                    <div className="h-1 w-32 bg-zinc-900/50 rounded-full overflow-hidden">
+                    <span className="text-[8px] text-zinc-500 uppercase font-black tracking-widest mb-1">Sentiment</span>
+                    <div className="h-1 w-24 bg-zinc-900/50 rounded-full overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.abs(lastSignal?.metadata?.sentiment_context || 0) * 100}%` }}
-                        className={`h-full transition-all duration-1000 ${lastSignal?.metadata?.sentiment_context < 0 ? 'bg-red-500' : 'bg-teal-500 shadow-[0_0_8px_rgba(45,212,191,0.3)]'}`}
+                        className={`h-full transition-all duration-1000 ${lastSignal?.metadata?.sentiment_context < 0 ? 'bg-red-500' : 'bg-teal-500'}`}
                       />
                     </div>
                   </div>
-                  <span className={`text-sm font-mono font-black ${lastSignal?.metadata?.sentiment_context < 0 ? 'text-red-400' : 'text-teal-400'}`}>
+                  <span className={`text-xs font-mono font-black ${lastSignal?.metadata?.sentiment_context < 0 ? 'text-red-400' : 'text-teal-400'}`}>
                     {(lastSignal?.metadata?.sentiment_context || 0).toFixed(2)}
                   </span>
                 </div>
 
-                <div className="px-4 py-3 bg-void/40 rounded-xl border border-white/5 flex items-center justify-between group/metric hover:border-cyan-500/30 transition-colors">
+                <div className="px-3 py-2 bg-void/40 rounded-xl border border-white/5 flex items-center justify-between group/metric hover:border-cyan-500/30 transition-colors">
                   <div className="flex flex-col">
-                    <span className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1.5">Order Flow Imbalance</span>
-                    <div className="h-1 w-32 bg-zinc-900/50 rounded-full overflow-hidden flex justify-center">
+                    <span className="text-[8px] text-zinc-500 uppercase font-black tracking-widest mb-1">Imbalance</span>
+                    <div className="h-1 w-24 bg-zinc-900/50 rounded-full overflow-hidden flex justify-center">
                       <motion.div 
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.abs(lastSignal?.metadata?.ofi_used || 0) * 100}%` }}
-                        className="h-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.3)]" 
+                        className="h-full bg-cyan-400" 
                         style={{ 
                           marginLeft: lastSignal?.metadata?.ofi_used < 0 ? '-100%' : '0'
                         }} 
                       />
                     </div>
                   </div>
-                  <span className="text-sm font-mono font-black text-white">
+                  <span className="text-xs font-mono font-black text-white">
                     {(lastSignal?.metadata?.ofi_used || 0).toFixed(3)}
                   </span>
                 </div>
@@ -226,6 +226,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
 
       {/* 3. Bottom Row: Command Center & System Pulse */}
       <AgentCommandCenter agents={agentStatus as any} />
