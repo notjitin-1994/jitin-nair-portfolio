@@ -44,10 +44,10 @@ export function DesktopProjectCarousel() {
   // Animation variants for the card slide
   const variants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? 500 : -500,
+      x: direction > 0 ? 100 : -100,
       opacity: 0,
-      scale: 0.9,
-      filter: 'blur(10px)',
+      scale: 0.98,
+      filter: 'blur(4px)',
     }),
     center: {
       zIndex: 1,
@@ -58,10 +58,10 @@ export function DesktopProjectCarousel() {
     },
     exit: (direction: number) => ({
       zIndex: 0,
-      x: direction < 0 ? 500 : -500,
+      x: direction < 0 ? 100 : -100,
       opacity: 0,
-      scale: 0.9,
-      filter: 'blur(10px)',
+      scale: 0.98,
+      filter: 'blur(4px)',
     }),
   };
 
@@ -136,10 +136,10 @@ export function DesktopProjectCarousel() {
               animate="center"
               exit="exit"
               transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.4 },
-                scale: { duration: 0.4 },
-                filter: { duration: 0.4 }
+                x: { type: "spring", stiffness: 400, damping: 35 },
+                opacity: { duration: 0.3, ease: "easeOut" },
+                scale: { duration: 0.3, ease: "easeOut" },
+                filter: { duration: 0.3, ease: "easeOut" }
               }}
               className="w-full max-w-3xl perspective-1000"
             >

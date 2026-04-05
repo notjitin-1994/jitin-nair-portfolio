@@ -667,27 +667,29 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
   return (
     <AnimatePresence mode="wait">
       {activeTab === 'overview' && (
-        <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="grid grid-cols-2 gap-6">
-          <div className="p-6 rounded-[24px] border border-white/[0.05] bg-white/[0.02] shadow-inner">
-            <h4 className="text-xs font-black text-cyan-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-              <Zap className="w-4 h-4" />
-              Primary Purpose
-            </h4>
-            <p className="text-slate-300 leading-relaxed text-sm font-medium">{project.whatItDoes}</p>
+        <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 gap-6">
+            <div className="p-6 rounded-[24px] border border-white/[0.05] bg-white/[0.02] shadow-inner">
+              <h4 className="text-xs font-black text-cyan-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                Primary Purpose
+              </h4>
+              <p className="text-slate-300 leading-relaxed text-base font-medium">{project.whatItDoes}</p>
+            </div>
+            <div className="p-6 rounded-[24px] border border-white/[0.05] bg-white/[0.02] shadow-inner">
+              <h4 className="text-xs font-black text-cyan-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                <Brain className="w-4 h-4" />
+                Core Intelligence
+              </h4>
+              <p className="text-slate-300 leading-relaxed text-base font-medium">{project.howItWorks}</p>
+            </div>
           </div>
-          <div className="p-6 rounded-[24px] border border-white/[0.05] bg-white/[0.02] shadow-inner">
-            <h4 className="text-xs font-black text-cyan-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-              <Brain className="w-4 h-4" />
-              Core Intelligence
-            </h4>
-            <p className="text-slate-300 leading-relaxed text-sm font-medium">{project.howItWorks}</p>
-          </div>
-          <div className="col-span-2">
+          <div>
             <h4 className="text-xs font-black text-cyan-400 uppercase tracking-[0.2em] mb-6 px-2 flex items-center gap-2">
               <Sparkles className="w-4 h-4" />
               Key Innovations
             </h4>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               {project.keyInnovations.map((innovation, i) => (
                 <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-cyan-500/[0.03] border border-cyan-500/10 hover:border-cyan-500/20 transition-colors group"
                 >
@@ -703,7 +705,7 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
       )}
 
       {activeTab === 'tech' && (
-        <motion.div key="tech" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="grid grid-cols-2 gap-6">
+        <motion.div key="tech" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 max-w-4xl mx-auto">
           {project.techCategories.map((cat) => (
             <div key={cat.name} className="p-6 rounded-[24px] border border-white/[0.05] bg-white/[0.02]">
               <h4 className="text-sm font-black mb-5 flex items-center gap-3" style={{ color: CYAN }}>
@@ -712,7 +714,7 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
               </h4>
               <div className="flex flex-wrap gap-2.5">
                 {cat.items.map((item) => (
-                  <span key={item} className="px-4 py-2 text-xs font-bold rounded-xl border border-white/[0.05] bg-white/[0.03] text-slate-300 hover:text-cyan-400 hover:border-cyan-500/30 transition-all duration-300">{item}</span>
+                  <span key={item} className="px-4 py-2 text-sm font-bold rounded-xl border border-white/[0.05] bg-white/[0.03] text-slate-300 hover:text-cyan-400 hover:border-cyan-500/30 transition-all duration-300">{item}</span>
                 ))}
               </div>
             </div>
@@ -748,7 +750,7 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
       )}
 
       {activeTab === 'metrics' && (
-        <motion.div key="metrics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="grid grid-cols-2 gap-6">
+        <motion.div key="metrics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 max-w-4xl mx-auto">
           {project.metrics.map((metric, i) => (
             <motion.div key={metric.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="p-8 rounded-[32px] border border-white/[0.05] bg-white/[0.02] shadow-2xl group overflow-hidden relative"
             >
