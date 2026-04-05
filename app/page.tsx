@@ -2582,8 +2582,8 @@ function DesktopContact() {
 
   const staticLinks = [
     { icon: Github, label: "GitHub", href: "https://github.com/notjitin-1994", description: "View Public Repos" },
-    { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/in/jitin-nair", description: "Connect professionally" },
-    { icon: Instagram, label: "Instagram", href: "https://instagram.com/not.jitin", description: "@not.jitin" },
+    { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/notjitin/", description: "Connect professionally" },
+    { icon: Instagram, label: "Instagram", href: "https://instagram.com/not_jitin", description: "@not_jitin" },
   ];
 
   return (
@@ -2820,162 +2820,218 @@ function MobileContact() {
   ];
 
   return (
-    <section id="contact" className="py-10 md:py-12 px-5 pb-20 relative">
-      <div>
-        <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-4 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>
+    <section id="contact" className="py-16 px-5 pb-24 relative overflow-hidden">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px] -z-10" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/5 blur-[100px] -z-10" />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+        <p className="text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3">
           Get In Touch
         </p>
 
-        <h2 className={`text-3xl font-bold mb-4 ${mounted ? 'mobile-section-title' : 'opacity-0'}`}>
-          Let&apos;s Talk
+        <h2 className="text-4xl font-bold mb-4 tracking-tight">
+          Let&apos;s Build <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 text-glow-cyan">Extraordinary</span>
         </h2>
 
-        <p className={`text-slate-400 mb-8 ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}>
-          Ready to build something amazing? Let&apos;s discuss your project.
+        <p className="text-slate-400 mb-10 text-base leading-relaxed max-w-md">
+          Ready to architect autonomous systems? I&apos;m available for full-time roles, contracts, and advisory engagements.
         </p>
-      </div>
+      </motion.div>
 
-      {/* Contact Buttons Grid */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        {/* GitHub - Static */}
-        <a
-          href="https://github.com/notjitin-1994"
+      {/* Main Grid */}
+      <div className="space-y-4 mb-8">
+        <div className="grid grid-cols-2 gap-4">
+          {/* GitHub */}
+          <motion.a
+            href="https://github.com/notjitin-1994"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileTap={{ scale: 0.96 }}
+            className="flex flex-col items-center justify-center p-6 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-cyan-500/40 transition-all duration-300 shadow-xl"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-3">
+              <Github className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-sm font-semibold text-slate-200 uppercase tracking-tighter">GitHub</span>
+          </motion.a>
+
+          {/* LinkedIn */}
+          <motion.a
+            href="https://www.linkedin.com/in/notjitin/"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileTap={{ scale: 0.96 }}
+            className="flex flex-col items-center justify-center p-6 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-cyan-500/40 transition-all duration-300 shadow-xl"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-3">
+              <Linkedin className="w-6 h-6 text-cyan-400" />
+            </div>
+            <span className="text-sm font-semibold text-cyan-400 uppercase tracking-tighter">LinkedIn</span>
+          </motion.a>
+        </div>
+
+        {/* Instagram Card - Wide */}
+        <motion.a
+          href="https://instagram.com/not_jitin"
           target="_blank"
           rel="noopener noreferrer"
-          className={`flex items-center gap-3 p-4 rounded-xl border border-white/[0.08] bg-[#0d0d12] active:scale-95 transition-all duration-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center justify-between p-5 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-purple-500/40 transition-all duration-300 shadow-xl"
         >
-          <Github className="w-5 h-5 text-cyan-400" />
-          <div className="flex flex-col">
-            <span className="text-sm text-slate-300">GitHub</span>
-            <span className="text-[10px] text-slate-500">View Public Repos</span>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+              <Instagram className="w-6 h-6 text-purple-400" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold text-slate-200">Instagram</span>
+              <span className="text-xs text-slate-500 font-mono">@not_jitin</span>
+            </div>
           </div>
-        </a>
+          <ExternalLink className="w-5 h-5 text-slate-600" />
+        </motion.a>
 
-        {/* LinkedIn - Static */}
-        <a
-          href="https://linkedin.com/in/jitin-nair"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`flex items-center gap-3 p-4 rounded-xl border border-white/[0.08] bg-[#0d0d12] active:scale-95 transition-all duration-300 delay-75 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-        >
-          <Linkedin className="w-5 h-5 text-cyan-400" />
-          <div className="flex flex-col">
-            <span className="text-sm text-slate-300">LinkedIn</span>
-            <span className="text-[10px] text-slate-500">Connect professionally</span>
-          </div>
-        </a>
-
-        {/* Instagram - Static */}
-        <a
-          href="https://instagram.com/not.jitin"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`flex items-center gap-3 p-4 rounded-xl border border-white/[0.08] bg-[#0d0d12] active:scale-95 transition-all duration-300 delay-100 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-        >
-          <Instagram className="w-5 h-5 text-cyan-400" />
-          <div className="flex flex-col">
-            <span className="text-sm text-slate-300">Instagram</span>
-            <span className="text-[10px] text-slate-500">@not.jitin</span>
-          </div>
-        </a>
-
-        {/* Interactive Connect Button - Expands Inside Container */}
-        <div
-          className={`relative rounded-xl border transition-all duration-500 overflow-hidden ${
+        {/* Connect Expandable Card */}
+        <div 
+          className={`relative rounded-[32px] border transition-all duration-500 overflow-hidden shadow-2xl ${
             isExpanded 
-              ? 'col-span-2 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border-cyan-500/30' 
-              : `bg-[#0d0d12] border-white/[0.08] active:scale-95 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`
+              ? 'bg-gradient-to-br from-[#12121a] to-[#0a0a0f] border-cyan-500/40 ring-1 ring-cyan-500/20' 
+              : 'bg-white/[0.02] border-white/[0.08] active:scale-[0.98]'
           }`}
-          style={{ transitionDelay: isExpanded ? '0ms' : '150ms' }}
         >
-          {!isExpanded ? (
-            <button
-              onClick={() => setIsExpanded(true)}
-              className="w-full flex items-center gap-3 p-4 cursor-pointer transition-opacity duration-200"
-            >
-              <div className="relative">
-                <Users className="w-5 h-5 text-cyan-400" />
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              </div>
-              <div className="flex flex-col items-start">
-                <span className="text-sm text-slate-300">Connect</span>
-                <span className="text-[10px] text-slate-500">Tap to see options</span>
-              </div>
-              <ChevronRight className="w-4 h-4 text-slate-500 ml-auto" />
-            </button>
-          ) : (
-            <div className="p-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
-                    <Users className="w-4 h-4 text-cyan-400" />
+          <AnimatePresence mode="wait">
+            {!isExpanded ? (
+              <motion.button
+                key="collapsed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsExpanded(true)}
+                className="w-full flex items-center justify-between p-6 cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                      <Users className="w-6 h-6 text-cyan-400" />
+                    </div>
+                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-pulse border-2 border-[#0a0a0f]" />
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-white">Choose how to connect</p>
-                    <p className="text-[10px] text-slate-400">Direct contact options</p>
+                  <div className="flex flex-col items-start">
+                    <span className="text-lg font-bold text-white tracking-tight">Connect</span>
+                    <span className="text-xs text-slate-500 font-medium uppercase tracking-widest">Direct Options</span>
                   </div>
                 </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); setIsExpanded(false); }}
-                  className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center active:scale-90 transition-transform"
-                >
-                  <X className="w-4 h-4 text-slate-400" />
-                </button>
-              </div>
-
-              {/* Contact Options Grid */}
-              <div className="grid grid-cols-3 gap-2">
-                {contactOptions.map((option, index) => (
-                  <a
-                    key={option.label}
-                    href={option.href}
-                    target={option.label === "WhatsApp" ? "_blank" : undefined}
-                    rel={option.label === "WhatsApp" ? "noopener noreferrer" : undefined}
-                    className={`flex flex-col items-center gap-2 p-3 rounded-xl border bg-gradient-to-br ${option.color} ${option.borderColor} active:scale-95 transition-all duration-300`}
-                    style={{ animationDelay: `${index * 100}ms` }}
+                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                  <ChevronDown className="w-5 h-5 text-cyan-400" />
+                </div>
+              </motion.button>
+            ) : (
+              <motion.div
+                key="expanded"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="p-8"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center">
+                      <Users className="w-5 h-5 text-cyan-400" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-white tracking-tight">Connect</p>
+                      <p className="text-xs text-slate-500 uppercase tracking-widest">Choose a channel</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setIsExpanded(false)}
+                    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 active:scale-90 transition-transform"
                   >
-                    <option.icon className={`w-5 h-5 ${option.iconColor}`} />
-                    <span className="text-xs font-medium text-slate-300">{option.label}</span>
-                  </a>
-                ))}
-              </div>
+                    <X className="w-5 h-5 text-slate-400" />
+                  </button>
+                </div>
 
-              {/* Contact Info */}
-              <div className="mt-4 pt-3 border-t border-white/10 space-y-1">
-                <p className="text-[10px] text-slate-500 flex items-center gap-1">
-                  <Mail className="w-3 h-3" />
-                  not.jitin@gmail.com
-                </p>
-                <p className="text-[10px] text-slate-500 flex items-center gap-1">
-                  <Phone className="w-3 h-3" />
-                  +91 90088 98642
-                </p>
-              </div>
-            </div>
-          )}
+                {/* Vertical Options - Better for mobile than horizontal icons */}
+                <div className="space-y-3">
+                  {contactOptions.map((option, idx) => (
+                    <motion.a
+                      key={option.label}
+                      href={option.href}
+                      target={option.label === "WhatsApp" ? "_blank" : undefined}
+                      rel={option.label === "WhatsApp" ? "noopener noreferrer" : undefined}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`flex items-center justify-between p-5 rounded-2xl border bg-gradient-to-r ${option.color} ${option.borderColor} group shadow-lg`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 rounded-xl bg-white/5 border border-white/10 group-active:bg-white/10 transition-colors">
+                          <option.icon className={`w-6 h-6 ${option.iconColor}`} />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-base font-bold text-white">{option.label}</span>
+                          <span className="text-xs text-slate-400">
+                            {option.label === "Email" ? "not.jitin@gmail.com" : option.label === "Call" ? "+91 90088 98642" : "Quick chat"}
+                          </span>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-slate-600 group-active:text-white transition-all group-active:translate-x-1" />
+                    </motion.a>
+                  ))}
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-center gap-2">
+                  <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[10px] text-slate-500 uppercase tracking-[0.2em] font-bold">Encrypted Communication</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
       {/* Availability Badge */}
-      <div 
-        className={`p-4 rounded-2xl border border-white/[0.08] bg-[#0d0d12] transition-all duration-500 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="p-6 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-emerald-500/40 transition-all duration-300 shadow-xl"
       >
-        <div className="flex items-center gap-2 mb-3">
-          <span className="relative flex h-2.5 w-2.5">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
           </span>
-          <p className="text-sm text-emerald-400 font-medium">Available for new opportunities</p>
+          <p className="text-base text-emerald-400 font-semibold uppercase tracking-tight">Available for new opportunities</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {["Full-time", "Contract", "Advisory"].map((t, i) => (
-            <span key={i} className="px-3 py-1.5 text-xs bg-cyan-500/10 text-cyan-400 rounded-full border border-cyan-500/20">
+            <span key={i} className="px-4 py-2 text-xs font-bold bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 uppercase tracking-widest">
               {t}
             </span>
           ))}
         </div>
-      </div>
+      </motion.div>
+
+      <motion.div 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className="mt-16 pt-8 border-t border-white/[0.05] text-center"
+      >
+        <p className="text-slate-500 text-[10px] font-mono tracking-widest uppercase mb-1">
+          Crafted with precision
+        </p>
+        <p className="text-slate-600 text-[10px] uppercase tracking-tighter">
+          Jitin Nair © 2026 • Bangalore, IN
+        </p>
+      </motion.div>
     </section>
   );
 }

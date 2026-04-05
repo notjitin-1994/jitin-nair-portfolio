@@ -809,7 +809,7 @@ export function DesktopContact() {
                   { label: "Connections", value: "2.5k" },
                   { label: "Endorsements", value: "150+" },
                 ]}
-                href="https://linkedin.com/in/jitin-nair"
+                href="https://www.linkedin.com/in/notjitin/"
                 color="cyan"
               />
 

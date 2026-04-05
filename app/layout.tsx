@@ -123,7 +123,7 @@ export default function RootLayout({
               knowsAbout: ["Artificial Intelligence", "Multi-Agent Systems", "LangGraph", "Prompt Engineering", "Instructional Design"],
               sameAs: [
                 "https://github.com/notjitin-1994",
-                "https://linkedin.com/in/jitin-nair",
+                "https://www.linkedin.com/in/notjitin/",
                 "https://twitter.com/notjitin",
               ],
             }),

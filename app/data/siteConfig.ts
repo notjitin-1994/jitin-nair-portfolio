@@ -7,8 +7,9 @@ export const siteConfig = {
   ogImage: "/og-image.jpg",
   links: {
     github: "https://github.com/notjitin-1994",
-    linkedin: "https://linkedin.com/in/jitin-nair",
-    twitter: "https://twitter.com/notjitin",
+    linkedin: "https://www.linkedin.com/in/notjitin/",
+    twitter: "https://twitter.com/not_jitin",
+    instagram: "https://instagram.com/not_jitin",
     email: "not.jitin@gmail.com",
     phone: "+919008898642",
   },
