@@ -851,18 +851,35 @@ export function Terminal({
       
       try {
         const supabase = createClient();
-        const { data, error } = await supabase
+        
+        // List files in the bucket to find the actual filename
+        const { data: files, error: listError } = await supabase
           .storage
           .from('resume')
-          .download(`resume.${extension}`);
+          .list();
           
-        if (error) throw error;
+        if (listError) throw listError;
+        
+        // Find a file that matches the extension
+        const targetFile = files?.find(f => f.name.toLowerCase().endsWith(extension.toLowerCase()));
+        
+        if (!targetFile) {
+          console.error(`No file found in 'resume' bucket with extension .${extension}`);
+          return;
+        }
+
+        const { data, error: downloadError } = await supabase
+          .storage
+          .from('resume')
+          .download(targetFile.name);
+          
+        if (downloadError) throw downloadError;
 
         if (data) {
           const url = URL.createObjectURL(data);
           const link = document.createElement("a");
           link.href = url;
-          link.download = `Jitin_Nair_Resume.${extension}`;
+          link.download = targetFile.name; // Use the actual filename from storage
           document.body.appendChild(link);
           link.click();
           

@@ -1,5 +1,6 @@
 "use client";
 
+import { createClient } from "@/utils/supabase/client";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import {
@@ -628,6 +629,39 @@ function SuccessAnimation({ onComplete }: { onComplete: () => void }) {
 // Main Desktop Contact Component
 export function DesktopContact() {
   const { copied, copy } = useClipboard();
+
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      const supabase = createClient();
+      const { data: files, error: listError } = await supabase.storage.from('resume').list();
+      if (listError) throw listError;
+
+      const pdfFile = files?.find(f => f.name.toLowerCase().endsWith('.pdf'));
+      if (!pdfFile) throw new Error("No PDF resume found in storage");
+
+      const { data, error: downloadError } = await supabase.storage.from('resume').download(pdfFile.name);
+      if (downloadError) throw downloadError;
+
+      if (data) {
+        const url = URL.createObjectURL(data);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = pdfFile.name;
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+          document.body.removeChild(link);
+        }, 100);
+      }
+    } catch (error) {
+      console.error("Manual download failed:", error);
+      // Fallback to direct link if manual download fails
+      window.open("https://kshmtzeqwovezlkkficd.supabase.co/storage/v1/object/public/resume/resume.pdf?download=", "_blank");
+    }
+  };
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -892,16 +926,15 @@ export function DesktopContact() {
             {/* Quick Action Buttons */}
             <div className="space-y-4 mb-8">
               <motion.a
-                href="https://kshmtzeqwovezlkkficd.supabase.co/storage/v1/object/public/resume/resume.pdf?download="
-                target="_blank"
-                download="Jitin_Nair_Resume.pdf"
+                href="#"
+                onClick={handleDownload}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
                 whileHover={{ scale: 1.02, x: 5 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all duration-300 group"
+                className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all duration-300 group cursor-pointer"
               >
                 <div className="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Download className="w-6 h-6 text-cyan-400" />
