@@ -892,7 +892,7 @@ export function DesktopContact() {
             {/* Quick Action Buttons */}
             <div className="space-y-4 mb-8">
               <motion.a
-                href="https://kshmtzeqwovezlkkficd.supabase.co/storage/v1/object/public/resume/resume.pdf"
+                href="https://kshmtzeqwovezlkkficd.supabase.co/storage/v1/object/public/resume/resume.pdf?download="
                 target="_blank"
                 download="Jitin_Nair_Resume.pdf"
                 initial={{ opacity: 0, y: 20 }}

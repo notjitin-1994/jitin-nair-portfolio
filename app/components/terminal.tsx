@@ -841,7 +841,7 @@ export function Terminal({
     }, 1000);
   };
 
-  const finishDownloadFlow = () => {
+  const finishDownloadFlow = async () => {
     setDownloadStep("complete");
     setShowLearnMore(true);
     
@@ -851,19 +851,26 @@ export function Terminal({
       
       try {
         const supabase = createClient();
-        const { data } = supabase
+        const { data, error } = await supabase
           .storage
           .from('resume')
-          .getPublicUrl(`resume.${extension}`);
+          .download(`resume.${extension}`);
           
-        if (data?.publicUrl) {
+        if (error) throw error;
+
+        if (data) {
+          const url = URL.createObjectURL(data);
           const link = document.createElement("a");
-          link.href = data.publicUrl;
-          link.target = "_blank";
+          link.href = url;
           link.download = `Jitin_Nair_Resume.${extension}`;
           document.body.appendChild(link);
           link.click();
-          document.body.removeChild(link);
+          
+          // Cleanup
+          setTimeout(() => {
+            URL.revokeObjectURL(url);
+            document.body.removeChild(link);
+          }, 100);
         }
       } catch (error) {
         console.error("Failed to fetch resume from storage:", error);
