@@ -503,7 +503,7 @@ const portfolioData = {
   },
   journey: [
     { year: "2025", role: "AI Systems Architect", org: "Glitchzero" },
-    { year: "2022", role: "AI Systems Architect", org: "Moody's" },
+    { year: "2022", role: "Instructional Designer | VBL: Lead", org: "Moody's" },
     { year: "2019", role: "Instructor Analyst", org: "Accenture" },
     { year: "2017", role: "Senior Executive", org: "247.ai" },
     { year: "2015", role: "B.Com Graduate", org: "Sindhi College" },
