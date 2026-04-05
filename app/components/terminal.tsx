@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Download, ChevronDown, ArrowRight, Phone, Mail, FileText, Check, Terminal as TerminalIcon, Cpu, Globe, Layers, Zap } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 // Hook to detect when element enters viewport
 function useInView(ref: React.RefObject<HTMLElement | null>, once = true) {
@@ -724,7 +725,7 @@ export function Terminal({
     }, 400);
   };
 
-  const completeDownload = () => {
+  const completeDownload = async () => {
     setDownloadStep("format");
     
     setLines((prev) => [
@@ -739,6 +740,26 @@ export function Terminal({
         <span>Processing request...</span>
       </div>,
     ]);
+
+    // Save lead to Supabase
+    try {
+      const supabase = createClient();
+      const { error } = await supabase
+        .from('terminal_leads')
+        .insert([
+          { 
+            email: email.trim(), 
+            phone_number: phoneNumber.trim() 
+          }
+        ]);
+      
+      if (error) {
+        console.error('Error saving lead:', error);
+        // We continue anyway so the user experience isn't broken
+      }
+    } catch (err) {
+      console.error('Supabase capture failed:', err);
+    }
 
     setTimeout(() => {
       setLines((prev) => {
