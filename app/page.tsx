@@ -2768,17 +2768,6 @@ function DesktopContact() {
             </motion.div>
           </div>
         </div>
-
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="mt-20 pt-8 border-t border-white/[0.08] text-center"
-        >
-          <p className="text-slate-500 text-sm">
-            Crafted with precision • Jitin Nair © 2025
-          </p>
-        </motion.div>
       </div>
     </section>
   );
@@ -3018,19 +3007,6 @@ function MobileContact() {
             </span>
           ))}
         </div>
-      </motion.div>
-
-      <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        className="mt-16 pt-8 border-t border-white/[0.05] text-center"
-      >
-        <p className="text-slate-500 text-[10px] font-mono tracking-widest uppercase mb-1">
-          Crafted with precision
-        </p>
-        <p className="text-slate-600 text-[10px] uppercase tracking-tighter">
-          Jitin Nair © 2026 • Bangalore, IN
-        </p>
       </motion.div>
     </section>
   );
