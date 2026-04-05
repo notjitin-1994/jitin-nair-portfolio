@@ -883,7 +883,7 @@ const projectsData = [
   {
     name: "AI Agency Ops",
     shortName: "Agency",
-    technologies: ["Claude", "Google Gemini", "ChatGPT", "Kimi", "Ollama", "Qwen 3.5", "Python", "FastAPI", "LangGraph", "Redis", "Model Context Protocols", "Telegram API", "WhatsApp API", "GitHub API", "Slack API"],
+    technologies: ["Claude", "Google Gemini", "ChatGPT", "Kimi", "Ollama", "Qwen", "Python", "FastAPI", "LangGraph", "Redis", "Model Context Protocols", "Telegram API", "WhatsApp API", "GitHub API", "Slack API"],
     description: "Unified multi-agent orchestration platform managing 30+ specialized AI agents-from code automation and content generation to IoT control and knowledge management.",
     processFlow: ["Intent Recognition (NLP)", "Agent Selection (Matching)", "Context Retrieval (Vector)", "Tool Execution (MCP)", "Cross-Agent Coordination"],
     features: ["30+ specialized agents", "Cross-agent workflows", "Model Context Protocols", "Context Management", "Real-time event bus", "Vector memory"],
