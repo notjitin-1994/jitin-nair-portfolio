@@ -742,8 +742,15 @@ export function Terminal({
     ]);
 
     // Save lead to Supabase
+    setLines((prev) => [
+      ...prev,
+      <StatusLine key="db-init" label="Database" value="Connecting to secure vault..." status="info" animate />,
+    ]);
+
     try {
       const supabase = createClient();
+      console.log('Attempting to save lead:', { email, phoneNumber });
+      
       const { error } = await supabase
         .from('terminal_leads')
         .insert([
@@ -755,10 +762,23 @@ export function Terminal({
       
       if (error) {
         console.error('Error saving lead:', error);
-        // We continue anyway so the user experience isn't broken
+        setLines((prev) => [
+          ...prev,
+          <StatusLine key="db-err" label="Error" value={`Sync failed: ${error.message}`} status="warning" />,
+        ]);
+      } else {
+        console.log('Lead saved successfully');
+        setLines((prev) => [
+          ...prev,
+          <StatusLine key="db-success" label="Database" value="Lead synchronized successfully" status="success" />,
+        ]);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Supabase capture failed:', err);
+      setLines((prev) => [
+        ...prev,
+        <StatusLine key="db-fail" label="System" value={`Internal error: ${err.message || 'Unknown'}`} status="warning" />,
+      ]);
     }
 
     setTimeout(() => {
