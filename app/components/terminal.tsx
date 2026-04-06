@@ -94,8 +94,6 @@ function PixelBanner({ isMobile }: { isMobile: boolean }) {
   const gap = isMobile ? 1 : 2;
   const letterGap = isMobile ? 3 : 6;
   
-  const totalWidth = pixelLetters.reduce((acc, letter) => acc + letter[0].length * pixelSize + letterGap, 0) - letterGap;
-  
   return (
     <div className="flex items-center" style={{ height: isMobile ? '40px' : '65px' }}>
       <div className="flex items-end">
@@ -141,9 +139,6 @@ function PixelBanner({ isMobile }: { isMobile: boolean }) {
     </div>
   );
 }
-
-// Scramble characters for decode effect
-const SCRAMBLE_CHARS = "!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 // Glitch text component with neon cyberpunk effect
 function GlitchText({ text, className }: { text: string; className?: string }) {
@@ -459,8 +454,6 @@ function AnimatedMetric({
     </div>
   );
 }
-
-const SPINNER_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
 // Comprehensive data about all sections
 const portfolioData = {
@@ -796,8 +789,14 @@ export function Terminal({
   const handleFormatSelect = async (format: "pdf" | "doc" | "md") => {
     setSelectedFormat(format);
     const formatLabels = { pdf: "PDF", doc: "DOC", md: "Markdown" };
-    const formatExtensions = { pdf: "pdf", doc: "docx", md: "md" };
-    const extension = formatExtensions[format];
+    
+    // Exact filenames provided by user
+    const filenameMap = {
+      pdf: "Jitin-Nair-Resume.pdf",
+      doc: "Jitin Nair Resume.docx",
+      md: "Jitin Nair Resume.md"
+    };
+    const targetFilename = filenameMap[format];
     
     setLines((prev) => [
       ...prev,
@@ -809,92 +808,32 @@ export function Terminal({
       startCountdown();
     }, 400);
 
-    // Trigger download IMMEDIATELY from the user click to avoid browser blocking
+    // Trigger download protocol IMMEDIATELY from user gesture
     try {
       const supabase = createClient();
+      console.log(`[Terminal] Initiating secure pull for: ${targetFilename}`);
       
-      console.log(`[Terminal] Initiating download protocol for format: ${format}`);
+      const { data: { publicUrl } } = supabase.storage.from('resume').getPublicUrl(targetFilename);
+      const downloadUrl = `${publicUrl}?download=`;
       
-      // List files in the bucket to find the actual filename
-      const { data: files, error: listError } = await supabase
-        .storage
-        .from('resume')
-        .list();
-        
-      if (listError) {
-        console.error("[Terminal] Failed to list files in bucket:", listError);
-        throw listError;
-      }
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = targetFilename;
+      document.body.appendChild(link);
+      link.click();
       
-      console.log("[Terminal] Storage response - Files found:", files);
-      
-      // Look for files starting with 'Jitin' or matching the standard pattern
-      // Priority: Files containing 'Jitin' and ending with the extension
-      let targetFile = files?.find(f => 
-        f.name.toLowerCase().includes('jitin') && 
-        f.name.toLowerCase().endsWith(extension.toLowerCase())
-      );
-      
-      // Fallback: Just the extension
-      if (!targetFile) {
-        targetFile = files?.find(f => f.name.toLowerCase().endsWith(extension.toLowerCase()));
-      }
-      
-      if (!targetFile) {
-        const errorMsg = `No resume file found with extension .${extension}`;
-        console.error(`[Terminal] ${errorMsg}`);
-        setLines((prev) => [
-          ...prev,
-          <div key={`err-${extension}`} className="text-amber-400 text-[10px] mt-1">
-            ⚠ RECOVERY FAILED: {extension.toUpperCase()} source not found in &apos;resume&apos; vault.
-          </div>,
-        ]);
-        return;
-      }
-
-      console.log(`[Terminal] Targeted file: ${targetFile.name}. Executing secure pull...`);
-
-      const { data, error: downloadError } = await supabase
-        .storage
-        .from('resume')
-        .download(targetFile.name);
-        
-      if (downloadError) {
-        console.warn("[Terminal] Blob download failed, attempting direct public URL fallback:", downloadError);
-        // Fallback to direct public URL if download fails (e.g. CORS)
-        const { data: { publicUrl } } = supabase.storage.from('resume').getPublicUrl(targetFile.name);
-        const downloadUrl = `${publicUrl}${publicUrl.includes('?') ? '&' : '?'}download=`;
-        
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.download = targetFile.name;
-        document.body.appendChild(link);
-        link.click();
+      // Cleanup
+      setTimeout(() => {
         document.body.removeChild(link);
-        return;
-      }
+      }, 100);
 
-      if (data) {
-        console.log("[Terminal] Secure pull complete. Payload size:", data.size, "bytes");
-        const url = URL.createObjectURL(data);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = targetFile.name;
-        document.body.appendChild(link);
-        link.click();
-        
-        // Cleanup
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-          document.body.removeChild(link);
-        }, 100);
-      }
+      console.log("[Terminal] Download signal transmitted.");
     } catch (error: any) {
       console.error("[Terminal] Critical system error during acquisition:", error);
       setLines((prev) => [
         ...prev,
         <div key="system-err" className="text-red-400 text-[10px] mt-1">
-          ✗ SYSTEM CRITICAL: ${error.message || "Protocol Interrupted"}
+          ✗ SYSTEM CRITICAL: {error.message || "Protocol Interrupted"}
         </div>,
       ]);
     }

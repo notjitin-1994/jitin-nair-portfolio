@@ -634,56 +634,23 @@ export function DesktopContact() {
     e.preventDefault();
     try {
       const supabase = createClient();
-      console.log("[Desktop Contact] Initiating download protocol for PDF");
+      const targetFilename = "Jitin-Nair-Resume.pdf";
+      console.log(`[Desktop Contact] Initiating secure pull for: ${targetFilename}`);
       
-      const { data: files, error: listError } = await supabase.storage.from('resume').list();
-      if (listError) {
-        console.error("[Desktop Contact] Failed to list files:", listError);
-        throw listError;
-      }
+      const { data: { publicUrl } } = supabase.storage.from('resume').getPublicUrl(targetFilename);
+      const downloadUrl = `${publicUrl}?download=`;
       
-      console.log("[Desktop Contact] Files found in 'resume' bucket:", files);
-
-      // Priority: Files containing 'Jitin' and ending with .pdf
-      let pdfFile = files?.find(f => 
-        f.name.toLowerCase().includes('jitin') && 
-        f.name.toLowerCase().endsWith('.pdf')
-      );
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = targetFilename;
+      document.body.appendChild(link);
+      link.click();
       
-      // Fallback: Just .pdf
-      if (!pdfFile) {
-        pdfFile = files?.find(f => f.name.toLowerCase().endsWith('.pdf'));
-      }
-
-      if (!pdfFile) throw new Error("No PDF resume found in storage");
-
-      console.log(`[Desktop Contact] Targeted file: ${pdfFile.name}`);
-
-      const { data, error: downloadError } = await supabase.storage.from('resume').download(pdfFile.name);
-      
-      if (downloadError) {
-        console.warn("[Desktop Contact] Blob download failed, attempting direct public URL fallback:", downloadError);
-        const { data: { publicUrl } } = supabase.storage.from('resume').getPublicUrl(pdfFile.name);
-        const downloadUrl = `${publicUrl}${publicUrl.includes('?') ? '&' : '?'}download=`;
-        window.open(downloadUrl, "_blank");
-        return;
-      }
-
-      if (data) {
-        const url = URL.createObjectURL(data);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = pdfFile.name;
-        document.body.appendChild(link);
-        link.click();
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-          document.body.removeChild(link);
-        }, 100);
-      }
+      setTimeout(() => {
+        document.body.removeChild(link);
+      }, 100);
     } catch (error: any) {
-      console.error("[Desktop Contact] Manual download failed:", error);
-      // Final desperation fallback
+      console.error("[Desktop Contact] Download protocol failed:", error);
       window.open("https://kshmtzeqwovezlkkficd.supabase.co/storage/v1/object/public/resume/Jitin-Nair-Resume.pdf?download=", "_blank");
     }
   };
