@@ -396,10 +396,12 @@ function MobileHero() {
 function Marquee({
   children,
   speed = 30,
+  pauseOnHover = true,
   direction = "left",
 }: {
   children: React.ReactNode;
   speed?: number;
+  pauseOnHover?: boolean;
   direction?: "left" | "right";
 }) {
   const reducedMotion = useReducedMotion();
@@ -415,36 +417,17 @@ function Marquee({
   }
 
   return (
-    <div className="flex overflow-hidden">
-      <motion.div
-        className="flex shrink-0 gap-4"
-        style={{ '--marquee-duration': `${speed}s` } as React.CSSProperties}
-        animate={{
-          transform: `translateX(${direction === 'left' ? '-100%' : '0%'})`,
-        }}
-        transition={{
-          duration: speed,
-          repeat: Infinity,
-          ease: 'linear',
+    <div className={`flex overflow-hidden ${pauseOnHover ? "group" : ""}`}>
+      <div
+        className="flex shrink-0 gap-4 animate-marquee will-change-transform"
+        style={{
+          animationDuration: `${speed}s`,
+          animationDirection: direction === "right" ? "reverse" : "normal",
         }}
       >
         {children}
-      </motion.div>
-      <motion.div
-        className="flex shrink-0 gap-4"
-        style={{ '--marquee-duration': `${speed}s` } as React.CSSProperties}
-        animate={{
-          transform: `translateX(${direction === 'left' ? '-100%' : '0%'})`,
-        }}
-        transition={{
-          duration: speed,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-        aria-hidden
-      >
         {children}
-      </motion.div>
+      </div>
     </div>
   );
 }

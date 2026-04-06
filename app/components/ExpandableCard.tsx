@@ -244,7 +244,7 @@ function MobileInlineCard({
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            <span className="text-3xl font-bold text-white/10">{String(project.number).padStart(2, '0')}</span>
+            <span className="text-3xl font-bold" style={{ color: `${CYAN}40` }}>{String(project.number).padStart(2, '0')}</span>
             <div>
               <h3 className="text-lg font-bold text-white">{project.name}</h3>
               <p className="text-xs" style={{ color: CYAN }}>{project.tagline}</p>
@@ -541,10 +541,7 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
         <div className="flex items-start justify-between mb-8">
           <div className="flex items-center gap-6">
             <div className="relative">
-              <span className="text-6xl font-black text-white/5 select-none">{String(project.number).padStart(2, '0')}</span>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center backdrop-blur-sm">
-                <Layers className="w-6 h-6 text-cyan-400" />
-              </div>
+              <span className="text-6xl font-black select-none" style={{ color: `${CYAN}20` }}>{String(project.number).padStart(2, '0')}</span>
             </div>
             <div>
               <h3 className="text-4xl font-black text-white tracking-tight mb-1">{project.name}</h3>

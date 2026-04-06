@@ -26,26 +26,19 @@ function Marquee({
 }) {
   return (
     <div className="flex overflow-hidden">
-      <motion.div
-        className="flex shrink-0 gap-4"
-        initial={{ x: direction === 'left' ? '0%' : '-50%' }}
-        animate={{
-          x: isPaused ? undefined : (direction === 'left' ? '-50%' : '0%'),
-        }}
-        transition={{
-          duration: speed,
-          repeat: Infinity,
-          ease: 'linear',
-          repeatType: 'loop',
+      <div
+        className={`flex shrink-0 gap-4 animate-marquee ${isPaused ? '[animation-play-state:paused]' : ''}`}
+        style={{
+          animationDuration: `${speed}s`,
+          animationDirection: direction === "right" ? "reverse" : "normal",
         }}
       >
         {children}
         {children}
-      </motion.div>
+      </div>
     </div>
   );
 }
-
 // Expertise Card Component
 function ExpertiseCard({ item, index, isPaused }: { item: ExpertiseItem; index: number; isPaused?: boolean }) {
   const [isHovered, setIsHovered] = useState(false);
