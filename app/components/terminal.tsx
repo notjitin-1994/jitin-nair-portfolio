@@ -823,31 +823,56 @@ export function Terminal({
       
       const targetFile = files?.find(f => f.name.toLowerCase().endsWith(extension.toLowerCase()));
       
-      if (targetFile) {
-        const { data, error: downloadError } = await supabase
-          .storage
-          .from('resume')
-          .download(targetFile.name);
-          
-        if (downloadError) throw downloadError;
-
-        if (data) {
-          const url = URL.createObjectURL(data);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = targetFile.name;
-          document.body.appendChild(link);
-          link.click();
-          
-          // Cleanup
-          setTimeout(() => {
-            URL.revokeObjectURL(url);
-            document.body.removeChild(link);
-          }, 100);
-        }
+      if (!targetFile) {
+        console.error(`No file found in 'resume' bucket with extension .${extension}`);
+        setLines((prev) => [
+          ...prev,
+          <div key={`err-${extension}`} className="text-amber-400 text-[10px] mt-1">
+            ⚠ Source file (resume.{extension}) not found in secure vault. Please contact administrator.
+          </div>,
+        ]);
+        return;
       }
-    } catch (error) {
+
+      const { data, error: downloadError } = await supabase
+        .storage
+        .from('resume')
+        .download(targetFile.name);
+        
+      if (downloadError) {
+        // Fallback to direct public URL if download fails (e.g. CORS)
+        const { data: { publicUrl } } = supabase.storage.from('resume').getPublicUrl(targetFile.name);
+        const link = document.createElement("a");
+        link.href = `${publicUrl}?download=`;
+        link.download = targetFile.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return;
+      }
+
+      if (data) {
+        const url = URL.createObjectURL(data);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = targetFile.name;
+        document.body.appendChild(link);
+        link.click();
+        
+        // Cleanup
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+          document.body.removeChild(link);
+        }, 100);
+      }
+    } catch (error: any) {
       console.error("Immediate download failed:", error);
+      setLines((prev) => [
+        ...prev,
+        <div key="system-err" className="text-red-400 text-[10px] mt-1">
+          ✗ System Error: {error.message || "Failed to initiate transfer protocol"}
+        </div>,
+      ]);
     }
   };
 
