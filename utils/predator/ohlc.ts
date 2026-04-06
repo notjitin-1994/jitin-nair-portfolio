@@ -1,3 +1,4 @@
+import { Time } from "lightweight-charts";
 
 export interface Tick {
   timestamp: string | number;
@@ -9,7 +10,7 @@ export interface Tick {
 }
 
 export interface Candle {
-  time: number;
+  time: Time;
   open: number;
   high: number;
   low: number;
@@ -55,8 +56,8 @@ export function aggregateTicksToOHLC(ticks: Tick[], timeframeSeconds: number = 6
 
   return Array.from(candlesMap.entries())
     .map(([time, ohlc]) => ({
-      time,
+      time: time as Time,
       ...ohlc,
     }))
-    .sort((a, b) => a.time - b.time);
+    .sort((a, b) => (a.time as number) - (b.time as number));
 }

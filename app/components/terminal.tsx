@@ -859,6 +859,7 @@ export function Terminal({
           .list();
           
         if (listError) throw listError;
+        console.log("Files found in 'resume' bucket:", files);
         
         // Find a file that matches the extension
         const targetFile = files?.find(f => f.name.toLowerCase().endsWith(extension.toLowerCase()));

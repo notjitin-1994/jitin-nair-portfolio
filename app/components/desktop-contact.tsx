@@ -636,6 +636,7 @@ export function DesktopContact() {
       const supabase = createClient();
       const { data: files, error: listError } = await supabase.storage.from('resume').list();
       if (listError) throw listError;
+      console.log("Desktop Contact - Files found in 'resume' bucket:", files);
 
       const pdfFile = files?.find(f => f.name.toLowerCase().endsWith('.pdf'));
       if (!pdfFile) throw new Error("No PDF resume found in storage");

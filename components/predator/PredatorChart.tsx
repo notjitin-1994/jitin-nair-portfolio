@@ -9,13 +9,18 @@ import {
   AreaSeries, 
   CandlestickSeries,
   LineStyle, 
-  CrosshairMode 
+  CrosshairMode,
+  Time
 } from "lightweight-charts";
 import { aggregateTicksToOHLC } from "@/utils/predator/ohlc";
 
 interface ChartProps {
   data: any[];
   signals?: any[];
+  onLoadMore?: () => void;
+  hasMore?: boolean;
+  isLoadingMore?: boolean;
+  isOHLC?: boolean;
   colors?: {
     backgroundColor?: string;
     lineColor?: string;
@@ -30,6 +35,10 @@ interface ChartProps {
 export function PredatorChart({
   data,
   signals = [],
+  onLoadMore,
+  hasMore = false,
+  isLoadingMore = false,
+  isOHLC = false,
   colors: {
     backgroundColor = "transparent",
     lineColor = "#22d3ee",
@@ -44,8 +53,13 @@ export function PredatorChart({
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Area" | "Candlestick"> | null>(null);
   const [chartType, setChartType] = useState<"candle" | "area">("candle");
+  const dataRef = useRef(data);
 
-  // 1. Initialize Chart (Once or when chartType changes)
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
+
+  // 1. Initialize Chart
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
@@ -80,6 +94,7 @@ export function PredatorChart({
         borderColor: "rgba(34, 211, 238, 0.1)",
         timeVisible: true,
         secondsVisible: true,
+        shiftVisibleRangeOnNewBar: true,
       },
     });
 
@@ -104,53 +119,77 @@ export function PredatorChart({
     chartRef.current = chart;
     seriesRef.current = series;
 
+    // Load initial data
+    if (dataRef.current.length > 0) {
+      if (isOHLC) {
+        series.setData(dataRef.current as any);
+      } else {
+        const aggregated = aggregateTicksToOHLC(dataRef.current, 60);
+        series.setData(aggregated as any);
+      }
+    }
+
+    // Handle Resize
     const handleResize = () => {
       if (chartContainerRef.current) {
         chart.applyOptions({ width: chartContainerRef.current.clientWidth });
       }
     };
-
     window.addEventListener("resize", handleResize);
+
+    // Infinite Scroll Implementation
+    const handleVisibleTimeRangeChange = () => {
+        const timeScale = chart.timeScale();
+        const visibleRange = timeScale.getVisibleLogicalRange();
+        if (visibleRange !== null && visibleRange.from < 10 && hasMore && !isLoadingMore) {
+           onLoadMore?.();
+        }
+    };
+    
+    chart.timeScale().subscribeVisibleLogicalRangeChange(handleVisibleTimeRangeChange);
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      chart.timeScale().unsubscribeVisibleLogicalRangeChange(handleVisibleTimeRangeChange);
       chart.remove();
     };
-  }, [backgroundColor, textColor, lineColor, areaTopColor, areaBottomColor, upColor, downColor, chartType]);
+  }, [backgroundColor, textColor, lineColor, areaTopColor, areaBottomColor, upColor, downColor, chartType, hasMore, isLoadingMore, onLoadMore, isOHLC]);
 
-  // 2. Update Data & Markers (On changes)
+  // 2. Update Data & Markers (Real-time updates)
   useEffect(() => {
     if (!seriesRef.current || !data.length) return;
 
-    if (chartType === "area") {
-      const formattedData = data.map((item) => ({
-        time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as any,
-        value: Number(item.bid || item.price || item.close),
-      })).sort((a, b) => a.time - b.time);
+    if (isOHLC) {
+      seriesRef.current.setData(data as any);
+    } else {
+      const formattedData = chartType === "area" 
+        ? data.map((item) => ({
+            time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as Time,
+            value: Number(item.bid || item.price || item.close),
+          })).sort((a, b) => (a.time as number) - (b.time as number))
+        : aggregateTicksToOHLC(data, 60);
       
       const uniqueData = Array.from(
-        new Map(formattedData.map(item => [item.time, item])).values()
-      );
+        new Map(formattedData.map((item: any) => [item.time, item])).values()
+      ).sort((a: any, b: any) => (a.time as number) - (b.time as number));
+      
       seriesRef.current.setData(uniqueData as any);
-    } else {
-      const candleData = aggregateTicksToOHLC(data, 60); // 1m candles
-      seriesRef.current.setData(candleData as any);
     }
 
     if (signals.length > 0) {
       const markers = signals.map(sig => ({
-        time: Math.floor(new Date(sig.timestamp).getTime() / 1000) as any,
+        time: Math.floor(new Date(sig.timestamp).getTime() / 1000) as Time,
         position: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? 'belowBar' : 'aboveBar',
-        color: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? '#22c55e' : '#ef4444',
-        shape: sig.direction === 'LONG' || sig.signal === 'ENTER_LONG' ? 'arrowUp' : 'arrowDown',
+        color: (sig.signal || sig.direction).includes('LONG') ? '#22c55e' : '#ef4444',
+        shape: (sig.signal || sig.direction).includes('LONG') ? 'arrowUp' : 'arrowDown',
         text: (sig.signal || sig.direction).includes('LONG') ? 'LONG' : 'SHORT',
       }));
       
       if (seriesRef.current && 'setMarkers' in (seriesRef.current as any)) {
-        (seriesRef.current as any).setMarkers(markers);
+        (seriesRef.current as any).setMarkers(markers.sort((a, b) => (a.time as number) - (b.time as number)));
       }
     }
-  }, [data, signals, chartType]);
+  }, [data, signals, chartType, isOHLC]);
 
   return (
     <div className="relative w-full h-full min-h-[400px]">
@@ -168,6 +207,11 @@ export function PredatorChart({
           Area
         </button>
       </div>
+      {isLoadingMore && (
+        <div className="absolute top-2 right-4 z-20">
+          <span className="text-[9px] font-mono text-cyan-400 animate-pulse uppercase tracking-widest">Loading History...</span>
+        </div>
+      )}
       <div ref={chartContainerRef} className="w-full h-full" />
     </div>
   );

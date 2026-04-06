@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { usePredatorSocket } from "@/lib/predator/usePredatorSocket";
 import { PredatorChart } from "@/components/predator/PredatorChart";
@@ -15,10 +15,14 @@ import {
 
 export default function DashboardPage() {
   const { isConnected, lastTick, lastRegime, lastSignal } = usePredatorSocket();
-  const [ticks, setTicks] = useState<any[]>([]);
+  const [candles, setCandles] = useState<any[]>([]);
   const [signals, setSignals] = useState<any[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [timeframe, setTimeframe] = useState<string>("m1");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.glitchzerolabs.com";
   const headers = useMemo(() => ({ 
@@ -26,28 +30,50 @@ export default function DashboardPage() {
     "Content-Type": "application/json"
   }), []);
 
+  const fetchHistory = useCallback(async (pageNum: number, currentTF: string) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/v1/data/market_bars_${currentTF}?limit=500&page=${pageNum}`, { headers });
+      if (res.ok) {
+        const result = await res.json();
+        const formatted = result.data.map((d: any) => ({
+          time: Math.floor(new Date(d.timestamp).getTime() / 1000),
+          open: parseFloat(d.open),
+          high: parseFloat(d.high),
+          low: parseFloat(d.low),
+          close: parseFloat(d.close),
+          volume: parseFloat(d.volume)
+        })).sort((a: any, b: any) => a.time - b.time);
+        
+        if (formatted.length < 500) setHasMore(false);
+        return formatted;
+      }
+    } catch (err) {
+      console.error("Failed to fetch history:", err);
+    }
+    return [];
+  }, [API_BASE_URL, headers]);
+
   useEffect(() => {
     setIsMounted(true);
     
     const fetchInitialData = async () => {
       try {
-        const [marketRes, tradeRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/api/v1/market/history?limit=1000`, { headers }),
-          fetch(`${API_BASE_URL}/api/v1/data/trades?limit=50`, { headers })
+        const [initialCandles, tradeRes] = await Promise.all([
+          fetchHistory(1, timeframe),
+          fetch(`${API_BASE_URL}/api/v1/data/trades?limit=100`, { headers })
         ]);
 
-        if (marketRes.ok) {
-          const data = await marketRes.json();
-          if (Array.isArray(data)) {
-            setTicks(data);
-          } else if (data && (data.timestamp || data.ts)) {
-            setTicks([data]);
-          }
-        }
+        setCandles(initialCandles);
 
         if (tradeRes.ok) {
           const result = await tradeRes.json();
-          if (Array.isArray(result.data)) setSignals(result.data.slice(0, 50));
+          if (Array.isArray(result.data)) {
+            const formattedSignals = result.data.map((sig: any) => ({
+              ...sig,
+              timestamp: sig.timestamp || sig.entry_time
+            }));
+            setSignals(formattedSignals);
+          }
         }
       } catch (err) {
         console.error("Dashboard hydration failed:", err);
@@ -55,24 +81,70 @@ export default function DashboardPage() {
     };
 
     fetchInitialData();
-  }, [headers, API_BASE_URL]);
+  }, [headers, API_BASE_URL, timeframe, fetchHistory]);
 
+  const loadMoreHistory = useCallback(async () => {
+    if (isLoadingMore || !hasMore) return;
+    setIsLoadingMore(true);
+    const nextPage = page + 1;
+    const moreCandles = await fetchHistory(nextPage, timeframe);
+    if (moreCandles.length > 0) {
+      setCandles(prev => {
+        const combined = [...moreCandles, ...prev];
+        // Ensure uniqueness and sort
+        const unique = Array.from(new Map(combined.map(c => [c.time, c])).values())
+          .sort((a: any, b: any) => a.time - b.time);
+        return unique;
+      });
+      setPage(nextPage);
+    }
+    setIsLoadingMore(false);
+  }, [page, timeframe, fetchHistory, isLoadingMore, hasMore]);
+
+  // Handle real-time ticks
   useEffect(() => {
-    if (lastTick) {
-      setTicks((prev) => [...prev.slice(-999), lastTick]);
+    if (lastTick && candles.length > 0) {
+      const price = parseFloat(lastTick.bid || lastTick.price);
+      const ts = Math.floor(new Date(lastTick.ts || lastTick.timestamp).getTime() / 1000);
+      const tfSeconds = timeframe === 'm1' ? 60 : timeframe === 'm5' ? 300 : 900;
+      const candleTime = Math.floor(ts / tfSeconds) * tfSeconds;
+
+      setCandles(prev => {
+        const lastCandle = prev[prev.length - 1];
+        if (lastCandle && lastCandle.time === candleTime) {
+          // Update existing candle
+          const updated = {
+            ...lastCandle,
+            high: Math.max(lastCandle.high, price),
+            low: Math.min(lastCandle.low, price),
+            close: price
+          };
+          return [...prev.slice(0, -1), updated];
+        } else if (!lastCandle || candleTime > lastCandle.time) {
+          // New candle
+          const newCandle = {
+            time: candleTime,
+            open: price,
+            high: price,
+            low: price,
+            close: price
+          };
+          return [...prev, newCandle];
+        }
+        return prev;
+      });
       setLastUpdate(new Date());
     }
-  }, [lastTick]);
+  }, [lastTick, timeframe, candles.length]);
 
   useEffect(() => {
     if (lastSignal && lastSignal.signal !== "WAIT") {
-      setSignals((prev) => [lastSignal, ...prev.slice(0, 9)]);
+      setSignals((prev) => [{ ...lastSignal, timestamp: lastSignal.timestamp || new Date().toISOString() }, ...prev.slice(0, 99)]);
     }
   }, [lastSignal]);
 
-  const latestPrice = ticks.length > 0 ? (ticks[ticks.length - 1].bid || ticks[ticks.length - 1].price) : 0;
+  const latestPrice = lastTick ? (lastTick.bid || lastTick.price) : (candles.length > 0 ? candles[candles.length - 1].close : 0);
   
-  // Market Open Logic: If last tick is older than 5 mins, market is closed/stagnant
   const isMarketOpen = lastUpdate ? (new Date().getTime() - lastUpdate.getTime()) < 300000 : false;
 
   const agentStatus = useMemo(() => [
@@ -158,12 +230,35 @@ export default function DashboardPage() {
         {/* Left: Chart Terminal (8/12) */}
         <div className="xl:col-span-8 bg-[#020617] border border-white/5 rounded-3xl overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
           <div className="absolute top-4 right-4 z-10 flex bg-void/40 backdrop-blur-md p-1 rounded-lg border border-white/5">
-             <button className="px-3 py-1 rounded-md text-[9px] text-zinc-500 font-bold font-mono hover:text-white transition-all uppercase tracking-widest">M1</button>
-             <button className="px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-md text-[9px] text-cyan-400 font-bold font-mono uppercase tracking-widest">M5</button>
+             <button 
+              onClick={() => { setTimeframe("m1"); setPage(1); setHasMore(true); }}
+              className={`px-3 py-1 rounded-md text-[9px] font-bold font-mono transition-all uppercase tracking-widest ${timeframe === 'm1' ? 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400' : 'text-zinc-500 hover:text-white'}`}
+            >
+              M1
+            </button>
+             <button 
+              onClick={() => { setTimeframe("m5"); setPage(1); setHasMore(true); }}
+              className={`px-3 py-1 rounded-md text-[9px] font-bold font-mono transition-all uppercase tracking-widest ${timeframe === 'm5' ? 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400' : 'text-zinc-500 hover:text-white'}`}
+            >
+              M5
+            </button>
+             <button 
+              onClick={() => { setTimeframe("m15"); setPage(1); setHasMore(true); }}
+              className={`px-3 py-1 rounded-md text-[9px] font-bold font-mono transition-all uppercase tracking-widest ${timeframe === 'm15' ? 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400' : 'text-zinc-500 hover:text-white'}`}
+            >
+              M15
+            </button>
           </div>
           
           <div className="p-1 h-[380px]">
-            <PredatorChart data={ticks} signals={signals} />
+            <PredatorChart 
+              data={candles} 
+              signals={signals} 
+              onLoadMore={loadMoreHistory} 
+              hasMore={hasMore} 
+              isLoadingMore={isLoadingMore}
+              isOHLC={true}
+            />
           </div>
         </div>
 
