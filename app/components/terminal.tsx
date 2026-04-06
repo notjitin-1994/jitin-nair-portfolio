@@ -793,18 +793,62 @@ export function Terminal({
     }, 1500);
   };
 
-  const handleFormatSelect = (format: "pdf" | "doc" | "md") => {
+  const handleFormatSelect = async (format: "pdf" | "doc" | "md") => {
     setSelectedFormat(format);
     const formatLabels = { pdf: "PDF", doc: "DOC", md: "Markdown" };
+    const formatExtensions = { pdf: "pdf", doc: "docx", md: "md" };
+    const extension = formatExtensions[format];
     
     setLines((prev) => [
       ...prev,
       <div key="format-select" className="text-emerald-400 text-xs">✓ {formatLabels[format]} selected</div>,
     ]);
     
+    // Start countdown for visual effect
     setTimeout(() => {
       startCountdown();
     }, 400);
+
+    // Trigger download IMMEDIATELY from the user click to avoid browser blocking
+    try {
+      const supabase = createClient();
+      
+      const { data: files, error: listError } = await supabase
+        .storage
+        .from('resume')
+        .list();
+        
+      if (listError) throw listError;
+      console.log("Terminal - Files found in 'resume' bucket:", files);
+      
+      const targetFile = files?.find(f => f.name.toLowerCase().endsWith(extension.toLowerCase()));
+      
+      if (targetFile) {
+        const { data, error: downloadError } = await supabase
+          .storage
+          .from('resume')
+          .download(targetFile.name);
+          
+        if (downloadError) throw downloadError;
+
+        if (data) {
+          const url = URL.createObjectURL(data);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = targetFile.name;
+          document.body.appendChild(link);
+          link.click();
+          
+          // Cleanup
+          setTimeout(() => {
+            URL.revokeObjectURL(url);
+            document.body.removeChild(link);
+          }, 100);
+        }
+      }
+    } catch (error) {
+      console.error("Immediate download failed:", error);
+    }
   };
 
   const startCountdown = () => {
@@ -835,74 +879,19 @@ export function Terminal({
       if (count <= 0) {
         clearInterval(countdownInterval);
         setTimeout(() => {
-          finishDownloadFlow();
+          setDownloadStep("complete");
+          setShowLearnMore(true);
+          setLines((prev) => {
+            const newLines = [...prev];
+            const idx = newLines.findIndex((l: any) => l?.key === "countdown");
+            if (idx >= 0) {
+              newLines[idx] = <div key="download-started" className="text-emerald-400 text-xs mt-2">✓ Download complete</div>;
+            }
+            return newLines;
+          });
         }, 500);
       }
     }, 1000);
-  };
-
-  const finishDownloadFlow = async () => {
-    setDownloadStep("complete");
-    setShowLearnMore(true);
-    
-    if (selectedFormat) {
-      const formatExtensions = { pdf: "pdf", doc: "docx", md: "md" };
-      const extension = formatExtensions[selectedFormat];
-      
-      try {
-        const supabase = createClient();
-        
-        // List files in the bucket to find the actual filename
-        const { data: files, error: listError } = await supabase
-          .storage
-          .from('resume')
-          .list();
-          
-        if (listError) throw listError;
-        console.log("Files found in 'resume' bucket:", files);
-        
-        // Find a file that matches the extension
-        const targetFile = files?.find(f => f.name.toLowerCase().endsWith(extension.toLowerCase()));
-        
-        if (!targetFile) {
-          console.error(`No file found in 'resume' bucket with extension .${extension}`);
-          return;
-        }
-
-        const { data, error: downloadError } = await supabase
-          .storage
-          .from('resume')
-          .download(targetFile.name);
-          
-        if (downloadError) throw downloadError;
-
-        if (data) {
-          const url = URL.createObjectURL(data);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = targetFile.name; // Use the actual filename from storage
-          document.body.appendChild(link);
-          link.click();
-          
-          // Cleanup
-          setTimeout(() => {
-            URL.revokeObjectURL(url);
-            document.body.removeChild(link);
-          }, 100);
-        }
-      } catch (error) {
-        console.error("Failed to fetch resume from storage:", error);
-      }
-    }
-    
-    setLines((prev) => {
-      const newLines = [...prev];
-      const idx = newLines.findIndex((l: any) => l?.key === "countdown");
-      if (idx >= 0) {
-        newLines[idx] = <div key="download-started" className="text-emerald-400 text-xs mt-2">✓ Download initiated</div>;
-      }
-      return newLines;
-    });
   };
 
   const runOutputSequence = () => {
