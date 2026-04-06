@@ -17,7 +17,7 @@ function Marquee({
   children,
   speed = 30,
   direction = "left",
-  isPaused = false,
+  isPaused = false, // Keep isPaused for hover effect
 }: {
   children: React.ReactNode;
   speed?: number;
@@ -26,24 +26,22 @@ function Marquee({
 }) {
   return (
     <div className="flex overflow-hidden">
-      <div
-        className={`flex shrink-0 ${isPaused ? 'marquee-paused' : ''}`}
-        style={{
-          animation: `marquee-${direction} ${speed}s linear infinite`,
-          animationPlayState: isPaused ? 'paused' : 'running',
+      <motion.div
+        className="flex shrink-0 gap-4"
+        style={{ '--marquee-duration': `${speed}s` } as React.CSSProperties}
+        animate={{
+          transform: `translateX(${direction === 'left' ? '-100%' : '0%'})`,
+        }}
+        transition={{
+          duration: speed,
+          repeat: Infinity,
+          ease: 'linear',
+          repeatType: 'loop',
         }}
       >
         {children}
-      </div>
-      <div
-        className={`flex shrink-0 ${isPaused ? 'marquee-paused' : ''}`}
-        style={{
-          animation: `marquee-${direction} ${speed}s linear infinite`,
-          animationPlayState: isPaused ? 'paused' : 'running',
-        }}
-      >
         {children}
-      </div>
+      </motion.div>
     </div>
   );
 }

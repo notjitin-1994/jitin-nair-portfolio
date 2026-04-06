@@ -396,17 +396,14 @@ function MobileHero() {
 function Marquee({
   children,
   speed = 30,
-  pauseOnHover = true,
   direction = "left",
 }: {
   children: React.ReactNode;
   speed?: number;
-  pauseOnHover?: boolean;
   direction?: "left" | "right";
 }) {
   const reducedMotion = useReducedMotion();
   
-  // Disable animation for reduced motion preference
   if (reducedMotion) {
     return (
       <div className="flex overflow-x-auto scrollbar-hide">
@@ -418,28 +415,36 @@ function Marquee({
   }
 
   return (
-    <div className={`flex overflow-hidden ${pauseOnHover ? "group" : ""}`}>
-      <div
-        className="flex shrink-0 gap-4 animate-marquee will-change-transform"
-        style={{
-          animationDuration: `${speed}s`,
-          animationDirection: direction === "right" ? "reverse" : "normal",
+    <div className="flex overflow-hidden">
+      <motion.div
+        className="flex shrink-0 gap-4"
+        style={{ '--marquee-duration': `${speed}s` } as React.CSSProperties}
+        animate={{
+          transform: `translateX(${direction === 'left' ? '-100%' : '0%'})`,
+        }}
+        transition={{
+          duration: speed,
+          repeat: Infinity,
+          ease: 'linear',
         }}
       >
         {children}
-        {children}
-      </div>
-      <div
-        className="flex shrink-0 gap-4 animate-marquee will-change-transform"
-        style={{
-          animationDuration: `${speed}s`,
-          animationDirection: direction === "right" ? "reverse" : "normal",
+      </motion.div>
+      <motion.div
+        className="flex shrink-0 gap-4"
+        style={{ '--marquee-duration': `${speed}s` } as React.CSSProperties}
+        animate={{
+          transform: `translateX(${direction === 'left' ? '-100%' : '0%'})`,
+        }}
+        transition={{
+          duration: speed,
+          repeat: Infinity,
+          ease: 'linear',
         }}
         aria-hidden
       >
         {children}
-        {children}
-      </div>
+      </motion.div>
     </div>
   );
 }

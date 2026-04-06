@@ -32,8 +32,13 @@ module.exports = {
         "float": "float 6s ease-in-out infinite",
         "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "glow": "glow 2s ease-in-out infinite alternate",
+        "marquee": "marquee var(--marquee-duration) linear infinite",
       },
       keyframes: {
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-100%)" },
+        },
         "gradient-x": {
           "0%, 100%": {
             "background-size": "200% 200%",
