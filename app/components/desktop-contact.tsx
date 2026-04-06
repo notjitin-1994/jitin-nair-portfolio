@@ -637,18 +637,33 @@ export function DesktopContact() {
       const targetFilename = "Jitin-Nair-Resume.pdf";
       console.log(`[Desktop Contact] Initiating secure pull for: ${targetFilename}`);
       
-      const { data: { publicUrl } } = supabase.storage.from('resume').getPublicUrl(targetFilename);
-      const downloadUrl = `${publicUrl}?download=`;
-      
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = targetFilename;
-      document.body.appendChild(link);
-      link.click();
-      
-      setTimeout(() => {
-        document.body.removeChild(link);
-      }, 100);
+      // Industry Standard: Fetch as Blob to force a browser download prompt
+      const { data, error: downloadError } = await supabase
+        .storage
+        .from('resume')
+        .download(targetFilename);
+        
+      if (downloadError) {
+        console.warn("[Desktop Contact] Blob download failed, attempting public URL fallback:", downloadError);
+        const { data: { publicUrl } } = supabase.storage.from('resume').getPublicUrl(targetFilename);
+        const downloadUrl = `${publicUrl}${publicUrl.includes('?') ? '&' : '?'}download=`;
+        window.open(downloadUrl, "_blank");
+        return;
+      }
+
+      if (data) {
+        const url = URL.createObjectURL(data);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = targetFilename;
+        document.body.appendChild(link);
+        link.click();
+        
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+          document.body.removeChild(link);
+        }, 100);
+      }
     } catch (error: any) {
       console.error("[Desktop Contact] Download protocol failed:", error);
       window.open("https://kshmtzeqwovezlkkficd.supabase.co/storage/v1/object/public/resume/Jitin-Nair-Resume.pdf?download=", "_blank");
