@@ -719,8 +719,6 @@ export function Terminal({
   };
 
   const completeDownload = async () => {
-    setDownloadStep("format");
-    
     setLines((prev) => [
       ...prev,
       <div key="processing" className="flex items-center gap-2 text-cyan-400 text-xs mt-2">
@@ -734,7 +732,7 @@ export function Terminal({
       </div>,
     ]);
 
-    // Save lead to Supabase
+    // Step 1: Connecting
     setLines((prev) => [
       ...prev,
       <StatusLine key="db-init" label="Database" value="Connecting to secure vault..." status="info" animate />,
@@ -760,6 +758,7 @@ export function Terminal({
           <StatusLine key="db-err" label="Error" value={`Sync failed: ${error.message}`} status="warning" />,
         ]);
       } else {
+        // Step 2: Success
         console.log('Lead saved successfully');
         setLines((prev) => [
           ...prev,
@@ -774,16 +773,25 @@ export function Terminal({
       ]);
     }
 
+    // Step 3: Identity Verification (After lead capture)
     setTimeout(() => {
       setLines((prev) => {
         const filtered = prev.filter((l: any) => l?.key !== "processing");
         return [
           ...filtered,
           <div key="success" className="text-emerald-400 text-xs">✓ Identity verified</div>,
-          <div key="format-prompt" className="text-neutral-300 text-xs mt-3">Select format:</div>,
         ];
       });
-    }, 1500);
+
+      // Step 4: Show Format Prompt and Options
+      setTimeout(() => {
+        setLines((prev) => [
+          ...prev,
+          <div key="format-prompt" className="text-neutral-300 text-xs mt-3">Select format:</div>,
+        ]);
+        setDownloadStep("format");
+      }, 600);
+    }, 1000);
   };
 
   const handleFormatSelect = async (format: "pdf" | "doc" | "md") => {
