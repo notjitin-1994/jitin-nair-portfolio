@@ -150,23 +150,9 @@ function ProjectCard({
           <div className="relative z-10 h-full flex flex-col p-6 lg:p-8">
             {/* Header Row */}
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                  <Layers className="w-5 h-5 text-cyan-400" />
-                </div>
-                <span className="text-slate-500 font-mono text-sm">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-              </div>
-              <motion.div
-                animate={{ 
-                  rotate: isHovered ? 180 : 0,
-                  scale: isHovered ? 1.1 : 1 
-                }}
-                transition={{ duration: 0.4 }}
-              >
-                <Sparkles className="w-5 h-5 text-cyan-400/60" />
-              </motion.div>
+              <span className="text-3xl font-bold font-mono" style={{ color: '#22d3ee' }}>
+                {String(index + 1).padStart(2, '0')}
+              </span>
             </div>
 
             {/* Main Content */}
