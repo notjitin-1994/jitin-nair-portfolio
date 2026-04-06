@@ -113,7 +113,7 @@ export default function DashboardPage() {
         {/* Left: Chart Terminal (8/12) */}
         <div className="xl:col-span-8 bg-[#020617] border border-white/5 rounded-3xl overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
           <div className="p-1 h-[500px]">
-            <TradingViewChart symbol="FX:XAUUSD" interval="1" theme="dark" />
+            <TradingViewChart symbol="OANDA:XAUUSD" interval="1" theme="dark" />
           </div>
         </div>
 

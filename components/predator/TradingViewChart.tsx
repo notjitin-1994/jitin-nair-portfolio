@@ -9,7 +9,7 @@ interface TradingViewChartProps {
 }
 
 function TradingViewChart({ 
-  symbol = "FX:XAUUSD", 
+  symbol = "OANDA:XAUUSD", 
   theme = "dark", 
   interval = "1" 
 }: TradingViewChartProps) {
