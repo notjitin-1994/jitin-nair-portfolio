@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { usePredatorSocket } from "@/lib/predator/usePredatorSocket";
 import { PredatorChart } from "@/components/predator/PredatorChart";
@@ -9,8 +9,7 @@ import { BayesianGauge } from "@/components/predator/BayesianGauge";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { 
   Activity, Cpu, ShieldAlert, Crosshair, 
-  AlertTriangle, Clock, TrendingUp, TrendingDown,
-  Globe, Info, Zap
+  Info, Zap
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -44,7 +43,6 @@ export default function DashboardPage() {
           volume: parseFloat(d.volume)
         })).sort((a: any, b: any) => a.time - b.time);
         
-        if (formatted.length < 500) setHasMore(false);
         return formatted;
       }
     } catch (err) {
@@ -64,6 +62,8 @@ export default function DashboardPage() {
         ]);
 
         setCandles(initialCandles);
+        setPage(1);
+        setHasMore(initialCandles.length === 500);
 
         if (tradeRes.ok) {
           const result = await tradeRes.json();
@@ -91,12 +91,14 @@ export default function DashboardPage() {
     if (moreCandles.length > 0) {
       setCandles(prev => {
         const combined = [...moreCandles, ...prev];
-        // Ensure uniqueness and sort
         const unique = Array.from(new Map(combined.map(c => [c.time, c])).values())
           .sort((a: any, b: any) => a.time - b.time);
         return unique;
       });
       setPage(nextPage);
+      setHasMore(moreCandles.length === 500);
+    } else {
+      setHasMore(false);
     }
     setIsLoadingMore(false);
   }, [page, timeframe, fetchHistory, isLoadingMore, hasMore]);
@@ -112,7 +114,6 @@ export default function DashboardPage() {
       setCandles(prev => {
         const lastCandle = prev[prev.length - 1];
         if (lastCandle && lastCandle.time === candleTime) {
-          // Update existing candle
           const updated = {
             ...lastCandle,
             high: Math.max(lastCandle.high, price),
@@ -121,13 +122,13 @@ export default function DashboardPage() {
           };
           return [...prev.slice(0, -1), updated];
         } else if (!lastCandle || candleTime > lastCandle.time) {
-          // New candle
           const newCandle = {
             time: candleTime,
             open: price,
             high: price,
             low: price,
-            close: price
+            close: price,
+            volume: 0
           };
           return [...prev, newCandle];
         }
@@ -144,7 +145,6 @@ export default function DashboardPage() {
   }, [lastSignal]);
 
   const latestPrice = lastTick ? (lastTick.bid || lastTick.price) : (candles.length > 0 ? candles[candles.length - 1].close : 0);
-  
   const isMarketOpen = lastUpdate ? (new Date().getTime() - lastUpdate.getTime()) < 300000 : false;
 
   const agentStatus = useMemo(() => [
@@ -174,11 +174,17 @@ export default function DashboardPage() {
     }
   ], [isConnected, lastRegime, lastSignal, isMarketOpen]);
 
+  const handleTimeframeChange = (tf: string) => {
+    setTimeframe(tf);
+    setPage(1);
+    setHasMore(true);
+    setCandles([]); // Clear while loading
+  };
+
   if (!isMounted) return null;
 
   return (
     <div className="flex flex-col space-y-6 max-w-[1600px] mx-auto pb-20">
-      {/* 1. Header Bar: Real-time Status */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-depth/50 p-6 rounded-2xl border border-white/5 backdrop-blur-md shadow-2xl">
         <div className="flex items-center space-x-8">
           <div className="flex flex-col">
@@ -192,9 +198,7 @@ export default function DashboardPage() {
               </span>
             </div>
           </div>
-          
           <div className="h-12 w-px bg-white/10 hidden lg:block" />
-          
           <div className="flex flex-col">
             <span className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold mb-1">Current Intelligence</span>
             <div className="flex items-center space-x-3 mt-1">
@@ -207,7 +211,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-
         <div className="flex items-center space-x-4">
           <div className={`flex flex-col items-end hidden sm:flex`}>
              <span className="text-[9px] text-zinc-600 uppercase font-bold tracking-widest mb-1">System Health</span>
@@ -216,7 +219,6 @@ export default function DashboardPage() {
                 <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.4)]' : 'bg-red-500'}`} />
              </div>
           </div>
-          
           <div className={`px-4 py-2 rounded-xl border transition-all duration-500 ${isConnected ? 'bg-teal-500/5 border-teal-500/20' : 'bg-red-500/5 border-red-500/20'}`}>
             <span className={`text-[11px] uppercase font-black tracking-[0.15em] ${isConnected ? 'text-teal-400' : 'text-red-400'}`}>
               {isConnected ? 'Nexus Online' : 'Nexus Offline'}
@@ -225,31 +227,28 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 2. Main Grid: Charts & Gauges */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
-        {/* Left: Chart Terminal (8/12) */}
         <div className="xl:col-span-8 bg-[#020617] border border-white/5 rounded-3xl overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-          <div className="absolute top-4 right-4 z-10 flex bg-void/40 backdrop-blur-md p-1 rounded-lg border border-white/5">
+          <div className="absolute top-4 right-4 z-30 flex bg-void/40 backdrop-blur-md p-1 rounded-lg border border-white/5">
              <button 
-              onClick={() => { setTimeframe("m1"); setPage(1); setHasMore(true); }}
+              onClick={() => handleTimeframeChange("m1")}
               className={`px-3 py-1 rounded-md text-[9px] font-bold font-mono transition-all uppercase tracking-widest ${timeframe === 'm1' ? 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400' : 'text-zinc-500 hover:text-white'}`}
             >
               M1
             </button>
              <button 
-              onClick={() => { setTimeframe("m5"); setPage(1); setHasMore(true); }}
+              onClick={() => handleTimeframeChange("m5")}
               className={`px-3 py-1 rounded-md text-[9px] font-bold font-mono transition-all uppercase tracking-widest ${timeframe === 'm5' ? 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400' : 'text-zinc-500 hover:text-white'}`}
             >
               M5
             </button>
              <button 
-              onClick={() => { setTimeframe("m15"); setPage(1); setHasMore(true); }}
+              onClick={() => handleTimeframeChange("m15")}
               className={`px-3 py-1 rounded-md text-[9px] font-bold font-mono transition-all uppercase tracking-widest ${timeframe === 'm15' ? 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400' : 'text-zinc-500 hover:text-white'}`}
             >
               M15
             </button>
           </div>
-          
           <div className="p-1 h-[380px]">
             <PredatorChart 
               data={candles} 
@@ -262,11 +261,9 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Right: Decision Intelligence (4/12) */}
         <div className="xl:col-span-4">
           <div className="bg-[#020617]/80 border border-white/5 rounded-3xl p-4 shadow-2xl h-[380px] backdrop-blur-xl relative overflow-hidden group flex flex-col">
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl group-hover:bg-cyan-500/10 transition-all duration-1000" />
-            
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <div className="p-1.5 bg-cyan-500/10 rounded-lg border border-cyan-500/20">
@@ -280,14 +277,12 @@ export default function DashboardPage() {
                 <Info size={11} className="text-zinc-700 hover:text-zinc-400 transition-colors cursor-help" />
               </Tooltip>
             </div>
-            
             <div className="flex-1 flex flex-col justify-between">
               <div className="grid grid-cols-3 gap-1.5 bg-void/40 p-2 rounded-2xl border border-white/5">
                 <BayesianGauge label="Long" value={lastSignal?.metadata?.probabilities?.long || 0} color="#22d3ee" />
                 <BayesianGauge label="Short" value={lastSignal?.metadata?.probabilities?.short || 0} color="#f87171" />
                 <BayesianGauge label="Wait" value={lastSignal?.metadata?.probabilities?.wait || 0} color="#71717a" />
               </div>
-              
               <div className="grid grid-cols-1 gap-2 mt-auto">
                 <div className="px-3 py-2 bg-void/40 rounded-xl border border-white/5 flex items-center justify-between group/metric hover:border-teal-500/30 transition-colors">
                   <div className="flex flex-col">
@@ -304,7 +299,6 @@ export default function DashboardPage() {
                     {(lastSignal?.metadata?.sentiment_context || 0).toFixed(2)}
                   </span>
                 </div>
-
                 <div className="px-3 py-2 bg-void/40 rounded-xl border border-white/5 flex items-center justify-between group/metric hover:border-cyan-500/30 transition-colors">
                   <div className="flex flex-col">
                     <span className="text-[8px] text-zinc-500 uppercase font-black tracking-widest mb-1">Imbalance</span>
@@ -328,9 +322,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-
-
-      {/* 3. Bottom Row: Command Center & System Pulse */}
       <AgentCommandCenter agents={agentStatus as any} />
     </div>
   );
