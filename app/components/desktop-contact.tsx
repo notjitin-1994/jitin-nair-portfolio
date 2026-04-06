@@ -634,15 +634,40 @@ export function DesktopContact() {
     e.preventDefault();
     try {
       const supabase = createClient();
+      console.log("[Desktop Contact] Initiating download protocol for PDF");
+      
       const { data: files, error: listError } = await supabase.storage.from('resume').list();
-      if (listError) throw listError;
-      console.log("Desktop Contact - Files found in 'resume' bucket:", files);
+      if (listError) {
+        console.error("[Desktop Contact] Failed to list files:", listError);
+        throw listError;
+      }
+      
+      console.log("[Desktop Contact] Files found in 'resume' bucket:", files);
 
-      const pdfFile = files?.find(f => f.name.toLowerCase().endsWith('.pdf'));
+      // Priority: Files containing 'Jitin' and ending with .pdf
+      let pdfFile = files?.find(f => 
+        f.name.toLowerCase().includes('jitin') && 
+        f.name.toLowerCase().endsWith('.pdf')
+      );
+      
+      // Fallback: Just .pdf
+      if (!pdfFile) {
+        pdfFile = files?.find(f => f.name.toLowerCase().endsWith('.pdf'));
+      }
+
       if (!pdfFile) throw new Error("No PDF resume found in storage");
 
+      console.log(`[Desktop Contact] Targeted file: ${pdfFile.name}`);
+
       const { data, error: downloadError } = await supabase.storage.from('resume').download(pdfFile.name);
-      if (downloadError) throw downloadError;
+      
+      if (downloadError) {
+        console.warn("[Desktop Contact] Blob download failed, attempting direct public URL fallback:", downloadError);
+        const { data: { publicUrl } } = supabase.storage.from('resume').getPublicUrl(pdfFile.name);
+        const downloadUrl = `${publicUrl}${publicUrl.includes('?') ? '&' : '?'}download=`;
+        window.open(downloadUrl, "_blank");
+        return;
+      }
 
       if (data) {
         const url = URL.createObjectURL(data);
@@ -656,10 +681,10 @@ export function DesktopContact() {
           document.body.removeChild(link);
         }, 100);
       }
-    } catch (error) {
-      console.error("Manual download failed:", error);
-      // Fallback to direct link if manual download fails
-      window.open("https://kshmtzeqwovezlkkficd.supabase.co/storage/v1/object/public/resume/resume.pdf?download=", "_blank");
+    } catch (error: any) {
+      console.error("[Desktop Contact] Manual download failed:", error);
+      // Final desperation fallback
+      window.open("https://kshmtzeqwovezlkkficd.supabase.co/storage/v1/object/public/resume/Jitin-Nair-Resume.pdf?download=", "_blank");
     }
   };
 

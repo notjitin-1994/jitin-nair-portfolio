@@ -813,26 +813,46 @@ export function Terminal({
     try {
       const supabase = createClient();
       
+      console.log(`[Terminal] Initiating download protocol for format: ${format}`);
+      
+      // List files in the bucket to find the actual filename
       const { data: files, error: listError } = await supabase
         .storage
         .from('resume')
         .list();
         
-      if (listError) throw listError;
-      console.log("Terminal - Files found in 'resume' bucket:", files);
+      if (listError) {
+        console.error("[Terminal] Failed to list files in bucket:", listError);
+        throw listError;
+      }
       
-      const targetFile = files?.find(f => f.name.toLowerCase().endsWith(extension.toLowerCase()));
+      console.log("[Terminal] Storage response - Files found:", files);
+      
+      // Look for files starting with 'Jitin' or matching the standard pattern
+      // Priority: Files containing 'Jitin' and ending with the extension
+      let targetFile = files?.find(f => 
+        f.name.toLowerCase().includes('jitin') && 
+        f.name.toLowerCase().endsWith(extension.toLowerCase())
+      );
+      
+      // Fallback: Just the extension
+      if (!targetFile) {
+        targetFile = files?.find(f => f.name.toLowerCase().endsWith(extension.toLowerCase()));
+      }
       
       if (!targetFile) {
-        console.error(`No file found in 'resume' bucket with extension .${extension}`);
+        const errorMsg = `No resume file found with extension .${extension}`;
+        console.error(`[Terminal] ${errorMsg}`);
         setLines((prev) => [
           ...prev,
           <div key={`err-${extension}`} className="text-amber-400 text-[10px] mt-1">
-            ⚠ Source file (resume.{extension}) not found in secure vault. Please contact administrator.
+            ⚠ RECOVERY FAILED: {extension.toUpperCase()} source not found in &apos;resume&apos; vault.
           </div>,
         ]);
         return;
       }
+
+      console.log(`[Terminal] Targeted file: ${targetFile.name}. Executing secure pull...`);
 
       const { data, error: downloadError } = await supabase
         .storage
@@ -840,10 +860,13 @@ export function Terminal({
         .download(targetFile.name);
         
       if (downloadError) {
+        console.warn("[Terminal] Blob download failed, attempting direct public URL fallback:", downloadError);
         // Fallback to direct public URL if download fails (e.g. CORS)
         const { data: { publicUrl } } = supabase.storage.from('resume').getPublicUrl(targetFile.name);
+        const downloadUrl = `${publicUrl}${publicUrl.includes('?') ? '&' : '?'}download=`;
+        
         const link = document.createElement("a");
-        link.href = `${publicUrl}?download=`;
+        link.href = downloadUrl;
         link.download = targetFile.name;
         document.body.appendChild(link);
         link.click();
@@ -852,6 +875,7 @@ export function Terminal({
       }
 
       if (data) {
+        console.log("[Terminal] Secure pull complete. Payload size:", data.size, "bytes");
         const url = URL.createObjectURL(data);
         const link = document.createElement("a");
         link.href = url;
@@ -866,11 +890,11 @@ export function Terminal({
         }, 100);
       }
     } catch (error: any) {
-      console.error("Immediate download failed:", error);
+      console.error("[Terminal] Critical system error during acquisition:", error);
       setLines((prev) => [
         ...prev,
         <div key="system-err" className="text-red-400 text-[10px] mt-1">
-          ✗ System Error: {error.message || "Failed to initiate transfer protocol"}
+          ✗ SYSTEM CRITICAL: ${error.message || "Protocol Interrupted"}
         </div>,
       ]);
     }
