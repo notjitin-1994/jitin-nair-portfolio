@@ -1,7 +1,17 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { createChart, ColorType, IChartApi, ISeriesApi, AreaSeries, LineStyle, CrosshairMode } from "lightweight-charts";
+import { useEffect, useRef, useState } from "react";
+import { 
+  createChart, 
+  ColorType, 
+  IChartApi, 
+  ISeriesApi, 
+  AreaSeries, 
+  CandlestickSeries,
+  LineStyle, 
+  CrosshairMode 
+} from "lightweight-charts";
+import { aggregateTicksToOHLC } from "@/utils/predator/ohlc";
 
 interface ChartProps {
   data: any[];
@@ -12,6 +22,8 @@ interface ChartProps {
     textColor?: string;
     areaTopColor?: string;
     areaBottomColor?: string;
+    upColor?: string;
+    downColor?: string;
   };
 }
 
@@ -24,13 +36,16 @@ export function PredatorChart({
     textColor = "#71717a",
     areaTopColor = "rgba(34, 211, 238, 0.2)",
     areaBottomColor = "rgba(34, 211, 238, 0.0)",
+    upColor = "#22c55e",
+    downColor = "#ef4444",
   } = {},
 }: ChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
+  const seriesRef = useRef<ISeriesApi<"Area" | "Candlestick"> | null>(null);
+  const [chartType, setChartType] = useState<"candle" | "area">("candle");
 
-  // 1. Initialize Chart (Once)
+  // 1. Initialize Chart (Once or when chartType changes)
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
@@ -68,15 +83,26 @@ export function PredatorChart({
       },
     });
 
-    const series = chart.addSeries(AreaSeries, {
-      lineColor,
-      topColor: areaTopColor,
-      bottomColor: areaBottomColor,
-      lineWidth: 2,
-    });
+    let series: ISeriesApi<"Area" | "Candlestick">;
+    if (chartType === "area") {
+      series = chart.addSeries(AreaSeries, {
+        lineColor,
+        topColor: areaTopColor,
+        bottomColor: areaBottomColor,
+        lineWidth: 2,
+      });
+    } else {
+      series = chart.addSeries(CandlestickSeries, {
+        upColor,
+        downColor,
+        borderVisible: false,
+        wickUpColor: upColor,
+        wickDownColor: downColor,
+      });
+    }
 
     chartRef.current = chart;
-    seriesRef.current = series as any;
+    seriesRef.current = series;
 
     const handleResize = () => {
       if (chartContainerRef.current) {
@@ -90,23 +116,26 @@ export function PredatorChart({
       window.removeEventListener("resize", handleResize);
       chart.remove();
     };
-  }, [backgroundColor, textColor, lineColor, areaTopColor, areaBottomColor]); // Added missing color dependencies
+  }, [backgroundColor, textColor, lineColor, areaTopColor, areaBottomColor, upColor, downColor, chartType]);
 
   // 2. Update Data & Markers (On changes)
   useEffect(() => {
     if (!seriesRef.current || !data.length) return;
 
-    const formattedData = data.map((item) => ({
-      time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as any,
-      value: Number(item.bid || item.price || item.close),
-    })).sort((a, b) => a.time - b.time);
-    
-    // Ensure uniqueness for Lightweight Charts
-    const uniqueData = Array.from(
-      new Map(formattedData.map(item => [item.time, item])).values()
-    );
-
-    seriesRef.current.setData(uniqueData);
+    if (chartType === "area") {
+      const formattedData = data.map((item) => ({
+        time: Math.floor(new Date(item.timestamp || item.ts).getTime() / 1000) as any,
+        value: Number(item.bid || item.price || item.close),
+      })).sort((a, b) => a.time - b.time);
+      
+      const uniqueData = Array.from(
+        new Map(formattedData.map(item => [item.time, item])).values()
+      );
+      seriesRef.current.setData(uniqueData as any);
+    } else {
+      const candleData = aggregateTicksToOHLC(data, 60); // 1m candles
+      seriesRef.current.setData(candleData as any);
+    }
 
     if (signals.length > 0) {
       const markers = signals.map(sig => ({
@@ -117,13 +146,29 @@ export function PredatorChart({
         text: (sig.signal || sig.direction).includes('LONG') ? 'LONG' : 'SHORT',
       }));
       
-      // Defensive check for runtime existence of setMarkers
       if (seriesRef.current && 'setMarkers' in (seriesRef.current as any)) {
         (seriesRef.current as any).setMarkers(markers);
       }
     }
-  }, [data, signals]);
+  }, [data, signals, chartType]);
 
-  return <div ref={chartContainerRef} className="w-full h-full min-h-[400px]" />;
+  return (
+    <div className="relative w-full h-full min-h-[400px]">
+      <div className="absolute top-2 left-4 z-20 flex space-x-2">
+        <button 
+          onClick={() => setChartType("candle")}
+          className={`px-3 py-1 rounded-md text-[9px] font-bold font-mono transition-all uppercase tracking-widest ${chartType === 'candle' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'text-zinc-500 hover:text-white'}`}
+        >
+          Candles
+        </button>
+        <button 
+          onClick={() => setChartType("area")}
+          className={`px-3 py-1 rounded-md text-[9px] font-bold font-mono transition-all uppercase tracking-widest ${chartType === 'area' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'text-zinc-500 hover:text-white'}`}
+        >
+          Area
+        </button>
+      </div>
+      <div ref={chartContainerRef} className="w-full h-full" />
+    </div>
+  );
 }
-

@@ -32,18 +32,22 @@ export default function DashboardPage() {
     const fetchInitialData = async () => {
       try {
         const [marketRes, tradeRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/api/v1/market/current`, { headers }),
-          fetch(`${API_BASE_URL}/api/v1/data/trades?limit=10`, { headers })
+          fetch(`${API_BASE_URL}/api/v1/market/history?limit=1000`, { headers }),
+          fetch(`${API_BASE_URL}/api/v1/data/trades?limit=50`, { headers })
         ]);
 
         if (marketRes.ok) {
           const data = await marketRes.json();
-          if (data && (data.timestamp || data.ts)) setTicks([data]);
+          if (Array.isArray(data)) {
+            setTicks(data);
+          } else if (data && (data.timestamp || data.ts)) {
+            setTicks([data]);
+          }
         }
 
         if (tradeRes.ok) {
           const result = await tradeRes.json();
-          if (Array.isArray(result.data)) setSignals(result.data.slice(0, 10));
+          if (Array.isArray(result.data)) setSignals(result.data.slice(0, 50));
         }
       } catch (err) {
         console.error("Dashboard hydration failed:", err);
@@ -55,7 +59,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (lastTick) {
-      setTicks((prev) => [...prev.slice(-199), lastTick]);
+      setTicks((prev) => [...prev.slice(-999), lastTick]);
       setLastUpdate(new Date());
     }
   }, [lastTick]);
