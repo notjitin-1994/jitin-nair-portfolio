@@ -489,10 +489,6 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
     { id: 'metrics' as const, label: 'Impact', icon: BarChart3 },
   ];
 
-  const handleCardClick = () => {
-    setIsExpanded(!isExpanded);
-  };
-
   const handleActionClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
@@ -500,20 +496,14 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
   return (
     <motion.div
       layout
-      onClick={handleCardClick}
-      className="relative overflow-hidden rounded-[32px] cursor-pointer h-full"
+      className="relative overflow-hidden rounded-[32px] h-full"
       style={{
         background: 'linear-gradient(145deg, rgba(18, 18, 26, 0.9) 0%, rgba(10, 10, 15, 0.95) 100%)',
-        border: `1px solid ${isExpanded ? CYAN : 'rgba(255,255,255,0.08)'}`,
-        boxShadow: isExpanded ? `0 0 80px ${CYAN}15` : '0 20px 40px rgba(0,0,0,0.4)',
+        border: `1px solid ${CYAN}`,
+        boxShadow: `0 0 80px ${CYAN}15`,
       }}
       transition={{
         layout: { type: "spring", stiffness: 350, damping: 35 }
-      }}
-      whileHover={{ 
-        borderColor: isExpanded ? CYAN : 'rgba(34, 211, 238, 0.25)',
-        y: isExpanded ? 0 : -8,
-        transition: { duration: 0.3 }
       }}
     >
       {/* Dynamic Background */}
@@ -521,7 +511,7 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
         {bgImage && (
           <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: isExpanded ? 0.05 : 0.12 }}
+            animate={{ opacity: 0.05 }}
             exit={{ opacity: 0 }}
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -551,15 +541,6 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
               </div>
             </div>
           </div>
-          <motion.div 
-            animate={{ 
-              rotate: isExpanded ? 180 : 0,
-              backgroundColor: isExpanded ? 'rgba(34, 211, 238, 0.1)' : 'rgba(255,255,255,0.03)'
-            }}
-            className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-slate-400"
-          >
-            <ChevronDown className="w-6 h-6" />
-          </motion.div>
         </div>
 
         <p className="text-slate-400 text-lg leading-relaxed mb-8 font-medium italic">
@@ -579,78 +560,66 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
         </div>
       </div>
 
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="border-t border-white/[0.05] bg-white/[0.01]"
-          >
-            {/* Extended Navigation */}
-            <div className="px-10 pt-6" onClick={handleActionClick}>
-              <div className="flex gap-2 p-1.5 rounded-2xl bg-black/20 border border-white/[0.05] w-fit">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button 
-                      key={tab.id} 
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2.5 px-6 py-2.5 text-sm font-bold rounded-xl transition-all duration-300 ${
-                        isActive ? 'text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'
-                      }`}
-                      style={{ 
-                        background: isActive ? CYAN : 'transparent',
-                        color: isActive ? '#0a0a0f' : undefined
-                      }}
-                    >
-                      <Icon className="w-4 h-4" />
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+      <div className="border-t border-white/[0.05] bg-white/[0.01]">
+        {/* Extended Navigation */}
+        <div className="px-10 pt-6">
+          <div className="flex gap-2 p-1.5 rounded-2xl bg-black/20 border border-white/[0.05] w-fit">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button 
+                  key={tab.id} 
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2.5 px-6 py-2.5 text-sm font-bold rounded-xl transition-all duration-300 ${
+                    isActive ? 'text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'
+                  }`}
+                  style={{ 
+                    background: isActive ? CYAN : 'transparent',
+                    color: isActive ? '#0a0a0f' : undefined
+                  }}
+                >
+                  <Icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-            <div className="p-10 pt-8" onClick={handleActionClick}>
-              <DesktopTabContent 
-                project={project} 
-                activeTab={activeTab}
-                expandedStep={expandedStep}
-                setExpandedStep={setExpandedStep}
-              />
-            </div>
+        <div className="p-10 pt-8">
+          <DesktopTabContent 
+            project={project} 
+            activeTab={activeTab}
+            expandedStep={expandedStep}
+            setExpandedStep={setExpandedStep}
+          />
+        </div>
 
-            <div className="px-10 pb-10 pt-6 border-t border-white/[0.05] flex items-center justify-between" onClick={handleActionClick}>
-              <div className="flex gap-4">
-                {project.learnMoreUrl && (
-                  <a href={project.learnMoreUrl}
-                    className="flex items-center gap-3 px-8 py-4 rounded-2xl text-sm font-black transition-all hover:scale-105 active:scale-95 shadow-xl shadow-cyan-500/20"
-                    style={{ background: CYAN, color: '#0a0a0f' }}
-                    onClick={handleActionClick}>
-                    VIEW CASE STUDY <ArrowRight className="w-5 h-5" />
-                  </a>
-                )}
-                {project.githubUrl && (
-                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" 
-                    className="flex items-center gap-3 px-8 py-4 rounded-2xl text-sm font-bold transition-all hover:scale-105 active:scale-95 border border-white/10 text-white bg-white/[0.03] hover:bg-white/[0.08]"
-                    onClick={handleActionClick}>
-                    <Github className="w-5 h-5" />
-                    <span>SOURCE CODE</span>
-                  </a>
-                )}
-              </div>
-              
-              <div className="hidden lg:flex items-center gap-3 text-slate-600">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em]">Production Ready</span>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        <div className="px-10 pb-10 pt-6 border-t border-white/[0.05] flex items-center justify-between">
+          <div className="flex gap-4">
+            {project.learnMoreUrl && (
+              <a href={project.learnMoreUrl}
+                className="flex items-center gap-3 px-8 py-4 rounded-2xl text-sm font-black transition-all hover:scale-105 active:scale-95 shadow-xl shadow-cyan-500/20"
+                style={{ background: CYAN, color: '#0a0a0f' }}>
+                VIEW CASE STUDY <ArrowRight className="w-5 h-5" />
+              </a>
+            )}
+            {project.githubUrl && (
+              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" 
+                className="flex items-center gap-3 px-8 py-4 rounded-2xl text-sm font-bold transition-all hover:scale-105 active:scale-95 border border-white/10 text-white bg-white/[0.03] hover:bg-white/[0.08]">
+                <Github className="w-5 h-5" />
+                <span>SOURCE CODE</span>
+              </a>
+            )}
+          </div>
+          
+          <div className="hidden lg:flex items-center gap-3 text-slate-600">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Production Ready</span>
+          </div>
+        </div>
+      </div>
     </motion.div>
   );
 }

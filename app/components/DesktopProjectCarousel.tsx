@@ -8,38 +8,29 @@ import { projectsData } from '../data/projects';
 
 export function DesktopProjectCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [direction, setDirection] = useState(0); // -1 for left, 1 for right
 
   const goToNext = useCallback(() => {
-    if (expandedId) return;
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % projectsData.length);
-  }, [expandedId]);
+  }, []);
 
   const goToPrev = useCallback(() => {
-    if (expandedId) return;
     setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + projectsData.length) % projectsData.length);
-  }, [expandedId]);
+  }, []);
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') goToPrev();
       if (e.key === 'ArrowRight') goToNext();
-      if (e.key === 'Escape') setExpandedId(null);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [goToNext, goToPrev]);
 
-  const handleExpand = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
-
   const project = projectsData[currentIndex];
-  const isExpanded = expandedId === project.id;
 
   // Animation variants for the card slide
   const variants = {
@@ -72,14 +63,14 @@ export function DesktopProjectCarousel() {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-left mb-16"
+        className="text-left mb-8"
       >
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="text-cyan-400 font-mono text-sm tracking-[0.2em] uppercase mb-4"
+          className="text-cyan-400 font-mono text-sm tracking-[0.2em] uppercase mb-2"
         >
           Featured Deliverables
         </motion.p>
@@ -88,7 +79,7 @@ export function DesktopProjectCarousel() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
-          className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+          className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
         >
           Production <span className="text-cyan-400 text-glow-cyan">Systems</span>
         </motion.h2>
@@ -99,34 +90,9 @@ export function DesktopProjectCarousel() {
       </motion.div>
 
       {/* Main Carousel Area */}
-      <div className="relative min-h-[550px] flex items-center justify-center">
-        {/* Navigation Arrows - Repositioned for cleaner look */}
-        <div className="absolute inset-y-0 -left-4 flex items-center z-20">
-          <motion.button
-            whileHover={{ scale: 1.1, x: -5 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={goToPrev}
-            disabled={!!expandedId}
-            className="w-14 h-14 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-white hover:bg-cyan-500/20 hover:border-cyan-500/40 hover:text-cyan-400 transition-all disabled:opacity-0 disabled:pointer-events-none backdrop-blur-md"
-          >
-            <ChevronLeft className="w-8 h-8" />
-          </motion.button>
-        </div>
-
-        <div className="absolute inset-y-0 -right-4 flex items-center z-20">
-          <motion.button
-            whileHover={{ scale: 1.1, x: 5 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={goToNext}
-            disabled={!!expandedId}
-            className="w-14 h-14 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-white hover:bg-cyan-500/20 hover:border-cyan-500/40 hover:text-cyan-400 transition-all disabled:opacity-0 disabled:pointer-events-none backdrop-blur-md"
-          >
-            <ChevronRight className="w-8 h-8" />
-          </motion.button>
-        </div>
-
+      <div className="relative flex items-center justify-center">
         {/* Card Display with AnimatePresence */}
-        <div className="w-full relative overflow-visible flex justify-center py-4">
+        <div className="w-full relative overflow-visible flex justify-center">
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.div
               key={currentIndex}
@@ -143,26 +109,49 @@ export function DesktopProjectCarousel() {
               }}
               className="w-full perspective-1000"
             >
-              <ExpandableCard 
-                project={project}
-                isExpanded={isExpanded}
-                onExpand={() => handleExpand(project.id)}
-                isDesktop={true}
-              />
+              <div className="relative group/card">
+                <ExpandableCard 
+                  project={project}
+                  isExpanded={true}
+                  isDesktop={true}
+                />
+                
+                {/* Internal Navigation Arrows */}
+                <div className="absolute inset-y-0 left-4 flex items-center z-20">
+                  <motion.button
+                    whileHover={{ scale: 1.1, x: -2 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={goToPrev}
+                    className="w-12 h-12 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center text-white hover:bg-cyan-500/20 hover:border-cyan-500/40 hover:text-cyan-400 transition-all backdrop-blur-md opacity-0 group-hover/card:opacity-100"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </motion.button>
+                </div>
+
+                <div className="absolute inset-y-0 right-4 flex items-center z-20">
+                  <motion.button
+                    whileHover={{ scale: 1.1, x: 2 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={goToNext}
+                    className="w-12 h-12 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center text-white hover:bg-cyan-500/20 hover:border-cyan-500/40 hover:text-cyan-400 transition-all backdrop-blur-md opacity-0 group-hover/card:opacity-100"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </motion.button>
+                </div>
+              </div>
             </motion.div>
           </AnimatePresence>
         </div>
       </div>
 
       {/* Pagination & Indicators */}
-      <div className="flex flex-col items-center gap-8 mt-12">
+      <div className="flex flex-col items-center gap-6 mt-8">
         {/* Dots */}
         <div className="flex gap-3">
           {projectsData.map((_, idx) => (
             <button
               key={idx}
               onClick={() => {
-                if (expandedId) return;
                 setDirection(idx > currentIndex ? 1 : -1);
                 setCurrentIndex(idx);
               }}
@@ -188,10 +177,6 @@ export function DesktopProjectCarousel() {
           <div className="h-4 w-px bg-white/10" />
           
           <div className="flex items-center gap-4 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-medium">
-            <span className="flex items-center gap-1.5">
-              <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9px]">ESC</kbd>
-              <span>Minimize</span>
-            </span>
             <span className="flex items-center gap-1.5">
               <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9px]">←</kbd>
               <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9px]">→</kbd>
