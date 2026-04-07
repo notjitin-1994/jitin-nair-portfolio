@@ -17,22 +17,22 @@ function Marquee({
   children,
   speed = 30,
   direction = "left",
-  isPaused = false,
+  pauseOnHover = true,
 }: {
   children: React.ReactNode;
   speed?: number;
   direction?: "left" | "right";
-  isPaused?: boolean;
+  pauseOnHover?: boolean;
 }) {
   return (
-    <div className="flex overflow-hidden">
+    <div className={`flex overflow-hidden ${pauseOnHover ? "group" : ""}`}>
       <div
         className={`flex shrink-0 gap-4 will-change-transform ${
           direction === "left" ? "animate-marquee" : "animate-marquee-reverse"
-        } ${isPaused ? '[animation-play-state:paused]' : ''}`}
+        }`}
         style={{
-          animationDuration: `${speed}s`,
-        }}
+          "--duration": `${speed}s`,
+        } as React.CSSProperties}
       >
         <div className="flex shrink-0 gap-4">
           {children}
@@ -140,8 +140,6 @@ function ExpertiseCard({ item, index }: { item: ExpertiseItem; index: number }) 
 }
 
 export function DesktopExpertiseMarquee() {
-  const [isPaused, setIsPaused] = useState(false);
-
   const expertise: ExpertiseItem[] = [
     {
       icon: Brain,
@@ -240,11 +238,7 @@ export function DesktopExpertiseMarquee() {
         </motion.div>
 
         {/* Marquee Container */}
-        <div
-          className="relative space-y-6 group"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
+        <div className="relative space-y-6">
           {/* Row 1 - Left */}
           <div className="relative">
             <div className="absolute left-0 inset-y-0 w-20 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
@@ -252,7 +246,6 @@ export function DesktopExpertiseMarquee() {
             <Marquee
               speed={40}
               direction="left"
-              isPaused={isPaused}
             >
               {row1.map((item, index) => (
                 <ExpertiseCard key={`r1-${index}`} item={item} index={index} />
@@ -267,7 +260,6 @@ export function DesktopExpertiseMarquee() {
             <Marquee
               speed={45}
               direction="right"
-              isPaused={isPaused}
             >
               {row2.map((item, index) => (
                 <ExpertiseCard key={`r2-${index}`} item={item} index={index} />

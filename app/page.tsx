@@ -427,8 +427,8 @@ function Marquee({
           direction === "left" ? "animate-marquee" : "animate-marquee-reverse"
         }`}
         style={{
-          animationDuration: `${speed}s`,
-        }}
+          "--duration": `${speed}s`,
+        } as React.CSSProperties}
       >
         <div className="flex shrink-0 gap-4">
           {children}
