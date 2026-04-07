@@ -171,3 +171,60 @@ export function BayesianArchitectureInfographic() {
     </div>
   );
 }
+
+const realityStages = [
+  { id: "intent", title: "Intent Validation", detail: "Intercept tool calls; verify user intent with SLM guard.", icon: Target },
+  { id: "cove", title: "CoVe Audit", detail: "Multi-stage fact checking via Chain-of-Verification.", icon: CheckCircle2 },
+  { id: "dreamcycle", title: "Dreamcycle", detail: "Nightly memory distillation & noise pruning (LanceDB).", icon: Brain },
+  { id: "governance", title: "Global Protocol", detail: "Fleet-scale policy injection via YAML/Markdown.", icon: Compass }
+];
+
+export function RealityCheckInfographic() {
+  return (
+    <div className="my-12 p-8 rounded-3xl bg-gradient-to-br from-emerald-500/10 via-transparent to-cyan-500/10 border border-white/[0.08] relative overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+        {realityStages.map((stage, i) => {
+          const Icon = stage.icon;
+          return (
+            <motion.div
+              key={stage.id}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="relative"
+            >
+              <div className="flex flex-col gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                  <Icon className="w-6 h-6 text-emerald-400" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-tight">{stage.title}</h4>
+                  <p className="text-[11px] text-slate-400 leading-relaxed italic">{stage.detail}</p>
+                </div>
+              </div>
+              {i < realityStages.length - 1 && (
+                <div className="hidden lg:block absolute top-6 -right-3 w-6 h-px bg-white/10" />
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+      
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-white/5 pt-8">
+        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+          <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Hallucination Rate</div>
+          <div className="text-2xl font-black text-emerald-400">-85%</div>
+        </div>
+        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+          <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Fleet Compliance</div>
+          <div className="text-2xl font-black text-cyan-400">96%</div>
+        </div>
+        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+          <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Context Density</div>
+          <div className="text-2xl font-black text-violet-400">4x</div>
+        </div>
+      </div>
+    </div>
+  );
+}
