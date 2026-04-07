@@ -7,7 +7,7 @@ import { blogPosts } from "../../data/blogPosts";
 import { Section, Card, Badge, fadeInUp } from "../../components/ui";
 import { ArrowLeft, Clock, Calendar, CheckCircle2 } from "lucide-react";
 import { ShareButtons } from "../../components/ui/ShareButtons";
-import { SkillsMappingInfographic, ROIMetricsInfographic, BayesianArchitectureInfographic, RealityCheckInfographic, HITLArchitectureInfographic } from "../../components/InsightInfographics";
+import { SkillsMappingInfographic, ROIMetricsInfographic, BayesianArchitectureInfographic, RealityCheckInfographic, HITLArchitectureInfographic, FrameworkComparisonInfographic } from "../../components/InsightInfographics";
 
 export function InsightDetail({ slug }: { slug: string }) {
   const post = blogPosts.find((p) => p.slug === slug);
@@ -101,6 +101,10 @@ export function InsightDetail({ slug }: { slug: string }) {
       }
       if (trimmed === "<HITLArchitectureInfographic />") {
         result.push(<HITLArchitectureInfographic key={i} />);
+        return;
+      }
+      if (trimmed === "<FrameworkComparisonInfographic />") {
+        result.push(<FrameworkComparisonInfographic key={i} />);
         return;
       }
 

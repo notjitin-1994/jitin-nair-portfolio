@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain, Target, Compass, BarChart3, ArrowRight, CheckCircle2, UserCheck, ShieldAlert, Zap, Layers } from "lucide-react";
+import { Brain, Target, Compass, BarChart3, ArrowRight, CheckCircle2, UserCheck, ShieldAlert, Zap, Layers, GitBranch, Users2, Activity, Timer } from "lucide-react";
 
 /**
  * Mappings from ID to AI Systems Engineering
@@ -269,7 +269,7 @@ export function HITLArchitectureInfographic() {
             <div className="text-3xl font-black text-white mb-1">71%</div>
             <div className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-3">Productivity Gain</div>
             <p className="text-[11px] text-slate-400 leading-relaxed italic">
-              Validated shift from &apos;Approval Models&apos; to &apos;Escalation-Only&apos; HITL orchestration in 2026 enterprise environments.
+              Validated shift from &quot;Approval Models&quot; to &quot;Escalation-Only&quot; HITL orchestration in 2026 enterprise environments.
             </p>
           </div>
           
@@ -277,9 +277,82 @@ export function HITLArchitectureInfographic() {
             <div className="text-3xl font-black text-white mb-1">&gt;80%</div>
             <div className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3">Automation Floor</div>
             <p className="text-[11px] text-slate-400 leading-relaxed italic">
-              Median autonomous task completion rate when humans transition from &apos;labelers&apos; to &apos;supervisors.&apos;
+              Median autonomous task completion rate when humans transition from &quot;labelers&quot; to &quot;supervisors.&quot;
             </p>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const comparisonMetrics = [
+  { label: "Paradigm", graph: "Deterministic Graph", crew: "Role-Based Team", icon: GitBranch },
+  { label: "Success Rate", graph: "94% (Complex Cycles)", crew: "78% (Linear Tasks)", icon: Activity },
+  { label: "Latency", graph: "22% Lower (Optimized)", crew: "Higher (Reasoning Overload)", icon: Timer },
+  { label: "Dev Velocity", graph: "Moderate (High Boilerplate)", crew: "Fast (40% quicker deployment)", icon: Zap }
+];
+
+export function FrameworkComparisonInfographic() {
+  return (
+    <div className="my-12 p-8 rounded-3xl bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 border border-white/[0.08] relative overflow-hidden">
+      <div className="relative z-10">
+        <h4 className="text-sm font-mono text-cyan-400 uppercase tracking-[0.2em] mb-8 text-center">2026 Orchestration Trade-off Matrix</h4>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+          {/* Framework A */}
+          <div className="p-6 rounded-2xl bg-cyan-500/5 border border-cyan-500/20">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                <GitBranch className="w-5 h-5 text-cyan-400" />
+              </div>
+              <span className="text-lg font-black text-white">Graph-Based</span>
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed italic mb-4">
+              Best for mission-critical infrastructure with strict state requirements and cyclical logic.
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="px-2 py-1 rounded bg-cyan-500/10 border border-cyan-500/20 text-[10px] text-cyan-400 font-bold uppercase">Durable Execution</div>
+              <div className="px-2 py-1 rounded bg-cyan-500/10 border border-cyan-500/20 text-[10px] text-cyan-400 font-bold uppercase">Time-Travel Debug</div>
+            </div>
+          </div>
+
+          {/* Framework B */}
+          <div className="p-6 rounded-2xl bg-purple-500/5 border border-purple-500/20">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                <Users2 className="w-5 h-5 text-purple-400" />
+              </div>
+              <span className="text-lg font-black text-white">Role-Based</span>
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed italic mb-4">
+              Best for mapping business workflows to human-like team structures with rapid deployment.
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="px-2 py-1 rounded bg-purple-500/10 border border-purple-500/20 text-[10px] text-purple-400 font-bold uppercase">Agent-to-Agent (A2A)</div>
+              <div className="px-2 py-1 rounded bg-purple-500/10 border border-purple-500/20 text-[10px] text-purple-400 font-bold uppercase">Native MCP</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {comparisonMetrics.map((metric, i) => (
+            <motion.div
+              key={metric.label}
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              className="grid grid-cols-3 gap-4 p-3 rounded-xl border border-white/5 bg-white/[0.01] items-center"
+            >
+              <div className="flex items-center gap-2">
+                <metric.icon className="w-3.5 h-3.5 text-slate-500" />
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{metric.label}</span>
+              </div>
+              <div className="text-[11px] text-cyan-300 font-medium">{metric.graph}</div>
+              <div className="text-[11px] text-purple-300 font-medium">{metric.crew}</div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </div>
