@@ -266,15 +266,15 @@ Governance isn't an "add-on"—it's infrastructure. By embedding reality-checkin
 - *[3] LanceDB: Performance Benchmarks for Hierarchical Vector Stores.*`,
   },
   {
-    slug: "10x-engineering-ai-harness",
-    title: "10x Engineering: Orchestrating the Triple-Model Harness",
+    slug: "100x-engineering-ai-harness",
+    title: "100x Engineering: Orchestrating the Triple-Model Harness",
     excerpt: "How to use Gemini for reasoning, Claude for iteration, and OpenClaw for governance to achieve unmatched software engineering velocity.",
     category: "AI Engineering",
     date: "2026-04-07",
     readTime: "12 min",
     content: `## The End of the Single-Model Era
 
-In 2026, relying on a single AI model for complex software engineering is a bottleneck. The "10x Engineer" of today doesn't just prompt; they orchestrate a **Triple-Model Harness** where each model is specialized for a specific slice of the development lifecycle.
+In 2026, relying on a single AI model for complex software engineering is a bottleneck. The "100x Engineer" of today doesn't just prompt; they orchestrate a **Triple-Model Harness** where each model is specialized for a specific slice of the development lifecycle.
 
 ### 1. The Specialization Matrix
 
@@ -294,7 +294,7 @@ By treating AI models as modular components in a harness rather than generic cha
 | :--- | :--- | :--- | :--- |
 | **Manual Coding** | 1x | High | 100% |
 | **Single-Model AI** | 3x | Moderate | 60% |
-| **Triple-Model Harness** | **10x+** | **Production Grade** | **<15%** |
+| **Triple-Model Harness** | **100x+** | **Production Grade** | **<15%** |
 
 ### 4. Practical Implementation: Environmental Switching
 
@@ -302,7 +302,7 @@ The secret to this harness is **Seamless Context Transfer**. Using custom enviro
 
 ### Conclusion
 
-10x Engineering isn't about working harder; it's about building a better harness. By orchestrating Gemini, Claude, and OpenClaw into a unified loop, we move from "coding with AI" to "engineering with intelligence."
+100x Engineering isn't about working harder; it's about building a better harness. By orchestrating Gemini, Claude, and OpenClaw into a unified loop, we move from "coding with AI" to "engineering with intelligence."
 
 ---
 *Citations:*

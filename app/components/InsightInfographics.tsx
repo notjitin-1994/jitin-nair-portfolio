@@ -369,7 +369,7 @@ export function AIEngineeringHarnessInfographic() {
   return (
     <div className="my-12 p-8 rounded-3xl bg-white/[0.02] border border-white/[0.08] relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-orange-500/5 pointer-events-none" />
-      <h4 className="text-sm font-mono text-cyan-400 uppercase tracking-[0.2em] mb-10 text-center">The 10x Engineering Harness</h4>
+      <h4 className="text-sm font-mono text-cyan-400 uppercase tracking-[0.2em] mb-10 text-center">The 100x Engineering Harness</h4>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
         {harnessNodes.map((node, i) => (
