@@ -33,6 +33,33 @@ export function InsightDetail({ slug }: { slug: string }) {
 
   return (
     <PageLayout>
+      {/* JSON-LD Article Schema for SEO/GEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": post.title,
+            "description": post.excerpt,
+            "image": "https://jitinnair.com/og-image.png",
+            "datePublished": post.date,
+            "author": {
+              "@type": "Person",
+              "name": "Jitin Nair",
+              "url": "https://jitinnair.com"
+            },
+            "publisher": {
+              "@type": "Person",
+              "name": "Jitin Nair"
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": `https://jitinnair.com/insights/${slug}`
+            }
+          }),
+        }}
+      />
       {/* Article Header */}
       <Section className="pt-24 pb-6">
         <div className="max-w-3xl mx-auto">
