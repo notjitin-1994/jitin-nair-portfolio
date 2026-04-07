@@ -141,7 +141,7 @@ export function DesktopProjectCarousel() {
                 scale: { duration: 0.3, ease: "easeOut" },
                 filter: { duration: 0.3, ease: "easeOut" }
               }}
-              className="w-full max-w-3xl perspective-1000"
+              className="w-full perspective-1000"
             >
               <ExpandableCard 
                 project={project}

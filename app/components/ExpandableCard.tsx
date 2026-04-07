@@ -562,7 +562,7 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
           </motion.div>
         </div>
 
-        <p className="text-slate-400 text-lg leading-relaxed max-w-3xl mb-8 font-medium italic">
+        <p className="text-slate-400 text-lg leading-relaxed mb-8 font-medium italic">
           &quot;{project.description}&quot;
         </p>
 
@@ -665,7 +665,7 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
   return (
     <AnimatePresence mode="wait">
       {activeTab === 'overview' && (
-        <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 max-w-4xl mx-auto">
+        <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 w-full">
           <div className="grid grid-cols-1 gap-6">
             <div className="p-6 rounded-[24px] border border-white/[0.05] bg-white/[0.02] shadow-inner">
               <h4 className="text-xs font-black text-cyan-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
@@ -703,7 +703,7 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
       )}
 
       {activeTab === 'tech' && (
-        <motion.div key="tech" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 max-w-4xl mx-auto">
+        <motion.div key="tech" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 w-full">
           {project.techCategories.map((cat) => (
             <div key={cat.name} className="p-6 rounded-[24px] border border-white/[0.05] bg-white/[0.02]">
               <h4 className="text-sm font-black mb-5 flex items-center gap-3" style={{ color: CYAN }}>
@@ -721,7 +721,7 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
       )}
 
       {activeTab === 'process' && (
-        <motion.div key="process" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4 max-w-4xl mx-auto">
+        <motion.div key="process" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4 w-full">
           {project.processFlow.map((step, i) => {
             const Icon = processIcons[i % processIcons.length];
             return (
@@ -748,7 +748,7 @@ function DesktopTabContent({ project, activeTab, expandedStep, setExpandedStep }
       )}
 
       {activeTab === 'metrics' && (
-        <motion.div key="metrics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 max-w-4xl mx-auto">
+        <motion.div key="metrics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 w-full">
           {project.metrics.map((metric, i) => (
             <motion.div key={metric.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="p-8 rounded-[32px] border border-white/[0.05] bg-white/[0.02] shadow-2xl group overflow-hidden relative"
             >
