@@ -286,13 +286,29 @@
   }
 }
 
+@keyframes marquee-reverse {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 .animate-marquee {
   animation: marquee 30s linear infinite;
   will-change: transform;
   transform: translateZ(0);
 }
 
-.group:hover .animate-marquee {
+.animate-marquee-reverse {
+  animation: marquee-reverse 30s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.group:hover .animate-marquee,
+.group:hover .animate-marquee-reverse {
   animation-play-state: paused;
 }
 

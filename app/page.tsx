@@ -38,6 +38,7 @@ import {
   FileText,
   Search,
   BarChart3,
+  TrendingUp,
   Workflow,
   Boxes,
   GitBranch,
@@ -406,7 +407,7 @@ function Marquee({
   direction?: "left" | "right";
 }) {
   const reducedMotion = useReducedMotion();
-  
+
   if (reducedMotion) {
     return (
       <div className="flex overflow-x-auto scrollbar-hide">
@@ -420,10 +421,11 @@ function Marquee({
   return (
     <div className={`flex overflow-hidden ${pauseOnHover ? "group" : ""}`}>
       <div
-        className="flex shrink-0 gap-4 animate-marquee will-change-transform"
+        className={`flex shrink-0 gap-4 will-change-transform ${
+          direction === "left" ? "animate-marquee" : "animate-marquee-reverse"
+        }`}
         style={{
           animationDuration: `${speed}s`,
-          animationDirection: direction === "right" ? "reverse" : "normal",
         }}
       >
         {children}
@@ -432,7 +434,6 @@ function Marquee({
     </div>
   );
 }
-
 // Bento Grid Components
 function BentoCard({
   children,
@@ -478,6 +479,66 @@ function BentoCard({
   );
 }
 
+interface ExpertiseItem {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  skills: string[];
+  featured?: boolean;
+}
+
+const expertiseData: ExpertiseItem[] = [
+  {
+    icon: Brain,
+    title: "Autonomous Agentic Systems",
+    description: "Multi-agent orchestration networks that perceive, decide, and act autonomously—spanning trading, operations, monitoring, and decision intelligence.",
+    skills: ["LangGraph", "AutoGen", "CrewAI", "Vector DBs"],
+    featured: true,
+  },
+  {
+    icon: Sparkles,
+    title: "AI-Native Applications",
+    description: "RAG-powered apps, semantic search, document intelligence, and verification frameworks achieving 95%+ accuracy.",
+    skills: ["OpenAI", "RAG", "CoVe", "TypeScript"],
+  },
+  {
+    icon: Zap,
+    title: "Intelligent Process Automation",
+    description: "Self-healing infrastructure, browser automation, and workflow engines that reduce manual work by 80%+.",
+    skills: ["Playwright", "Python", "systemd", "Docker"],
+  },
+  {
+    icon: Network,
+    title: "Enterprise Integration Platforms",
+    description: "API orchestration, chatbots, IoT systems, messaging, and secrets management across 200+ connected agents.",
+    skills: ["Discord/Telegram", "1Password", "IoT", "GitHub"],
+  },
+  {
+    icon: Monitor,
+    title: "Desktop & Internal Tools",
+    description: "Cross-platform desktop applications and internal productivity accelerators built for engineering teams.",
+    skills: ["Tauri", "Electron", "Rust", "React"],
+  },
+  {
+    icon: VideoIcon,
+    title: "Content & Media Pipelines",
+    description: "AI-generated content, video processing, speech-to-text, and automated media workflows at scale.",
+    skills: ["FFmpeg", "Whisper", "AI Gen", "Summarization"],
+  },
+  {
+    icon: Database,
+    title: "Real-Time Data Infrastructure",
+    description: "Streaming pipelines, time-series databases, and live analytics dashboards with sub-second latency.",
+    skills: ["Kafka", "Redis", "TimescaleDB", "D3"],
+  },
+  {
+    icon: TrendingUp,
+    title: "Quantitative & Algorithmic Systems",
+    description: "Institutional-grade trading infrastructure with regime detection, MLOps, and sub-second execution.",
+    skills: ["TimescaleDB", "Polars", "Backtesting", "Risk"],
+  },
+];
+
 function MobileBento() {
   const [mounted, setMounted] = useState(false);
   const reducedMotion = useReducedMotion();
@@ -486,70 +547,37 @@ function MobileBento() {
     setMounted(true);
   }, []);
 
-  const expertise = [
-    {
-      icon: Brain,
-      title: "AI Automation Systems",
-      description: "Autonomous agents that streamline workflows, reduce manual tasks, and deliver measurable productivity gains for enterprise teams.",
-      skills: ["LangGraph", "CrewAI", "Process Automation", "LLM Orchestration"],
-      featured: true,
-    },
-    {
-      icon: Layout,
-      title: "Dashboards & Analytics",
-      description: "Real-time data dashboards and admin panels that transform complex data into actionable insights for stakeholders.",
-      skills: ["React", "D3.js", "PostgreSQL", "Data Visualization"],
-      featured: false,
-    },
-    {
-      icon: Bot,
-      title: "AI-Enabled Applications",
-      description: "Production-grade apps with integrated AI features-semantic search, document processing, and intelligent recommendations.",
-      skills: ["OpenAI", "RAG", "Vector DBs", "TypeScript"],
-      featured: false,
-    },
-    {
-      icon: Globe,
-      title: "Marketing Websites",
-      description: "High-converting landing pages and marketing sites built for performance, SEO, and lead generation.",
-      skills: ["Next.js", "Astro", "Tailwind", "SEO"],
-      featured: false,
-    },
-    {
-      icon: Monitor,
-      title: "Internal Tools",
-      description: "Custom desktop applications and internal tools that accelerate team productivity and replace manual processes.",
-      skills: ["Tauri", "Electron", "Rust", "Cross-platform"],
-      featured: false,
-    },
-    {
-      icon: Network,
-      title: "Integration Pipelines",
-      description: "Scalable data pipelines and API integrations that connect disparate systems and automate data flows.",
-      skills: ["Kafka", "Redis", "Docker", "Microservices"],
-      featured: false,
-    },
-  ];
+  // Split items for two rows
+  const firstRow = expertiseData.slice(0, 4);
+  const secondRow = expertiseData.slice(4, 8);
 
-  const BentoCard = ({ item, index }: { item: typeof expertise[0]; index: number }) => {
+  const Card = ({ item, index, row }: { item: ExpertiseItem; index: number; row: number }) => {
     const Icon = item.icon;
+    // Rotate cards slightly: row 1 (1, -1, 1, -1), row 2 (-1, 1, -1, 1)
+    const rotation = row === 1 
+      ? (index % 2 === 0 ? 1 : -1) 
+      : (index % 2 === 0 ? -1 : 1);
+
     return (
-      <div className="flex-shrink-0 w-[260px] px-2">
-        <div className={`relative overflow-hidden rounded-2xl p-5 h-[200px] ${item.featured ? "bg-gradient-to-br from-cyan-500/20 via-white/[0.05] to-transparent border-cyan-500/30" : "bg-white/[0.03] border-white/[0.08]"} border backdrop-blur-[2px] transition-all duration-500 hover:border-cyan-500/30 hover:bg-white/[0.06]`}>
+      <div 
+        className="flex-shrink-0 w-[280px] px-2 py-4"
+        style={{ transform: `rotate(${rotation}deg)` }}
+      >
+        <div className={`relative overflow-hidden rounded-2xl p-6 h-[220px] ${item.featured ? "bg-gradient-to-br from-cyan-500/20 via-white/[0.05] to-transparent border-cyan-500/30" : "bg-white/[0.03] border-white/[0.08]"} border backdrop-blur-[2px] transition-all duration-500 hover:border-cyan-500/30 hover:bg-white/[0.06] hover:scale-[1.02] hover:rotate-0 group`}>
           {item.featured && (
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           )}
           <div className="relative z-10 h-full flex flex-col">
-            <div className={`w-10 h-10 rounded-xl ${item.featured ? "bg-cyan-500 shadow-lg shadow-cyan-500/25" : "bg-white/10"} flex items-center justify-center mb-3`}>
-              <Icon className={`w-5 h-5 ${item.featured ? "text-white" : "text-cyan-400"}`} />
+            <div className={`w-12 h-12 rounded-xl ${item.featured ? "bg-cyan-500 shadow-lg shadow-cyan-500/25" : "bg-white/10"} flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110`}>
+              <Icon className={`w-6 h-6 ${item.featured ? "text-white" : "text-cyan-400"}`} />
             </div>
-            <h3 className="text-base font-bold mb-2">{item.title}</h3>
-            <p className="text-slate-400 text-xs mb-3 leading-relaxed flex-grow">{item.description}</p>
-            <div className="flex flex-wrap gap-1.5">
+            <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+            <p className="text-slate-400 text-xs mb-4 leading-relaxed flex-grow">{item.description}</p>
+            <div className="flex flex-wrap gap-2">
               {item.skills.slice(0, 3).map((skill, i) => (
                 <span
                   key={i}
-                  className={`px-2 py-0.5 text-[9px] font-mono rounded-full border ${item.featured ? "bg-cyan-500/10 text-cyan-300 border-cyan-500/20" : "bg-white/5 text-slate-400 border-white/10"}`}
+                  className={`px-2.5 py-1 text-[10px] font-mono rounded-full border ${item.featured ? "bg-cyan-500/10 text-cyan-300 border-cyan-500/20" : "bg-white/5 text-slate-400 border-white/10"}`}
                 >
                   {skill}
                 </span>
@@ -571,8 +599,8 @@ function MobileBento() {
           <SkeletonLoader className="h-4 w-full max-w-md" />
         </div>
         <div className="flex gap-4 px-5 overflow-hidden">
-          {[1, 2, 3].map((i) => (
-            <SkeletonLoader key={i} className="h-[200px] w-[260px] flex-shrink-0" />
+          {[1, 2, 3, 4].map((i) => (
+            <SkeletonLoader key={i} className="h-[220px] w-[280px] flex-shrink-0" />
           ))}
         </div>
       </section>
@@ -594,232 +622,37 @@ function MobileBento() {
         </p>
       </div>
 
-      {/* First Marquee Row - Left to Right */}
-      <div className="relative">
-        <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-        <Marquee speed={reducedMotion ? 0 : 35} direction="left">
-          {expertise.map((item, index) => (
-            <BentoCard key={index} item={item} index={index} />
-          ))}
-        </Marquee>
-      </div>
-    </section>
-  );
-}
-function DesktopBento() {
-  const expertise = [
-    {
-      icon: Brain,
-      title: "AI Automation Systems",
-      description: "Autonomous agents that streamline workflows, reduce manual tasks, and deliver measurable productivity gains for enterprise teams.",
-      skills: ["LangGraph", "CrewAI", "Process Automation", "LLM Orchestration"],
-      featured: true,
-    },
-    {
-      icon: Layout,
-      title: "Dashboards & Analytics",
-      description: "Real-time data dashboards and admin panels that transform complex data into actionable insights for stakeholders.",
-      skills: ["React", "D3.js", "PostgreSQL", "Data Visualization"],
-    },
-    {
-      icon: Bot,
-      title: "AI-Enabled Applications",
-      description: "Production-grade apps with integrated AI features-semantic search, document processing, and intelligent recommendations.",
-      skills: ["OpenAI", "RAG", "Vector DBs", "TypeScript"],
-    },
-    {
-      icon: Globe,
-      title: "Marketing Websites",
-      description: "High-converting landing pages and marketing sites built for performance, SEO, and lead generation.",
-      skills: ["Next.js", "Astro", "Tailwind", "SEO"],
-    },
-    {
-      icon: Monitor,
-      title: "Internal Tools",
-      description: "Custom desktop applications and internal tools that accelerate team productivity and replace manual processes.",
-      skills: ["Tauri", "Electron", "Rust", "Cross-platform"],
-    },
-    {
-      icon: Network,
-      title: "Integration Pipelines",
-      description: "Scalable data pipelines and API integrations that connect disparate systems and automate data flows.",
-      skills: ["Kafka", "Redis", "Docker", "Microservices"],
-    },
-  ];
+      {/* Marquee Rows */}
+      <div className="space-y-2">
+        {/* Row 1 - Left */}
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+          <Marquee speed={reducedMotion ? 0 : 25} direction="left">
+            {firstRow.map((item, index) => (
+              <Card key={index} item={item} index={index} row={1} />
+            ))}
+          </Marquee>
+        </div>
 
-  return (
-    <section id="expertise" className="py-10 md:py-12">
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-20"
-        >
-          <p className="text-cyan-400 font-mono text-sm tracking-widest uppercase mb-4">
-            What I Deliver
-          </p>
-          <h2 className="text-5xl font-bold mb-6">
-            Products That <span className="text-cyan-400">Drive Results</span>
-          </h2>
-          <p className="text-slate-400 max-w-2xl text-lg">
-            Production-ready solutions that reduce costs, accelerate workflows, and deliver measurable business impact.
-          </p>
-        </motion.div>
-
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[200px]">
-          {/* Featured Card - Spans 2x2 */}
-          <BentoCard className="md:col-span-2 md:row-span-2 p-8">
-            <div className="h-full flex flex-col">
-              <div className="w-16 h-16 rounded-2xl bg-cyan-500 flex items-center justify-center mb-6 shadow-xl shadow-cyan-500/20">
-                <Brain className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-3xl font-bold mb-4">Agentic Systems</h3>
-              <p className="text-slate-300 text-lg leading-relaxed mb-6 flex-grow">
-                Multi-agent orchestration networks that perceive, decide, and act autonomously at scale. Built for production workloads.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {["LangGraph", "AutoGen", "CrewAI", "Mastra"].map((skill, i) => (
-                  <span
-                    key={i}
-                    className="px-4 py-1.5 text-sm font-mono bg-cyan-500/10 text-cyan-300 rounded-full border border-cyan-500/30"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </BentoCard>
-
-          {/* AI Apps - Spans 1x2 */}
-          <BentoCard className="md:row-span-2 p-6">
-            <div className="h-full flex flex-col">
-              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mb-4">
-                <Bot className="w-6 h-6 text-cyan-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">AI Apps</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-4 flex-grow">
-                Intelligent applications powered by LLMs, embeddings, vector search, and semantic understanding.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {["OpenAI", "Anthropic", "RAG"].map((skill, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1 text-xs font-mono bg-white/5 text-slate-300 rounded-full border border-white/10"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </BentoCard>
-
-          {/* Web Apps */}
-          <BentoCard className="p-6">
-            <div className="h-full flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-3">
-                  <Layout className="w-5 h-5 text-cyan-400" />
-                </div>
-                <h3 className="text-lg font-bold mb-2">Web Apps</h3>
-                <p className="text-slate-400 text-sm">
-                  Full-stack SaaS platforms and dashboards.
-                </p>
-              </div>
-              <div className="flex gap-2 mt-3">
-                {["React", "Node.js"].map((skill, i) => (
-                  <span
-                    key={i}
-                    className="px-2 py-0.5 text-[10px] font-mono bg-white/5 text-slate-400 rounded-full border border-white/10"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </BentoCard>
-
-          {/* Websites */}
-          <BentoCard className="p-6">
-            <div className="h-full flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-3">
-                  <Globe className="w-5 h-5 text-cyan-400" />
-                </div>
-                <h3 className="text-lg font-bold mb-2">Websites</h3>
-                <p className="text-slate-400 text-sm">
-                  High-performance marketing sites.
-                </p>
-              </div>
-              <div className="flex gap-2 mt-3">
-                {["Next.js", "Tailwind"].map((skill, i) => (
-                  <span
-                    key={i}
-                    className="px-2 py-0.5 text-[10px] font-mono bg-white/5 text-slate-400 rounded-full border border-white/10"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </BentoCard>
-
-          {/* Desktop Apps */}
-          <BentoCard className="p-6">
-            <div className="h-full flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-3">
-                  <Monitor className="w-5 h-5 text-cyan-400" />
-                </div>
-                <h3 className="text-lg font-bold mb-2">Desktop Apps</h3>
-                <p className="text-slate-400 text-sm">
-                  Cross-platform native applications.
-                </p>
-              </div>
-              <div className="flex gap-2 mt-3">
-                {["Tauri", "Rust"].map((skill, i) => (
-                  <span
-                    key={i}
-                    className="px-2 py-0.5 text-[10px] font-mono bg-white/5 text-slate-400 rounded-full border border-white/10"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </BentoCard>
-
-          {/* Systems Design - Wide */}
-          <BentoCard className="md:col-span-2 p-6">
-            <div className="h-full flex items-center gap-6">
-              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
-                <Network className="w-6 h-6 text-cyan-400" />
-              </div>
-              <div className="flex-grow">
-                <h3 className="text-xl font-bold mb-2">Systems Design</h3>
-                <p className="text-slate-400 text-sm mb-3">
-                  Distributed architectures, microservices, event-driven design, and scalable infrastructure.
-                </p>
-                <div className="flex gap-2">
-                  {["Kafka", "Redis", "Docker", "Kubernetes"].map((skill, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 text-xs font-mono bg-white/5 text-slate-300 rounded-full border border-white/10"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </BentoCard>
+        {/* Row 2 - Left (as requested for mobile) */}
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+          <Marquee speed={reducedMotion ? 0 : 30} direction="left">
+            {secondRow.map((item, index) => (
+              <Card key={index} item={item} index={index} row={2} />
+            ))}
+          </Marquee>
         </div>
       </div>
     </section>
   );
+}
+
+// Obsolete - functionality moved to DesktopExpertiseMarquee component
+function DesktopBento() {
+  return null;
 }
 
 // Shared Projects Data

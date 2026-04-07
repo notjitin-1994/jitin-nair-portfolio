@@ -27,10 +27,11 @@ function Marquee({
   return (
     <div className="flex overflow-hidden">
       <div
-        className={`flex shrink-0 gap-4 animate-marquee ${isPaused ? '[animation-play-state:paused]' : ''}`}
+        className={`flex shrink-0 gap-4 will-change-transform ${
+          direction === "left" ? "animate-marquee" : "animate-marquee-reverse"
+        } ${isPaused ? '[animation-play-state:paused]' : ''}`}
         style={{
           animationDuration: `${speed}s`,
-          animationDirection: direction === "right" ? "reverse" : "normal",
         }}
       >
         {children}
