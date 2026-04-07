@@ -287,7 +287,7 @@ function SkeletonLoader({ className }: { className?: string }) {
   );
 }
 
-function MobileHero() {
+function MobileHero({ onUnlock }: { onUnlock?: () => void }) {
   const [currentWord, setCurrentWord] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -385,6 +385,7 @@ function MobileHero() {
             initialDelay={600}
             className="max-w-none"
             isMobile={true}
+            onUnlock={onUnlock}
           />
         </motion.div>
       </div>
@@ -3011,7 +3012,7 @@ import { DesktopExpertiseMarquee } from "./components/desktop-expertise-marquee"
 import { DesktopCapabilitiesEnhanced } from "./components/desktop-capabilities-enhanced";
 
 // Desktop Components (Original Design)
-function DesktopHero() {
+function DesktopHero({ onUnlock }: { onUnlock?: () => void }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -3055,6 +3056,7 @@ function DesktopHero() {
               typingSpeed={45}
               initialDelay={600}
               isMobile={false}
+              onUnlock={onUnlock}
             />
           </motion.div>
 
