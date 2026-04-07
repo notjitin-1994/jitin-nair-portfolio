@@ -409,24 +409,6 @@ function Marquee({
   pauseOnHover?: boolean;
 }) {
   const reducedMotion = useReducedMotion();
-  const controls = useAnimation();
-
-  const startAnimation = useCallback(() => {
-    controls.start({
-      x: direction === "left" ? ["0%", "-50%"] : ["-50%", "0%"],
-      transition: {
-        duration: speed,
-        repeat: Infinity,
-        ease: "linear",
-      }
-    });
-  }, [controls, direction, speed]);
-
-  useEffect(() => {
-    if (!reducedMotion) {
-      startAnimation();
-    }
-  }, [reducedMotion, startAnimation]);
 
   if (reducedMotion) {
     return (
@@ -439,16 +421,13 @@ function Marquee({
   }
 
   return (
-    <div 
-      className="flex overflow-hidden"
-      onMouseEnter={() => pauseOnHover && controls.stop()}
-      onMouseLeave={() => pauseOnHover && startAnimation()}
-    >
-      <motion.div
-        className="flex shrink-0 gap-4"
-        animate={controls}
+    <div className={`flex overflow-hidden ${pauseOnHover ? "group" : ""}`}>
+      <div
+        className={`flex shrink-0 gap-4 will-change-transform ${
+          direction === "left" ? "animate-marquee" : "animate-marquee-reverse"
+        }`}
         style={{
-          display: "flex",
+          animationDuration: `${speed}s`,
         }}
       >
         <div className="flex shrink-0 gap-4">
@@ -457,7 +436,7 @@ function Marquee({
         <div className="flex shrink-0 gap-4">
           {children}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -1258,7 +1237,7 @@ function MobileJourney() {
       highlights: ["60% Production Save", "Global Scale L&D", "90%+ Completion"],
       icon: VideoIcon,
       bgImage: "/journey-finance.jpg",
-      gradient: "from-amber-500/20 to-orange-500/20",
+      gradient: "from-emerald-500/20 to-teal-500/20",
       stats: { production: "-60%", completion: "90%+", learners: "50K+" }
     },
     {
@@ -1270,7 +1249,7 @@ function MobileJourney() {
       highlights: ["$140K Cost Savings", "70% Time Reduction", "VBA Automation"],
       icon: Users,
       bgImage: "/journey-training.jpg",
-      gradient: "from-purple-500/20 to-violet-500/20",
+      gradient: "from-teal-500/20 to-cyan-500/20",
       stats: { savings: "$140K+", reduction: "70%", employees: "300+" }
     },
     {
@@ -1282,7 +1261,7 @@ function MobileJourney() {
       highlights: ["Top Performer 3x", "Process Training", "Leadership Track"],
       icon: Headphones,
       bgImage: "/journey-support.jpg",
-      gradient: "from-emerald-500/20 to-green-500/20",
+      gradient: "from-cyan-500/20 to-emerald-500/20",
       stats: { satisfaction: "95%", performance: "Top 1%", tenure: "2.5y" }
     },
     {
@@ -1294,7 +1273,7 @@ function MobileJourney() {
       highlights: ["Self-Taught Dev", "Business Foundation", "Analytical Core"],
       icon: GraduationCap,
       bgImage: "/journey-edu.jpg",
-      gradient: "from-pink-500/20 to-rose-500/20",
+      gradient: "from-emerald-500/20 to-cyan-500/20",
       stats: { degree: "B.Com", focus: "Systems", logic: "Core" }
     }
   ];
@@ -3024,7 +3003,7 @@ function DesktopJourney() {
       highlights: ["60% Production Save", "Global Scale L&D", "90%+ Completion"],
       icon: VideoIcon,
       bgImage: "/journey-finance.jpg",
-      gradient: "from-emerald-500/20 to-cyan-500/20"
+      gradient: "from-emerald-500/20 to-teal-500/20"
     },
     {
       year: "2019",
@@ -3035,7 +3014,7 @@ function DesktopJourney() {
       highlights: ["$140K Cost Savings", "70% Time Reduction", "VBA Automation"],
       icon: Users,
       bgImage: "/journey-training.jpg",
-      gradient: "from-violet-500/20 to-purple-500/20"
+      gradient: "from-teal-500/20 to-cyan-500/20"
     },
     {
       year: "2015",
@@ -3046,7 +3025,7 @@ function DesktopJourney() {
       highlights: ["Top Performer 3x", "Process Training", "Leadership Track"],
       icon: Headphones,
       bgImage: "/journey-support.jpg",
-      gradient: "from-orange-500/20 to-red-500/20"
+      gradient: "from-cyan-500/20 to-emerald-500/20"
     },
     {
       year: "2015",
@@ -3057,7 +3036,7 @@ function DesktopJourney() {
       highlights: ["Self-Taught Dev", "Business Foundation", "Analytical Core"],
       icon: GraduationCap,
       bgImage: "/journey-edu.jpg",
-      gradient: "from-pink-500/20 to-rose-500/20"
+      gradient: "from-emerald-500/20 to-cyan-500/20"
     }
   ];
 
@@ -3105,7 +3084,7 @@ function DesktopJourney() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent"
+            className="text-4xl md:text-6xl font-bold mb-6 pb-2 bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent"
           >
             Journey So Far
           </motion.h2>

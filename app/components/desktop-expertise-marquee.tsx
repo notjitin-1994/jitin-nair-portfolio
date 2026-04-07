@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion, useAnimation } from 'framer-motion';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Brain, Sparkles, Zap, Network, Monitor, VideoIcon, Database, TrendingUp } from 'lucide-react';
 
 interface ExpertiseItem {
@@ -12,7 +12,7 @@ interface ExpertiseItem {
   featured?: boolean;
 }
 
-// Marquee Component with proper pause support
+// Marquee Component with proper pause/resume via CSS
 function Marquee({
   children,
   speed = 30,
@@ -24,34 +24,14 @@ function Marquee({
   direction?: "left" | "right";
   isPaused?: boolean;
 }) {
-  const controls = useAnimation();
-
-  const startAnimation = useCallback(() => {
-    controls.start({
-      x: direction === "left" ? [0, "-50%"] : ["-50%", 0],
-      transition: {
-        duration: speed,
-        repeat: Infinity,
-        ease: "linear",
-      }
-    });
-  }, [controls, direction, speed]);
-
-  useEffect(() => {
-    if (!isPaused) {
-      startAnimation();
-    } else {
-      controls.stop();
-    }
-  }, [isPaused, startAnimation, controls]);
-
   return (
     <div className="flex overflow-hidden">
-      <motion.div
-        className="flex shrink-0 gap-4"
-        animate={controls}
+      <div
+        className={`flex shrink-0 gap-4 will-change-transform ${
+          direction === "left" ? "animate-marquee" : "animate-marquee-reverse"
+        } ${isPaused ? '[animation-play-state:paused]' : ''}`}
         style={{
-          display: "flex",
+          animationDuration: `${speed}s`,
         }}
       >
         <div className="flex shrink-0 gap-4">
@@ -60,7 +40,7 @@ function Marquee({
         <div className="flex shrink-0 gap-4">
           {children}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -109,7 +89,7 @@ function ExpertiseCard({ item, index }: { item: ExpertiseItem; index: number }) 
           transition={{ duration: 0.3 }}
         />
 
-        <div className="relative z-10 h-full flex flex-col">
+        <div className="relative z-10 h-full flex flex-col text-left">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <motion.div
@@ -261,7 +241,7 @@ export function DesktopExpertiseMarquee() {
 
         {/* Marquee Container */}
         <div
-          className="relative space-y-6"
+          className="relative space-y-6 group"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
