@@ -579,7 +579,7 @@ function MobileBento() {
     const Icon = item.icon;
 
     return (
-      <div className="flex-shrink-0 w-[280px] px-2 py-6">
+      <div className="flex-shrink-0 w-[320px] px-2 py-6">
         <div className={`relative overflow-hidden rounded-2xl p-6 h-[220px] ${item.featured ? "bg-gradient-to-br from-cyan-500/20 via-white/[0.05] to-transparent border-cyan-500/30" : "bg-white/[0.03] border-white/[0.08]"} border backdrop-blur-[2px] transition-all duration-500 hover:border-cyan-500/30 hover:bg-white/[0.05] hover:scale-[1.02] group`}>
           {item.featured && (
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -588,7 +588,7 @@ function MobileBento() {
             <div className={`w-12 h-12 rounded-xl ${item.featured ? "bg-cyan-500 shadow-lg shadow-cyan-500/25" : "bg-white/10"} flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110`}>
               <Icon className={`w-6 h-6 ${item.featured ? "text-white" : "text-cyan-400"}`} />
             </div>
-            <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+            <h3 className="text-lg font-bold mb-2 whitespace-nowrap">{item.title}</h3>
             <p className="text-slate-400 text-xs mb-4 leading-relaxed flex-grow">{item.description}</p>
             <div className="flex flex-wrap gap-2">
               {item.skills.slice(0, 3).map((skill, i) => (
@@ -617,7 +617,7 @@ function MobileBento() {
         </div>
         <div className="flex gap-4 px-5 overflow-hidden">
           {[1, 2, 3].map((i) => (
-            <SkeletonLoader key={i} className="h-[220px] w-[280px] flex-shrink-0" />
+            <SkeletonLoader key={i} className="h-[220px] w-[320px] flex-shrink-0" />
           ))}
         </div>
       </section>

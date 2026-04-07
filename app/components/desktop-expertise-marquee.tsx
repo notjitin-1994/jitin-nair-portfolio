@@ -70,9 +70,9 @@ function ExpertiseCard({ item, index }: { item: ExpertiseItem; index: number }) 
   const [isHovered, setIsHovered] = useState(false);
   
   return (
-    <div className="flex-shrink-0 w-[360px] px-3 py-6">
+    <div className="flex-shrink-0 w-[450px] px-3 py-6">
       <motion.div
-        className={`relative overflow-hidden rounded-2xl p-6 h-[300px] ${
+        className={`relative overflow-hidden rounded-2xl p-8 h-[320px] ${
           item.featured
             ? "bg-gradient-to-br from-cyan-500/20 via-white/[0.05] to-transparent border-cyan-500/30"
             : "bg-white/[0.03] border-white/[0.08]"
@@ -111,7 +111,7 @@ function ExpertiseCard({ item, index }: { item: ExpertiseItem; index: number }) 
 
         <div className="relative z-10 h-full flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6">
             <motion.div
               className={`w-12 h-12 rounded-xl ${
                 item.featured
@@ -130,7 +130,7 @@ function ExpertiseCard({ item, index }: { item: ExpertiseItem; index: number }) 
           </div>
 
           {/* Content */}
-          <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+          <h3 className="text-2xl font-bold mb-3 text-white whitespace-nowrap">{item.title}</h3>
           <p className="text-slate-400 text-sm mb-4 leading-relaxed flex-grow">
             {item.description}
           </p>
