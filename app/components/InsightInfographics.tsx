@@ -448,3 +448,128 @@ export function MCPNervousSystemInfographic() {
     </div>
   );
 }
+
+export function MCPArchitectureInfographic() {
+  return (
+    <div className="my-12 p-8 rounded-3xl bg-zinc-900/50 border border-white/10 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center text-left">
+        <div className="space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-[10px] font-bold text-red-400 uppercase tracking-widest font-mono">
+            Legacy: The M*N Problem
+          </div>
+          <div className="relative p-6 rounded-2xl bg-white/[0.02] border border-dashed border-white/10 opacity-60">
+            <div className="grid grid-cols-3 gap-4 mb-4">
+              {[1, 2, 3].map(i => <div key={i} className="h-8 rounded bg-white/10 border border-white/10 flex items-center justify-center text-[10px] text-slate-500">Model {i}</div>)}
+            </div>
+            <div className="space-y-2">
+              {[1, 2].map(i => (
+                <div key={i} className="flex items-center gap-2 text-[10px] text-red-500/50">
+                  <div className="w-full h-px bg-red-500/20" />
+                  <div className="flex-shrink-0">Bespoke Integration {i}</div>
+                  <div className="w-full h-px bg-red-500/20" />
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 gap-4 mt-4 opacity-40">
+              <div className="h-8 rounded bg-white/5 border border-white/5 flex items-center justify-center text-[10px] text-slate-600 italic font-mono">Database</div>
+              <div className="h-8 rounded bg-white/5 border border-white/5 flex items-center justify-center text-[10px] text-slate-600 italic font-mono">API</div>
+            </div>
+          </div>
+          <p className="text-xs text-slate-500 italic">Complexity scales exponentially with every new model and tool.</p>
+        </div>
+
+        <div className="space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-400 uppercase tracking-widest font-mono">
+            2026: The MCP Standard
+          </div>
+          <div className="relative space-y-6">
+            <div className="flex justify-center gap-4">
+              {[1, 2, 3].map(i => <div key={i} className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center"><Cpu className="w-5 h-5 text-slate-400" /></div>)}
+            </div>
+            
+            <div className="flex items-center justify-center gap-4 py-2 px-6 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-mono font-bold text-sm tracking-tighter">
+              <Network className="w-4 h-4 animate-pulse" />
+              MODEL CONTEXT PROTOCOL
+            </div>
+
+            <div className="flex justify-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center"><Database className="w-5 h-5 text-slate-400" /></div>
+              <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center"><Share2 className="w-5 h-5 text-slate-400" /></div>
+              <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center"><Activity className="w-5 h-5 text-slate-400" /></div>
+            </div>
+          </div>
+          <p className="text-xs text-slate-400 leading-relaxed font-light">MCP acts as the universal &quot;USB-C&quot; interface, allowing any model to use any tool instantly via standardized schemas.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function CompoundAISystemInfographic() {
+  return (
+    <div className="my-12 p-8 rounded-3xl bg-gradient-to-br from-violet-500/5 via-transparent to-blue-500/5 border border-white/[0.08] relative overflow-hidden">
+      <div className="flex flex-col items-center gap-10 text-left">
+        <h4 className="text-sm font-mono text-violet-400 uppercase tracking-[0.2em] text-center">System-Level Performance Stack</h4>
+        
+        <div className="w-full max-w-2xl space-y-4">
+          {/* Level 1: Orchestration */}
+          <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 relative group hover:border-violet-500/30 transition-all">
+            <div className="absolute -top-3 left-6 px-2 py-1 bg-[#0a0a0f] border border-white/10 rounded text-[10px] font-bold text-violet-400 uppercase font-mono">Lead Orchestrator (LLM)</div>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center border border-violet-500/20">
+                <Brain className="w-6 h-6 text-violet-400" />
+              </div>
+              <div className="space-y-1">
+                <div className="text-sm font-bold text-white tracking-tight">Frontier Reasoning</div>
+                <div className="text-[11px] text-slate-500 leading-tight">GPT-5 / Claude 4 level logic for planning and goal decomposition.</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-center h-8">
+            <ArrowDownRight className="w-6 h-6 text-slate-700" />
+          </div>
+
+          {/* Level 2: Task-Specific Nodes */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 border-l-cyan-500/50 border-l-2">
+              <div className="flex items-center gap-3 mb-3">
+                <Cpu className="w-4 h-4 text-cyan-400" />
+                <span className="text-xs font-bold text-white uppercase font-mono tracking-wider">Specialized SLM</span>
+              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed italic">High-frequency JSON extraction &amp; classification. 90% cost reduction vs LLM.</p>
+            </div>
+            <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 border-l-emerald-500/50 border-l-2">
+              <div className="flex items-center gap-3 mb-3">
+                <Database className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-bold text-white uppercase font-mono tracking-wider">RAG Engine</span>
+              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed italic">Vector memory &amp; context retrieval. Prevents model knowledge drift.</p>
+            </div>
+          </div>
+
+          <div className="flex justify-center h-8">
+            <div className="w-px h-full bg-gradient-to-b from-white/10 to-transparent" />
+          </div>
+
+          {/* Level 3: Governance */}
+          <div className="p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                <ShieldCheck className="w-5 h-5 text-emerald-400" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-white tracking-tight">Governance Layer</div>
+                <div className="text-[10px] text-emerald-500/70 font-mono uppercase font-bold">Reality-Check Protocol</div>
+              </div>
+            </div>
+            <div className="px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 uppercase font-mono">Enforced</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+

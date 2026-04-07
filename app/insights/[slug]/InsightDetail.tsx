@@ -7,7 +7,7 @@ import { blogPosts } from "../../data/blogPosts";
 import { Section, Card, Badge, fadeInUp } from "../../components/ui";
 import { ArrowLeft, Clock, Calendar, CheckCircle2 } from "lucide-react";
 import { ShareButtons } from "../../components/ui/ShareButtons";
-import { SkillsMappingInfographic, ROIMetricsInfographic, BayesianArchitectureInfographic, RealityCheckInfographic, HITLArchitectureInfographic, FrameworkComparisonInfographic, AIEngineeringHarnessInfographic, MCPNervousSystemInfographic } from "../../components/InsightInfographics";
+import { SkillsMappingInfographic, ROIMetricsInfographic, BayesianArchitectureInfographic, RealityCheckInfographic, HITLArchitectureInfographic, FrameworkComparisonInfographic, AIEngineeringHarnessInfographic, MCPNervousSystemInfographic, MCPArchitectureInfographic, CompoundAISystemInfographic } from "../../components/InsightInfographics";
 
 export function InsightDetail({ slug }: { slug: string }) {
   const post = blogPosts.find((p) => p.slug === slug);
@@ -113,6 +113,14 @@ export function InsightDetail({ slug }: { slug: string }) {
       }
       if (trimmed === "<MCPNervousSystemInfographic />") {
         result.push(<MCPNervousSystemInfographic key={i} />);
+        return;
+      }
+      if (trimmed === "<MCPArchitectureInfographic />") {
+        result.push(<MCPArchitectureInfographic key={i} />);
+        return;
+      }
+      if (trimmed === "<CompoundAISystemInfographic />") {
+        result.push(<CompoundAISystemInfographic key={i} />);
         return;
       }
 
