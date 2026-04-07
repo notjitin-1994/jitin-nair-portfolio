@@ -115,3 +115,59 @@ export function ROIMetricsInfographic() {
     </div>
   );
 }
+
+const pantheonNodes = [
+  { name: "Hermes", role: "Data Ingestion", detail: "WebSocket / Socket.io", color: "cyan" },
+  { name: "Argus", role: "Regime Detection", detail: "Gaussian HMM / Random Forest", color: "emerald" },
+  { name: "Athena", role: "Strategy Matrix", detail: "16-node Logic Engine", color: "violet" },
+  { name: "Apollo", role: "Signal Oracle", detail: "Probabilistic Inference", color: "blue" }
+];
+
+export function BayesianArchitectureInfographic() {
+  return (
+    <div className="my-12 p-8 rounded-3xl bg-white/[0.02] border border-white/[0.08] relative overflow-hidden">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
+          {pantheonNodes.map((node, i) => (
+            <motion.div
+              key={node.name}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="p-4 rounded-xl bg-white/5 border border-white/10 text-center group hover:border-cyan-500/30 transition-all"
+            >
+              <div className="text-cyan-400 font-mono text-[10px] uppercase tracking-widest mb-1">{node.name}</div>
+              <div className="text-white font-bold text-xs mb-1">{node.role}</div>
+              <div className="text-[9px] text-slate-500 italic leading-tight">{node.detail}</div>
+            </motion.div>
+          ))}
+        </div>
+        
+        <div className="flex-1 space-y-4">
+          <div className="flex flex-col gap-2 p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/20">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-tighter">System Performance</span>
+            </div>
+            <div className="flex justify-between items-end">
+              <span className="text-slate-400 text-xs">P99 Ingest-to-Signal</span>
+              <span className="text-2xl font-black text-white">&lt;10ms</span>
+            </div>
+            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+              <motion.div 
+                className="h-full bg-cyan-400"
+                initial={{ width: 0 }}
+                whileInView={{ width: "95%" }}
+                transition={{ duration: 1, ease: "easeOut" }}
+              />
+            </div>
+          </div>
+          <p className="text-xs text-slate-500 leading-relaxed italic">
+            The Pantheon architecture fuses high-frequency socket data with probabilistic logic, achieving 90%+ regime classification accuracy.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

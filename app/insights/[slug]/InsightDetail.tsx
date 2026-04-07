@@ -7,7 +7,7 @@ import { blogPosts } from "../../data/blogPosts";
 import { Section, Card, Badge, fadeInUp } from "../../components/ui";
 import { ArrowLeft, Clock, Calendar, CheckCircle2 } from "lucide-react";
 import { ShareButtons } from "../../components/ui/ShareButtons";
-import { SkillsMappingInfographic, ROIMetricsInfographic } from "../../components/InsightInfographics";
+import { SkillsMappingInfographic, ROIMetricsInfographic, BayesianArchitectureInfographic } from "../../components/InsightInfographics";
 
 export function InsightDetail({ slug }: { slug: string }) {
   const post = blogPosts.find((p) => p.slug === slug);
@@ -89,6 +89,10 @@ export function InsightDetail({ slug }: { slug: string }) {
       }
       if (trimmed === "<ROIMetricsInfographic />") {
         result.push(<ROIMetricsInfographic key={i} />);
+        return;
+      }
+      if (trimmed === "<BayesianArchitectureInfographic />") {
+        result.push(<BayesianArchitectureInfographic key={i} />);
         return;
       }
 
