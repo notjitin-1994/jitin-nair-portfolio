@@ -1280,57 +1280,90 @@ export function Terminal({
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="pt-5 space-y-2"
+              className="pt-5 space-y-4"
             >
-              <div className="text-neutral-600 text-[10px] uppercase tracking-wider mb-3">Available Actions</div>
+              <div className="flex flex-col gap-1">
+                <div className="text-neutral-600 text-[10px] uppercase tracking-wider">Available Actions</div>
+                <div className="text-[9px] text-neutral-700 italic font-mono">Portfolio status: standby. Initialize modules to continue.</div>
+              </div>
               
-              {/* Download Resume */}
-              <motion.button
-                onClick={startDownloadFlow}
-                animate={selectedButton === 0 ? {
-                  backgroundColor: ['rgba(34, 211, 238, 0.08)', 'rgba(34, 211, 238, 0.15)', 'rgba(34, 211, 238, 0.08)'],
-                } : {}}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-all",
-                  selectedButton === 0 
-                    ? "border-cyan-400/50 bg-cyan-500/10" 
-                    : "border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/30"
-                )}
-              >
-                <Download className={cn("w-5 h-5", selectedButton === 0 ? "text-cyan-400" : "text-neutral-500")} />
-                <span className={cn(selectedButton === 0 ? "text-cyan-300 font-medium" : "text-neutral-400")}>
-                  Download Resume
-                </span>
-                {selectedButton === 0 && (
-                  <span className="ml-auto text-cyan-500/50 text-xs">[Enter]</span>
-                )}
-              </motion.button>
+              <div className="space-y-2">
+                {/* Download Resume */}
+                <motion.button
+                  onClick={startDownloadFlow}
+                  animate={selectedButton === 0 ? {
+                    backgroundColor: ['rgba(34, 211, 238, 0.08)', 'rgba(34, 211, 238, 0.15)', 'rgba(34, 211, 238, 0.08)'],
+                  } : {}}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-all",
+                    selectedButton === 0 
+                      ? "border-cyan-400/50 bg-cyan-500/10" 
+                      : "border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/30"
+                  )}
+                >
+                  <Download className={cn("w-5 h-5", selectedButton === 0 ? "text-cyan-400" : "text-neutral-500")} />
+                  <div className="flex flex-col items-start">
+                    <span className={cn("text-sm", selectedButton === 0 ? "text-cyan-300 font-medium" : "text-neutral-400")}>
+                      Download Resume
+                    </span>
+                    <span className="text-[9px] text-neutral-600">Get offline copy (PDF)</span>
+                  </div>
+                  {selectedButton === 0 && (
+                    <span className="ml-auto text-cyan-500/50 text-xs font-mono">[Enter]</span>
+                  )}
+                </motion.button>
 
-              {/* Learn More Button */}
-              <button
-                onClick={() => {
-                  if (onUnlock) {
-                    onUnlock();
-                  } else {
-                    window.location.href = "#expertise";
-                  }
-                }}
-                className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-all",
-                  selectedButton === 1 
-                    ? "border-emerald-400/50 bg-emerald-500/10" 
-                    : "border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/30"
-                )}
-              >
-                <Layers className={cn("w-5 h-5", selectedButton === 1 ? "text-emerald-400" : "text-neutral-500")} />
-                <span className={cn(selectedButton === 1 ? "text-emerald-300" : "text-neutral-400")}>
-                  Learn More
-                </span>
-                <ChevronDown className="ml-auto w-4 h-4 text-neutral-600" />
-              </button>
+                {/* Learn More Button */}
+                <button
+                  onClick={() => {
+                    if (onUnlock) {
+                      onUnlock();
+                    } else {
+                      window.location.href = "#expertise";
+                    }
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-all relative overflow-hidden group",
+                    selectedButton === 1 
+                      ? "border-emerald-400/50 bg-emerald-500/10 shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)]" 
+                      : "border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/30"
+                  )}
+                >
+                  {/* Subtle pulsing glow for Learn More when selected */}
+                  {selectedButton === 1 && (
+                    <motion.div 
+                      className="absolute inset-0 bg-emerald-500/5 pointer-events-none"
+                      animate={{ opacity: [0.3, 0.6, 0.3] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
+                  )}
+                  
+                  <Layers className={cn("w-5 h-5", selectedButton === 1 ? "text-emerald-400" : "text-neutral-500")} />
+                  <div className="flex flex-col items-start relative z-10">
+                    <span className={cn("text-sm", selectedButton === 1 ? "text-emerald-300" : "text-neutral-400")}>
+                      Explore Portfolio
+                    </span>
+                    <span className="text-[9px] text-neutral-600">Initialize interactive modules below</span>
+                  </div>
+                  <div className="ml-auto flex items-center gap-2">
+                    {selectedButton === 1 && (
+                      <span className="text-emerald-500/50 text-xs font-mono mr-1">[Enter]</span>
+                    )}
+                    <motion.div
+                      animate={selectedButton === 1 ? { y: [0, 3, 0] } : {}}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      <ChevronDown className="w-4 h-4 text-neutral-600" />
+                    </motion.div>
+                  </div>
+                </button>
+              </div>
 
-              <div className="text-neutral-700 text-[10px] pt-2">[↑↓] Navigate • [Enter] Select</div>
+              <div className="text-neutral-700 text-[10px] pt-2 font-mono flex items-center justify-between px-1">
+                <span>[↑↓] Navigate</span>
+                <span>[Enter] Select</span>
+              </div>
             </motion.div>
           )}
         </div>
