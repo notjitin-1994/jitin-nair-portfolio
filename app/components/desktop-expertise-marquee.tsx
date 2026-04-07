@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Sparkles, Zap, Network, Monitor, Video, Database, TrendingUp } from 'lucide-react';
+import { Brain, Sparkles, Zap, Network, Monitor, Video, VideoIcon, Database, TrendingUp } from 'lucide-react';
 
 interface ExpertiseItem {
   icon: React.ElementType;
@@ -26,36 +26,45 @@ function Marquee({
 }) {
   return (
     <div className="flex overflow-hidden">
-      <div
-        className={`flex shrink-0 gap-4 will-change-transform ${
-          direction === "left" ? "animate-marquee" : "animate-marquee-reverse"
-        } ${isPaused ? '[animation-play-state:paused]' : ''}`}
+      <motion.div
+        className="flex shrink-0 gap-4"
+        animate={{
+          x: direction === "left" ? [0, "-50%"] : ["-50%", 0],
+        }}
+        transition={{
+          duration: speed,
+          repeat: Infinity,
+          ease: "linear",
+        }}
         style={{
-          animationDuration: `${speed}s`,
+          display: "flex",
+          // We handle pause via CSS on the parent
         }}
       >
-        {children}
-        {children}
-      </div>
+        <div className="flex shrink-0 gap-4">
+          {children}
+        </div>
+        <div className="flex shrink-0 gap-4">
+          {children}
+        </div>
+      </motion.div>
     </div>
   );
 }
 // Expertise Card Component
-function ExpertiseCard({ item, index, isPaused }: { item: ExpertiseItem; index: number; isPaused?: boolean }) {
+function ExpertiseCard({ item, index }: { item: ExpertiseItem; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
-
+  
   return (
-    <motion.div
-      className="flex-shrink-0 w-[360px] px-3"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="flex-shrink-0 w-[360px] px-3 py-6">
       <motion.div
         className={`relative overflow-hidden rounded-2xl p-6 h-[300px] ${
           item.featured
             ? "bg-gradient-to-br from-cyan-500/20 via-white/[0.05] to-transparent border-cyan-500/30"
             : "bg-white/[0.03] border-white/[0.08]"
         } border backdrop-blur-sm transition-all duration-500`}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         animate={{
           y: isHovered ? -8 : 0,
           borderColor: isHovered
@@ -132,7 +141,7 @@ function ExpertiseCard({ item, index, isPaused }: { item: ExpertiseItem; index: 
           </div>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -173,7 +182,7 @@ export function DesktopExpertiseMarquee() {
       skills: ["Tauri", "Electron", "Rust", "React"],
     },
     {
-      icon: Video,
+      icon: VideoIcon,
       title: "Content & Media Pipelines",
       description: "AI-generated content, video processing, speech-to-text, and automated media workflows at scale.",
       skills: ["FFmpeg", "Whisper", "AI Gen", "Summarization"],
@@ -240,11 +249,11 @@ export function DesktopExpertiseMarquee() {
         {/* Marquee Container */}
         <div
           ref={containerRef}
-          className="relative space-y-6"
+          className="relative space-y-6 group"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Row 1 - Left to Right */}
+          {/* Row 1 - Left */}
           <div className="relative">
             <div className="absolute left-0 inset-y-0 w-20 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
             <div className="absolute right-0 inset-y-0 w-20 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
@@ -254,12 +263,12 @@ export function DesktopExpertiseMarquee() {
               isPaused={isPaused}
             >
               {row1.map((item, index) => (
-                <ExpertiseCard key={`r1-${index}`} item={item} index={index} isPaused={isPaused} />
+                <ExpertiseCard key={`r1-${index}`} item={item} index={index} />
               ))}
             </Marquee>
           </div>
 
-          {/* Row 2 - Right to Left */}
+          {/* Row 2 - Right */}
           <div className="relative">
             <div className="absolute left-0 inset-y-0 w-20 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
             <div className="absolute right-0 inset-y-0 w-20 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
@@ -269,7 +278,7 @@ export function DesktopExpertiseMarquee() {
               isPaused={isPaused}
             >
               {row2.map((item, index) => (
-                <ExpertiseCard key={`r2-${index}`} item={item} index={index + 3} isPaused={isPaused} />
+                <ExpertiseCard key={`r2-${index}`} item={item} index={index} />
               ))}
             </Marquee>
           </div>
@@ -297,27 +306,11 @@ export function DesktopExpertiseMarquee() {
         </motion.div>
       </div>
 
-      {/* Global Styles for Marquee Animation */}
       <style jsx global>{`
-        @keyframes marquee-left {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(-50%);
-          }
-        }
-        @keyframes marquee-right {
-          from {
-            transform: translateX(-50%);
-          }
-          to {
-            transform: translateX(0);
-          }
+        .group:hover :global(.flex.shrink-0) {
+          animation-play-state: paused !important;
         }
       `}</style>
     </section>
   );
 }
-
-export default DesktopExpertiseMarquee;

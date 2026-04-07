@@ -394,16 +394,14 @@ function MobileHero({ onUnlock }: { onUnlock?: () => void }) {
   );
 }
 
-// Marquee Component for smooth perpetual motion - Optimized for mobile
+// Marquee Component for smooth perpetual motion
 function Marquee({
   children,
   speed = 30,
-  pauseOnHover = true,
   direction = "left",
 }: {
   children: React.ReactNode;
   speed?: number;
-  pauseOnHover?: boolean;
   direction?: "left" | "right";
 }) {
   const reducedMotion = useReducedMotion();
@@ -419,21 +417,29 @@ function Marquee({
   }
 
   return (
-    <div className={`flex overflow-hidden ${pauseOnHover ? "group" : ""}`}>
-      <div
-        className={`flex shrink-0 gap-4 will-change-transform ${
-          direction === "left" ? "animate-marquee" : "animate-marquee-reverse"
-        }`}
-        style={{
-          animationDuration: `${speed}s`,
+    <div className="flex overflow-hidden">
+      <motion.div
+        className="flex shrink-0 gap-4"
+        animate={{
+          x: direction === "left" ? [0, "-50%"] : ["-50%", 0],
+        }}
+        transition={{
+          duration: speed,
+          repeat: Infinity,
+          ease: "linear",
         }}
       >
-        {children}
-        {children}
-      </div>
+        <div className="flex shrink-0 gap-4">
+          {children}
+        </div>
+        <div className="flex shrink-0 gap-4">
+          {children}
+        </div>
+      </motion.div>
     </div>
   );
 }
+
 // Bento Grid Components
 function BentoCard({
   children,
@@ -547,23 +553,12 @@ function MobileBento() {
     setMounted(true);
   }, []);
 
-  // Split items for two rows
-  const firstRow = expertiseData.slice(0, 4);
-  const secondRow = expertiseData.slice(4, 8);
-
-  const Card = ({ item, index, row }: { item: ExpertiseItem; index: number; row: number }) => {
+  const Card = ({ item, index }: { item: ExpertiseItem; index: number }) => {
     const Icon = item.icon;
-    // Rotate cards slightly: row 1 (1, -1, 1, -1), row 2 (-1, 1, -1, 1)
-    const rotation = row === 1 
-      ? (index % 2 === 0 ? 1 : -1) 
-      : (index % 2 === 0 ? -1 : 1);
 
     return (
-      <div 
-        className="flex-shrink-0 w-[280px] px-2 py-4"
-        style={{ transform: `rotate(${rotation}deg)` }}
-      >
-        <div className={`relative overflow-hidden rounded-2xl p-6 h-[220px] ${item.featured ? "bg-gradient-to-br from-cyan-500/20 via-white/[0.05] to-transparent border-cyan-500/30" : "bg-white/[0.03] border-white/[0.08]"} border backdrop-blur-[2px] transition-all duration-500 hover:border-cyan-500/30 hover:bg-white/[0.06] hover:scale-[1.02] hover:rotate-0 group`}>
+      <div className="flex-shrink-0 w-[280px] px-2 py-6">
+        <div className={`relative overflow-hidden rounded-2xl p-6 h-[220px] ${item.featured ? "bg-gradient-to-br from-cyan-500/20 via-white/[0.05] to-transparent border-cyan-500/30" : "bg-white/[0.03] border-white/[0.08]"} border backdrop-blur-[2px] transition-all duration-500 hover:border-cyan-500/30 hover:bg-white/[0.05] hover:scale-[1.02] group`}>
           {item.featured && (
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           )}
@@ -599,7 +594,7 @@ function MobileBento() {
           <SkeletonLoader className="h-4 w-full max-w-md" />
         </div>
         <div className="flex gap-4 px-5 overflow-hidden">
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3].map((i) => (
             <SkeletonLoader key={i} className="h-[220px] w-[280px] flex-shrink-0" />
           ))}
         </div>
@@ -611,40 +606,25 @@ function MobileBento() {
     <section className="py-10 md:py-12 overflow-hidden relative">
       {/* Section Header - CSS Animated, SSR Safe */}
       <div className="mb-10 px-5" suppressHydrationWarning>
-        <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>
+        <p className="text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 mobile-section-subtitle">
           What I Deliver
         </p>
-        <h2 className={`text-3xl font-bold mb-3 ${mounted ? 'mobile-section-title' : 'opacity-0'}`}>
+        <h2 className="text-3xl font-bold mb-3 mobile-section-title">
           Products That Drive Results
         </h2>
-        <p className={`text-slate-400 text-sm ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}>
+        <p className="text-slate-400 text-sm mobile-section-desc">
           Production-ready solutions that reduce costs, accelerate workflows, and deliver measurable business impact.
         </p>
       </div>
 
-      {/* Marquee Rows */}
-      <div className="space-y-2">
-        {/* Row 1 - Left */}
-        <div className="relative">
-          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-          <Marquee speed={reducedMotion ? 0 : 25} direction="left">
-            {firstRow.map((item, index) => (
-              <Card key={index} item={item} index={index} row={1} />
-            ))}
-          </Marquee>
-        </div>
-
-        {/* Row 2 - Left (as requested for mobile) */}
-        <div className="relative">
-          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-          <Marquee speed={reducedMotion ? 0 : 30} direction="left">
-            {secondRow.map((item, index) => (
-              <Card key={index} item={item} index={index} row={2} />
-            ))}
-          </Marquee>
-        </div>
+      <div className="relative">
+        <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+        <Marquee speed={40} direction="left">
+          {expertiseData.map((item, index) => (
+            <Card key={index} item={item} index={index} />
+          ))}
+        </Marquee>
       </div>
     </section>
   );
