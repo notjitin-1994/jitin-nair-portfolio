@@ -64,9 +64,9 @@ const journey = [
   },
   {
     year: "2017",
-    title: "247.ai — Electronic Arts",
+    title: "247.ai — US eCommerce Giant",
     role: "Senior Executive",
-    description: "QA automation, mobile app testing, top performer 3x consecutive",
+    description: "Managed back-end support, training new joiners, top performer 3x consecutive",
     icon: Headphones,
     color: "#14b8a6",
   },

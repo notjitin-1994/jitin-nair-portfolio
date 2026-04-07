@@ -1442,12 +1442,12 @@ function MobileJourney() {
       period: "2 Years",
       title: "247.ai",
       role: "Senior Executive",
-      description: "Technical support for global gaming platform. QA automation for mobile applications. Client: Electronic Arts.",
-      highlights: ["EA Games", "QA Automation", "Mobile Apps"],
+      description: "Managed back-end customer support for US retail & eCommerce giant, bridging seller-buyer issues to ensure seamless customer experience. Trained new joiners on process, managed quality assurance and refresher training until independent operation. Awarded top performer for 3 consecutive months; identified for leadership position within 24 months.",
+      highlights: ["Retail Support", "Training & QA", "Top Performer"],
       icon: Headphones,
       bgImage: "/journey-support.jpg",
       gradient: "from-emerald-500/20 to-green-500/20",
-      stats: { tickets: "10K+", satisfaction: "95%", platforms: "3" }
+      stats: { tickets: "10K+", satisfaction: "95%", performance: "Top 1%" }
     },
     {
       year: "2015",
@@ -3206,7 +3206,7 @@ function DesktopJourney() {
       title: "247.ai - Senior Executive",
       role: "Customer Support & Training",
       period: "May 2015 - Dec 2017",
-      description: "Started as the bridge between sellers and buyers for a US retail giant - solving complex issues, training new joiners, and managing quality assurance. Top performer for 3 consecutive months; considered for leadership within 24 months.",
+      description: "Managed back-end customer support for US retail & eCommerce giant, bridging seller-buyer issues to ensure seamless customer experience. Trained new joiners on process, managed quality assurance and refresher training until independent operation. Awarded top performer for 3 consecutive months; identified for leadership position within 24 months.",
       highlights: ["Top Performer 3x", "Leadership Track", "Training & QA"],
       icon: Headphones,
       bgImage: "/journey-support.jpg",
@@ -3597,9 +3597,21 @@ function JourneyCard({ item, index, isLast }: {
 export default function Home() {
   const isMobile = useIsMobile();
   const [mounted, setMounted] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  const handleUnlock = useCallback(() => {
+    setIsUnlocked(true);
+    // Use a small timeout to ensure state has updated and sections are rendered
+    setTimeout(() => {
+      const expertiseSection = document.getElementById('expertise');
+      if (expertiseSection) {
+        expertiseSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   }, []);
 
   // Prevent hydration mismatch by rendering null until mounted
@@ -3618,32 +3630,40 @@ export default function Home() {
       {isMobile ? (
         <>
           <div id="top">
-            <MobileHero />
+            <MobileHero onUnlock={handleUnlock} />
           </div>
-          <div id="expertise">
-            <MobileBento />
-          </div>
-          <div id="techstack">
-            <MobileTechStack />
-          </div>
-          <div id="projects">
-            <MobileProjects />
-          </div>
-          <div id="journey">
-            <MobileJourney />
-          </div>
-          <div id="contact">
-            <MobileContact />
-          </div>
+          {isUnlocked && (
+            <>
+              <div id="expertise">
+                <MobileBento />
+              </div>
+              <div id="techstack">
+                <MobileTechStack />
+              </div>
+              <div id="projects">
+                <MobileProjects />
+              </div>
+              <div id="journey">
+                <MobileJourney />
+              </div>
+              <div id="contact">
+                <MobileContact />
+              </div>
+            </>
+          )}
         </>
       ) : (
         <>
-          <DesktopHero />
-          <div id="expertise"><DesktopExpertiseMarquee /></div>
-          <div id="techstack"><DesktopTechStack /></div>
-          <div id="projects"><DesktopProjects /></div>
-          <div id="journey"><DesktopJourney /></div>
-          <div id="contact"><DesktopContact /></div>
+          <DesktopHero onUnlock={handleUnlock} />
+          {isUnlocked && (
+            <>
+              <div id="expertise"><DesktopExpertiseMarquee /></div>
+              <div id="techstack"><DesktopTechStack /></div>
+              <div id="projects"><DesktopProjects /></div>
+              <div id="journey"><DesktopJourney /></div>
+              <div id="contact"><DesktopContact /></div>
+            </>
+          )}
         </>
       )}
       <Footer />

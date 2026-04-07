@@ -517,6 +517,7 @@ interface TerminalProps {
   initialDelay?: number;
   hideHeader?: boolean;
   isMobile?: boolean;
+  onUnlock?: () => void;
 }
 
 // Validation functions
@@ -539,6 +540,7 @@ export function Terminal({
   initialDelay = 200,
   hideHeader = false,
   isMobile = false,
+  onUnlock,
 }: TerminalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -628,7 +630,11 @@ export function Terminal({
           if (selectedButton === 0) {
             startDownloadFlow();
           } else {
-            window.location.href = "#projects";
+            if (onUnlock) {
+              onUnlock();
+            } else {
+              window.location.href = "#expertise";
+            }
           }
           break;
         case "Tab":
@@ -1253,13 +1259,19 @@ export function Terminal({
               animate={{ opacity: 1 }}
               className="mt-4 pt-3 border-t border-neutral-800"
             >
-              <a
-                href="#projects"
+              <button
+                onClick={() => {
+                  if (onUnlock) {
+                    onUnlock();
+                  } else {
+                    window.location.href = "#expertise";
+                  }
+                }}
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 rounded hover:bg-emerald-500/20 transition-colors"
               >
-                <span>Explore Projects</span>
+                <span>Learn More</span>
                 <ChevronDown className="w-4 h-4" />
-              </a>
+              </button>
             </motion.div>
           )}
 
@@ -1295,9 +1307,15 @@ export function Terminal({
                 )}
               </motion.button>
 
-              {/* View Projects */}
-              <a
-                href="#projects"
+              {/* Learn More Button */}
+              <button
+                onClick={() => {
+                  if (onUnlock) {
+                    onUnlock();
+                  } else {
+                    window.location.href = "#expertise";
+                  }
+                }}
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-all",
                   selectedButton === 1 
@@ -1307,10 +1325,10 @@ export function Terminal({
               >
                 <Layers className={cn("w-5 h-5", selectedButton === 1 ? "text-emerald-400" : "text-neutral-500")} />
                 <span className={cn(selectedButton === 1 ? "text-emerald-300" : "text-neutral-400")}>
-                  View Projects
+                  Learn More
                 </span>
                 <ChevronDown className="ml-auto w-4 h-4 text-neutral-600" />
-              </a>
+              </button>
 
               <div className="text-neutral-700 text-[10px] pt-2">[↑↓] Navigate • [Enter] Select</div>
             </motion.div>
