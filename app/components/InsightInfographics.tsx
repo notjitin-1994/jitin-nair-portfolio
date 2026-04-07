@@ -269,7 +269,7 @@ export function HITLArchitectureInfographic() {
             <div className="text-3xl font-black text-white mb-1">71%</div>
             <div className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-3">Productivity Gain</div>
             <p className="text-[11px] text-slate-400 leading-relaxed italic">
-              Validated shift from &quot;Approval Models&quot; to &quot;Escalation-Only&quot; HITL orchestration in 2026 enterprise environments.
+              Validated shift from &apos;Approval Models&apos; to &apos;Escalation-Only&apos; HITL orchestration in 2026 enterprise environments.
             </p>
           </div>
           
@@ -277,7 +277,7 @@ export function HITLArchitectureInfographic() {
             <div className="text-3xl font-black text-white mb-1">&gt;80%</div>
             <div className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3">Automation Floor</div>
             <p className="text-[11px] text-slate-400 leading-relaxed italic">
-              Median autonomous task completion rate when humans transition from &quot;labelers&quot; to &quot;supervisors.&quot;
+              Median autonomous task completion rate when humans transition from &apos;labelers&apos; to &apos;supervisors.&apos;
             </p>
           </div>
         </div>
