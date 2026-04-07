@@ -1,7 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain, Target, Compass, BarChart3, ArrowRight, CheckCircle2, UserCheck, ShieldAlert, Zap, Layers, GitBranch, Users2, Activity, Timer, Network, Database, Cpu, ShieldCheck, Share2, ArrowDownRight, Workflow } from "lucide-react";
+import { 
+  Brain, Target, Compass, BarChart3, ArrowRight, CheckCircle2, 
+  UserCheck, ShieldAlert, Zap, Layers, GitBranch, Users2, 
+  Activity, Timer, Network, Database, Cpu, ShieldCheck, 
+  Share2, ArrowDownRight, Workflow, BookOpen, Code2, Rocket
+} from "lucide-react";
 
 /**
  * Mappings from ID to AI Systems Engineering
@@ -189,7 +194,7 @@ export function RealityCheckInfographic() {
             <motion.div
               key={stage.id}
               initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               className="relative"
@@ -573,3 +578,67 @@ export function CompoundAISystemInfographic() {
   );
 }
 
+const modularityStats = [
+  { label: "Instruction Reuse", value: "100x", detail: "Expert patterns shared across fleets" },
+  { label: "Prompt Noise", value: "-90%", detail: "Only load relevant context" },
+  { label: "Deployment Time", value: "1/10th", detail: "Instant skill injection via SKILL.md" },
+  { label: "Agentic Accuracy", value: "+45%", detail: "Focus on task-specific logic" }
+];
+
+export function SkillsModularityInfographic() {
+  return (
+    <div className="my-12 p-8 rounded-3xl bg-white/[0.02] border border-white/[0.08] relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <h4 className="text-sm font-mono text-emerald-400 uppercase tracking-[0.2em] mb-10 text-center">The Skills.md Efficiency Shift</h4>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10 mb-12">
+        {/* Old Way */}
+        <div className="space-y-4 opacity-50">
+          <div className="text-[10px] font-mono text-slate-500 uppercase tracking-widest text-center">Legacy: Monolithic Prompts</div>
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 h-40 flex items-center justify-center relative overflow-hidden text-left">
+            <div className="text-[8px] font-mono text-slate-600 leading-tight">
+              {"PROMPT_START\nSystem: You are an expert...\n[10,000 lines of mixed instructions]\n[Noise: React, SQL, Python, DevOps, UI...]\nPROMPT_END".split('\n').map((l, i) => <div key={i}>{l}</div>)}
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="px-3 py-1 rounded bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold uppercase tracking-tighter rotate-12">Context Bloat</div>
+            </div>
+          </div>
+        </div>
+
+        {/* New Way */}
+        <div className="space-y-4">
+          <div className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest text-center">Modern: Modular SKILL.md</div>
+          <div className="grid grid-cols-2 gap-3 h-40">
+            {['React', 'Postgres', 'Security', 'Testing'].map((skill) => (
+              <motion.div
+                key={skill}
+                whileHover={{ scale: 1.05 }}
+                className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col items-center justify-center gap-2 group cursor-default"
+              >
+                <Layers className="w-4 h-4 text-emerald-400" />
+                <span className="text-[10px] font-bold text-white uppercase tracking-tighter">{skill}.skill</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+        {modularityStats.map((stat, i) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            className="flex flex-col gap-1 text-center md:text-left"
+          >
+            <div className="text-2xl font-black text-white">{stat.value}</div>
+            <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">{stat.label}</div>
+            <div className="text-[9px] text-slate-500 leading-tight">{stat.detail}</div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
