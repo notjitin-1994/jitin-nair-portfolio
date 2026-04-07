@@ -123,29 +123,29 @@ The transition from "chatbots" to "systems engineering" is the defining challeng
   {
     slug: "reality-check-anti-hallucination",
     title: "The Reality-Check Protocol: Eliminating Hallucinations in AI Agent Fleets",
-    excerpt: "How I built a mission-critical reinforcement layer for OpenClaw that implements a 3-stage Reality Check Engine and a hierarchical cognitive memory system.",
+    excerpt: "How I built a mission-critical reinforcement layer on top of OpenClaw that implements a 3-stage Reality Check Engine and a hierarchical cognitive memory system.",
     category: "AI Governance",
     date: "2026-03-05",
     readTime: "12 min",
     content: `## The Reliability Crisis
 
-In production AI systems, a single hallucination can cascade through an entire multi-agent fleet, turning a minor logic error into a system-wide failure. When building **OpenClaw**, I realized that traditional prompting wasn't enough. We needed a hardware-level mandate for truth.
+In production AI systems, a single hallucination can cascade through an entire multi-agent fleet, turning a minor logic error into a system-wide failure. When working with **OpenClaw**, I realized that traditional prompting wasn't enough. We needed a hardware-level mandate for truth. I engineered **Reality-Check** as a reinforcement layer to solve this.
 
 ### 1. The 3-Stage Enforcement Pipeline
 
-The Reality-Check Engine doesn't just "ask" AI to be honest; it enforces truth through a sequential verification pipeline that intercepts every agent action.
+The Reality-Check Engine doesn't just "ask" AI to be honest; it enforces truth through a sequential verification pipeline that intercepts every agent action within the OpenClaw ecosystem.
 
 <RealityCheckInfographic />
 
 ### 2. Implementation: The OpenClaw Reinforcement Layer
 
-OpenClaw uses a native TypeScript reinforcement layer that operates between the agent's cognition and its output.
+Reality-Check operates as a native TypeScript plugin that sits between the agent's core cognition and its output gateway.
 - **Intent Validation:** Before any tool call is executed, an SLM (Small Language Model) guard verifies if the tool and parameters align with the user's explicit intent.
 - **Chain-of-Verification (CoVe):** Responses undergo a multi-pass audit where claims are extracted, cross-referenced against RAG context, and verified before delivery.
 
 ### 3. Memory & Context Upgrades
 
-Traditional RAG suffers from "context noise." To solve this, we implemented the **Dreamcycle** memory stack:
+To eliminate context noise, I implemented the **Dreamcycle** memory stack:
 - **Hierarchical Cognitive Memory:** Distinguishes between "Working Memory" (immediate context) and "Long-term Knowledge" (distilled insights).
 - **Nightly Distillation:** Automated routines scan LanceDB vector stores to prune low-relevance noise and consolidate recurring facts, reducing "context bloat" by 40%.
 - **Context Density:** By optimizing chunking strategies and metadata tagging, we increased useful context density by 4x without increasing token costs.
@@ -161,11 +161,11 @@ Traditional RAG suffers from "context noise." To solve this, we implemented the 
 
 ### Conclusion: Governance as Infrastructure
 
-Governance isn't an "add-on"—it's infrastructure. By embedding reality-checking and intelligent memory management directly into the OpenClaw gateway, we created an ecosystem where agents don't just "act," they execute with verified precision.
+Governance isn't an "add-on"—it's infrastructure. By embedding reality-checking and intelligent memory management directly on top of the OpenClaw gateway, we created an ecosystem where agents don't just "act," they execute with verified precision.
 
 ---
 *Citations:*
-- *[1] OpenClaw SDK: Reinforcement Layer Documentation.*
+- *[1] Reality-Check: Reinforcement Layer Documentation.*
 - *[2] Chain-of-Verification (CoVe) Methodology (Google Research, adapted 2025).*
 - *[3] LanceDB: Performance Benchmarks for Hierarchical Vector Stores.*`,
   },
