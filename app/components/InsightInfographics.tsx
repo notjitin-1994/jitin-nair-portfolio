@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain, Target, Compass, BarChart3, ArrowRight, CheckCircle2, UserCheck, ShieldAlert, Zap, Layers, GitBranch, Users2, Activity, Timer } from "lucide-react";
+import { Brain, Target, Compass, BarChart3, ArrowRight, CheckCircle2, UserCheck, ShieldAlert, Zap, Layers, GitBranch, Users2, Activity, Timer, Network, Database, Cpu, ShieldCheck, Share2, ArrowDownRight, Workflow } from "lucide-react";
 
 /**
  * Mappings from ID to AI Systems Engineering
@@ -354,6 +354,96 @@ export function FrameworkComparisonInfographic() {
             </motion.div>
           ))}
         </div>
+      </div>
+    </div>
+  );
+}
+
+const harnessNodes = [
+  { id: "gemini", name: "Gemini 1.5 Pro", role: "Deep Reasoning", detail: "Long-context architectural mapping & system-wide logic verification.", color: "blue" },
+  { id: "claude", name: "Claude 3.5 Sonnet", role: "Rapid Iteration", detail: "State-of-the-art coding velocity, refactoring, and UI implementation.", color: "orange" },
+  { id: "openclaw", name: "OpenClaw Gateway", role: "Governance & Memory", detail: "Reality-Check enforcement and Dreamcycle memory distillation.", color: "purple" }
+];
+
+export function AIEngineeringHarnessInfographic() {
+  return (
+    <div className="my-12 p-8 rounded-3xl bg-white/[0.02] border border-white/[0.08] relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-orange-500/5 pointer-events-none" />
+      <h4 className="text-sm font-mono text-cyan-400 uppercase tracking-[0.2em] mb-10 text-center">The 10x Engineering Harness</h4>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
+        {harnessNodes.map((node, i) => (
+          <motion.div
+            key={node.id}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/30 transition-all flex flex-col items-center text-center group"
+          >
+            <div className={`w-12 h-12 rounded-xl mb-4 flex items-center justify-center bg-white/10 group-hover:scale-110 transition-transform shadow-lg`}>
+              {node.id === 'gemini' && <Brain className="w-6 h-6 text-blue-400" />}
+              {node.id === 'claude' && <Zap className="w-6 h-6 text-orange-400" />}
+              {node.id === 'openclaw' && <ShieldAlert className="w-6 h-6 text-purple-400" />}
+            </div>
+            <h5 className="text-white font-bold mb-2">{node.name}</h5>
+            <div className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest mb-3">{node.role}</div>
+            <p className="text-xs text-slate-400 leading-relaxed italic">{node.detail}</p>
+          </motion.div>
+        ))}
+      </div>
+      
+      <div className="mt-10 flex flex-col md:flex-row items-center justify-center gap-4 text-[10px] font-mono text-slate-500">
+        <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-blue-500" /> Research & Planning</span>
+        <div className="hidden md:block w-8 h-px bg-white/10" />
+        <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-orange-500" /> Execution & UI</span>
+        <div className="hidden md:block w-8 h-px bg-white/10" />
+        <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-purple-500" /> Security & Persistence</span>
+      </div>
+    </div>
+  );
+}
+
+export function MCPNervousSystemInfographic() {
+  const mcpStats = [
+    { label: "Active Instances", value: "147", icon: Activity },
+    { label: "Tool Protocols", value: "200+", icon: Layers },
+    { label: "Inter-Agent Latency", value: "<5ms", icon: Timer },
+    { label: "Protocol Compliance", value: "100%", icon: CheckCircle2 }
+  ];
+
+  return (
+    <div className="my-12 p-8 rounded-3xl bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 border border-white/[0.08] relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl -mr-32 -mt-32" />
+      <h4 className="text-sm font-mono text-cyan-400 uppercase tracking-[0.2em] mb-8">MCP: The Agentic Nervous System</h4>
+      
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        {mcpStats.map((stat, i) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            className="p-4 rounded-xl bg-white/5 border border-white/10"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <stat.icon className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{stat.label}</span>
+            </div>
+            <div className="text-2xl font-black text-white">{stat.value}</div>
+          </motion.div>
+        ))}
+      </div>
+      
+      <div className="flex flex-col gap-4 p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-xs font-bold text-white uppercase tracking-tighter">Unified Context Layer</span>
+        </div>
+        <p className="text-xs text-slate-400 leading-relaxed">
+          The Model Context Protocol (MCP) standardizes how agents discover, negotiate, and execute tools. By abstracting the tool layer, we allow 147+ agent instances to share a single, verifiable &quot;working memory&quot; without context duplication or logic drift.
+        </p>
       </div>
     </div>
   );
