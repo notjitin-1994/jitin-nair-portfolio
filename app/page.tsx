@@ -401,12 +401,10 @@ function Marquee({
   children,
   speed = 30,
   direction = "left",
-  pauseOnHover = true,
 }: {
   children: React.ReactNode;
   speed?: number;
   direction?: "left" | "right";
-  pauseOnHover?: boolean;
 }) {
   const reducedMotion = useReducedMotion();
 
@@ -421,14 +419,17 @@ function Marquee({
   }
 
   return (
-    <div className={`flex overflow-hidden ${pauseOnHover ? "group" : ""}`}>
-      <div
-        className={`flex shrink-0 gap-4 will-change-transform ${
-          direction === "left" ? "animate-marquee" : "animate-marquee-reverse"
-        }`}
-        style={{
-          "--duration": `${speed}s`,
-        } as React.CSSProperties}
+    <div className="flex overflow-hidden">
+      <motion.div
+        className="flex shrink-0 gap-4"
+        animate={{
+          x: direction === "left" ? ["0%", "-50%"] : ["-50%", "0%"],
+        }}
+        transition={{
+          duration: speed,
+          repeat: Infinity,
+          ease: "linear",
+        }}
       >
         <div className="flex shrink-0 gap-4">
           {children}
@@ -436,7 +437,7 @@ function Marquee({
         <div className="flex shrink-0 gap-4">
           {children}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -563,7 +564,7 @@ function MobileBento() {
           {item.featured && (
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           )}
-          <div className="relative z-10 h-full flex flex-col">
+          <div className="relative z-10 h-full flex flex-col text-left">
             <div className={`w-12 h-12 rounded-xl ${item.featured ? "bg-cyan-500 shadow-lg shadow-cyan-500/25" : "bg-white/10"} flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110`}>
               <Icon className={`w-6 h-6 ${item.featured ? "text-white" : "text-cyan-400"}`} />
             </div>
@@ -595,7 +596,7 @@ function MobileBento() {
           <SkeletonLoader className="h-4 w-full max-w-md" />
         </div>
         <div className="flex gap-4 px-5 overflow-hidden">
-          {[1, 2, 3].map((i) => (
+          {[1, 2, 3, 4].map((i) => (
             <SkeletonLoader key={i} className="h-[220px] w-[320px] flex-shrink-0" />
           ))}
         </div>
