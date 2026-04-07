@@ -3432,29 +3432,16 @@ function JourneyCard({ item, index, isLast }: {
 export default function Home() {
   const isMobile = useIsMobile();
   const [mounted, setMounted] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const handleUnlock = useCallback(() => {
-    setIsTransitioning(true);
-
-    // Cinematic delay for system initialization effect
-    setTimeout(() => {
-      setIsUnlocked(true);
-      setIsTransitioning(false);
-
-      // Use a small timeout to ensure sections are rendered before scrolling
-      setTimeout(() => {
-        const expertiseSection = document.getElementById('expertise');
-        if (expertiseSection) {
-          expertiseSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    }, 800);
+    const expertiseSection = document.getElementById('expertise');
+    if (expertiseSection) {
+      expertiseSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }, []);
 
   // Prevent hydration mismatch by rendering null until mounted
@@ -3468,15 +3455,14 @@ export default function Home() {
     );
   }
 
-  // Common variants for section reveal
+  // Common variants for section entrance
   const sectionVariants = {
-    hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
+    hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
       y: 0, 
-      filter: "blur(0px)",
       transition: { 
-        duration: 0.8, 
+        duration: 0.6, 
         ease: [0.22, 1, 0.36, 1] 
       } 
     }
@@ -3484,103 +3470,73 @@ export default function Home() {
 
   return (
     <main className="bg-void min-h-screen selection:bg-cyan-500/30">
-      {/* Dynamic Overlay for transition */}
-      <AnimatePresence>
-        {isTransitioning && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-void/40 backdrop-blur-md flex items-center justify-center pointer-events-none"
-          >
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-48 h-[2px] bg-white/10 rounded-full overflow-hidden relative">
-                <motion.div 
-                  initial={{ x: "-100%" }}
-                  animate={{ x: "100%" }}
-                  transition={{ duration: 0.8, ease: "easeInOut" }}
-                  className="absolute inset-0 bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.5)]"
-                />
-              </div>
-              <span className="text-[10px] font-mono text-cyan-400 tracking-[0.2em] uppercase animate-pulse">Initializing Portfolio Modules...</span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {isMobile ? (
         <>
           <div id="top" className="relative z-10">
             <MobileHero onUnlock={handleUnlock} />
           </div>
-          <AnimatePresence mode="wait">
-            {isUnlocked && (
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={{
-                  visible: {
-                    transition: {
-                      staggerChildren: 0.2
-                    }
-                  }
-                }}
-              >
-                <motion.div id="expertise" variants={sectionVariants}>
-                  <MobileBento />
-                </motion.div>
-                <motion.div id="techstack" variants={sectionVariants}>
-                  <MobileTechStack />
-                </motion.div>
-                <motion.div id="projects" variants={sectionVariants}>
-                  <MobileProjects />
-                </motion.div>
-                <motion.div id="journey" variants={sectionVariants}>
-                  <MobileJourney />
-                </motion.div>
-                <motion.div id="contact" variants={sectionVariants}>
-                  <MobileContact />
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.1
+                }
+              }
+            }}
+          >
+            <motion.div id="expertise" variants={sectionVariants}>
+              <MobileBento />
+            </motion.div>
+            <motion.div id="techstack" variants={sectionVariants}>
+              <MobileTechStack />
+            </motion.div>
+            <motion.div id="projects" variants={sectionVariants}>
+              <MobileProjects />
+            </motion.div>
+            <motion.div id="journey" variants={sectionVariants}>
+              <MobileJourney />
+            </motion.div>
+            <motion.div id="contact" variants={sectionVariants}>
+              <MobileContact />
+            </motion.div>
+          </motion.div>
         </>
       ) : (
         <>
           <div id="top" className="relative z-10">
             <DesktopHero onUnlock={handleUnlock} />
           </div>
-          <AnimatePresence mode="wait">
-            {isUnlocked && (
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={{
-                  visible: {
-                    transition: {
-                      staggerChildren: 0.25
-                    }
-                  }
-                }}
-              >
-                <motion.div id="expertise" variants={sectionVariants}>
-                  <DesktopExpertiseMarquee />
-                </motion.div>
-                <motion.div id="techstack" variants={sectionVariants}>
-                  <DesktopTechStack />
-                </motion.div>
-                <motion.div id="projects" variants={sectionVariants}>
-                  <DesktopProjects />
-                </motion.div>
-                <motion.div id="journey" variants={sectionVariants}>
-                  <DesktopJourney />
-                </motion.div>
-                <motion.div id="contact" variants={sectionVariants}>
-                  <DesktopContact />
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.1
+                }
+              }
+            }}
+          >
+            <motion.div id="expertise" variants={sectionVariants}>
+              <DesktopExpertiseMarquee />
+            </motion.div>
+            <motion.div id="techstack" variants={sectionVariants}>
+              <DesktopTechStack />
+            </motion.div>
+            <motion.div id="projects" variants={sectionVariants}>
+              <DesktopProjects />
+            </motion.div>
+            <motion.div id="journey" variants={sectionVariants}>
+              <DesktopJourney />
+            </motion.div>
+            <motion.div id="contact" variants={sectionVariants}>
+              <DesktopContact />
+            </motion.div>
+          </motion.div>
         </>
       )}
       <Footer />
