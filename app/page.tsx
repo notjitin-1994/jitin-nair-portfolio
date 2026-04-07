@@ -1241,9 +1241,9 @@ function MobileJourney() {
       year: "2025",
       period: "Present",
       title: "AI Systems Architect",
-      role: "Autonomous Agent Development",
-      description: "Architected 200+ autonomous agents across 147 instances. Deployed Reality-Check governance framework enforcing No Fiction Protocol globally.",
-      highlights: ["200+ Agents", "147 Instances", "No Fiction Protocol"],
+      role: "Independent Consultant",
+      description: "Architected 200+ autonomous AI agents. Built Predator (trading engine), Reality-Check (governance), and Smartslate (AI-LMS). Developed Model Context Protocol integrations for 147 agent instances.",
+      highlights: ["200+ Agents Deployed", "Reality-Check Framework", "96% Coverage"],
       icon: Bot,
       bgImage: "/journey-ai.jpg",
       gradient: "from-cyan-500/20 to-teal-500/20",
@@ -1252,50 +1252,50 @@ function MobileJourney() {
     {
       year: "2022",
       period: "3 Years",
-      title: "Moody's Ratings",
-      role: "Instructional Designer",
-      description: "Automated video production pipelines saving 1000+ hours annually. Built scalable learning infrastructure for global financial training programs.",
-      highlights: ["Video Automation", "1000+ Hours Saved", "Global Scale"],
-      icon: Video,
+      title: "Instructional Designer",
+      role: "Moody's Ratings",
+      description: "Pioneered video-based learning at a global ratings agency. Built scalable production pipelines, reducing content production time by 60% through automation and template standardization.",
+      highlights: ["60% Production Save", "Global Scale L&D", "90%+ Completion"],
+      icon: VideoIcon,
       bgImage: "/journey-finance.jpg",
       gradient: "from-amber-500/20 to-orange-500/20",
-      stats: { videos: "500+", hours: "1000+", reach: "50K+" }
+      stats: { production: "-60%", completion: "90%+", learners: "50K+" }
     },
     {
       year: "2019",
       period: "3 Years",
-      title: "Accenture",
-      role: "Instructor Analyst → Analyst",
-      description: "Promoted within 9 months. Delivered technical training for Fortune 500 clients. Built automated assessment systems.",
-      highlights: ["Early Promotion", "Fortune 500", "Automation"],
-      icon: Award,
+      title: "Instructor Analyst",
+      role: "Accenture",
+      description: "Managed L&D for 50+ employees. Reduced learning time by 70% while maintaining retention. Built hybrid learning models and a 1,400+ line VBA audit automation tool saving ~$140K.",
+      highlights: ["$140K Cost Savings", "70% Time Reduction", "VBA Automation"],
+      icon: Users,
       bgImage: "/journey-training.jpg",
       gradient: "from-purple-500/20 to-violet-500/20",
-      stats: { trainees: "2000+", clients: "15+", rating: "4.8/5" }
+      stats: { savings: "$140K+", reduction: "70%", employees: "300+" }
     },
     {
-      year: "2017",
+      year: "2015",
       period: "2 Years",
-      title: "247.ai",
-      role: "Senior Executive",
-      description: "Managed back-end customer support for US retail & eCommerce giant, bridging seller-buyer issues to ensure seamless customer experience. Trained new joiners on process, managed quality assurance and refresher training until independent operation. Awarded top performer for 3 consecutive months; identified for leadership position within 24 months.",
-      highlights: ["Retail Support", "Training & QA", "Top Performer"],
+      title: "Senior Executive",
+      role: "247.ai",
+      description: "Managed back-end support for US retail giant. Bridged buyer-seller issues for seamless experience. Trained new joiners and identified for leadership position within 24 months.",
+      highlights: ["Top Performer 3x", "Process Training", "Leadership Track"],
       icon: Headphones,
       bgImage: "/journey-support.jpg",
       gradient: "from-emerald-500/20 to-green-500/20",
-      stats: { tickets: "10K+", satisfaction: "95%", performance: "Top 1%" }
+      stats: { satisfaction: "95%", performance: "Top 1%", tenure: "2.5y" }
     },
     {
       year: "2015",
       period: "Foundation",
-      title: "Sindhi College",
-      role: "B.Com Graduate",
-      description: "Commerce foundation with focus on business systems. Self-taught programming during college years. Built first web applications.",
-      highlights: ["B.Com", "Self-Taught", "First Apps"],
+      title: "Bachelor of Commerce",
+      role: "Sindhi College",
+      description: "Built foundation in business systems and analytical thinking. Self-taught programming during college years, developing first web applications and automated tools.",
+      highlights: ["Self-Taught Dev", "Business Foundation", "Analytical Core"],
       icon: GraduationCap,
       bgImage: "/journey-edu.jpg",
       gradient: "from-pink-500/20 to-rose-500/20",
-      stats: { degree: "B.Com", gpa: "7.2/10", projects: "5+" }
+      stats: { degree: "B.Com", focus: "Systems", logic: "Core" }
     }
   ];
 
@@ -1309,7 +1309,6 @@ function MobileJourney() {
   return (
     <section className="py-10 md:py-12 px-5 overflow-hidden relative">
       {/* Header */}
-      {/* Header - CSS Animated, SSR Safe */}
       <div className="mb-8" suppressHydrationWarning>
         <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>Journey So Far</p>
         <h2 className={`text-3xl font-bold mb-2 ${mounted ? 'mobile-section-title' : 'opacity-0'}`}>Career Timeline</h2>
@@ -1327,7 +1326,7 @@ function MobileJourney() {
           
           return (
             <motion.button
-              key={item.year}
+              key={item.year + item.title}
               onClick={() => scrollToCard(index)}
               className={`relative flex flex-col items-center gap-2 transition-all ${
                 isActive ? 'scale-110' : 'opacity-60 hover:opacity-100'
@@ -1350,7 +1349,7 @@ function MobileJourney() {
               {/* Connector Line */}
               {index < journeyData.length - 1 && (
                 <div className={`absolute top-5 left-full w-[calc(100%-1rem)] h-0.5 -ml-1 ${
-                  isPast ? 'bg-cyan-500/30' : 'bg-white/10'
+                  isPast ? 'bg-cyan-500' : 'bg-white/10'
                 }`} style={{ width: '2rem' }} />
               )}
             </motion.button>
@@ -1367,7 +1366,7 @@ function MobileJourney() {
           
           return (
             <motion.div
-              key={item.year}
+              key={item.year + item.title}
               id={`journey-card-${index}`}
               initial={{ opacity: 0, x: isEven ? -30 : 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -1376,8 +1375,8 @@ function MobileJourney() {
               onViewportEnter={() => setActiveIndex(index)}
               className="relative"
             >
-              {/* Timeline Connector */}
-              <div className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-cyan-500/30 via-cyan-500/10 to-transparent" />
+              {/* Timeline Connector - Solid Cyan */}
+              <div className="absolute left-4 top-0 bottom-0 w-px bg-cyan-500/40" />
               
               {/* Card */}
               <motion.div
@@ -3007,55 +3006,55 @@ function DesktopJourney() {
   const journeyData = [
     {
       year: "2025",
-      title: "Independent - AI Systems Architect",
-      role: "Agentic AI & Automation",
+      title: "AI Systems Architect",
+      role: "Independent Consultant",
       period: "March 2025 - Present",
-      description: "Now building autonomous AI agents, multi-agent orchestration systems, and intelligent automation platforms. Combining years of instructional design expertise with cutting-edge AI to create systems that learn, adapt, and execute.",
-      highlights: ["200+ Agents Deployed", "Multi-Agent Orchestration", "Full-Stack AI"],
-      icon: Brain,
+      description: "Architected 200+ autonomous AI agents. Built Predator (trading engine), Reality-Check (governance), and Smartslate (AI-LMS). Developed Model Context Protocol integrations for 147 agent instances.",
+      highlights: ["200+ Agents Deployed", "Reality-Check Framework", "96% Coverage"],
+      icon: Bot,
       bgImage: "/journey-ai.jpg",
       gradient: "from-cyan-500/20 to-blue-500/20"
     },
     {
       year: "2022",
-      title: "Moody's Ratings - Instructional Designer",
-      role: "Video & Automation Lead",
-      period: "Sept 2022 - March 2025",
-      description: "Pioneered video-based learning development at a global ratings agency. Built standardized templates, automated workflows, and scalable production pipelines - transforming how financial knowledge is disseminated across global teams.",
-      highlights: ["Global Templates", "Automated Workflows", "Video-First Strategy"],
+      title: "Instructional Designer",
+      role: "Moody's Ratings",
+      period: "Sept 2022 - Mar 2025",
+      description: "Pioneered video-based learning at a global ratings agency. Built scalable production pipelines, reducing content production time by 60% through automation and template standardization.",
+      highlights: ["60% Production Save", "Global Scale L&D", "90%+ Completion"],
       icon: VideoIcon,
       bgImage: "/journey-finance.jpg",
       gradient: "from-emerald-500/20 to-cyan-500/20"
     },
     {
       year: "2019",
-      title: "Accenture - Instructor Analyst",
-      role: "Learning & Development",
+      title: "Instructor Analyst",
+      role: "Accenture",
       period: "Jan 2019 - Sept 2022",
-      description: "Led L&D for 50+ employees, creating video-based learning that reduced training time by 70% while maintaining 54% knowledge retention. Built interactive courses, gamified content, and an MS Excel automation tool with 1400+ lines of VBA code - saving ~$140K in training costs.",
-      highlights: ["$140K Cost Savings", "70% Time Reduction", "300+ Employees Trained"],
+      description: "Managed L&D for 50+ employees. Reduced learning time by 70% while maintaining retention. Built hybrid learning models and a 1,400+ line VBA audit automation tool saving ~$140K.",
+      highlights: ["$140K Cost Savings", "70% Time Reduction", "VBA Automation"],
       icon: Users,
       bgImage: "/journey-training.jpg",
       gradient: "from-violet-500/20 to-purple-500/20"
     },
     {
       year: "2015",
-      title: "247.ai - Senior Executive",
-      role: "Customer Support & Training",
+      title: "Senior Executive",
+      role: "247.ai",
       period: "May 2015 - Dec 2017",
-      description: "Managed back-end customer support for US retail & eCommerce giant, bridging seller-buyer issues to ensure seamless customer experience. Trained new joiners on process, managed quality assurance and refresher training until independent operation. Awarded top performer for 3 consecutive months; identified for leadership position within 24 months.",
-      highlights: ["Top Performer 3x", "Leadership Track", "Training & QA"],
+      description: "Managed back-end support for US retail giant. Bridged buyer-seller issues for seamless experience. Trained new joiners and identified for leadership position within 24 months.",
+      highlights: ["Top Performer 3x", "Process Training", "Leadership Track"],
       icon: Headphones,
       bgImage: "/journey-support.jpg",
       gradient: "from-orange-500/20 to-red-500/20"
     },
     {
       year: "2015",
-      title: "B.Com - Sindhi College of Commerce",
-      role: "Education",
-      period: "Completed May 2015",
-      description: "Built the foundation in business, communication, and analytical thinking - skills that later became crucial in instructional design and client-facing roles.",
-      highlights: ["Business Administration", "Communication", "Analytical Skills"],
+      title: "Bachelor of Commerce",
+      role: "Sindhi College",
+      period: "2012 - 2015",
+      description: "Built foundation in business systems and analytical thinking. Self-taught programming during college years, developing first web applications and automated tools.",
+      highlights: ["Self-Taught Dev", "Business Foundation", "Analytical Core"],
       icon: GraduationCap,
       bgImage: "/journey-edu.jpg",
       gradient: "from-pink-500/20 to-rose-500/20"
@@ -3169,7 +3168,7 @@ function JourneyCard({ item, index, isLast }: {
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1], delay: index * 0.1 }}
+      transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98], delay: index * 0.1 }}
       className={`relative flex items-center ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'}`}
     >
       {/* Desktop Layout */}
@@ -3181,12 +3180,12 @@ function JourneyCard({ item, index, isLast }: {
           initial={{ opacity: 0, x: isEven ? -50 : 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1], delay: 0.1 }}
+          transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98], delay: 0.1 }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
           <motion.div
-            className={`relative p-8 rounded-3xl border border-white/[0.08] backdrop-blur-xl overflow-hidden cursor-pointer group ${isEven ? 'text-left' : 'text-right'}`}
+            className="relative p-8 rounded-3xl border border-white/[0.08] backdrop-blur-xl overflow-hidden cursor-pointer group text-left"
             animate={{
               backgroundColor: isHovered ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
               borderColor: isHovered ? "rgba(34, 211, 238, 0.3)" : "rgba(255,255,255,0.08)",
@@ -3302,7 +3301,7 @@ function JourneyCard({ item, index, isLast }: {
         <div className="w-24 flex-shrink-0 flex items-center justify-center relative">
           {/* Connector Line */}
           <motion.div
-            className={`absolute h-0.5 bg-gradient-to-r from-cyan-400 to-cyan-300 ${isEven ? 'left-0 right-1/2' : 'left-1/2 right-0'}`}
+            className={`absolute h-0.5 bg-cyan-400 ${isEven ? 'left-0 right-1/2' : 'left-1/2 right-0'}`}
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}
@@ -3366,7 +3365,7 @@ function JourneyCard({ item, index, isLast }: {
 
           {!isLast && (
             <motion.div
-              className="w-0.5 flex-1 min-h-[60px] bg-gradient-to-b from-cyan-400/50 to-cyan-500/20"
+              className="w-0.5 flex-1 min-h-[60px] bg-cyan-400"
               initial={{ scaleY: 0 }}
               whileInView={{ scaleY: 1 }}
               viewport={{ once: true }}
