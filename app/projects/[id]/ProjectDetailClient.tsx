@@ -40,7 +40,7 @@ export function ProjectDetailClient({
           transition={{ duration: 0.5 }}
         >
           <Link
-            href="/projects"
+            href="/#projects"
             className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-cyan-400 mb-6 transition-colors"
           >
             <ArrowLeft className="w-3 h-3" /> Back to Projects

@@ -404,7 +404,7 @@ function CTASection() {
             </a>
             
             <Link
-              href="/projects"
+              href="/#projects"
               className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-white/[0.03] text-slate-300 border border-white/[0.08] hover:border-cyan-500/20 transition-all text-sm sm:text-base"
             >
               <LayoutDashboard className="w-4 h-4 sm:w-5 sm:h-5" />

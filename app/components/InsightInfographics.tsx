@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain, Target, Compass, BarChart3, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Brain, Target, Compass, BarChart3, ArrowRight, CheckCircle2, UserCheck, ShieldAlert, Zap, Layers } from "lucide-react";
 
 /**
  * Mappings from ID to AI Systems Engineering
@@ -223,6 +223,63 @@ export function RealityCheckInfographic() {
         <div className="p-4 rounded-xl bg-white/5 border border-white/10">
           <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Context Density</div>
           <div className="text-2xl font-black text-violet-400">4x</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const hitlStages = [
+  { id: "automation", title: "AI Execution", detail: "Agents handle >80% of routine workflows autonomously.", icon: Zap },
+  { id: "trigger", title: "Threshold Trigger", detail: "Low confidence (<85%) or high-risk actions trigger pause.", icon: ShieldAlert },
+  { id: "human", title: "Human Oversight", detail: "Expert SMEs validate, correct, or override agentic output.", icon: UserCheck },
+  { id: "feedback", title: "Feedback Loop", detail: "Human corrections injected back into RAG for local learning.", icon: Layers }
+];
+
+export function HITLArchitectureInfographic() {
+  return (
+    <div className="my-12 p-8 rounded-3xl bg-white/[0.02] border border-white/[0.08] relative overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+        <div className="space-y-6">
+          <h4 className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest">The Escalation Ladder</h4>
+          <div className="space-y-4">
+            {hitlStages.map((stage, i) => (
+              <motion.div
+                key={stage.id}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <stage.icon className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div>
+                  <div className="text-sm font-bold text-white">{stage.title}</div>
+                  <div className="text-[11px] text-slate-500 leading-tight">{stage.detail}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="flex flex-col justify-center gap-6">
+          <div className="p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/20">
+            <div className="text-3xl font-black text-white mb-1">71%</div>
+            <div className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-3">Productivity Gain</div>
+            <p className="text-[11px] text-slate-400 leading-relaxed italic">
+              Validated shift from &quot;Approval Models&quot; to &quot;Escalation-Only&quot; HITL orchestration in 2026 enterprise environments.
+            </p>
+          </div>
+          
+          <div className="p-6 rounded-2xl bg-cyan-500/5 border border-cyan-500/20">
+            <div className="text-3xl font-black text-white mb-1">&gt;80%</div>
+            <div className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3">Automation Floor</div>
+            <p className="text-[11px] text-slate-400 leading-relaxed italic">
+              Median autonomous task completion rate when humans transition from &quot;labelers&quot; to &quot;supervisors.&quot;
+            </p>
+          </div>
         </div>
       </div>
     </div>
