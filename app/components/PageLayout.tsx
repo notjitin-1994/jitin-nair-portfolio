@@ -7,9 +7,7 @@ import { Footer } from "./Footer";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Agents", href: "/agents" },
   { label: "Insights", href: "/insights" },
-  { label: "About", href: "/about" },
 ];
 
 export function PageLayout({ children, title, subtitle }: { children: React.ReactNode; title?: string; subtitle?: string }) {

@@ -283,27 +283,6 @@ export function DesktopExpertiseMarquee() {
             </Marquee>
           </div>
         </div>
-
-        {/* Hint - Removed "Paused" indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.6 }}
-          className="mt-8 text-left"
-        >
-          <div className="inline-flex items-center gap-4 text-slate-500 text-sm">
-            <span className="flex items-center gap-2">
-              <span className="text-cyan-400">Hover</span>
-              <span>to pause</span>
-            </span>
-            <span className="text-slate-600">•</span>
-            <span className="flex items-center gap-2">
-              <span className="text-cyan-400">Click cards</span>
-              <span>for details</span>
-            </span>
-          </div>
-        </motion.div>
       </div>
 
       <style jsx global>{`

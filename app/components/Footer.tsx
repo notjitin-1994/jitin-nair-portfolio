@@ -12,7 +12,7 @@ export function Footer() {
   return (
     <footer className="border-t border-white/[0.08] bg-[#0a0a0f]">
       <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           {/* Brand Column */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
@@ -92,32 +92,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Connect Column */}
-          <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-              Connect
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <a
-                  href={`mailto:${siteConfig.links.email}`}
-                  className="text-slate-400 hover:text-cyan-400 transition-colors text-sm flex items-center gap-2"
-                >
-                  <Mail className="w-4 h-4" />
-                  {siteConfig.links.email}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`tel:${siteConfig.links.phone}`}
-                  className="text-slate-400 hover:text-cyan-400 transition-colors text-sm flex items-center gap-2"
-                >
-                  <Phone className="w-4 h-4" />
-                  {siteConfig.links.phone}
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
 
         {/* Bottom Bar */}

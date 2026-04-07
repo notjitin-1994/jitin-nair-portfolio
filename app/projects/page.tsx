@@ -163,17 +163,11 @@ export default function ProjectsPage() {
             className="flex flex-wrap justify-center gap-4"
           >
             <Link
-              href="/contact"
+              href="/#contact"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-500 text-white font-medium hover:bg-cyan-400 transition-colors"
             >
               Start a Project
               <ChevronRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/about"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/[0.08] text-slate-200 font-medium hover:bg-white/[0.12] transition-colors border border-white/[0.12]"
-            >
-              Learn More About Me
             </Link>
           </motion.div>
         </div>
