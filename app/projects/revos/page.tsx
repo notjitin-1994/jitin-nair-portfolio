@@ -1,50 +1,52 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ExternalLink, LayoutDashboard, Wrench, Package, Car, Users, TrendingUp, Zap } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ExternalLink, LayoutDashboard, Wrench, Package, Car, Zap, ShieldCheck, Database, Calendar, Users } from 'lucide-react';
 import Link from 'next/link';
 import { Footer } from '../../components/Footer';
 
+// Refined, elegant pixel banner
 const pixelLetters = [
-  [[1,1,1,1,1,0], [1,1,0,0,1,1], [1,1,1,1,1,1], [1,1,0,1,0,0], [1,1,0,0,1,1]],
-  [[1,1,1,1,1,1], [1,1,0,0,0,0], [1,1,1,1,1,0], [1,1,0,0,0,0], [1,1,1,1,1,1]],
-  [[0,1,1,1,1,0], [1,1,0,0,1,1], [1,1,0,0,1,1], [1,1,0,0,1,1], [0,1,1,1,1,0]],
-  [[0,0,1,1,0,0], [0,1,1,1,1,0], [1,1,0,0,1,1], [1,1,1,1,1,1], [1,1,0,0,1,1]],
-  [[1,1,1,1,1,1], [1,1,0,0,0,0], [1,1,1,1,1,0], [0,0,0,0,1,1], [1,1,1,1,1,0]],
+  [[1,1,1,1,1], [1,0,0,0,1], [1,1,1,1,1], [1,0,0,1,0], [1,0,0,0,1]], // R
+  [[1,1,1,1,1], [1,0,0,0,0], [1,1,1,1,0], [1,0,0,0,0], [1,1,1,1,1]], // E
+  [[1,0,0,0,1], [1,0,0,0,1], [1,0,0,0,1], [0,1,0,1,0], [0,0,1,0,0]], // V
+  [[1,0,0,0,1], [1,0,0,0,1], [1,0,0,0,1], [0,1,0,1,0], [0,0,1,0,0]], // V
+  [[0,1,1,1,0], [1,0,0,0,1], [1,0,0,0,1], [1,0,0,0,1], [0,1,1,1,0]], // O
+  [[0,1,1,1,1], [1,0,0,0,0], [0,1,1,1,0], [0,0,0,0,1], [1,1,1,1,0]], // S
 ];
 
 function PixelBanner() {
   return (
-    <div className="flex gap-1.5 sm:gap-3 md:gap-4">
+    <div className="flex gap-2 sm:gap-4 md:gap-6 opacity-80">
       {pixelLetters.map((letter, letterIndex) => (
         <motion.div
           key={letterIndex}
           className="grid"
           style={{
-            gridTemplateColumns: `repeat(${letter[0].length}, 3px)`,
-            gridTemplateRows: `repeat(${letter.length}, 3px)`,
-            gap: '1.5px',
+            gridTemplateColumns: `repeat(${letter[0].length}, 4px)`,
+            gridTemplateRows: `repeat(${letter.length}, 4px)`,
+            gap: '2px',
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: letterIndex * 0.08 }}
+          transition={{ delay: letterIndex * 0.1 }}
         >
           {letter.map((row, rowIndex) =>
             row.map((pixel, colIndex) => (
               <motion.div
                 key={`${rowIndex}-${colIndex}`}
-                className={pixel ? 'rounded-[1px] w-[3px] h-[3px] sm:w-1 sm:h-1 md:w-1.5 md:h-1.5' : ''}
+                className={pixel ? 'rounded-[1px] w-[4px] h-[4px] sm:w-1.5 sm:h-1.5 md:w-2 md:h-2' : ''}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{
                   opacity: pixel ? 1 : 0,
                   scale: pixel ? 1 : 0,
-                  backgroundColor: pixel ? ['#22d3ee', '#a78bfa', '#22d3ee'] : 'transparent',
+                  backgroundColor: pixel ? ['#cbd5e1', '#f8fafc', '#cbd5e1'] : 'transparent',
                 }}
                 transition={{
-                  opacity: { delay: (letterIndex * 5 + rowIndex * 6 + colIndex) * 0.01, duration: 0.1 },
-                  scale: { delay: (letterIndex * 5 + rowIndex * 6 + colIndex) * 0.01, duration: 0.2 },
-                  backgroundColor: { duration: 3, repeat: Infinity, ease: 'linear', delay: letterIndex * 0.2 },
+                  opacity: { delay: (letterIndex * 5 + rowIndex * 5 + colIndex) * 0.015, duration: 0.3 },
+                  scale: { delay: (letterIndex * 5 + rowIndex * 5 + colIndex) * 0.015, duration: 0.4 },
+                  backgroundColor: { duration: 4, repeat: Infinity, ease: 'linear', delay: letterIndex * 0.3 },
                 }}
               />
             ))
@@ -84,129 +86,162 @@ function AnimatedCounter({ value, suffix = '', decimals = 0 }: { value: number; 
 }
 
 const heroStats = [
-  { label: 'Job Cards', value: 500, suffix: '/mo', icon: Wrench, color: '#22d3ee' },
-  { label: 'Inventory', value: 10, suffix: 'K+', icon: Package, color: '#a78bfa' },
-  { label: 'Vehicles', value: 5, suffix: 'K+', icon: Car, color: '#22c55e' },
-  { label: 'Uptime', value: 99.5, suffix: '%', icon: Zap, color: '#f472b6' },
+  { label: 'Job Cards', value: 1200, suffix: '+', icon: Wrench, color: '#f8fafc' },
+  { label: 'Parts Indexed', value: 15, suffix: 'K+', icon: Package, color: '#e2e8f0' },
+  { label: 'Vehicles', value: 8, suffix: 'K+', icon: Car, color: '#cbd5e1' },
+  { label: 'Efficiency', value: 40, suffix: '%', icon: Zap, color: '#94a3b8' },
 ];
 
 function HeroSection() {
-  return (
-    <section className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-24 sm:pt-32 pb-10 sm:pb-14 overflow-hidden min-h-[70vh]">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-[#0d0d12] to-[#0a0a0f]" />
-      <div className="relative z-10 max-w-6xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="rounded-3xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl p-6 sm:p-8 md:p-10"
-        >
-          <div className="flex justify-start mb-6 sm:mb-8">
-            <PixelBanner />
-          </div>
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 500], [0, 150]);
 
+  return (
+    <section className="relative flex flex-col px-4 sm:px-8 md:px-12 pt-32 sm:pt-40 pb-20 sm:pb-32 overflow-hidden min-h-[85vh] justify-center">
+      {/* Refined gradient background matching graphite/light mode aesthetic of the actual codebase, inverted for dark mode portfolio */}
+      <div className="absolute inset-0 bg-[#050505]" />
+      <motion.div 
+        style={{ y }}
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] opacity-[0.03] pointer-events-none"
+      >
+        <div className="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent blur-3xl" />
+      </motion.div>
+
+      <div className="relative z-10 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="mb-4 sm:mb-6"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="lg:col-span-7 flex flex-col justify-center"
           >
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs sm:text-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+            <div className="flex justify-start mb-10 sm:mb-14">
+              <PixelBanner />
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="mb-6"
+            >
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.1] text-slate-300 text-xs sm:text-sm tracking-wide uppercase font-medium">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-300 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+                </span>
+                Next-Gen Automotive Management
               </span>
-              Automotive Workshop Management
-            </span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-8 tracking-tight"
+            >
+              Digitizing the <br className="hidden sm:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-200 to-slate-500">
+                Modern Workshop.
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="text-slate-400 text-lg sm:text-xl max-w-2xl mb-12 leading-relaxed font-light"
+            >
+              RevvOS is a comprehensive, institutional-grade garage management system. We transformed chaotic paper trails into a seamless digital workflow—tracking everything from initial vehicle intake to final inventory allocation.
+            </motion.p>
           </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="text-slate-400 text-base sm:text-lg md:text-xl max-w-4xl mb-8 sm:mb-12 leading-relaxed"
-          >
-            Comprehensive platform digitizing workshop operations from{' '}
-            <span className="text-cyan-400">job cards to inventory</span>
-            {' '}with AI-powered insights.
-          </motion.p>
-
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="lg:col-span-5 grid grid-cols-2 gap-4 sm:gap-6 content-center"
           >
             {heroStats.map((stat, index) => {
               const Icon = stat.icon;
               return (
                 <motion.div
                   key={stat.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.9 + index * 0.1 }}
-                  className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm hover:border-cyan-500/30 transition-all"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + index * 0.1 }}
+                  className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition-colors group"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${stat.color}20` }}>
-                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: stat.color }} />
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-white/[0.05] flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Icon className="w-5 h-5 text-slate-300" />
                     </div>
-                    <span className="text-slate-500 text-[10px] sm:text-xs">{stat.label}</span>
                   </div>
-                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
+                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1">
                     <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                   </div>
+                  <span className="text-slate-500 text-sm font-medium uppercase tracking-wider">{stat.label}</span>
                 </motion.div>
               );
             })}
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
 }
 
-const metrics = [
-  { id: 'jobs', label: 'Monthly Job Cards', value: 500, unit: '/mo', description: 'Average monthly job cards', trend: 'up', trendValue: '+12%' },
-  { id: 'inventory', label: 'Parts Inventory', value: 10, suffix: 'K+', description: 'Parts tracked in system', trend: 'up', trendValue: '+2K' },
-  { id: 'vehicles', label: 'Active Vehicles', value: 5, suffix: 'K+', description: 'Vehicle service records', trend: 'up', trendValue: '+800' },
-  { id: 'uptime', label: 'Platform Uptime', value: 99.5, unit: '%', description: 'Platform availability', trend: 'stable', trendValue: '99.5%' },
+const processSteps = [
+  { title: 'Intake & Registry', desc: 'Instant vehicle history retrieval via VIN/Plate mapping.', icon: Car },
+  { title: 'Job Card Generation', desc: 'Digital task assignment with predictive duration models.', icon: Wrench },
+  { title: 'Inventory Sync', desc: 'Auto-depletion of parts catalog directly tied to active jobs.', icon: Package },
+  { title: 'Customer CRM', desc: 'Automated status updates and transparent service records.', icon: Users },
+  { title: 'Calendar Logistics', desc: 'Dynamic bay allocation and mechanic scheduling.', icon: Calendar },
+  { title: 'Audit & Delivery', desc: 'Final quality assurance and digital invoice generation.', icon: ShieldCheck },
 ];
 
-function MetricsDashboard() {
+function ProcessFlow() {
   return (
-    <section className="py-10 sm:py-14 px-4 sm:px-6 md:px-8">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-24 sm:py-32 px-4 sm:px-8 md:px-12 relative border-t border-white/[0.05]">
+      <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-left mb-8"
+          viewport={{ once: true, margin: "-100px" }}
+          className="text-left mb-16 max-w-3xl"
         >
-          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Operations</p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Workshop Metrics</h2>
-          <p className="text-slate-400 max-w-2xl text-sm sm:text-base">
-            Real-time performance data from the garage management system.
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight">The Service Lifecycle</h2>
+          <p className="text-slate-400 text-lg sm:text-xl leading-relaxed font-light">
+            A frictionless, closed-loop system designed to eliminate human error and optimize garage throughput.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {metrics.map((metric, index) => (
-            <motion.div
-              key={metric.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="p-4 sm:p-5 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-cyan-500/20 transition-all"
-            >
-              <p className="text-slate-500 text-xs mb-2">{metric.label}</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-2xl sm:text-3xl font-bold text-white">{metric.value}{metric.unit}{metric.suffix}</span>
-              </div>
-              <p className="text-slate-400 text-xs mt-2">{metric.description}</p>
-            </motion.div>
-          ))}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {processSteps.map((step, index) => {
+            const Icon = step.icon;
+            return (
+              <motion.div
+                key={step.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: index * 0.1 }}
+                className="relative p-8 rounded-3xl bg-[#0a0a0f] border border-white/[0.08] hover:border-white/[0.2] transition-colors group overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.02] rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
+                <div className="flex items-center gap-4 mb-6 relative z-10">
+                  <div className="w-12 h-12 rounded-xl bg-white/[0.05] flex items-center justify-center border border-white/[0.1]">
+                    <Icon className="w-6 h-6 text-slate-300" />
+                  </div>
+                  <span className="text-4xl font-black text-white/[0.05] group-hover:text-white/[0.1] transition-colors">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3 relative z-10">{step.title}</h3>
+                <p className="text-slate-400 leading-relaxed relative z-10">{step.desc}</p>
+              </motion.div>
+            )
+          })}
         </div>
       </div>
     </section>
@@ -214,43 +249,50 @@ function MetricsDashboard() {
 }
 
 const techCategories = [
-  { name: 'Frontend', items: ['Next.js 14', 'TypeScript', 'Tailwind', 'Radix UI'], color: '#22d3ee' },
-  { name: 'State', items: ['TanStack Query', 'Zustand', 'React Hook Form', 'Zod'], color: '#a78bfa' },
-  { name: 'Backend', items: ['Supabase', 'PostgreSQL', 'Prisma'], color: '#f472b6' },
-  { name: 'Features', items: ['DnD Kit', 'FullCalendar', 'Framer Motion'], color: '#22c55e' },
+  { name: 'Architecture', items: ['Next.js 14', 'React Server Components', 'TypeScript'], color: '#f8fafc' },
+  { name: 'State & Data', items: ['Zustand', 'TanStack Query', 'Zod', 'React Hook Form'], color: '#cbd5e1' },
+  { name: 'Backend', items: ['Supabase', 'PostgreSQL', 'Prisma ORM'], color: '#94a3b8' },
+  { name: 'UI & Motion', items: ['Tailwind CSS', 'Framer Motion', 'Radix UI', 'DnD Kit'], color: '#64748b' },
 ];
 
 function TechStackGrid() {
   return (
-    <section className="py-10 sm:py-14 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-24 sm:py-32 px-4 sm:px-8 md:px-12 bg-[#050505] border-t border-white/[0.05]">
+      <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-left mb-8"
+          viewport={{ once: true, margin: "-100px" }}
+          className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 mb-16"
         >
-          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Technology</p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Built With</h2>
-          <p className="text-slate-400 max-w-2xl text-sm sm:text-base">
-            Modern stack for automotive workshop management.
-          </p>
+          <div className="max-w-2xl">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight">Engineering the Engine</h2>
+            <p className="text-slate-400 text-lg sm:text-xl leading-relaxed font-light">
+              A modern, type-safe stack combining the performance of React Server Components with the scalability of Supabase. Designed for extreme reliability on the shop floor.
+            </p>
+          </div>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
           {techCategories.map((category, index) => (
             <motion.div
               key={category.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: index * 0.1 }}
-              className="p-5 sm:p-6 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-cyan-500/20 transition-all"
+              className="p-8 sm:p-10 rounded-3xl bg-white/[0.02] border border-white/[0.05]"
             >
-              <h3 className="text-cyan-400 font-medium mb-4">{category.name}</h3>
-              <div className="flex flex-wrap gap-2">
+              <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: category.color }} />
+                {category.name}
+              </h3>
+              <div className="flex flex-wrap gap-3">
                 {category.items.map((item) => (
-                  <span key={item} className="px-3 py-1.5 rounded-lg bg-white/[0.05] text-slate-300 text-sm border border-white/[0.08]">
+                  <span
+                    key={item}
+                    className="px-4 py-2 rounded-xl bg-white/[0.05] text-slate-300 text-sm font-medium tracking-wide border border-white/[0.05]"
+                  >
                     {item}
                   </span>
                 ))}
@@ -263,144 +305,44 @@ function TechStackGrid() {
   );
 }
 
-const processSteps = [
-  { title: 'Vehicle Intake', desc: 'Job card creation', color: '#22d3ee' },
-  { title: 'Service Planning', desc: 'Parts allocation', color: '#a78bfa' },
-  { title: 'Mechanic Assign', desc: 'Task execution', color: '#22d3ee' },
-  { title: 'Quality Check', desc: 'Completion verification', color: '#a78bfa' },
-  { title: 'Customer Delivery', desc: 'Feedback collection', color: '#22d3ee' },
-  { title: 'History Update', desc: 'Service record', color: '#a78bfa' },
-];
-
-function ProcessFlow() {
-  return (
-    <section className="py-10 sm:py-14 px-4 sm:px-6 md:px-8">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-left mb-8"
-        >
-          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Workflow</p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Service Lifecycle</h2>
-          <p className="text-slate-400 max-w-2xl text-sm sm:text-base">
-            End-to-end job management from intake to delivery.
-          </p>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {processSteps.map((step, index) => (
-            <motion.div
-              key={step.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="relative p-5 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-cyan-500/20 transition-all"
-            >
-              <div className="absolute -top-3 -left-3 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold" style={{ backgroundColor: `${step.color}20`, color: step.color }}>
-                {String(index + 1).padStart(2, '0')}
-              </div>
-              <h3 className="text-white font-medium mb-2 mt-2">{step.title}</h3>
-              <p className="text-slate-400 text-sm">{step.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const innovations = [
-  'End-to-end job card lifecycle management',
-  'Auto-save inventory with real-time tracking',
-  'Vehicle service history with predictive maintenance',
-  'Role-based access for garage hierarchies',
-  'Integrated marketing automation',
-  'AI-powered analytics dashboard',
-];
-
-function InnovationsSection() {
-  return (
-    <section className="py-10 sm:py-14 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-left mb-8"
-        >
-          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3">Innovation</p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Key Innovations</h2>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {innovations.map((innovation, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="p-5 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-cyan-500/20 transition-all flex items-start gap-3"
-            >
-              <div className="w-2 h-2 rounded-full bg-cyan-400 mt-2 flex-shrink-0" />
-              <p className="text-slate-300 text-sm">{innovation}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function CTASection() {
   return (
-    <section className="py-10 sm:py-14 px-4 sm:px-6 md:px-8">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-24 sm:py-32 px-4 sm:px-8 md:px-12 border-t border-white/[0.05]">
+      <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="p-6 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-cyan-500/10 to-transparent border border-cyan-500/20"
+          className="p-10 sm:p-16 md:p-20 rounded-[2.5rem] bg-gradient-to-br from-white/[0.05] to-transparent border border-white/[0.1] relative overflow-hidden"
         >
-          <h2 className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 sm:mb-4">Explore RevOS</h2>
-          <p className="text-slate-400 mb-6 sm:mb-8 max-w-xl text-sm sm:text-base">
-            Visit the live platform to see the automotive workshop management system in action.
-          </p>
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/[0.02] blur-3xl rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
           
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-            <a
-              href="https://glitchzero.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/30 transition-all text-sm sm:text-base"
-            >
-              <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span>Visit Live Site</span>
-            </a>
+          <div className="relative z-10 max-w-2xl">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 tracking-tight text-white">Experience RevvOS</h2>
+            <p className="text-slate-400 mb-10 text-lg sm:text-xl font-light leading-relaxed">
+              Explore the comprehensive automotive workshop management system in a live production environment.
+            </p>
             
-            <Link
-              href="/"
-              className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-white/[0.03] text-slate-300 border border-white/[0.08] hover:border-cyan-500/20 transition-all text-sm sm:text-base"
-            >
-              <LayoutDashboard className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span>Dashboard</span>
-            </Link>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <a
+                href="https://glitchzero.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white text-black font-semibold hover:bg-slate-200 transition-colors text-base"
+              >
+                <span>Launch Application</span>
+                <ExternalLink className="w-5 h-5" />
+              </a>
+              
+              <Link
+                href="/projects"
+                className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/[0.05] text-white font-medium border border-white/[0.1] hover:bg-white/[0.1] transition-colors text-base"
+              >
+                <LayoutDashboard className="w-5 h-5" />
+                <span>Return to Portfolio</span>
+              </Link>
+            </div>
           </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-white/[0.08]"
-        >
-          <p className="text-slate-500 text-xs sm:text-sm">
-            RevOS · Built with Next.js, Supabase, and TypeScript
-          </p>
-          <p className="text-slate-600 text-[10px] sm:text-xs mt-1 sm:mt-2">© 2026 Jitin Nair. All rights reserved.</p>
         </motion.div>
       </div>
     </section>
@@ -409,11 +351,9 @@ function CTASection() {
 
 export default function RevosPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-white">
+    <main className="min-h-screen bg-[#050505] text-slate-200 font-sans selection:bg-white/20">
       <HeroSection />
       <ProcessFlow />
-      <MetricsDashboard />
-      <InnovationsSection />
       <TechStackGrid />
       <CTASection />
       <Footer />
