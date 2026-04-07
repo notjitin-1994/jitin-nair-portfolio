@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Footer } from "./components/Footer";
 
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useAnimation } from "framer-motion";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { ScrollReveal, StaggerReveal } from "./components/ScrollReveal";
@@ -399,17 +399,37 @@ function Marquee({
   children,
   speed = 30,
   direction = "left",
+  pauseOnHover = true,
 }: {
   children: React.ReactNode;
   speed?: number;
   direction?: "left" | "right";
+  pauseOnHover?: boolean;
 }) {
   const reducedMotion = useReducedMotion();
+  const controls = useAnimation();
+
+  const startAnimation = useCallback(() => {
+    controls.start({
+      x: direction === "left" ? ["0%", "-50%"] : ["-50%", "0%"],
+      transition: {
+        duration: speed,
+        repeat: Infinity,
+        ease: "linear",
+      }
+    });
+  }, [controls, direction, speed]);
+
+  useEffect(() => {
+    if (!reducedMotion) {
+      startAnimation();
+    }
+  }, [reducedMotion, startAnimation]);
 
   if (reducedMotion) {
     return (
       <div className="flex overflow-x-auto scrollbar-hide">
-        <div className="flex gap-4">
+        <div className="flex gap-4 px-5">
           {children}
         </div>
       </div>
@@ -417,16 +437,16 @@ function Marquee({
   }
 
   return (
-    <div className="flex overflow-hidden">
+    <div 
+      className="flex overflow-hidden"
+      onMouseEnter={() => pauseOnHover && controls.stop()}
+      onMouseLeave={() => pauseOnHover && startAnimation()}
+    >
       <motion.div
         className="flex shrink-0 gap-4"
-        animate={{
-          x: direction === "left" ? [0, "-50%"] : ["-50%", 0],
-        }}
-        transition={{
-          duration: speed,
-          repeat: Infinity,
-          ease: "linear",
+        animate={controls}
+        style={{
+          display: "flex",
         }}
       >
         <div className="flex shrink-0 gap-4">

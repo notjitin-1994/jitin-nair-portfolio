@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Brain, Sparkles, Zap, Network, Monitor, Video, VideoIcon, Database, TrendingUp } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { motion, useAnimation } from 'framer-motion';
+import { Brain, Sparkles, Zap, Network, Monitor, VideoIcon, Database, TrendingUp } from 'lucide-react';
 
 interface ExpertiseItem {
   icon: React.ElementType;
@@ -24,21 +24,34 @@ function Marquee({
   direction?: "left" | "right";
   isPaused?: boolean;
 }) {
+  const controls = useAnimation();
+
+  const startAnimation = useCallback(() => {
+    controls.start({
+      x: direction === "left" ? [0, "-50%"] : ["-50%", 0],
+      transition: {
+        duration: speed,
+        repeat: Infinity,
+        ease: "linear",
+      }
+    });
+  }, [controls, direction, speed]);
+
+  useEffect(() => {
+    if (!isPaused) {
+      startAnimation();
+    } else {
+      controls.stop();
+    }
+  }, [isPaused, startAnimation, controls]);
+
   return (
     <div className="flex overflow-hidden">
       <motion.div
         className="flex shrink-0 gap-4"
-        animate={{
-          x: direction === "left" ? [0, "-50%"] : ["-50%", 0],
-        }}
-        transition={{
-          duration: speed,
-          repeat: Infinity,
-          ease: "linear",
-        }}
+        animate={controls}
         style={{
           display: "flex",
-          // We handle pause via CSS on the parent
         }}
       >
         <div className="flex shrink-0 gap-4">
@@ -51,6 +64,7 @@ function Marquee({
     </div>
   );
 }
+
 // Expertise Card Component
 function ExpertiseCard({ item, index }: { item: ExpertiseItem; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -133,7 +147,7 @@ function ExpertiseCard({ item, index }: { item: ExpertiseItem; index: number }) 
                 }`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.05 }}
+                transition={{ delay: i * 0.03 }}
               >
                 {skill}
               </motion.span>
@@ -147,7 +161,6 @@ function ExpertiseCard({ item, index }: { item: ExpertiseItem; index: number }) 
 
 export function DesktopExpertiseMarquee() {
   const [isPaused, setIsPaused] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const expertise: ExpertiseItem[] = [
     {
@@ -248,8 +261,7 @@ export function DesktopExpertiseMarquee() {
 
         {/* Marquee Container */}
         <div
-          ref={containerRef}
-          className="relative space-y-6 group"
+          className="relative space-y-6"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
@@ -284,7 +296,7 @@ export function DesktopExpertiseMarquee() {
           </div>
         </div>
 
-        {/* Hint - Removed "Paused" indicator */}
+        {/* Hint */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -297,20 +309,9 @@ export function DesktopExpertiseMarquee() {
               <span className="text-cyan-400">Hover</span>
               <span>to pause</span>
             </span>
-            <span className="text-slate-600">•</span>
-            <span className="flex items-center gap-2">
-              <span className="text-cyan-400">Click cards</span>
-              <span>for details</span>
-            </span>
           </div>
         </motion.div>
       </div>
-
-      <style jsx global>{`
-        .group:hover :global(.flex.shrink-0) {
-          animation-play-state: paused !important;
-        }
-      `}</style>
     </section>
   );
 }
