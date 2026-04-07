@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { Footer } from "./components/Footer";
+import LazySection from "./components/LazySection";
 
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useAnimation } from "framer-motion";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
@@ -3455,19 +3457,6 @@ export default function Home() {
     );
   }
 
-  // Common variants for section entrance
-  const sectionVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.6, 
-        ease: [0.22, 1, 0.36, 1] 
-      } 
-    }
-  };
-
   return (
     <main className="bg-void min-h-screen selection:bg-cyan-500/30">
       {isMobile ? (
@@ -3475,68 +3464,56 @@ export default function Home() {
           <div id="top" className="relative z-10">
             <MobileHero onUnlock={handleUnlock} />
           </div>
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.1
-                }
-              }
-            }}
-          >
-            <motion.div id="expertise" variants={sectionVariants}>
+          
+          <div className="space-y-4 md:space-y-0">
+            <LazySection id="expertise">
               <MobileBento />
-            </motion.div>
-            <motion.div id="techstack" variants={sectionVariants}>
+            </LazySection>
+            
+            <LazySection id="techstack">
               <MobileTechStack />
-            </motion.div>
-            <motion.div id="projects" variants={sectionVariants}>
+            </LazySection>
+            
+            <LazySection id="projects">
               <MobileProjects />
-            </motion.div>
-            <motion.div id="journey" variants={sectionVariants}>
+            </LazySection>
+            
+            <LazySection id="journey">
               <MobileJourney />
-            </motion.div>
-            <motion.div id="contact" variants={sectionVariants}>
+            </LazySection>
+            
+            <LazySection id="contact">
               <MobileContact />
-            </motion.div>
-          </motion.div>
+            </LazySection>
+          </div>
         </>
       ) : (
         <>
           <div id="top" className="relative z-10">
             <DesktopHero onUnlock={handleUnlock} />
           </div>
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.1
-                }
-              }
-            }}
-          >
-            <motion.div id="expertise" variants={sectionVariants}>
+
+          <div className="space-y-12 md:space-y-0">
+            <LazySection id="expertise">
               <DesktopExpertiseMarquee />
-            </motion.div>
-            <motion.div id="techstack" variants={sectionVariants}>
+            </LazySection>
+            
+            <LazySection id="techstack">
               <DesktopTechStack />
-            </motion.div>
-            <motion.div id="projects" variants={sectionVariants}>
+            </LazySection>
+            
+            <LazySection id="projects">
               <DesktopProjects />
-            </motion.div>
-            <motion.div id="journey" variants={sectionVariants}>
+            </LazySection>
+            
+            <LazySection id="journey">
               <DesktopJourney />
-            </motion.div>
-            <motion.div id="contact" variants={sectionVariants}>
+            </LazySection>
+            
+            <LazySection id="contact">
               <DesktopContact />
-            </motion.div>
-          </motion.div>
+            </LazySection>
+          </div>
         </>
       )}
       <Footer />
