@@ -31,7 +31,7 @@ export function ProjectDetailClient({
   nextProject,
 }: ProjectDetailClientProps) {
   return (
-    <PageLayout projectId={project.id}>
+    <PageLayout>
       {/* Hero Section */}
       <Section className="pt-24 pb-12">
         <motion.div
@@ -39,13 +39,6 @@ export function ProjectDetailClient({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Link
-            href="/#projects"
-            className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-cyan-400 mb-6 transition-colors"
-          >
-            <ArrowLeft className="w-3 h-3" /> Back to Projects
-          </Link>
-
           <div className="flex items-center gap-3 mb-4 mt-4">
             <Badge variant="cyan">{project.category}</Badge>
             <span className="text-sm text-slate-500">

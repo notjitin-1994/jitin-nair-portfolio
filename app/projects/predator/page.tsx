@@ -15,7 +15,6 @@ import TechStackGrid from './components/TechStackGrid';
 import CitationsSection from './components/CitationsSection';
 import AccessRequestModal from './components/AccessRequestModal';
 import { WorkingTogetherCTA } from '@/app/components/WorkingTogetherCTA';
-import { ProjectNavigation } from '@/app/components/ProjectNavigation';
 
 function AuroraBackground() {
   return (
@@ -106,7 +105,6 @@ export default function PredatorPage() {
         <TechStackGrid />
         <CitationsSection />
         <CTASection />
-        <ProjectNavigation currentId="predator" />
         <WorkingTogetherCTA />
       </div>
 

@@ -6,7 +6,6 @@ import { ArrowLeft } from "lucide-react";
 import { Footer } from "./Footer";
 
 import { WorkingTogetherCTA } from "./WorkingTogetherCTA";
-import { ProjectNavigation } from "./ProjectNavigation";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -24,7 +23,7 @@ function AuroraBackground() {
   );
 }
 
-export function PageLayout({ children, title, subtitle, projectId }: { children: React.ReactNode; title?: string; subtitle?: string; projectId?: string }) {
+export function PageLayout({ children, title, subtitle }: { children: React.ReactNode; title?: string; subtitle?: string }) {
   return (
     <main className="min-h-screen bg-[#050505] text-white font-sans selection:bg-cyan-500/20 relative overflow-hidden">
       <AuroraBackground />
@@ -75,9 +74,6 @@ export function PageLayout({ children, title, subtitle, projectId }: { children:
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-6 pb-20 relative z-10">{children}</div>
-
-      {/* Navigation */}
-      {projectId && <ProjectNavigation currentId={projectId} />}
 
       {/* CTA */}
       <WorkingTogetherCTA />
