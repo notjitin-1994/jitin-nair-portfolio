@@ -590,7 +590,7 @@ function MobileBento() {
   // Skeleton loader for initial render
   if (!mounted) {
     return (
-      <section className="py-6 md:py-8 overflow-hidden">
+      <section className="overflow-hidden">
         <div className="mb-10 px-5">
           <SkeletonLoader className="h-4 w-32 mb-3" />
           <SkeletonLoader className="h-8 w-64 mb-3" />
@@ -606,7 +606,7 @@ function MobileBento() {
   }
 
   return (
-    <section className="py-6 md:py-8 overflow-hidden relative">
+    <section className="overflow-hidden relative">
       {/* Section Header - CSS Animated, SSR Safe */}
       <div className="mb-10 px-5" suppressHydrationWarning>
         <p className="text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 mobile-section-subtitle">
@@ -1001,7 +1001,7 @@ function MobileCapabilities() {
   const goToNext = () => setActiveIndex((prev) => Math.min(prev + 1, categories.length - 1));
 
   return (
-    <section className="py-6 md:py-8 overflow-hidden relative">
+    <section className="overflow-hidden relative">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#0d0d12] to-[#0a0a0f]"></div>
@@ -1166,7 +1166,7 @@ function MobileProjects() {
   }, []);
 
   return (
-    <section id="projects" className="py-6 md:py-8 relative overflow-hidden">
+    <section id="projects" className="relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute w-[600px] h-[600px] rounded-full opacity-[0.06]"
@@ -1288,7 +1288,7 @@ function MobileJourney() {
   };
 
   return (
-    <section className="py-6 md:py-8 px-5 overflow-hidden relative">
+    <section className="px-5 overflow-hidden relative">
       {/* Header */}
       <div className="mb-8" suppressHydrationWarning>
         <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>Journey So Far</p>
@@ -1552,7 +1552,7 @@ function MobileTechStack() {
   }
 
   return (
-    <section id="techstack" className="py-6 md:py-8 overflow-hidden relative">
+    <section id="techstack" className="overflow-hidden relative">
       <div className="px-5 mb-6" suppressHydrationWarning>
         <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>
           Technical Arsenal

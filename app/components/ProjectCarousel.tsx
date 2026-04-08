@@ -148,7 +148,7 @@ export function ProjectCarousel() {
       </div>
 
       {/* Dots Indicator */}
-      <div className="flex justify-center gap-2 mt-6">
+      <div className="flex justify-center gap-2 mt-4 md:mt-6">
         {projectsData.map((_, index) => (
           <button
             key={index}
@@ -164,7 +164,7 @@ export function ProjectCarousel() {
       </div>
 
       {/* Project Counter */}
-      <div className="text-center mt-4 text-slate-400 text-sm">
+      <div className="text-center mt-2 md:mt-4 text-slate-400 text-sm">
         <span className="text-cyan-400 font-medium">{currentIndex + 1}</span>
         <span className="mx-2">/</span>
         <span>{projectsData.length}</span>
