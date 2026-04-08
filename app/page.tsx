@@ -79,6 +79,7 @@ import {
 import { AnimatedBackground } from "./components/animated-background";
 import { TouchFlipCard } from "./components/TouchFlipCard";
 import { ProjectCarousel } from "./components/ProjectCarousel";
+import { FeaturedInsight } from "./components/FeaturedInsight";
 import { Terminal as TerminalComponent } from "./components/terminal";
 import { DesktopVortexBackground } from "./components/desktop-vortex-background";
 
@@ -3500,6 +3501,10 @@ export default function Home() {
               <MobileProjects />
             </LazySection>
             
+            <LazySection id="insights">
+              <FeaturedInsight />
+            </LazySection>
+            
             <LazySection id="journey">
               <MobileJourney />
             </LazySection>
@@ -3526,6 +3531,10 @@ export default function Home() {
             
             <LazySection id="projects">
               <DesktopProjects />
+            </LazySection>
+            
+            <LazySection id="insights">
+              <FeaturedInsight />
             </LazySection>
             
             <LazySection id="journey">
