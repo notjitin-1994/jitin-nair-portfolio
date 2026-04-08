@@ -1223,60 +1223,60 @@ function MobileJourney() {
       period: "Present",
       title: "AI Systems Architect",
       role: "Independent Consultant",
-      description: "Architected 200+ autonomous AI agents. Built Predator (trading engine), Reality-Check (governance), and Smarslate (AI-LMS). Developed Model Context Protocol integrations for 147 agent instances.",
-      highlights: ["200+ Agents Deployed", "Reality-Check Framework", "96% Coverage"],
+      description: "Architected 200+ autonomous AI agents. Built high-frequency trading engines (Predator), multi-agent governance platforms (Reality-Check), and AI-native learning ecosystems (Smarslate). Specialized in LangGraph orchestration and Model Context Protocol (MCP) integrations across 147 agent instances.",
+      highlights: ["200+ Agents Deployed", "96% Fleet Compliance", "MCP Orchestration"],
       icon: Bot,
       bgImage: "/journey-ai.jpg",
       gradient: "from-cyan-500/20 to-teal-500/20",
-      stats: { agents: "200+", instances: "147", compliance: "96%" }
+      stats: { agents: "200+", compliance: "96%", mcp: "147" }
     },
     {
       year: "2022",
       period: "3 Years",
       title: "Instructional Designer",
       role: "Moody's Ratings",
-      description: "Pioneered video-based learning at a global ratings agency. Built scalable production pipelines, reducing content production time by 60% through automation and template standardization.",
-      highlights: ["60% Production Save", "Global Scale L&D", "90%+ Completion"],
+      description: "Led video-based learning production for global ratings agency. Built scalable content pipelines and automated workflows, reducing production time by 60% while maintaining 90%+ completion rates for complex financial curriculum.",
+      highlights: ["60% Production Save", "90%+ Completion", "Global L&D Scale"],
       icon: VideoIcon,
       bgImage: "/journey-finance.jpg",
       gradient: "from-emerald-500/20 to-teal-500/20",
-      stats: { production: "-60%", completion: "90%+", learners: "50K+" }
+      stats: { production: "-60%", completion: "90%+", reach: "Global" }
     },
     {
       year: "2019",
       period: "3 Years",
       title: "Instructor Analyst",
       role: "Accenture",
-      description: "Managed L&D for 50+ employees. Reduced learning time by 70% while maintaining retention. Built hybrid learning models and a 1,400+ line VBA audit automation tool saving ~$140K.",
-      highlights: ["$140K Cost Savings", "70% Time Reduction", "VBA Automation"],
+      description: "Managed L&D for 300+ employees. Developed hybrid learning models that reduced training time by 70% while maintaining retention, saving ~$140K. Engineered a 1,400+ line VBA automation suite for pan-India TNA audits.",
+      highlights: ["$140K Cost Savings", "70% Time Reduction", "VBA Audit Engine"],
       icon: Users,
       bgImage: "/journey-training.jpg",
       gradient: "from-teal-500/20 to-cyan-500/20",
-      stats: { savings: "$140K+", reduction: "70%", employees: "300+" }
+      stats: { savings: "$140K+", reduction: "70%", reach: "300+" }
     },
     {
       year: "2015",
       period: "2 Years",
       title: "Senior Executive",
       role: "247.ai",
-      description: "Managed back-end support for US retail giant. Bridged buyer-seller issues for seamless experience. Trained new joiners and identified for leadership position within 24 months.",
-      highlights: ["Top Performer 3x", "Process Training", "Leadership Track"],
+      description: "Managed back-end support for a US retail giant, ensuring seamless buyer-seller experiences. Recognized as 3x Top Performer and identified for the leadership track within 24 months for excellence in process training and problem solving.",
+      highlights: ["3x Top Performer", "Leadership Track", "Customer Success"],
       icon: Headphones,
       bgImage: "/journey-support.jpg",
       gradient: "from-cyan-500/20 to-emerald-500/20",
-      stats: { satisfaction: "95%", performance: "Top 1%", tenure: "2.5y" }
+      stats: { performance: "Top 1%", tenure: "2.5y", training: "SME" }
     },
     {
       year: "2015",
       period: "Foundation",
       title: "Bachelor of Commerce",
       role: "Sindhi College",
-      description: "Built foundation in business systems and analytical thinking. Self-taught programming during college years, developing first web applications and automated tools.",
-      highlights: ["Self-Taught Dev", "Business Foundation", "Analytical Core"],
+      description: "Developed foundation in business administration and systems logic. Self-taught programmer during college years, architecting early web applications and automated business tools.",
+      highlights: ["Self-Taught Dev", "Business Logic", "Analytical Core"],
       icon: GraduationCap,
       bgImage: "/journey-edu.jpg",
       gradient: "from-emerald-500/20 to-cyan-500/20",
-      stats: { degree: "B.Com", focus: "Systems", logic: "Core" }
+      stats: { degree: "B.Com", systems: "Core", logic: "Advanced" }
     }
   ];
 
@@ -3033,8 +3033,8 @@ function DesktopJourney() {
       title: "AI Systems Architect",
       role: "Independent Consultant",
       period: "March 2025 - Present",
-      description: "Architected 200+ autonomous AI agents. Built Predator (trading engine), Reality-Check (governance), and Smarslate (AI-LMS). Developed Model Context Protocol integrations for 147 agent instances.",
-      highlights: ["200+ Agents Deployed", "Reality-Check Framework", "96% Coverage"],
+      description: "Architected 200+ autonomous AI agents. Built high-frequency trading engines (Predator), multi-agent governance platforms (Reality-Check), and AI-native learning ecosystems (Smarslate). Specialized in LangGraph orchestration and Model Context Protocol (MCP) integrations across 147 agent instances.",
+      highlights: ["200+ Agents Deployed", "96% Fleet Compliance", "MCP Orchestration"],
       icon: Bot,
       bgImage: "/journey-ai.jpg",
       gradient: "from-cyan-500/20 to-blue-500/20"
@@ -3044,8 +3044,8 @@ function DesktopJourney() {
       title: "Instructional Designer",
       role: "Moody's Ratings",
       period: "Sept 2022 - Mar 2025",
-      description: "Pioneered video-based learning at a global ratings agency. Built scalable production pipelines, reducing content production time by 60% through automation and template standardization.",
-      highlights: ["60% Production Save", "Global Scale L&D", "90%+ Completion"],
+      description: "Led video-based learning production for global ratings agency. Built scalable content pipelines and automated workflows, reducing production time by 60% while maintaining 90%+ completion rates for complex financial curriculum.",
+      highlights: ["60% Production Save", "90%+ Completion", "Global L&D Scale"],
       icon: VideoIcon,
       bgImage: "/journey-finance.jpg",
       gradient: "from-emerald-500/20 to-teal-500/20"
@@ -3055,8 +3055,8 @@ function DesktopJourney() {
       title: "Instructor Analyst",
       role: "Accenture",
       period: "Jan 2019 - Sept 2022",
-      description: "Managed L&D for 50+ employees. Reduced learning time by 70% while maintaining retention. Built hybrid learning models and a 1,400+ line VBA audit automation tool saving ~$140K.",
-      highlights: ["$140K Cost Savings", "70% Time Reduction", "VBA Automation"],
+      description: "Managed L&D for 300+ employees. Developed hybrid learning models that reduced training time by 70% while maintaining retention, saving ~$140K. Engineered a 1,400+ line VBA automation suite for pan-India TNA audits.",
+      highlights: ["$140K Cost Savings", "70% Time Reduction", "VBA Audit Engine"],
       icon: Users,
       bgImage: "/journey-training.jpg",
       gradient: "from-teal-500/20 to-cyan-500/20"
@@ -3066,8 +3066,8 @@ function DesktopJourney() {
       title: "Senior Executive",
       role: "247.ai",
       period: "May 2015 - Dec 2017",
-      description: "Managed back-end support for US retail giant. Bridged buyer-seller issues for seamless experience. Trained new joiners and identified for leadership position within 24 months.",
-      highlights: ["Top Performer 3x", "Process Training", "Leadership Track"],
+      description: "Managed back-end support for a US retail giant, ensuring seamless buyer-seller experiences. Recognized as 3x Top Performer and identified for the leadership track within 24 months for excellence in process training and problem solving.",
+      highlights: ["3x Top Performer", "Leadership Track", "Customer Success"],
       icon: Headphones,
       bgImage: "/journey-support.jpg",
       gradient: "from-cyan-500/20 to-emerald-500/20"
@@ -3077,8 +3077,8 @@ function DesktopJourney() {
       title: "Bachelor of Commerce",
       role: "Sindhi College",
       period: "2012 - 2015",
-      description: "Built foundation in business systems and analytical thinking. Self-taught programming during college years, developing first web applications and automated tools.",
-      highlights: ["Self-Taught Dev", "Business Foundation", "Analytical Core"],
+      description: "Developed foundation in business administration and systems logic. Self-taught programmer during college years, architecting early web applications and automated business tools.",
+      highlights: ["Self-Taught Dev", "Business Logic", "Analytical Core"],
       icon: GraduationCap,
       bgImage: "/journey-edu.jpg",
       gradient: "from-emerald-500/20 to-cyan-500/20"
