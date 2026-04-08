@@ -212,6 +212,7 @@ export function Vortex(props: VortexProps) {
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
   ) => {
+    if (canvas.width === 0 || canvas.height === 0) return;
     ctx.save();
     ctx.filter = "blur(8px) brightness(200%)";
     ctx.globalCompositeOperation = "lighter";

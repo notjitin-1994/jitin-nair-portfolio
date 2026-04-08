@@ -26,12 +26,13 @@ export function FeaturedInsight() {
         align="left"
       />
 
-      <div className="max-w-4xl">
+      <div className="w-full">
         <FeaturedCard
           icon={<Brain className="w-6 h-6 text-cyan-400" />}
           title={featuredPost.title}
           description={featuredPost.excerpt}
           animate
+          as="a"
           href={`/insights/${featuredPost.slug}`}
           meta={
             <div className="flex items-center gap-4">
@@ -45,7 +46,7 @@ export function FeaturedInsight() {
           }
           action={
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 w-full">
-              <p className="text-xs text-slate-500 italic max-w-md leading-relaxed">
+              <p className="text-xs text-slate-500 italic max-w-2xl leading-relaxed">
                 Exploring the 2026 career pivot: How pedagogical logic defines the blueprint for artificial reasoning.
               </p>
               <ButtonLink 
