@@ -44,7 +44,7 @@ function getBackgroundImage(projectId: string): string | null {
   const images: Record<string, string> = {
     'predator': '/predator-bg.jpg',
     'reality': '/reality-bg.jpg',
-    'smartslate': '/smartslate-bg.jpg',
+    'smarslate': '/smarslate-bg.jpg',
     'revos': '/revos-bg.jpg',
     'commune': '/commune-bg.jpg',
   };

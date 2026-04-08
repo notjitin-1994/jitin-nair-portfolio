@@ -453,7 +453,7 @@ function ArchitectureFlow({ project }: { project: Project }) {
         { name: "Enforce", tech: "Compliance", color: "#2dd4bf" }
       ];
     }
-    if (project.name.includes("Smartslate")) {
+    if (project.name.includes("Smarslate")) {
       return [
         { name: "Polaris", tech: "Discovery", color: "#22d3ee" },
         { name: "Constellation", tech: "Mapping", color: "#06b6d4" },
@@ -501,7 +501,7 @@ function ArchitectureFlow({ project }: { project: Project }) {
     if (project.name.includes("Reality")) {
       return "Distributed governance platform enforcing truth-only protocols across 147 AI agents. Automated policy injection modifies AGENTS.md system prompts at scale, achieving 96% fleet coverage (141 agents) in under 3 minutes. Immutable VIOLATIONS.log provides full audit trails. Real-time compliance monitoring detects fictional data generation before it reaches users. Zero-configuration enforcement ensures new agents automatically inherit truth-verification mandates.";
     }
-    if (project.name.includes("Smartslate")) {
+    if (project.name.includes("Smarslate")) {
       return "Human-in-the-Loop (HITL) AI learning ecosystem automating the entire L\u0026D lifecycle from discovery to delivery. Six integrated modules—Polaris (automated discovery), Constellation (AI instructional design), Nova (content development), Orbit (AI-powered LMS), Nebula (AI Tutor), and Spectrum (analytics)—form a unified pipeline. Every AI output passes through human validation gates, ensuring quality while achieving 10x throughput. Multi-provider AI orchestration with automated stakeholder interviews, Bloom's Taxonomy-aligned design frameworks, and adaptive learning paths with seamless human escalation.";
     }
     if (project.name.includes("RevOS")) {
@@ -631,11 +631,11 @@ function ProductCard({ project, index, isFlipped, onFlip }: any) {
                 }}
               />
             )}
-            {project.name.includes("Smartslate") && (
+            {project.name.includes("Smarslate") && (
               <div 
                 className="absolute inset-0 opacity-30"
                 style={{
-                  backgroundImage: 'url(/smartslate-bg.jpg)',
+                  backgroundImage: 'url(/smarslate-bg.jpg)',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   filter: 'blur(8px)'
@@ -672,7 +672,7 @@ function ProductCard({ project, index, isFlipped, onFlip }: any) {
                       <Target className="w-5 h-5 text-cyan-400" />
                     ) : project.name.includes("Reality") ? (
                       <Shield className="w-5 h-5 text-cyan-400" />
-                    ) : project.name.includes("Smartslate") ? (
+                    ) : project.name.includes("Smarslate") ? (
                       <BookOpen className="w-5 h-5 text-cyan-400" />
                     ) : project.name.includes("RevOS") ? (
                       <Wrench className="w-5 h-5 text-cyan-400" />
@@ -823,12 +823,12 @@ function ProductCard({ project, index, isFlipped, onFlip }: any) {
               }}
             />
           )}
-          {/* Background image for Smartslate card */}
-          {project.name.includes("Smartslate") && (
+          {/* Background image for Smarslate card */}
+          {project.name.includes("Smarslate") && (
             <div 
               className="absolute inset-0 opacity-30"
               style={{
-                backgroundImage: 'url(/smartslate-bg.jpg)',
+                backgroundImage: 'url(/smarslate-bg.jpg)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 filter: 'blur(8px)'
@@ -1043,12 +1043,12 @@ const projectsData: Project[] = [
     ]
   },
   {
-    name: "AI-First Learning Management (smartslate.io)",
+    name: "AI-First Learning Management (smarslate.io)",
     technologies: ["Next.js 15", "TypeScript", "Supabase", "ChatGPT", "LangChain", "SCORM/xAPI"],
     description: "Enterprise learning platform with AI-generated personalized training pathways.",
     processFlow: ["Skills Assessment", "AI Content Generation", "Personalized Pathway", "Progress Tracking", "Certification"],
     features: ["AI content generation", "Competency analytics", "Adaptive learning paths", "SCORM/xAPI compliance", "Multi-tenant SaaS"],
-    liveUrl: "https://smartslate.io",
+    liveUrl: "https://smarslate.io",
     metrics: [
       { label: "Content Generated", value: "10000", unit: "+", trend: "up" },
       { label: "Learner Engagement", value: "89", unit: "%", trend: "up" },

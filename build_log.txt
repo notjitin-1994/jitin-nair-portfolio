@@ -60,7 +60,7 @@ Route (app)                                       Size     First Load JS
 ├ ○ /projects/predator/logs                       3.28 kB        90.3 kB
 ├ ○ /projects/reality                             4.89 kB         144 kB
 ├ ○ /projects/revos                               4.97 kB         144 kB
-├ ○ /projects/smartslate                          5.07 kB         144 kB
+├ ○ /projects/smarslate                          5.07 kB         144 kB
 └ ○ /supabase-test                                62.6 kB         150 kB
 + First Load JS shared by all                     87 kB
   ├ chunks/23-0c3ce8bbcbfb41f4.js                 31.4 kB

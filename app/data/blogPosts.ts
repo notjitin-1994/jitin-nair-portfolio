@@ -56,7 +56,7 @@ In the agentic era, your competitive advantage isn't the model you use—it is t
 *Citations:*
 - *[1] Anthropic: Model Context Protocol Specification v2025.11.*
 - *[2] Agentic AI Foundation: The Impact of Stateless Transport on Multi-Agent Latency (2026).*
-- *[3] Smartslate Architecture: Scaling 147+ Agent Instances via MCP Gateways.*`
+- *[3] Smarslate Architecture: Scaling 147+ Agent Instances via MCP Gateways.*`
   },
   {
     slug: "beyond-the-monolith-compound-ai-systems",

@@ -181,7 +181,7 @@ const scaleIn = {
 | Project | In projects.ts | In caseStudies.ts | Overlap |
 |---------|---------------|-------------------|---------|
 | Predator | ✅ Full detail | ✅ Full case study | 95% — same project |
-| Smartslate | ✅ Full detail | ✅ Full case study | 95% — same project |
+| Smarslate | ✅ Full detail | ✅ Full case study | 95% — same project |
 | Reality-Check | ✅ Full detail | ✅ Full case study | 95% — same project |
 | RevOS | ✅ Full detail | ✅ Full case study | 95% — same project |
 | Agency | ✅ Full detail | ✅ Full case study | 95% — same project |

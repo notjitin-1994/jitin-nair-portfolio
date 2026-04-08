@@ -98,7 +98,7 @@ app/
 │   ├── predator/              # Trading system deep-dive
 │   ├── agency/                # Multi-agent platform
 │   ├── reality/               # Anti-hallucination system
-│   ├── smartslate/            # L&D platform
+│   ├── smarslate/            # L&D platform
 │   ├── revos/                 # Automotive workshop
 │   └── commune/               # Privacy-first communities
 public/
