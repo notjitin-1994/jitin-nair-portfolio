@@ -16,7 +16,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'smartslate',
     'reality',
     'revos',
-    'agency',
     'commune',
   ].map((id) => ({
     url: `${baseUrl}/projects/${id}`,

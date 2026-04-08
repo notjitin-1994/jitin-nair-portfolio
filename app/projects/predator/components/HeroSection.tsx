@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ChevronDown, Zap, Brain, Activity, Clock } from 'lucide-react';
-import AnimatedCounter from './ui/AnimatedCounter';
+import { AnimatedCounter } from '@/app/components/ui/AnimatedCounter';
 
 const heroStats = [
   { label: 'Latency', value: 8.4, suffix: 'ms', icon: Zap, color: '#22d3ee', decimals: 1 },

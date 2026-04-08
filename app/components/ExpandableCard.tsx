@@ -43,7 +43,6 @@ const trendIcons = { up: TrendingUp, down: TrendingDown, stable: Minus };
 function getBackgroundImage(projectId: string): string | null {
   const images: Record<string, string> = {
     'predator': '/predator-bg.jpg',
-    'agency': '/agency-bg.jpg',
     'reality': '/reality-bg.jpg',
     'smartslate': '/smartslate-bg.jpg',
     'revos': '/revos-bg.jpg',

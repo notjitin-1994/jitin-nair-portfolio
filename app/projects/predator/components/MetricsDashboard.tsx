@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, Activity, Database, Cpu, Gauge } from 'lucide-react';
-import AnimatedCounter from './ui/AnimatedCounter';
+import { AnimatedCounter } from '@/app/components/ui/AnimatedCounter';
 
 const metrics = [
   { id: "latency", label: "Ares Latency", value: 8.4, unit: "ms", suffix: " p99", description: "Signal to execution precision across cTrader socket", trend: "up", trendValue: "Institutional", category: "performance", color: "#22d3ee" },

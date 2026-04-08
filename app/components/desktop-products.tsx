@@ -619,18 +619,7 @@ function ProductCard({ project, index, isFlipped, onFlip }: any) {
                 }}
               />
             )}
-            {/* Background image for Agency card */}
-            {project.name.includes("Agency") && (
-              <div 
-                className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage: 'url(/agency-bg.jpg)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  filter: 'blur(8px)'
-                }}
-              />
-            )}
+            {/* Background image for Reality card */}
             {project.name.includes("Reality") && (
               <div 
                 className="absolute inset-0 opacity-30"
@@ -681,8 +670,6 @@ function ProductCard({ project, index, isFlipped, onFlip }: any) {
                   <div className="w-10 h-10 rounded-lg bg-cyan-400/15 border border-cyan-400/25 flex items-center justify-center">
                     {project.name.includes("Predator") ? (
                       <Target className="w-5 h-5 text-cyan-400" />
-                    ) : project.name.includes("Agency") ? (
-                      <Workflow className="w-5 h-5 text-cyan-400" />
                     ) : project.name.includes("Reality") ? (
                       <Shield className="w-5 h-5 text-cyan-400" />
                     ) : project.name.includes("Smartslate") ? (
