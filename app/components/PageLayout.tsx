@@ -5,17 +5,32 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Footer } from "./Footer";
 
+import { WorkingTogetherCTA } from "./WorkingTogetherCTA";
+
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Insights", href: "/insights" },
 ];
 
+function AuroraBackground() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute -inset-[10%] opacity-30">
+        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-teal-500/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
+    </div>
+  );
+}
+
 export function PageLayout({ children, title, subtitle }: { children: React.ReactNode; title?: string; subtitle?: string }) {
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-white">
+    <main className="min-h-screen bg-[#050505] text-white font-sans selection:bg-cyan-500/20 relative overflow-hidden">
+      <AuroraBackground />
+      
       {/* Hero Header with Integrated Navigation */}
       {title && (
-        <section className="pt-16 pb-12 px-6">
+        <section className="pt-16 pb-12 px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Back Link */}
             <motion.div
@@ -33,7 +48,7 @@ export function PageLayout({ children, title, subtitle }: { children: React.Reac
             {/* Page Title */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
               {subtitle && <p className="text-cyan-400 font-mono text-sm tracking-widest uppercase mb-4">{subtitle}</p>}
-              <h1 className="text-4xl md:text-6xl font-bold">{title}</h1>
+              <h1 className="text-4xl md:text-6xl font-black tracking-tight">{title}</h1>
             </motion.div>
 
             {/* Inline Navigation */}
@@ -47,7 +62,7 @@ export function PageLayout({ children, title, subtitle }: { children: React.Reac
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-slate-400 hover:text-cyan-400 transition-colors"
+                  className="text-sm font-bold uppercase tracking-widest text-slate-500 hover:text-cyan-400 transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -58,18 +73,10 @@ export function PageLayout({ children, title, subtitle }: { children: React.Reac
       )}
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 pb-20">{children}</div>
+      <div className="max-w-7xl mx-auto px-6 pb-20 relative z-10">{children}</div>
 
       {/* CTA */}
-      <section className="py-16 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Interested in working together?</h2>
-          <p className="text-slate-400 mb-6">Let&apos;s discuss how AI enablement can transform your operations.</p>
-          <Link href="/#contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/30 transition-all text-sm font-medium">
-            Get in Touch
-          </Link>
-        </div>
-      </section>
+      <WorkingTogetherCTA />
 
       {/* Footer */}
       <Footer />

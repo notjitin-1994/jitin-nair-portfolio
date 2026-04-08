@@ -14,6 +14,7 @@ import ProcessFlow from './components/ProcessFlow';
 import TechStackGrid from './components/TechStackGrid';
 import CitationsSection from './components/CitationsSection';
 import AccessRequestModal from './components/AccessRequestModal';
+import { WorkingTogetherCTA } from '@/app/components/WorkingTogetherCTA';
 
 function AuroraBackground() {
   return (
@@ -104,6 +105,7 @@ export default function PredatorPage() {
         <TechStackGrid />
         <CitationsSection />
         <CTASection />
+        <WorkingTogetherCTA />
       </div>
 
       <Footer />
