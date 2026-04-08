@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { PixelBanner, type PixelLetter } from './ui/PixelBanner';
+import { DesktopVortexBackground } from './desktop-vortex-background';
+import { AnimatedBackground } from './animated-background';
 
 const buildLetters: PixelLetter[] = [
   [[1,1,1,1,0], [1,0,0,0,1], [1,1,1,1,0], [1,0,0,0,1], [1,1,1,1,0]], // B
@@ -20,10 +22,25 @@ export function WorkingTogetherCTA() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="group relative p-10 sm:p-16 rounded-[2.5rem] bg-white/[0.02] border border-white/[0.08] backdrop-blur-2xl overflow-hidden shadow-2xl"
+          className="group relative p-10 sm:p-16 rounded-[2.5rem] bg-[#050505] border border-white/[0.08] backdrop-blur-2xl overflow-hidden shadow-2xl"
         >
+          {/* Vortex particles - desktop only */}
+          <div className="hidden md:block absolute inset-0 z-0">
+            <DesktopVortexBackground>
+              <div className="absolute inset-0" />
+            </DesktopVortexBackground>
+          </div>
+
+          {/* Animated background - mobile only */}
+          <div className="md:hidden absolute inset-0 z-0">
+            <AnimatedBackground />
+          </div>
+
+          {/* Readability Overlay */}
+          <div className="absolute inset-0 bg-[#050505]/60 z-[1]" />
+
           {/* Spotlight effect */}
-          <div className="absolute -inset-px bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-teal-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
+          <div className="absolute -inset-px bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-teal-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl z-[2]" />
 
           <div className="relative z-10 flex flex-col items-center text-center">
             <div className="mb-10 opacity-80 group-hover:opacity-100 transition-opacity">
