@@ -31,7 +31,7 @@ export function ProjectDetailClient({
   nextProject,
 }: ProjectDetailClientProps) {
   return (
-    <PageLayout>
+    <PageLayout projectId={project.id}>
       {/* Hero Section */}
       <Section className="pt-24 pb-12">
         <motion.div
@@ -365,41 +365,6 @@ export function ProjectDetailClient({
             </a>
           )}
         </motion.div>
-      </Section>
-
-      {/* Navigation */}
-      <Section className="py-12 border-t border-white/[0.08]">
-        <div className="flex justify-between items-center">
-          {prevProject ? (
-            <Link
-              href={`/projects/${prevProject.id}`}
-              className="flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-400 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <div className="text-left">
-                <div className="text-xs text-slate-500">Previous</div>
-                <div className="font-medium">{prevProject.shortName}</div>
-              </div>
-            </Link>
-          ) : (
-            <div />
-          )}
-
-          {nextProject ? (
-            <Link
-              href={`/projects/${nextProject.id}`}
-              className="flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-400 transition-colors"
-            >
-              <div className="text-right">
-                <div className="text-xs text-slate-500">Next</div>
-                <div className="font-medium">{nextProject.shortName}</div>
-              </div>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          ) : (
-            <div />
-          )}
-        </div>
       </Section>
     </PageLayout>
   );

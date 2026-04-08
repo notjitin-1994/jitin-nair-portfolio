@@ -11,6 +11,7 @@ import {
 import Link from 'next/link';
 import { Footer } from '../../components/Footer';
 import { WorkingTogetherCTA } from '@/app/components/WorkingTogetherCTA';
+import { ProjectNavigation } from '@/app/components/ProjectNavigation';
 import { AnimatedCounter } from '@/app/components/ui/AnimatedCounter';
 import { CodeShowcase } from './components/CodeShowcase';
 
@@ -499,6 +500,7 @@ export default function RealityPage() {
         <InnovationsSection />
         <TechStackGrid />
         <CTASection />
+        <ProjectNavigation currentId="reality" />
         <WorkingTogetherCTA />
       </div>
 
