@@ -200,7 +200,7 @@ export function InsightDetail({ slug }: { slug: string }) {
         }}
       />
       {/* Article Header */}
-      <Section className="pt-24 pb-12">
+      <Section className="pt-12 pb-6">
         <div className="max-w-4xl mx-auto">
           <Link
             href="/insights"
@@ -245,7 +245,7 @@ export function InsightDetail({ slug }: { slug: string }) {
       </Section>
 
       {/* Article Content */}
-      <Section className="py-12">
+      <Section className="py-6 md:py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -260,7 +260,7 @@ export function InsightDetail({ slug }: { slug: string }) {
 
       {/* Related Articles */}
       {relatedPosts.length > 0 && (
-        <Section className="py-20 border-t border-white/[0.08]">
+        <Section className="py-10 md:py-12 border-t border-white/[0.08]">
           <div className="max-w-4xl mx-auto">
             <h3 className="text-2xl font-bold mb-10 text-white tracking-tight">
               Keep Reading

@@ -1180,7 +1180,7 @@ export function DesktopProducts({ projects }: DesktopProductsProps) {
   };
 
   return (
-    <section id="projects" className="py-11 lg:py-14">
+    <section id="projects" className="py-6 lg:py-8">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

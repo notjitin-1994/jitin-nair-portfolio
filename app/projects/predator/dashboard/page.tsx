@@ -60,7 +60,7 @@ export default function DashboardPage() {
   if (!isMounted) return null;
 
   return (
-    <div className="flex flex-col space-y-6 max-w-[1600px] mx-auto pb-20">
+    <div className="flex flex-col space-y-6 max-w-[1600px] mx-auto pb-10">
       {/* 1. Header Bar: Real-time Status */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-depth/50 p-6 rounded-2xl border border-white/5 backdrop-blur-md shadow-2xl">
         <div className="flex items-center space-x-8">

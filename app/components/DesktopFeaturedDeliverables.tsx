@@ -412,7 +412,7 @@ export function DesktopFeaturedDeliverables({ projects }: DesktopFeaturedDeliver
   }, [focusedCard]);
 
   return (
-    <section id="projects" className="py-24 lg:py-32">
+    <section id="projects" className="py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Section Header */}
         <motion.div

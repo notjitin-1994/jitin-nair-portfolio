@@ -44,7 +44,7 @@ const agents = [
 
 export default function BayesianPantheon() {
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-8 relative overflow-hidden">
+    <section className="py-6 sm:py-8 px-4 sm:px-6 md:px-8 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-20">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-cyan-500/10 rounded-full blur-[120px]" />

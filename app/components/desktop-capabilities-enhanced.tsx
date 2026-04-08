@@ -219,7 +219,7 @@ export function DesktopCapabilitiesEnhanced() {
   ];
 
   return (
-    <section className="py-32 relative">
+    <section className="py-16 relative">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header - Left Aligned */}
         <motion.div

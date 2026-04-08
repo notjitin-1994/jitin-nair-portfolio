@@ -589,7 +589,7 @@ function MobileBento() {
   // Skeleton loader for initial render
   if (!mounted) {
     return (
-      <section className="py-10 md:py-12 overflow-hidden">
+      <section className="py-6 md:py-8 overflow-hidden">
         <div className="mb-10 px-5">
           <SkeletonLoader className="h-4 w-32 mb-3" />
           <SkeletonLoader className="h-8 w-64 mb-3" />
@@ -605,7 +605,7 @@ function MobileBento() {
   }
 
   return (
-    <section className="py-10 md:py-12 overflow-hidden relative">
+    <section className="py-6 md:py-8 overflow-hidden relative">
       {/* Section Header - CSS Animated, SSR Safe */}
       <div className="mb-10 px-5" suppressHydrationWarning>
         <p className="text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 mobile-section-subtitle">
@@ -1000,7 +1000,7 @@ function MobileCapabilities() {
   const goToNext = () => setActiveIndex((prev) => Math.min(prev + 1, categories.length - 1));
 
   return (
-    <section className="py-10 md:py-12 overflow-hidden relative">
+    <section className="py-6 md:py-8 overflow-hidden relative">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#0d0d12] to-[#0a0a0f]"></div>
@@ -1165,7 +1165,7 @@ function MobileProjects() {
   }, []);
 
   return (
-    <section id="projects" className="py-10 md:py-12 relative overflow-hidden">
+    <section id="projects" className="py-6 md:py-8 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute w-[600px] h-[600px] rounded-full opacity-[0.06]"
@@ -1287,7 +1287,7 @@ function MobileJourney() {
   };
 
   return (
-    <section className="py-10 md:py-12 px-5 overflow-hidden relative">
+    <section className="py-6 md:py-8 px-5 overflow-hidden relative">
       {/* Header */}
       <div className="mb-8" suppressHydrationWarning>
         <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>Journey So Far</p>
@@ -1518,7 +1518,7 @@ function MobileTechStack() {
   }
 
   return (
-    <section id="techstack" className="py-10 md:py-12 overflow-hidden relative">
+    <section id="techstack" className="py-6 md:py-8 overflow-hidden relative">
       <div className="px-5 mb-6" suppressHydrationWarning>
         <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>
           Technical Arsenal
@@ -2092,7 +2092,7 @@ function DesktopTechStack() {
   );
 
   return (
-    <section id="techstack" className="py-10 md:py-12">
+    <section id="techstack" className="py-6 md:py-8">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="mb-12">
@@ -2307,7 +2307,7 @@ function DesktopTechStack() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-10 md:py-12"
+            className="text-center py-6 md:py-8"
           >
             <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4">
               <Search className="w-6 h-6 text-slate-500" />
@@ -2390,7 +2390,7 @@ function DesktopContact() {
   ];
 
   return (
-    <section id="contact" className="py-10 md:py-12 px-6">
+    <section id="contact" className="py-6 md:py-8 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left - Header */}
@@ -2612,7 +2612,7 @@ function MobileContact() {
   ];
 
   return (
-    <section id="contact" className="py-16 px-5 pb-24 relative overflow-hidden">
+    <section id="contact" className="py-8 px-5 pb-12 relative overflow-hidden">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px] -z-10" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/5 blur-[100px] -z-10" />
@@ -2909,7 +2909,7 @@ function DesktopHero({ onUnlock }: { onUnlock?: () => void }) {
 
 function DesktopCapabilities() {
   return (
-    <section className="py-10 md:py-12 relative">
+    <section className="py-6 md:py-8 relative">
       {/* Background Image with Blur */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -3053,7 +3053,7 @@ function DesktopJourney() {
   );
 
   return (
-    <section ref={containerRef} className="py-10 md:py-12 px-6 relative">
+    <section ref={containerRef} className="py-6 md:py-8 px-6 relative">
       {/* Animated Background Gradient */}
       <motion.div
         className="absolute inset-0 opacity-30"

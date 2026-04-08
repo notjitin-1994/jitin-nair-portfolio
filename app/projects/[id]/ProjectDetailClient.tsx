@@ -33,7 +33,7 @@ export function ProjectDetailClient({
   return (
     <PageLayout>
       {/* Hero Section */}
-      <Section className="pt-24 pb-12">
+      <Section className="pt-12 pb-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -71,7 +71,7 @@ export function ProjectDetailClient({
       </Section>
 
       {/* Results Grid */}
-      <Section className="py-8">
+      <Section className="py-4">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -102,7 +102,7 @@ export function ProjectDetailClient({
       </Section>
 
       {/* Challenge & Solution */}
-      <Section className="py-12">
+      <Section className="py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -140,7 +140,7 @@ export function ProjectDetailClient({
       </Section>
 
       {/* What It Does */}
-      <Section className="py-12">
+      <Section className="py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -156,7 +156,7 @@ export function ProjectDetailClient({
       </Section>
 
       {/* How It Works */}
-      <Section className="py-12">
+      <Section className="py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -196,7 +196,7 @@ export function ProjectDetailClient({
       </Section>
 
       {/* Key Innovations */}
-      <Section className="py-12">
+      <Section className="py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -225,7 +225,7 @@ export function ProjectDetailClient({
       </Section>
 
       {/* Technologies */}
-      <Section className="py-12">
+      <Section className="py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -250,7 +250,7 @@ export function ProjectDetailClient({
       </Section>
 
       {/* Metrics */}
-      <Section className="py-12">
+      <Section className="py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -298,7 +298,7 @@ export function ProjectDetailClient({
 
       {/* Testimonial */}
       {project.testimonial && (
-        <Section className="py-12">
+        <Section className="py-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -327,7 +327,7 @@ export function ProjectDetailClient({
       )}
 
       {/* Links */}
-      <Section className="py-12">
+      <Section className="py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

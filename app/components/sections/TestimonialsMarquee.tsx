@@ -6,7 +6,7 @@ import { Quote } from "lucide-react";
 
 export function TestimonialsMarquee() {
   return (
-    <section className="py-20 overflow-hidden">
+    <section className="py-10 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 mb-10">
         <p className="text-cyan-400 font-mono text-sm tracking-widest uppercase mb-4">What People Say</p>
         <h2 className="text-3xl md:text-5xl font-bold">Client Testimonials</h2>

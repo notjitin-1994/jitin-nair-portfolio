@@ -33,7 +33,7 @@ function CTASection() {
 
   return (
     <>
-      <section className="py-24 sm:py-32 px-4 sm:px-8 md:px-12 border-t border-white/[0.05] relative">
+      <section className="py-6 sm:py-8 px-4 sm:px-8 md:px-12 border-t border-white/[0.05] relative">
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -96,7 +96,7 @@ export default function PredatorPage() {
       <AuroraBackground />
       <HeroSection />
       
-      <div className="relative z-10 space-y-12 sm:space-y-16 md:space-y-24 pb-20 sm:pb-32">
+      <div className="relative z-10 space-y-4 sm:space-y-6 md:space-y-8 pb-6 sm:pb-10">
         <BayesianPantheon />
         <ProcessFlow />
         <ArchitectureDiagram />

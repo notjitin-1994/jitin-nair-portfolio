@@ -122,7 +122,7 @@ function CitationCard({ citation, index }: { citation: typeof citations[0]; inde
 
 export function CitationsSection() {
   return (
-    <section className="py-10 sm:py-14 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent">
+    <section className="py-6 sm:py-8 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div 

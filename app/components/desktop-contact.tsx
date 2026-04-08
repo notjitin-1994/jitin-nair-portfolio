@@ -703,7 +703,7 @@ export function DesktopContact() {
   };
 
   return (
-    <section id="contact" className="relative py-32 overflow-hidden">
+    <section id="contact" className="relative py-16 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0">
         <ParticleField />

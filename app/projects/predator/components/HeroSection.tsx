@@ -83,7 +83,7 @@ function PixelBanner() {
 export function HeroSection() {
   return (
     <section 
-      className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-24 sm:pt-32 pb-10 sm:pb-14 overflow-hidden min-h-[70vh]"
+      className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-12 sm:pt-16 pb-6 sm:pb-8 overflow-hidden min-h-[70vh]"
     >
       {/* 2026 Aurora Background effect */}
       <div className="absolute inset-0 pointer-events-none">

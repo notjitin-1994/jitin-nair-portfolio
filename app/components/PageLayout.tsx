@@ -30,7 +30,7 @@ export function PageLayout({ children, title, subtitle }: { children: React.Reac
       
       {/* Hero Header with Integrated Navigation */}
       {title && (
-        <section className="pt-16 pb-12 px-6 relative z-10">
+        <section className="pt-8 pb-6 px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Back Link */}
             <motion.div
@@ -73,7 +73,7 @@ export function PageLayout({ children, title, subtitle }: { children: React.Reac
       )}
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 pb-20 relative z-10">{children}</div>
+      <div className="max-w-7xl mx-auto px-6 pb-10 relative z-10">{children}</div>
 
       {/* CTA */}
       <WorkingTogetherCTA />

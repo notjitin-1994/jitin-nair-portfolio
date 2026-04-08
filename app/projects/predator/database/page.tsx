@@ -175,7 +175,7 @@ export default function DataVaultPage() {
                   <tbody className="divide-y divide-zinc-900">
                     {data.length === 0 ? (
                       <tr>
-                        <td colSpan={10} className="px-4 py-20 text-center text-zinc-600 uppercase tracking-widest">
+                        <td colSpan={10} className="px-4 py-10 text-center text-zinc-600 uppercase tracking-widest">
                           No records found in this sequence
                         </td>
                       </tr>

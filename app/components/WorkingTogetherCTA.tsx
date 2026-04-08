@@ -16,7 +16,7 @@ const buildLetters: PixelLetter[] = [
 
 export function WorkingTogetherCTA() {
   return (
-    <section className="py-12 px-4 sm:px-8 relative z-10 border-t border-white/[0.05]">
+    <section className="py-8 px-4 sm:px-8 relative z-10 border-t border-white/[0.05]">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

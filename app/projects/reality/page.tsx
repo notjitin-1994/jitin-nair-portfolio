@@ -99,7 +99,7 @@ const heroStats = [
 
 function HeroSection() {
   return (
-    <section className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-24 sm:pt-32 pb-10 sm:pb-14 overflow-hidden min-h-[70vh]">
+    <section className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-12 sm:pt-16 pb-6 sm:pb-8 overflow-hidden min-h-[70vh]">
       <div className="relative z-10 max-w-6xl mx-auto w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -192,7 +192,7 @@ const metrics = [
 
 function MetricsDashboard() {
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-8">
+    <section className="py-6 sm:py-8 px-4 sm:px-6 md:px-8">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -244,7 +244,7 @@ const techCategories = [
 
 function TechStackGrid() {
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent">
+    <section className="py-6 sm:py-8 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -338,7 +338,7 @@ const processSteps = [
 
 function ProcessFlow() {
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-8">
+    <section className="py-6 sm:py-8 px-4 sm:px-6 md:px-8">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -394,7 +394,7 @@ const innovations = [
 
 function InnovationsSection() {
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent">
+    <section className="py-6 sm:py-8 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -431,7 +431,7 @@ function CTASection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <section className="py-24 sm:py-32 px-4 sm:px-8 md:px-12 border-t border-white/[0.05] relative">
+    <section className="py-6 sm:py-8 px-4 sm:px-8 md:px-12 border-t border-white/[0.05] relative">
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -492,7 +492,7 @@ export default function RealityPage() {
       <AuroraBackground />
       <HeroSection />
       
-      <div className="relative z-10 space-y-12 sm:space-y-16 md:space-y-24 pb-20 sm:pb-32">
+      <div className="relative z-10 space-y-4 sm:space-y-6 md:space-y-8 pb-6 sm:pb-10">
         <ProcessFlow />
         <MetricsDashboard />
         <CodeShowcase />

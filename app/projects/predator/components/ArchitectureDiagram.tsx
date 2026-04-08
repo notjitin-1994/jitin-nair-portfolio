@@ -104,7 +104,7 @@ export function ArchitectureDiagram() {
   };
 
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 md:px-8">
+    <section className="py-6 sm:py-8 px-4 sm:px-6 md:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
