@@ -7,18 +7,26 @@ import { projectsData } from '../data/projects';
 
 export function ProjectCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const goToNext = useCallback(() => {
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % projectsData.length);
   }, []);
 
   const goToPrev = useCallback(() => {
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + projectsData.length) % projectsData.length);
   }, []);
+
+  const setIndex = useCallback((index: number) => {
+    setDirection(index > currentIndex ? 1 : -1);
+    setCurrentIndex(index);
+  }, [currentIndex]);
 
   // Touch/drag handlers for navigation
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -82,6 +90,23 @@ export function ProjectCarousel() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [goToNext, goToPrev]);
 
+  const variants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 300 : -300,
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction > 0 ? -300 : 300,
+      opacity: 0
+    })
+  };
+
   const currentProject = projectsData[currentIndex];
 
   return (
@@ -89,7 +114,7 @@ export function ProjectCarousel() {
       {/* Carousel Container */}
       <div
         ref={containerRef}
-        className="relative overflow-hidden rounded-2xl"
+        className="relative overflow-hidden rounded-2xl min-h-[400px]"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -98,15 +123,19 @@ export function ProjectCarousel() {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false} custom={direction} mode="popLayout">
           <motion.div
             key={currentIndex}
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 }
+            }}
             style={{
-              transform: isDragging ? `translateX(${dragOffset}px)` : undefined,
               cursor: isDragging ? 'grabbing' : 'grab',
             }}
           >
@@ -123,7 +152,7 @@ export function ProjectCarousel() {
         {projectsData.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentIndex(index)}
+            onClick={() => setIndex(index)}
             className={`w-2 h-2 rounded-full transition-all ${
               index === currentIndex
                 ? 'w-8 bg-cyan-400'

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { PageLayout } from "../../components/PageLayout";
@@ -22,8 +23,13 @@ import {
 } from "../../components/InsightInfographics";
 
 export function InsightDetail({ slug }: { slug: string }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const post = blogPosts.find((p) => p.slug === slug);
   const relatedPosts = blogPosts.filter((p) => p.slug !== slug).slice(0, 2);
+
+  if (!mounted) return <div className="min-h-screen bg-[#050505]" />;
 
   if (!post) {
     return (

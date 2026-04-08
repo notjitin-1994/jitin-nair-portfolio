@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Github, ExternalLink, LayoutDashboard, Shield, 
@@ -487,6 +487,11 @@ function CTASection() {
 }
 
 export default function RealityPage() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  if (!mounted) return <div className="min-h-screen bg-[#050505]" />;
+
   return (
     <main className="min-h-screen bg-[#050505] text-slate-200 font-sans selection:bg-cyan-500/20 relative">
       <AuroraBackground />

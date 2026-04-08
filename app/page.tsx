@@ -1476,6 +1476,7 @@ function MobileJourney() {
 
 function MobileTechStack() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
   const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
   const [categoryPages, setCategoryPages] = useState<Record<string, number>>({});
   const [mounted, setMounted] = useState(false);
@@ -1489,8 +1490,40 @@ function MobileTechStack() {
     setExpandedSkill(null);
   }, [activeIndex, categoryPages]);
 
-  const goToPrev = () => setActiveIndex((prev) => Math.max(prev - 1, 0));
-  const goToNext = () => setActiveIndex((prev) => Math.min(prev + 1, toolCategories.length - 1));
+  const goToPrev = () => {
+    setDirection(-1);
+    setActiveIndex((prev) => Math.max(prev - 1, 0));
+  };
+  const goToNext = () => {
+    setDirection(1);
+    setActiveIndex((prev) => Math.min(prev + 1, toolCategories.length - 1));
+  };
+
+  const handleDragEnd = (event: any, info: any) => {
+    const threshold = 50;
+    if (info.offset.x < -threshold) {
+      goToNext();
+    } else if (info.offset.x > threshold) {
+      goToPrev();
+    }
+  };
+
+  const variants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 300 : -300,
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? 300 : -300,
+      opacity: 0
+    })
+  };
 
   const handlePageChange = (category: string, newPage: number) => {
     setCategoryPages(prev => ({ ...prev, [category]: newPage }));
@@ -1536,7 +1569,11 @@ function MobileTechStack() {
         {toolCategories.map((cat, idx) => (
           <button
             key={cat.category}
-            onClick={() => { setActiveIndex(idx); setExpandedSkill(null); }}
+            onClick={() => { 
+              setDirection(idx > activeIndex ? 1 : -1);
+              setActiveIndex(idx); 
+              setExpandedSkill(null); 
+            }}
             className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
               idx === activeIndex
                 ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
@@ -1568,116 +1605,128 @@ function MobileTechStack() {
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
-        <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-[2px] overflow-hidden">
-          {/* Cards Container */}
-          <div
-            className="flex w-full transition-transform duration-500 ease-out"
-            style={{ transform: `translateX(-${activeIndex * 100}%)` }}
-          >
-            {toolCategories.map((cat) => {
-              const Icon = cat.icon;
-              const currentPage = categoryPages[cat.category] || 1;
-              const totalPages = Math.ceil((cat.tools?.length || 0) / ITEMS_PER_PAGE);
-              const paginatedTools = (cat.tools || []).slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+        <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-[2px] overflow-hidden min-h-[400px]">
+          <AnimatePresence initial={false} custom={direction} mode="wait">
+            <motion.div
+              key={activeIndex}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.2 }
+              }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={1}
+              onDragEnd={handleDragEnd}
+              className="w-full h-full flex-shrink-0 min-w-full px-5 py-6"
+            >
+              {(() => {
+                const cat = toolCategories[activeIndex];
+                const Icon = cat.icon;
+                const currentPage = categoryPages[cat.category] || 1;
+                const totalPages = Math.ceil((cat.tools?.length || 0) / ITEMS_PER_PAGE);
+                const paginatedTools = (cat.tools || []).slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
-              return (
-                <div
-                  key={cat.category}
-                  className="w-full flex-shrink-0 min-w-full px-5 py-6"
-                >
-                  {/* Header */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center flex-shrink-0 border border-cyan-500/20">
-                        <Icon className="w-6 h-6 text-cyan-400" />
+                return (
+                  <>
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center flex-shrink-0 border border-cyan-500/20">
+                          <Icon className="w-6 h-6 text-cyan-400" />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-bold text-lg leading-tight">{cat.category}</h3>
+                          <p className="text-slate-500 text-xs">{cat.description}</p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <h3 className="font-bold text-lg leading-tight">{cat.category}</h3>
-                        <p className="text-slate-500 text-xs">{cat.description}</p>
-                      </div>
-                    </div>
 
-                    {totalPages > 1 && (
-                      <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] rounded-lg px-1.5 py-0.5">
-                        <button
-                          onClick={() => handlePageChange(cat.category, Math.max(currentPage - 1, 1))}
-                          disabled={currentPage === 1}
-                          className="p-0.5 hover:text-cyan-400 disabled:opacity-30 transition-colors"
-                        >
-                          <ChevronLeft className="w-3.5 h-3.5" />
-                        </button>
-                        <span className="text-[9px] font-mono text-slate-500 min-w-[2rem] text-center">
-                          {currentPage}/{totalPages}
-                        </span>
-                        <button
-                          onClick={() => handlePageChange(cat.category, Math.min(currentPage + 1, totalPages))}
-                          disabled={currentPage === totalPages}
-                          className="p-0.5 hover:text-cyan-400 disabled:opacity-30 transition-colors"
-                        >
-                          <ChevronRight className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Skills List */}
-                  {paginatedTools.length > 0 ? (
-                    <div className="space-y-2.5">
-                      {paginatedTools.map((tool) => (
-                      <div
-                        key={tool.name}
-                        className={`p-3 rounded-xl border transition-all ${
-                          expandedSkill === `${cat.category}-${tool.name}`
-                            ? "bg-white/[0.06] border-cyan-500/30"
-                            : "bg-white/[0.03] border-white/[0.08] hover:border-cyan-500/20"
-                        }`}
-                        onClick={() => setExpandedSkill(
-                          expandedSkill === `${cat.category}-${tool.name}`
-                            ? null
-                            : `${cat.category}-${tool.name}`
-                        )}
-                      >
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-sm font-medium text-slate-200">{tool.name}</span>
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full border ${getLevelColor(tool.level)}`}>
-                            {tool.level}
+                      {totalPages > 1 && (
+                        <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] rounded-lg px-1.5 py-0.5">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handlePageChange(cat.category, Math.max(currentPage - 1, 1)); }}
+                            disabled={currentPage === 1}
+                            className="p-0.5 hover:text-cyan-400 disabled:opacity-30 transition-colors"
+                          >
+                            <ChevronLeft className="w-3.5 h-3.5" />
+                          </button>
+                          <span className="text-[9px] font-mono text-slate-500 min-w-[2rem] text-center">
+                            {currentPage}/{totalPages}
                           </span>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handlePageChange(cat.category, Math.min(currentPage + 1, totalPages)); }}
+                            disabled={currentPage === totalPages}
+                            className="p-0.5 hover:text-cyan-400 disabled:opacity-30 transition-colors"
+                          >
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
                         </div>
-                        {/* Progress Bar */}
-                        <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: getLevelWidth(tool.level) }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
-                            className={`h-full rounded-full ${
-                              tool.level === "Expert" ? "bg-cyan-400" :
-                              tool.level === "Advanced" ? "bg-emerald-400" : "bg-amber-400"
-                            }`}
-                          />
-                        </div>
-                        {/* Description (shown when expanded) */}
-                        <AnimatePresence>
-                          {expandedSkill === `${cat.category}-${tool.name}` && (
-                            <motion.p
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              className="text-xs text-slate-400 mt-2 pt-2 border-t border-white/5"
-                            >
-                              {tool.description}
-                            </motion.p>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    ))}
+                      )}
                     </div>
-                  ) : (
-                    <p className="text-slate-500 text-sm py-4">No skills listed</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+
+                    {/* Skills List */}
+                    {paginatedTools.length > 0 ? (
+                      <div className="space-y-2.5">
+                        {paginatedTools.map((tool) => (
+                        <div
+                          key={tool.name}
+                          className={`p-3 rounded-xl border transition-all ${
+                            expandedSkill === `${cat.category}-${tool.name}`
+                              ? "bg-white/[0.06] border-cyan-500/30"
+                              : "bg-white/[0.03] border-white/[0.08] hover:border-cyan-500/20"
+                          }`}
+                          onClick={() => setExpandedSkill(
+                            expandedSkill === `${cat.category}-${tool.name}`
+                              ? null
+                              : `${cat.category}-${tool.name}`
+                          )}
+                        >
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-sm font-medium text-slate-200">{tool.name}</span>
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full border ${getLevelColor(tool.level)}`}>
+                              {tool.level}
+                            </span>
+                          </div>
+                          {/* Progress Bar */}
+                          <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: getLevelWidth(tool.level) }}
+                              transition={{ duration: 0.5, delay: 0.1 }}
+                              className={`h-full rounded-full ${
+                                tool.level === "Expert" ? "bg-cyan-400" :
+                                tool.level === "Advanced" ? "bg-emerald-400" : "bg-amber-400"
+                              }`}
+                            />
+                          </div>
+                          {/* Description (shown when expanded) */}
+                          <AnimatePresence>
+                            {expandedSkill === `${cat.category}-${tool.name}` && (
+                              <motion.p
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="text-xs text-slate-400 mt-2 pt-2 border-t border-white/5"
+                              >
+                                {tool.description}
+                              </motion.p>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ))}
+                      </div>
+                    ) : (
+                      <p className="text-slate-500 text-sm py-4">No skills listed</p>
+                    )}
+                  </>
+                );
+              })()}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
@@ -2637,19 +2686,19 @@ function MobileContact() {
 
       {/* Main Grid */}
       <div className="space-y-4 mb-8">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-3">
           {/* GitHub */}
           <motion.a
             href="https://github.com/notjitin-1994"
             target="_blank"
             rel="noopener noreferrer"
             whileTap={{ scale: 0.96 }}
-            className="flex flex-col items-center justify-center p-6 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-cyan-500/40 transition-all duration-300 shadow-xl"
+            className="flex flex-col items-center justify-center p-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-cyan-500/40 transition-all duration-300 shadow-xl"
           >
-            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-3">
-              <Github className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-2">
+              <Github className="w-5 h-5 text-white" />
             </div>
-            <span className="text-sm font-semibold text-slate-200 uppercase tracking-tighter">GitHub</span>
+            <span className="text-[10px] font-bold text-slate-200 uppercase tracking-tighter">GitHub</span>
           </motion.a>
 
           {/* LinkedIn */}
@@ -2658,34 +2707,28 @@ function MobileContact() {
             target="_blank"
             rel="noopener noreferrer"
             whileTap={{ scale: 0.96 }}
-            className="flex flex-col items-center justify-center p-6 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-cyan-500/40 transition-all duration-300 shadow-xl"
+            className="flex flex-col items-center justify-center p-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-cyan-500/40 transition-all duration-300 shadow-xl"
           >
-            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-3">
-              <Linkedin className="w-6 h-6 text-cyan-400" />
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-2">
+              <Linkedin className="w-5 h-5 text-cyan-400" />
             </div>
-            <span className="text-sm font-semibold text-cyan-400 uppercase tracking-tighter">LinkedIn</span>
+            <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-tighter">LinkedIn</span>
+          </motion.a>
+
+          {/* Instagram */}
+          <motion.a
+            href="https://instagram.com/not_jitin"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileTap={{ scale: 0.96 }}
+            className="flex flex-col items-center justify-center p-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-purple-500/40 transition-all duration-300 shadow-xl"
+          >
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-2">
+              <Instagram className="w-5 h-5 text-purple-400" />
+            </div>
+            <span className="text-[10px] font-bold text-purple-400 uppercase tracking-tighter">Instagram</span>
           </motion.a>
         </div>
-
-        {/* Instagram Card - Wide */}
-        <motion.a
-          href="https://instagram.com/not_jitin"
-          target="_blank"
-          rel="noopener noreferrer"
-          whileTap={{ scale: 0.98 }}
-          className="flex items-center justify-between p-5 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-purple-500/40 transition-all duration-300 shadow-xl"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-              <Instagram className="w-6 h-6 text-purple-400" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-slate-200">Instagram</span>
-              <span className="text-xs text-slate-500 font-mono">@not_jitin</span>
-            </div>
-          </div>
-          <ExternalLink className="w-5 h-5 text-slate-600" />
-        </motion.a>
 
         {/* Connect Expandable Card */}
         <div 
