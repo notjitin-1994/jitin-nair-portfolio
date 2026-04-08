@@ -10,34 +10,34 @@ import {
 const agents = [
   {
     name: "Hermes",
-    role: "The Data Conduit",
+    role: "The Ingestion Daemon",
     icon: Zap,
-    description: "High-frequency cTrader OpenAPI socket stream processing ticks, spreads, and Level 2 depth of market (LOB).",
-    features: ["Sub-ms parsing", "Order Flow Imbalance (OFI)", "TimescaleDB integration"],
+    description: "Ultra-low latency ProtoBuf stream handler for cTrader OpenAPI. Captures institutional LOB (Limit Order Book) depth and OFI (Order Flow Imbalance) at the socket level.",
+    features: ["Sub-ms parsing", "TCP Absolute Anchor sync", "TimescaleDB Worker Pool"],
     color: "#22d3ee"
   },
   {
     name: "Argus",
-    role: "The Regime Observer",
+    role: "The Regime Sentinel",
     icon: Eye,
-    description: "Bayesian confluence engine fusing Random Forest Classifier predictions with Gaussian Hidden Markov Models.",
-    features: ["M1-Bridge resampling", "68-feature ML matrix", "HMM Persistence logic"],
+    description: "Multivariate Gaussian Hidden Markov Model (HMM) for regime persistence detection. Analyzes a 68-feature matrix to identify structural market shifts in real-time.",
+    features: ["BIC-optimized states", "HMM Persistence logic", "M1-Bridge Resampling"],
     color: "#14b8a6"
   },
   {
     name: "Athena",
-    role: "The Strategic Tactician",
+    role: "The Logic Orchestrator",
     icon: Workflow,
-    description: "Orchestrates a 16-node Strategy Matrix, dynamically activating nodes based on real-time market regimes.",
-    features: ["Context-aware routing", "Strategy node hot-swaps", "Rationale generation"],
+    description: "Directed Acyclic Graph (DAG) state manager using LangGraph. Dynamically routes market signals to a 16-node Strategy Matrix based on Argus' regime consensus.",
+    features: ["Context-aware DAG", "Strategy hot-swapping", "Sub-1ms state transitions"],
     color: "#2dd4bf"
   },
   {
     name: "Apollo",
-    role: "The Bayesian Prophet",
+    role: "The Inference Oracle",
     icon: Binary,
-    description: "Fuses Macro (DXY), Microstructure (OFI), and Sentiment into a unified Bayesian posterior probability.",
-    features: ["Probabilistic directives", "Multi-factor fusion", "Reasoning narratives"],
+    description: "Performs Bayesian posterior probability fusion across Macro, Micro, and Sentiment nodes. Generates probabilistic trade directives with natural language rationale.",
+    features: ["Posterior Fusion", "Multi-factor Inference", "Reasoning Narratives"],
     color: "#06b6d4"
   }
 ];

@@ -13,9 +13,9 @@ const techCategories = [
     color: "#22d3ee",
     technologies: [
       { name: "Python 3.13", description: "Async-first implementation", purpose: "Logic Orchestration" },
-      { name: "LangGraph", description: "Stateful agent workflow orchestration", purpose: "Multi-Agent Logic" },
-      { name: "cTrader OpenAPI", description: "Direct socket API access", purpose: "High-Freq Execution" },
-      { name: "Numba", description: "JIT compiled machine code", purpose: "10x Fast Calculations" }
+      { name: "LangGraph", description: "Stateful agent DAG orchestration", purpose: "Multi-Agent Logic" },
+      { name: "cTrader OpenAPI", description: "Direct ProtoBuf socket access", purpose: "Institutional Execution" },
+      { name: "Numba", description: "JIT compiled machine code", purpose: "Vectorized Calculations" }
     ]
   },
   {
@@ -23,10 +23,10 @@ const techCategories = [
     name: "The Pantheon",
     color: "#14b8a6",
     technologies: [
-      { name: "Hermes", description: "Data ingestion daemon", purpose: "Ticks & Depth of Market" },
-      { name: "Argus", description: "Regime detection engine", purpose: "Bayesian Confluence" },
-      { name: "Athena", description: "16-node strategy matrix", purpose: "Dynamic Node Switching" },
-      { name: "Apollo", description: "Sentinel signal oracle", purpose: "Probabilistic Signals" }
+      { name: "Hermes", description: "High-freq ingestion daemon", purpose: "Ticks & LOB Depth" },
+      { name: "Argus", description: "HMM regime sentinel", purpose: "Bayesian Confluence" },
+      { name: "Athena", description: "16-node strategy matrix", purpose: "Dynamic Execution" },
+      { name: "Apollo", description: "Posterior signal oracle", purpose: "Probabilistic Signals" }
     ]
   },
   {
@@ -34,10 +34,10 @@ const techCategories = [
     name: "Data & Pulse",
     color: "#2dd4bf",
     technologies: [
-      { name: "TimescaleDB", description: "Time-series SQL storage", purpose: "Single Source of Truth" },
+      { name: "TimescaleDB", description: "Time-series SQL storage", purpose: "Institutional Persistence" },
       { name: "Redis Streams", description: "High-throughput event bus", purpose: "Inter-agent Comms" },
-      { name: "WebSockets", description: "Real-time state pulse", purpose: "Dashboard Sync" },
-      { name: "Absolute Time", description: "Anchor logic synchronization", purpose: "Drift-free Ordering" }
+      { name: "Socket.io", description: "Real-time bridge pulse", purpose: "Nexus Dashboard Sync" },
+      { name: "Absolute Time", description: "Anchor synchronization", purpose: "Zero Clock Drift" }
     ]
   },
   {
@@ -45,10 +45,10 @@ const techCategories = [
     name: "Intelligence",
     color: "#06b6d4",
     technologies: [
-      { name: "Random Forest", description: "68-feature classifier matrix", purpose: "Trend Classification" },
-      { name: "Gaussian HMM", description: "Hidden Markov Model", purpose: "Regime Persistence" },
+      { name: "Multivariate HMM", description: "Gaussian Hidden Markov Model", purpose: "Regime Persistence" },
+      { name: "Random Forest", description: "68-feature classifier matrix", purpose: "Trend Attribution" },
       { name: "Bayesian Fusion", description: "Posterior probability logic", purpose: "Signal Confluence" },
-      { name: "ADWIN/PSI", description: "Concept drift monitors", purpose: "Model Integrity" }
+      { name: "ADWIN/PSI", description: "MLOps concept drift monitors", purpose: "Model Integrity" }
     ]
   }
 ];

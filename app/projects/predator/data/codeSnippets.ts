@@ -12,249 +12,134 @@ export interface CodeSnippet {
 export const codeSnippets: CodeSnippet[] = [
   {
     id: "regime-detection",
-    title: "Regime Detection Algorithm",
-    filePath: "agents/regime_agent/detection.py",
+    title: "Gaussian HMM Trainer",
+    filePath: "agents/argus/trainer.py",
     language: "python",
-    description: "Adaptive regime classification using ADX, Choppiness Index, and Efficiency Ratio with hysteresis filtering to prevent regime whipsaw.",
-    code: `def detect_regime(self, data: pd.DataFrame) -> RegimeClassification:
-    """
-    Multi-factor regime detection with adaptive thresholds.
-    Uses ADX for trend strength, CHOP for ranging detection,
-    and Kaufman's Efficiency Ratio for directional consistency.
-    """
-    # Calculate indicators
-    adx = self.calculate_adx(data['high'], data['low'], data['close'])
-    chop = self.choppiness_index(data['high'], data['low'], data['close'])
-    er = self.efficiency_ratio(data['close'])
+    description: "Multivariate Gaussian Hidden Markov Model for regime persistence. Uses BIC (Bayesian Information Criterion) to optimize the number of hidden market states.",
+    code: `def find_best_k(self, X: np.ndarray, current_k: Optional[int] = None) -> int:
+    """Find optimal K using BIC sweep."""
+    k_range = [k for k in [current_k - 1, current_k, current_k + 1] if 3 <= k <= 7] if current_k else [3, 4, 5, 6, 7]
+    best_bic, best_k = np.inf, k_range[0]
     
-    # Dynamic threshold calculation (MAD-based)
-    adx_threshold = self.adaptive_threshold(adx, window=20)
-    
-    # Regime classification with hysteresis
-    if adx > adx_threshold and er > 0.6:
-        regime = Regime.TRENDING
-        confidence = min(adx / 50, 1.0) * er
-    elif chop > 60 and adx < adx_threshold * 0.7:
-        regime = Regime.RANGING
-        confidence = (chop / 100) * (1 - adx / adx_threshold)
-    elif self.atr_percent(data) > 1.5:
-        regime = Regime.VOLATILE
-        confidence = min(self.atr_percent(data) / 3.0, 1.0)
-    else:
-        regime = Regime.UNCERTAIN
-        confidence = 0.35  # Below trading threshold
-    
-    return RegimeClassification(
-        regime=regime,
-        confidence=confidence,
-        timestamp=datetime.utcnow(),
-        features={'adx': adx, 'chop': chop, 'er': er}
-    )`
-  },
-  {
-    id: "risk-management",
-    title: "Risk Management Module",
-    filePath: "agents/strategy_agent/risk.py",
-    language: "python",
-    description: "Kelly Criterion position sizing with maximum drawdown circuit breakers and volatility-adjusted exposure limits.",
-    code: `class RiskManager:
-    """Institutional-grade risk management with dynamic position sizing."""
-    
-    def __init__(self, max_risk_per_trade: float = 0.02):
-        self.max_risk = max_risk_per_trade
-        self.circuit_breaker = CircuitBreaker(
-            daily_loss_limit=0.05,
-            consecutive_losses=3
-        )
-    
-    def calculate_position_size(
-        self, 
-        signal: Signal,
-        account_balance: float,
-        current_exposure: float
-    ) -> PositionSizing:
-        """
-        Kelly Criterion position sizing with safety constraints.
-        
-        f* = (bp - q) / b
-        where: b = avg win/avg loss, p = win rate, q = 1-p
-        """
-        # Historical win rate from backtests
-        win_rate = signal.backtest_metrics.win_rate
-        avg_win = signal.backtest_metrics.avg_profit
-        avg_loss = abs(signal.backtest_metrics.avg_loss)
-        
-        # Kelly fraction (capped at 0.25 for safety)
-        kelly = (win_rate * avg_win - (1 - win_rate) * avg_loss) / avg_win
-        kelly_capped = min(max(kelly, 0), 0.25)
-        
-        # Volatility adjustment
-        vol_factor = 1.0 / (1 + signal.volatility_index * 2)
-        
-        # Final position size
-        risk_amount = account_balance * self.max_risk * kelly_capped * vol_factor
-        position_size = risk_amount / signal.stop_loss_distance
-        
-        # Exposure limit check
-        max_position = account_balance * 0.1  # 10% max per position
-        position_size = min(position_size, max_position)
-        
-        return PositionSizing(
-            size=position_size,
-            risk_pct=risk_amount / account_balance,
-            kelly_fraction=kelly_capped,
-            confidence=signal.confidence
-        )`
-  },
-  {
-    id: "circuit-breaker",
-    title: "Circuit Breaker Logic",
-    filePath: "core/circuit_breaker.py",
-    language: "python",
-    description: "Three-state circuit breaker with automatic recovery and exponential backoff for system protection.",
-    code: `class CircuitBreaker:
-    """
-    Self-healing circuit breaker with 3-state logic:
-    CLOSED (normal) → OPEN (tripped) → HALF_OPEN (recovery)
-    """
-    
-    def __init__(
-        self, 
-        failure_threshold: int = 5,
-        recovery_timeout: int = 300,
-        half_open_max_calls: int = 3
-    ):
-        self.failure_threshold = failure_threshold
-        self.recovery_timeout = recovery_timeout
-        self.half_open_max_calls = half_open_max_calls
-        
-        self.state = CircuitState.CLOSED
-        self.failure_count = 0
-        self.last_failure_time: Optional[datetime] = None
-        self.half_open_calls = 0
-        self._lock = asyncio.Lock()
-    
-    async def call(self, func: Callable, *args, **kwargs):
-        async with self._lock:
-            if self.state == CircuitState.OPEN:
-                if self.should_attempt_reset():
-                    self.state = CircuitState.HALF_OPEN
-                    self.half_open_calls = 0
-                else:
-                    raise CircuitBreakerOpen(
-                        f"Circuit open. Retry after {self.get_remaining_timeout()}s"
-                    )
-            
-            if self.state == CircuitState.HALF_OPEN:
-                if self.half_open_calls >= self.half_open_max_calls:
-                    raise CircuitBreakerOpen("Half-open limit reached")
-                self.half_open_calls += 1
-        
+    for k in k_range:
         try:
-            result = await func(*args, **kwargs)
-            await self.on_success()
-            return result
-        except Exception as e:
-            await self.on_failure()
-            raise e
+            model = hmm.GaussianHMM(n_components=k, covariance_type="full", n_iter=100)
+            model.fit(X)
+            bic = model.bic(X)
+            if bic < best_bic:
+                best_bic, best_k = bic, k
+        except: continue
+    return best_k
+
+async def train_cycle(self):
+    """Main training loop with session-aware normalization."""
+    df = await self.fetch_training_data(30)
+    features_df = extract_regime_features(df)
+    X_scaled = StandardScaler().fit_transform(features_df.values)
     
-    async def on_failure(self):
-        async with self._lock:
-            self.failure_count += 1
-            self.last_failure_time = datetime.utcnow()
-            
-            if self.failure_count >= self.failure_threshold:
-                self.state = CircuitState.OPEN
-                logger.warning(f"Circuit OPENED after {self.failure_count} failures")
+    # Model Evolution
+    best_k = self.find_best_k(X_scaled)
+    model = hmm.GaussianHMM(n_components=best_k, covariance_type="full")
+    model.fit(X_scaled)
     
-    async def on_success(self):
-        async with self._lock:
-            if self.state == CircuitState.HALF_OPEN:
-                self.state = CircuitState.CLOSED
-                self.failure_count = 0
-                logger.info("Circuit CLOSED - recovery successful")`
+    # Validation & Persistence
+    scores = model.score_samples(X_scaled)
+    ll_5th = np.percentile(scores, 5)
+    
+    bundle = RegimeBundle(model=model, ood_threshold=ll_5th, metadata={"k": best_k})
+    bundle.save(self.model_path)`
   },
   {
-    id: "websocket-handler",
-    title: "WebSocket Tick Handler",
-    filePath: "agents/ingestion_agent/websocket.py",
+    id: "ingestion-daemon",
+    title: "Hermes ProtoBuf Ingestor",
+    filePath: "agents/hermes/main.py",
     language: "python",
-    description: "High-performance WebSocket connection with automatic reconnection, buffering, and sub-50ms latency guarantee.",
-    code: `class TickWebSocketHandler:
-    """
-    Ultra-low latency WebSocket handler for real-time tick data.
-    Optimized for sub-50ms end-to-end latency (p99).
-    """
+    description: "High-throughput ProtoBuf stream handler for cTrader OpenAPI. Processes ticks and Depth of Market (LOB) with microsecond precision.",
+    code: `async def handle_tick(self, event):
+    """Processes real-time ticks from cTrader OpenAPI socket."""
+    sid = event.symbolId
+    if sid not in self.symbols: return
     
-    def __init__(self, buffer_size: int = 1000):
-        self.buffer = asyncio.Queue(maxsize=buffer_size)
-        self.latency_tracker = LatencyTracker()
-        self.reconnect_policy = ExponentialBackoff(
-            base_delay=1.0,
-            max_delay=60.0,
-            max_retries=10
-        )
-        self._running = False
-        self._ws: Optional[websockets.WebSocketClientProtocol] = None
+    cache = self.price_cache[sid]
+    if event.HasField('bid'): cache["bid"] = event.bid / 100000.0
+    if event.HasField('ask'): cache["ask"] = event.ask / 100000.0
     
-    async def connect(self, uri: str):
-        """Establish connection with automatic reconnection."""
-        self._running = True
+    if cache["bid"] and cache["ask"]:
+        now = datetime.now(timezone.utc)
+        symbol = self.symbols[sid]
+        spread = cache["ask"] - cache["bid"]
         
-        while self._running:
-            try:
-                async with websockets.connect(
-                    uri,
-                    compression=None,  # Disable for speed
-                    ping_interval=20,
-                    ping_timeout=10
-                ) as ws:
-                    self._ws = ws
-                    logger.info(f"WebSocket connected to {uri}")
-                    self.reconnect_policy.reset()
-                    
-                    await self._handle_messages(ws)
-                    
-            except websockets.exceptions.ConnectionClosed:
-                logger.warning("WebSocket closed, attempting reconnect...")
-            except Exception as e:
-                logger.error(f"WebSocket error: {e}")
-            
-            if self._running:
-                delay = self.reconnect_policy.next_delay()
-                logger.info(f"Reconnecting in {delay:.1f}s...")
-                await asyncio.sleep(delay)
+        # Publish to inter-agent Redis bus
+        await self.redis.publish(f"{symbol.lower()}_ticks", json.dumps({
+            "ts": now.isoformat(), 
+            "bid": cache["bid"], 
+            "ask": cache["ask"]
+        }))
+        
+        # Persistent Time-Series Storage
+        if symbol == "XAUUSD":
+            async with self.db_pool.acquire() as conn:
+                await conn.execute("""
+                    INSERT INTO market_ticks (timestamp, symbol, bid, ask, spread) 
+                    VALUES ($1, 'XAUUSD', $2, $3, $4)
+                """, now, cache["bid"], cache["ask"], spread)`
+  },
+  {
+    id: "bridge-nexus",
+    title: "Redis-to-Socket.io Bridge",
+    filePath: "nexus/api/src/index.ts",
+    language: "typescript",
+    description: "The Nexus bridge acts as a real-time conduit, piping internal agent signals from Redis to the frontend dashboard with zero-copy overhead.",
+    code: `const redisSub = new Redis({ host: process.env.REDIS_HOST });
+
+redisSub.subscribe('xauusd_ticks', 'predator:regime', 'predator:signals');
+
+redisSub.on('message', async (channel, message) => {
+  try {
+    const payload = JSON.parse(message);
     
-    async def _handle_messages(self, ws):
-        """Process incoming ticks with minimal latency."""
-        async for message in ws:
-            receive_time = time.time_ns()
-            
-            # Parse with minimal overhead
-            tick = self._parse_tick(message)
-            tick.received_at = receive_time
-            
-            # Non-blocking buffer write
-            try:
-                self.buffer.put_nowait(tick)
-            except asyncio.QueueFull:
-                # Drop oldest if buffer full (maintain real-time)
-                self.buffer.get_nowait()
-                self.buffer.put_nowait(tick)
-            
-            # Track latency
-            latency_ms = (receive_time - tick.timestamp) / 1_000_000
-            self.latency_tracker.record(latency_ms)
+    // Broadcast to dashboard clients
+    io.emit(channel, payload);
     
-    def _parse_tick(self, message: str) -> Tick:
-        """Zero-copy JSON parsing using orjson."""
-        data = orjson.loads(message)
-        return Tick(
-            symbol=data['s'],
-            bid=float(data['b']),
-            ask=float(data['a']),
-            timestamp=int(data['t']) * 1_000_000  # Convert to ns
-        )`
+    // Audit Trail Logging
+    if (channel === 'predator:system_logs') {
+      await pool.query(
+        'INSERT INTO system_logs (timestamp, service, level, event, data_json) VALUES ($1, $2, $3, $4, $5)',
+        [payload.timestamp, payload.service, payload.level, payload.event, JSON.stringify(payload.data)]
+      );
+    }
+  } catch (e) {
+    logger.error({ channel, message }, 'Nexus Bridge: Parse Error');
+  }
+});`
+  },
+  {
+    id: "risk-forge",
+    title: "Institutional Risk Forge",
+    filePath: "agents/ares/main.py",
+    language: "python",
+    description: "Dynamic position sizing with multi-stage circuit breakers and volatility-adjusted Kelly Criterion logic.",
+    code: `def calculate_position_size(self, signal: Signal, balance: float) -> float:
+    """Volatility-adjusted position sizing with institutional caps."""
+    # 1. Base Kelly Fraction
+    kelly = (signal.win_rate * signal.payout_ratio - (1 - signal.win_rate)) / signal.payout_ratio
+    safe_kelly = min(max(kelly, 0), 0.20)  # Cap at 20% fractional
+    
+    # 2. Volatility Normalization
+    vol_scale = 1.0 / (1 + signal.atr_percent * 5)
+    
+    # 3. Size Calculation
+    risk_amount = balance * self.max_drawdown_limit * safe_kelly * vol_scale
+    position_size = risk_amount / signal.stop_loss_pips
+    
+    # 4. Safety Overrides
+    return min(position_size, balance * 0.1) # Max 10% exposure
+
+async def monitor_pnl(self):
+    """Real-time circuit breaker monitoring."""
+    if self.current_daily_loss > self.daily_stop_threshold:
+        await self.emergency_shutdown("Daily Loss Limit Breached")
+        self.circuit_breaker_active = True`
   }
 ];
 

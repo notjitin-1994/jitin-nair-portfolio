@@ -15,16 +15,16 @@ const processSteps = [
   {
     id: "hermes",
     number: '01',
-    title: "Hermes: Data Conduit",
-    subtitle: "High-Frequency Ingestion",
-    description: "Real-time socket connection to cTrader OpenAPI, processing Ticks and Depth of Market (LOB) data into TimescaleDB.",
+    title: "Hermes: Ingestion",
+    subtitle: "High-Frequency Conduit",
+    description: "Real-time ProtoBuf socket connection to cTrader OpenAPI, processing institutional Ticks and LOB (Limit Order Book) data into TimescaleDB.",
     icon: "Zap",
     color: "#22d3ee",
     details: [
-      "Sub-ms ingestion latency", 
+      "Sub-10ms ingestion precision", 
       "Order Flow Imbalance (OFI) extraction", 
       "Multithreaded DatabaseWorker pool", 
-      "Absolute Time Anchor logic"
+      "Absolute Time Anchor synchronization"
     ],
     metrics: [
       { label: "Throughput", value: "5000+ tps" }, 
@@ -34,77 +34,77 @@ const processSteps = [
   {
     id: "argus",
     number: '02',
-    title: "Argus: Regime Observer",
+    title: "Argus: Detection",
     subtitle: "Bayesian Confluence",
-    description: "Determines market regime by fusing Price Action, Random Forest Classifier, and Gaussian Hidden Markov Models.",
+    description: "Determines structural market shifts by evaluating a 68-feature matrix through a Multivariate Gaussian Hidden Markov Model (HMM).",
     icon: "Brain",
     color: "#14b8a6",
     details: [
-      "Custom M1-Bridge resampling", 
+      "BIC-optimized state discovery", 
       "68-feature Random Forest matrix", 
-      "Gaussian HMM persistence logic", 
-      "Weighted Bayesian scoring"
+      "HMM Persistence transition logic", 
+      "M1-Bridge institutional resampling"
     ],
     metrics: [
-      { label: "Update Freq", value: "M1/M5/M15/H1" }, 
-      { label: "Accuracy", value: "90%" }
+      { label: "Update Freq", value: "M1/M5/M15" }, 
+      { label: "Accuracy", value: "91.2%" }
     ]
   },
   {
     id: "athena",
     number: '03',
-    title: "Athena: Strategy Matrix",
-    subtitle: "Dynamic Orchestration",
-    description: "Manages a 16-node Strategy Matrix, dynamically routing to optimal strategies based on real-time regimes.",
+    title: "Athena: Orchestration",
+    subtitle: "Stateful Execution",
+    description: "A LangGraph-managed DAG (Directed Acyclic Graph) orchestrating a 16-node Strategy Matrix for dynamic execution routing.",
     icon: "Target",
     color: "#2dd4bf",
     details: [
-      "Context-aware strategy routing", 
-      "EMA Pullback & Volatility Breakout", 
-      "Mean Reversion node activation", 
+      "Context-aware LangGraph routing", 
+      "EMA Pullback & Breakout nodes", 
+      "Mean Reversion state activation", 
       "Institutional rationale generation"
     ],
     metrics: [
-      { label: "Active Nodes", value: "16" }, 
-      { label: "Routing Latency", value: "<1ms" }
+      { label: "Strategy Nodes", value: "16" }, 
+      { label: "Logic", value: "LangGraph" }
     ]
   },
   {
     id: "apollo",
     number: '04',
-    title: "Apollo: Sentinel Oracle",
-    subtitle: "Probabilistic Signals",
-    description: "Fuses Macro (DXY), Microstructure (OFI), and Sentiment into a unified Bayesian posterior probability.",
+    title: "Apollo: Inference",
+    subtitle: "Posterior Oracle",
+    description: "Synthesizes multi-factor inputs into a Bayesian posterior probability, issuing high-confidence trade directives.",
     icon: "Activity",
     color: "#06b6d4",
     details: [
-      "Bayesian posterior inference", 
-      "Cross-asset correlation analysis", 
-      "Natural language reasoning", 
-      "Contextual ENTER/WAIT directives"
+      "Bayesian posterior fusion", 
+      "Cross-asset DXY correlation", 
+      "Neural sentiment vector injection", 
+      "Probabilistic ENTER/EXIT logic"
     ],
     metrics: [
       { label: "Posterior P", value: "Confidence" }, 
-      { label: "Latency", value: "10ms p99" }
+      { label: "Latency", value: "8ms p99" }
     ]
   },
   {
     id: "sentinel",
     number: '05',
-    title: "Sentinel: Guard Rails",
-    subtitle: "MLOps & Integrity",
-    description: "Continuous monitoring for feature drift and model stability with automated circuit breakers.",
+    title: "Guard Rails: Integrity",
+    subtitle: "MLOps & Stability",
+    description: "Continuous monitoring for concept drift and model stability with automated institutional circuit breakers.",
     icon: "Scale",
     color: "#0ea5e9",
     details: [
-      "PSI Drift Detection", 
-      "ADWIN Concept Drift tracking", 
+      "ADWIN/PSI Drift Detection", 
+      "Feature distribution tracking", 
       "Automated Daily Loss limits", 
-      "Prometheus/Grafana observability"
+      "Prometheus observability stack"
     ],
     metrics: [
       { label: "Drift Trigger", value: "PSI > 0.25" }, 
-      { label: "Circuit Brk", value: "3% Loss" }
+      { label: "Risk Shield", value: "Active" }
     ]
   }
 ];

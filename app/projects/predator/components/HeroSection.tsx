@@ -5,10 +5,10 @@ import { ChevronDown, Zap, Brain, Activity, Clock } from 'lucide-react';
 import AnimatedCounter from './ui/AnimatedCounter';
 
 const heroStats = [
-  { label: 'Latency', value: 10, suffix: 'ms', icon: Zap, color: '#22d3ee' },
-  { label: 'Accuracy', value: 90, suffix: '%', icon: Brain, color: '#14b8a6' },
-  { label: 'Uptime', value: 99.9, suffix: '%', icon: Activity, color: '#2dd4bf', decimals: 1 },
-  { label: 'Agents', value: 7, suffix: '', icon: Clock, color: '#5eead4' },
+  { label: 'Latency', value: 8.4, suffix: 'ms', icon: Zap, color: '#22d3ee', decimals: 1 },
+  { label: 'Regime Accuracy', value: 91.2, suffix: '%', icon: Brain, color: '#14b8a6', decimals: 1 },
+  { label: 'Data Ingestion', value: 5000, suffix: 'tps', icon: Activity, color: '#2dd4bf' },
+  { label: 'Active Agents', value: 7, suffix: '', icon: Clock, color: '#06b6d4' },
 ];
 
 const pixelLetters = [
@@ -48,16 +48,16 @@ function PixelBanner() {
                   opacity: pixel ? 1 : 0,
                   scale: pixel ? 1 : 0,
                   backgroundColor: pixel
-                    ? ['#22d3ee', '#14b8a6', '#22d3ee']
+                    ? ['#22d3ee', '#14b8a6', '#2dd4bf', '#22d3ee']
                     : 'transparent',
                 }}
                 transition={{
                   opacity: { delay: (letterIndex * 5 + rowIndex * 6 + colIndex) * 0.01, duration: 0.1 },
                   scale: { delay: (letterIndex * 5 + rowIndex * 6 + colIndex) * 0.01, duration: 0.2 },
                   backgroundColor: {
-                    duration: 3,
+                    duration: 4,
                     repeat: Infinity,
-                    ease: 'linear',
+                    ease: 'easeInOut',
                     delay: letterIndex * 0.2,
                   },
                 }}
@@ -84,15 +84,12 @@ export function HeroSection() {
   return (
     <section 
       className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-24 sm:pt-32 pb-10 sm:pb-14 overflow-hidden min-h-[70vh]"
-      style={{
-        backgroundImage: 'url(/predator-bg.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
     >
-      {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-[#0a0a0f]/80 backdrop-blur-[2px]" />
+      {/* 2026 Aurora Background effect */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
 
       <div className="relative z-10 max-w-6xl mx-auto w-full">
         {/* Glassmorphic Card containing all hero content */}
@@ -100,10 +97,13 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="rounded-[2.5rem] bg-white/[0.02] border border-white/[0.08] backdrop-blur-2xl p-6 sm:p-10 md:p-14 shadow-2xl"
+          className="group relative rounded-[2.5rem] bg-white/[0.02] border border-white/[0.08] backdrop-blur-2xl p-6 sm:p-10 md:p-14 shadow-2xl overflow-hidden"
         >
+          {/* Spotlight effect */}
+          <div className="absolute -inset-px bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-teal-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
+
           {/* Pixel Banner */}
-          <div className="flex justify-start mb-10 sm:mb-12">
+          <div className="flex justify-start mb-10 sm:mb-12 relative z-10">
             <PixelBanner />
           </div>
 
@@ -112,35 +112,37 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="mb-6 sm:mb-8"
+            className="mb-6 sm:mb-8 relative z-10"
           >
             <span className="inline-flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs sm:text-sm font-medium tracking-wide">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
               </span>
-              Autonomous Market Intelligence Ecosystem
+              Autonomous Bayesian Market Intelligence
             </span>
           </motion.div>
 
           {/* Description */}
-          <motion.p
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
-            className="text-slate-300 text-lg sm:text-xl md:text-2xl max-w-4xl mb-10 sm:mb-14 leading-relaxed font-medium"
+            className="text-slate-100 text-lg sm:text-xl md:text-2xl lg:text-3xl max-w-4xl mb-10 sm:mb-14 leading-relaxed font-semibold relative z-10"
           >
-            A Bayesian-fused trading pantheon deploying{' '}
-            <span className="text-cyan-400 underline underline-offset-8 decoration-cyan-500/30">7 specialized AI agents</span>
-            {' '}that orchestrate real-time market regime detection and institutional-grade risk management with sub-10ms precision.
-          </motion.p>
+            A multi-agent ecosystem orchestrating{' '}
+            <span className="text-cyan-400">Bayesian regime detection</span>
+            {' '}and high-frequency execution with{' '}
+            <span className="text-teal-400 underline underline-offset-8 decoration-teal-500/30">sub-10ms precision</span>
+            {' '}across the institutional XAU/USD landscape.
+          </motion.h1>
 
           {/* Stats Grid - Mobile Optimized */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-10"
           >
             {heroStats.map((stat, index) => {
               const Icon = stat.icon;
@@ -150,16 +152,16 @@ export function HeroSection() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.9 + index * 0.1 }}
-                  className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all group active:scale-95"
+                  className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all group active:scale-95 shadow-lg"
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div
-                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
+                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-inner"
                       style={{ backgroundColor: `${stat.color}15` }}
                     >
                       <Icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: stat.color }} />
                     </div>
-                    <span className="text-slate-500 text-xs sm:text-sm font-medium uppercase tracking-widest">{stat.label}</span>
+                    <span className="text-slate-500 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em]">{stat.label}</span>
                   </div>
                   <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
                     <AnimatedCounter
