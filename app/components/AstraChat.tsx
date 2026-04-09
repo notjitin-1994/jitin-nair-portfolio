@@ -46,6 +46,7 @@ export function AstraChat() {
 
   // Auto-scroll to bottom
   useEffect(() => {
+    console.log("🚀 Astra Digital Chief of Staff: Neural Interface Initialized.");
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
@@ -66,7 +67,6 @@ export function AstraChat() {
     setIsTyping(true);
 
     try {
-      // In production, these should be environment variables
       const ASTRA_API_URL = "https://api.glitchzerolabs.com/api/chat";
       const SHARED_SECRET = "astra-hype-secret-2026";
 
@@ -116,7 +116,7 @@ export function AstraChat() {
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-500",
+          "fixed bottom-6 right-6 z-[9999] p-4 rounded-full shadow-2xl transition-all duration-500",
           isOpen 
             ? "bg-slate-800 text-white rotate-90" 
             : "bg-gradient-to-br from-cyan-500 to-teal-500 text-white"
@@ -138,7 +138,7 @@ export function AstraChat() {
             initial={{ opacity: 0, y: 100, scale: 0.8, transformOrigin: "bottom right" }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.8 }}
-            className="fixed bottom-24 right-6 z-50 w-[90vw] md:w-[400px] h-[600px] max-h-[70vh] bg-[#0f111a] border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl"
+            className="fixed bottom-24 right-6 z-[9999] w-[90vw] md:w-[400px] h-[600px] max-h-[70vh] bg-[#0f111a] border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl"
           >
             {/* Header */}
             <div className="p-5 border-b border-white/5 bg-white/5 flex items-center justify-between">
