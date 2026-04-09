@@ -27,9 +27,6 @@
     @apply bg-void text-slate-100 antialiased;
     font-family: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
-    /* GPU layer for entire page */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
   }
   
   /* Elegant serif headings */

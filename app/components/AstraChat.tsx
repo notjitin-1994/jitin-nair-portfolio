@@ -31,6 +31,7 @@ const SUGGESTED_QUESTIONS = [
 
 export function AstraChat() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -44,13 +45,18 @@ export function AstraChat() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Handle mounting to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+    console.log("🚀 Astra Digital Chief of Staff: Neural Interface Synchronized.");
+  }, []);
+
   // Auto-scroll to bottom
   useEffect(() => {
-    console.log("🚀 Astra Digital Chief of Staff: Neural Interface Initialized.");
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isTyping]);
+  }, [messages, isTyping, isOpen]);
 
   const handleSend = async (text: string = inputValue) => {
     if (!text.trim() || isTyping) return;
@@ -106,8 +112,10 @@ export function AstraChat() {
     }
   };
 
+  if (!mounted) return null;
+
   return (
-    <>
+    <div className="fixed inset-0 pointer-events-none z-[99999]">
       {/* Floating Toggle Button */}
       <motion.button
         initial={{ scale: 0, opacity: 0 }}
@@ -116,7 +124,7 @@ export function AstraChat() {
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "fixed bottom-6 right-6 z-[9999] p-4 rounded-full shadow-2xl transition-all duration-500",
+          "pointer-events-auto fixed bottom-6 right-6 p-4 rounded-full shadow-2xl transition-all duration-500",
           isOpen 
             ? "bg-slate-800 text-white rotate-90" 
             : "bg-gradient-to-br from-cyan-500 to-teal-500 text-white"
@@ -138,7 +146,7 @@ export function AstraChat() {
             initial={{ opacity: 0, y: 100, scale: 0.8, transformOrigin: "bottom right" }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.8 }}
-            className="fixed bottom-24 right-6 z-[9999] w-[90vw] md:w-[400px] h-[600px] max-h-[70vh] bg-[#0f111a] border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl"
+            className="pointer-events-auto fixed bottom-24 right-6 w-[90vw] md:w-[400px] h-[600px] max-h-[70vh] bg-[#0f111a] border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl"
           >
             {/* Header */}
             <div className="p-5 border-b border-white/5 bg-white/5 flex items-center justify-between">
@@ -152,7 +160,7 @@ export function AstraChat() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-bold text-white leading-tight">Astra</h3>
+                  <h3 className="font-bold text-white leading-tight text-base">Astra</h3>
                   <div className="flex items-center gap-1">
                     <ShieldCheck className="w-3 h-3 text-cyan-400" />
                     <span className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Digital Chief of Staff</span>
@@ -160,7 +168,7 @@ export function AstraChat() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <div className="px-2 py-1 rounded bg-cyan-500/10 border border-cyan-500/20 text-[10px] text-cyan-400 font-mono">SANDBOX_V1</div>
+                <div className="px-2 py-1 rounded bg-cyan-500/10 border border-cyan-500/20 text-[10px] text-cyan-400 font-mono uppercase">Live</div>
               </div>
             </div>
 
@@ -248,6 +256,6 @@ export function AstraChat() {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 }
