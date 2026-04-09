@@ -607,10 +607,9 @@ function MobileBento() {
   }
 
   return (
-     <section className="overflow-hidden relative">
+    <section className="overflow-hidden relative">
       {/* Section Header - CSS Animated, SSR Safe */}
-      <div className="mb-6 px-1" suppressHydrationWarning>
-        <p className="text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 mobile-section-subtitle">
+      <div className="mb-6 px-5 sm:px-6" suppressHydrationWarning>        <p className="text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 mobile-section-subtitle">
           What I Deliver
         </p>
         <h2 className="text-3xl font-bold mb-2 mobile-section-title">
@@ -1179,7 +1178,7 @@ function MobileProjects() {
         />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-1 sm:px-2">
+      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6">
         {/* Section Header - CSS Animated, SSR Safe */}
         <div className="mb-6 text-left" suppressHydrationWarning>
           <p 
@@ -1288,10 +1287,9 @@ function MobileJourney() {
   };
 
   return (
-     <section className="overflow-hidden relative">
+    <section className="overflow-hidden relative">
       {/* Header */}
-      <div className="mb-6 px-1" suppressHydrationWarning>
-        <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>Journey So Far</p>
+      <div className="mb-6 px-5 sm:px-6" suppressHydrationWarning>        <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>Journey So Far</p>
         <h2 className={`text-3xl font-bold mb-2 ${mounted ? 'mobile-section-title' : 'opacity-0'}`}>Career Timeline</h2>
         <p className={`text-slate-400 text-sm ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}>From commerce grad to AI architect — {journeyData.length} milestones</p>
       </div>
@@ -1552,9 +1550,8 @@ function MobileTechStack() {
   }
 
   return (
-     <section id="techstack" className="overflow-hidden relative">
-      <div className="px-1 mb-6" suppressHydrationWarning>
-        <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>
+    <section id="techstack" className="overflow-hidden relative">
+      <div className="px-5 sm:px-6 mb-6" suppressHydrationWarning>        <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>
           Technical Arsenal
         </p>
         <h2 className={`text-3xl font-bold mb-2 ${mounted ? 'mobile-section-title' : 'opacity-0'}`}>
