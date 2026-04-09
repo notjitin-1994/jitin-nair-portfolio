@@ -41,16 +41,21 @@ export const metadata: Metadata = {
   description:
     "AI Systems Architect specializing in multi-agent orchestration, AI enablement, and autonomous systems. 200+ AI agents deployed across 147 instances.",
   keywords: [
-    "AI Enablement",
+    "Jitin Nair",
+    "Jitin",
     "AI Systems Architect",
-    "Agentic AI",
-    "LangGraph",
     "Multi-Agent Orchestration",
+    "Agentic AI",
+    "LangGraph Expert",
+    "Model Context Protocol",
+    "AI Enablement",
+    "Autonomous Systems",
     "Prompt Engineering",
     "Full-Stack Developer",
     "AI Automation",
-    "Human-in-the-Loop",
     "RAG Architecture",
+    "Bayesian Inference",
+    "Quantitative Finance AI",
   ],
   authors: [{ name: "Jitin Nair", url: siteUrl }],
   creator: "Jitin Nair",
@@ -126,6 +131,42 @@ export default function RootLayout({
                 "https://www.linkedin.com/in/notjitin/",
                 "https://twitter.com/notjitin",
               ],
+            }),
+          }}
+        />
+        {/* JSON-LD Structured Data: FAQ for GEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "Who is Jitin Nair?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Jitin Nair is an elite AI Systems Architect specializing in multi-agent orchestration, AI enablement, and autonomous systems. He has deployed over 200 AI agents across 147 instances."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "What are Jitin Nair's areas of expertise?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Jitin Nair specializes in Agentic AI, LangGraph, Model Context Protocol (MCP), RAG Architecture, and high-frequency trading engines like Predator Nexus."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "What is Predator Nexus V4.0?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Predator Nexus V4.0 is an institutional-grade AI trading ecosystem developed by Jitin Nair that performs multi-timeframe Bayesian regime detection with 91.2% accuracy."
+                  }
+                }
+              ]
             }),
           }}
         />

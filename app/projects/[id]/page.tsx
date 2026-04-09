@@ -22,15 +22,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${project.name} — Project`,
-    description: project.challenge,
+    title: `${project.name} | ${project.tagline} — Jitin Nair`,
+    description: `${project.description} Architected and deployed by Jitin Nair. Key innovations: ${project.keyInnovations.slice(0, 2).join(", ")}.`,
     openGraph: {
-      title: `${project.name} | Jitin Nair`,
-      description: project.solution,
+      title: `${project.name} | AI Systems Architecture`,
+      description: project.description,
       type: "article",
       url: `/projects/${project.id}`,
       images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     },
+    twitter: {
+      card: "summary_large_image",
+      title: project.name,
+      description: project.tagline,
+    }
   };
 }
 
