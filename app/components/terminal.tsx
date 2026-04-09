@@ -646,7 +646,7 @@ export function Terminal({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [animationComplete, downloadMode, selectedButton]);
+  }, [animationComplete, downloadMode, selectedButton, onUnlock]);
 
   const handleCommandComplete = () => {
     setCurrentPhase("executing");

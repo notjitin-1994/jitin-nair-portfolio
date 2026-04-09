@@ -10,8 +10,8 @@
   --muted: #6b7280;
   --text: #f8fafc;
   --cyan: #22d3ee;
-  --violet: #8b5cf6;
-  --fuchsia: #d946ef;
+  --teal: #2dd4bf;
+  --teal-dark: #14b8a6;
 }
 
 @layer base {

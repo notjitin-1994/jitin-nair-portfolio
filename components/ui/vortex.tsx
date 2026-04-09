@@ -65,6 +65,7 @@ export function Vortex(props: VortexProps) {
         draw(canvas, ctx);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const initParticles = () => {
@@ -235,6 +236,7 @@ export function Vortex(props: VortexProps) {
         resize(canvas, ctx);
       }
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setup]);
 
   return (
