@@ -1223,12 +1223,12 @@ function MobileJourney() {
       period: "Present",
       title: "AI Systems Architect",
       role: "Independent Consultant",
-      description: "Architected 200+ autonomous AI agents. Built high-frequency trading engines (Predator), multi-agent governance platforms (Reality-Check), and AI-native learning ecosystems (Smarslate). Specialized in LangGraph orchestration and Model Context Protocol (MCP) integrations across 147 agent instances.",
-      highlights: ["200+ Agents Deployed", "96% Fleet Compliance", "MCP Orchestration"],
+      description: "Architecting sophisticated multi-agent orchestration platforms and autonomous systems. Engineered institutional-grade infrastructure including high-frequency trading engines (Predator), distributed governance frameworks (Reality-Check), and AI-native learning ecosystems (Smarslate). Specialized in LangGraph and Model Context Protocol (MCP) to enable seamless tool-sharing and truth-verified agentic autonomy.",
+      highlights: ["Multi-Agent Orchestration", "HFT Engine Architecture", "MCP Tool Integration"],
       icon: Bot,
       bgImage: "/journey-ai.jpg",
       gradient: "from-cyan-500/20 to-teal-500/20",
-      stats: { agents: "200+", compliance: "96%", mcp: "147" }
+      stats: { agents: "Active", compliance: "96%", mcp: "Standard" }
     },
     {
       year: "2022",
@@ -3033,8 +3033,8 @@ function DesktopJourney() {
       title: "AI Systems Architect",
       role: "Independent Consultant",
       period: "March 2025 - Present",
-      description: "Architected 200+ autonomous AI agents. Built high-frequency trading engines (Predator), multi-agent governance platforms (Reality-Check), and AI-native learning ecosystems (Smarslate). Specialized in LangGraph orchestration and Model Context Protocol (MCP) integrations across 147 agent instances.",
-      highlights: ["200+ Agents Deployed", "96% Fleet Compliance", "MCP Orchestration"],
+      description: "Architecting sophisticated multi-agent orchestration platforms and autonomous systems. Engineered institutional-grade infrastructure including high-frequency trading engines (Predator), distributed governance frameworks (Reality-Check), and AI-native learning ecosystems (Smarslate). Specialized in LangGraph and Model Context Protocol (MCP) to enable seamless tool-sharing and truth-verified agentic autonomy.",
+      highlights: ["Multi-Agent Orchestration", "HFT Engine Architecture", "MCP Tool Integration"],
       icon: Bot,
       bgImage: "/journey-ai.jpg",
       gradient: "from-cyan-500/20 to-blue-500/20"
