@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
     // This URL will be managed via Vercel Environment Variables
     // For now, I am using the active tunnel URL internally
-    const ASTRA_LOCAL_URL = process.env.ASTRA_LOCAL_URL || "https://ferrari-boutique-preparing-adjust.trycloudflare.com/api/chat";
+    const ASTRA_LOCAL_URL = process.env.ASTRA_LOCAL_URL || "https://jitin-m-nair-ms-7e06.tailb346b6.ts.net/api/chat";
     const SHARED_SECRET = process.env.ASTRA_SHARED_SECRET || "astra-hype-secret-2026";
 
     const response = await fetch(ASTRA_LOCAL_URL, {
