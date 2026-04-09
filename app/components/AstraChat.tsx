@@ -73,14 +73,10 @@ export function AstraChat() {
     setIsTyping(true);
 
     try {
-      const ASTRA_API_URL = "https://api.glitchzerolabs.com/api/chat";
-      const SHARED_SECRET = "astra-hype-secret-2026";
-
-      const response = await fetch(ASTRA_API_URL, {
+      const response = await fetch("/api/astra", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${SHARED_SECRET}`
         },
         body: JSON.stringify({
           message: text,
