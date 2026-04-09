@@ -114,7 +114,7 @@ export function ProjectCarousel() {
       {/* Carousel Container */}
       <div
         ref={containerRef}
-        className="relative overflow-hidden rounded-2xl min-h-[400px]"
+        className="relative overflow-hidden rounded-2xl"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}

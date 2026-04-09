@@ -3,6 +3,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Footer } from "./components/Footer";
 import LazySection from "./components/LazySection";
+import { Section } from "./components/ui/Section";
 
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useAnimation } from "framer-motion";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
@@ -606,13 +607,13 @@ function MobileBento() {
   }
 
   return (
-    <section className="overflow-hidden relative">
+     <section className="overflow-hidden relative">
       {/* Section Header - CSS Animated, SSR Safe */}
-      <div className="mb-10 px-5" suppressHydrationWarning>
-        <p className="text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 mobile-section-subtitle">
+      <div className="mb-6 px-1" suppressHydrationWarning>
+        <p className="text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 mobile-section-subtitle">
           What I Deliver
         </p>
-        <h2 className="text-3xl font-bold mb-3 mobile-section-title">
+        <h2 className="text-3xl font-bold mb-2 mobile-section-title">
           Products That Drive Results
         </h2>
         <p className="text-slate-400 text-sm mobile-section-desc">
@@ -629,7 +630,7 @@ function MobileBento() {
           ))}
         </Marquee>
       </div>
-    </section>
+     </section>
   );
 }
 
@@ -1154,10 +1155,9 @@ function MobileCapabilities() {
         ))}
       </div>
       </div>
-    </section>
-  );
-}
-
+       </section>
+      );
+      }
 function MobileProjects() {
   const [mounted, setMounted] = useState(false);
   
@@ -1166,7 +1166,7 @@ function MobileProjects() {
   }, []);
 
   return (
-    <section id="projects" className="relative overflow-hidden">
+     <section id="projects" className="relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute w-[600px] h-[600px] rounded-full opacity-[0.06]"
@@ -1179,9 +1179,9 @@ function MobileProjects() {
         />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-1 sm:px-2">
         {/* Section Header - CSS Animated, SSR Safe */}
-        <div className="mb-8 text-left" suppressHydrationWarning>
+        <div className="mb-6 text-left" suppressHydrationWarning>
           <p 
             className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}
           >
@@ -1202,10 +1202,10 @@ function MobileProjects() {
         <div className="px-0">
           <ProjectCarousel />
         </div>
-      </div>
-    </section>
-  );
-}
+        </div>
+         </section>
+        );
+        }
 
 function MobileJourney() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -1288,9 +1288,9 @@ function MobileJourney() {
   };
 
   return (
-    <section className="px-5 overflow-hidden relative">
+     <section className="overflow-hidden relative">
       {/* Header */}
-      <div className="mb-8" suppressHydrationWarning>
+      <div className="mb-6 px-1" suppressHydrationWarning>
         <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>Journey So Far</p>
         <h2 className={`text-3xl font-bold mb-2 ${mounted ? 'mobile-section-title' : 'opacity-0'}`}>Career Timeline</h2>
         <p className={`text-slate-400 text-sm ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}>From commerce grad to AI architect — {journeyData.length} milestones</p>
@@ -1471,7 +1471,7 @@ function MobileJourney() {
           );
         })}
       </div>
-    </section>
+     </section>
   );
 }
 
@@ -1552,8 +1552,8 @@ function MobileTechStack() {
   }
 
   return (
-    <section id="techstack" className="overflow-hidden relative">
-      <div className="px-5 mb-6" suppressHydrationWarning>
+     <section id="techstack" className="overflow-hidden relative">
+      <div className="px-1 mb-6" suppressHydrationWarning>
         <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-2 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>
           Technical Arsenal
         </p>
@@ -1748,7 +1748,7 @@ function MobileTechStack() {
           ))}
         </div>
       </div>
-    </section>
+     </section>
   );
 }
 
@@ -2142,7 +2142,7 @@ function DesktopTechStack() {
   );
 
   return (
-    <section id="techstack" className="py-6 md:py-8">
+     <section id="techstack" className="py-6 md:py-8">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="mb-12">
@@ -2400,7 +2400,7 @@ function DesktopTechStack() {
           ))}
         </motion.div>
       </div>
-    </section>
+     </section>
   );
 }
 function DesktopContact() {
@@ -2440,7 +2440,7 @@ function DesktopContact() {
   ];
 
   return (
-    <section id="contact" className="py-6 md:py-8 px-6">
+     <section id="contact" className="py-6 md:py-8 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left - Header */}
@@ -2622,7 +2622,7 @@ function DesktopContact() {
           </div>
         </div>
       </div>
-    </section>
+     </section>
   );
 }
 
@@ -2662,7 +2662,7 @@ function MobileContact() {
   ];
 
   return (
-    <section id="contact" className="py-8 px-5 pb-12 relative overflow-hidden">
+     <section id="contact" className="py-8 px-5 pb-12 relative overflow-hidden">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px] -z-10" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/5 blur-[100px] -z-10" />
@@ -2855,7 +2855,7 @@ function MobileContact() {
           ))}
         </div>
       </motion.div>
-    </section>
+     </section>
   );
 }
 
@@ -2887,7 +2887,7 @@ function DesktopHero({ onUnlock }: { onUnlock?: () => void }) {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden px-4 bg-[#0a0a0f]">
+     <section className="relative min-h-screen flex items-center overflow-hidden px-4 bg-[#0a0a0f]">
       {/* Vortex particles - desktop only (transparent, overlays on dark bg) */}
       <div className="hidden md:block absolute inset-0 z-0">
         <DesktopVortexBackground>
@@ -2947,7 +2947,7 @@ function DesktopHero({ onUnlock }: { onUnlock?: () => void }) {
           </motion.div>
         </div>
       </div>
-    </section>
+     </section>
   );
 }
 
@@ -2999,14 +2999,14 @@ function DesktopCapabilities() {
           ))}
         </div>
       </div>
-    </section>
+     </section>
   );
 }
 function DesktopProjects() {
   return (
-    <section id="projects" className="py-4 md:py-6">
+     <section id="projects" className="py-4 md:py-6">
       <DesktopProjectCarousel />
-    </section>
+     </section>
   );
 }
 
@@ -3174,7 +3174,7 @@ function DesktopJourney() {
           </div>
         </div>
       </div>
-    </section>
+     </section>
   );
 }
 

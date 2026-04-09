@@ -27,11 +27,11 @@ export function FeaturedInsight() {
         >
           <div>
             <motion.p 
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-cyan-400 font-mono text-xs sm:text-sm tracking-[0.2em] uppercase mb-2"
+              className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-2"
             >
               Latest Analysis
             </motion.p>
@@ -104,30 +104,31 @@ export function FeaturedInsight() {
               {/* Right Illustration Area */}
               <div className="lg:col-span-5 order-1 lg:order-2 relative flex items-center justify-center py-4 lg:py-0">
                 <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-64 md:h-64 aspect-square">
-                  {/* Abstract Brain/Neural Graphic - No Movement Animation */}
+                  {/* Abstract Brain/Neural Graphic - STATIC, NO MOVEMENT */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-full h-full rounded-full border border-cyan-500/10 flex items-center justify-center p-4 md:p-8">
-                      <div className="w-full h-full rounded-full border border-cyan-500/20 flex items-center justify-center p-4 md:p-8">
-                        <div className="w-full h-full rounded-full border border-cyan-500/40 flex items-center justify-center p-4 md:p-8">
+                    <div className="w-full h-full rounded-full border border-white/[0.03] flex items-center justify-center p-4 md:p-8">
+                      <div className="w-full h-full rounded-full border border-white/[0.05] flex items-center justify-center p-4 md:p-8">
+                        <div className="w-full h-full rounded-full border border-white/[0.08] flex items-center justify-center p-4 md:p-8">
                           <Brain className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 text-cyan-400/80 drop-shadow-[0_0_15px_rgba(34,211,238,0.4)]" />
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Pulsing Nodes */}
+                  {/* Pulsing Nodes - Subtle Pulse only */}
                   {[...Array(3)].map((_, i) => (
                     <motion.div
                       key={i}
                       className="absolute w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-cyan-400"
                       animate={{
-                        opacity: [0.2, 1, 0.2],
-                        scale: [1, 1.5, 1],
+                        opacity: [0.2, 0.8, 0.2],
+                        scale: [1, 1.2, 1],
                       }}
                       transition={{
-                        duration: 3,
-                        delay: i * 1,
+                        duration: 4,
+                        delay: i * 1.5,
                         repeat: Infinity,
+                        ease: "easeInOut"
                       }}
                       style={{
                         top: `${20 + i * 30}%`,
