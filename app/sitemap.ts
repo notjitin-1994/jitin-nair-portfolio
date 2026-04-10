@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}/insights/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: 'monthly' as const,
-    priority: 0.7,
+    priority: 0.8,
   }));
 
   const projects = [
@@ -17,18 +17,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'reality',
     'revos',
     'commune',
+    'localmind',
   ].map((id) => ({
     url: `${baseUrl}/projects/${id}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
-    priority: 0.6,
+    priority: 0.7,
   }));
 
-  const routes = ['', '/insights'].map((route) => ({
+  const routes = [
+    { route: '', priority: 1.0, frequency: 'weekly' as const },
+    { route: '/insights', priority: 0.9, frequency: 'weekly' as const },
+  ].map(({ route, priority, frequency }) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1.0 : 0.8,
+    changeFrequency: frequency,
+    priority,
   }));
 
   return [...routes, ...posts, ...projects];

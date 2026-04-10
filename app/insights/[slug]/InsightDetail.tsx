@@ -178,7 +178,7 @@ export function InsightDetail({ slug }: { slug: string }) {
 
   return (
     <PageLayout>
-      {/* JSON-LD Article Schema for SEO/GEO */}
+      {/* JSON-LD Article Schema for SEO/GEO — Enhanced */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -187,21 +187,32 @@ export function InsightDetail({ slug }: { slug: string }) {
             "@type": "BlogPosting",
             "headline": post.title,
             "description": post.excerpt,
-            "image": "https://jitinnair.com/og-image.png",
+            "image": "https://jitinnair.com/og-image.svg",
             "datePublished": post.date,
+            "dateModified": post.date,
             "author": {
+              "@type": "Person",
+              "name": "Jitin Nair",
+              "url": "https://jitinnair.com",
+              "jobTitle": "AI Systems Architect",
+              "sameAs": [
+                "https://github.com/notjitin-1994",
+                "https://www.linkedin.com/in/notjitin/",
+                "https://twitter.com/not_jitin",
+              ]
+            },
+            "publisher": {
               "@type": "Person",
               "name": "Jitin Nair",
               "url": "https://jitinnair.com"
             },
-            "publisher": {
-              "@type": "Person",
-              "name": "Jitin Nair"
-            },
             "mainEntityOfPage": {
               "@type": "WebPage",
               "@id": `https://jitinnair.com/insights/${slug}`
-            }
+            },
+            "keywords": [post.category, "AI", "AI Systems Architect", "Jitin Nair", "Multi-Agent", "Agentic AI"],
+            "articleSection": post.category,
+            "wordCount": post.content.split(/\s+/).length,
           }),
         }}
       />
@@ -268,6 +279,51 @@ export function InsightDetail({ slug }: { slug: string }) {
       {relatedPosts.length > 0 && (
         <Section className="py-10 md:py-12 border-t border-white/[0.08]">
           <div className="max-w-4xl mx-auto">
+            {/* Author Bio — Entity Reinforcement */}
+            <div className="mb-12 p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05]">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-white/[0.08] flex items-center justify-center">
+                    <span className="text-2xl font-bold text-cyan-400">JN</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-mono text-cyan-400 uppercase tracking-widest mb-2">Written by</p>
+                  <h4 className="text-lg font-bold text-white mb-1">Jitin Nair</h4>
+                  <p className="text-sm text-slate-400 leading-relaxed">
+                    AI Systems Architect specializing in multi-agent orchestration and agentic AI systems.
+                    200+ agents deployed. Building at the intersection of instructional design and autonomous systems engineering.
+                  </p>
+                  <div className="flex items-center gap-4 mt-3">
+                    <a
+                      href="https://jitinnair.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-slate-500 hover:text-cyan-400 transition-colors"
+                    >
+                      jitinnair.com
+                    </a>
+                    <a
+                      href="https://github.com/notjitin-1994"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-slate-500 hover:text-cyan-400 transition-colors"
+                    >
+                      GitHub
+                    </a>
+                    <a
+                      href="https://www.linkedin.com/in/notjitin/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-slate-500 hover:text-cyan-400 transition-colors"
+                    >
+                      LinkedIn
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <h3 className="text-2xl font-bold mb-10 text-white tracking-tight">
               Keep Reading
             </h3>
