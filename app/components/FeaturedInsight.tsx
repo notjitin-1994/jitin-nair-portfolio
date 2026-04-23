@@ -141,6 +141,34 @@ export function FeaturedInsight() {
           </div>
         </motion.div>
       </Link>
+
+      {/* Authority Keyword Cluster - Phase 2 SEO/GEO */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="mt-8 md:mt-12 flex flex-wrap items-center justify-center gap-3 md:gap-6 border-t border-white/[0.05] pt-8 md:pt-10"
+      >
+        <span className="text-[10px] md:text-xs font-mono text-slate-500 uppercase tracking-[0.2em] w-full text-center mb-2 md:mb-4">
+          Core Authority Domains
+        </span>
+        {[
+          { name: "Agentic AI", href: "https://jitinnair.com/insights/mcp-usb-c-moment-for-ai" },
+          { name: "Model Context Protocol", href: "https://modelcontextprotocol.io" },
+          { name: "LangGraph Architecture", href: "https://www.langchain.com/langgraph" },
+          { name: "AI Systems Design", href: "https://jitinnair.com" },
+          { name: "Multi-Agent Orchestration", href: "https://jitinnair.com/insights/beyond-the-monolith-compound-ai-systems" },
+          { name: "Advanced RAG", href: "https://jitinnair.com/projects/localmind" },
+        ].map((domain, i) => (
+          <Link 
+            key={i} 
+            href={domain.href}
+            className="text-xs md:text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors border border-white/[0.05] hover:border-cyan-500/30 px-3 py-1.5 md:px-5 md:py-2 rounded-full bg-white/[0.02] backdrop-blur-sm"
+          >
+            {domain.name}
+          </Link>
+        ))}
+      </motion.div>
     </Section>
   );
 }
