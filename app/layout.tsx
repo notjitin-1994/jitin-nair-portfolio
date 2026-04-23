@@ -145,11 +145,27 @@ export default function RootLayout({
               jobTitle: "AI Systems Architect",
               description: "Jitin Nair is an AI Systems Architect based in Bangalore, India. He specializes in multi-agent orchestration, agentic AI systems, and autonomous platform engineering. He has deployed over 200 AI agents across 147 instances, with expertise spanning LangGraph, Model Context Protocol (MCP), RAG architecture, and high-frequency trading systems.",
               knowsAbout: [
-                "Artificial Intelligence",
+                {
+                  "@type": "Thing",
+                  "name": "Artificial Intelligence",
+                  "sameAs": "https://en.wikipedia.org/wiki/Artificial_intelligence"
+                },
+                {
+                  "@type": "Thing",
+                  "name": "Agentic AI",
+                  "sameAs": "https://www.anthropic.com/news/model-context-protocol"
+                },
+                {
+                  "@type": "Thing",
+                  "name": "Model Context Protocol (MCP)",
+                  "sameAs": "https://modelcontextprotocol.io"
+                },
+                {
+                  "@type": "Thing",
+                  "name": "LangGraph",
+                  "sameAs": "https://www.langchain.com/langgraph"
+                },
                 "Multi-Agent Systems",
-                "Agentic AI",
-                "LangGraph",
-                "Model Context Protocol (MCP)",
                 "Prompt Engineering",
                 "RAG Architecture",
                 "Bayesian Inference",

@@ -38,6 +38,7 @@ export function DesktopHero({ onUnlock }: { onUnlock?: () => void }) {
       </div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto py-4">
+        <h1 className="sr-only">Jitin Nair | AI Systems Architect & Agentic AI Expert</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           {/* Left Column - Terminal */}
           <motion.div

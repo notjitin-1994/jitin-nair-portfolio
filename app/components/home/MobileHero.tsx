@@ -83,6 +83,7 @@ export function MobileHero({ onUnlock }: { onUnlock?: () => void }) {
 
       {/* Content - Terminal UI */}
       <div className="relative z-10 px-5">
+        <h1 className="sr-only">Jitin Nair | AI Systems Architect & Agentic AI Expert</h1>
         <motion.div
           initial={false}
           animate={{ opacity: imageLoaded ? 1 : 0, y: imageLoaded ? 0 : 30 }}

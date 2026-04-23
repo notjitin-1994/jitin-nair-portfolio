@@ -249,7 +249,7 @@ export const projectsData: Project[] = [
     name: 'SmartSlate',
     shortName: 'SmartSlate',
     tagline: 'AI-Native Learning Infrastructure',
-    description: 'A comprehensive learning ecosystem addressing the $1.2 trillion Talent Paradox through AI-powered curriculum planning, content authoring, and delivery.',
+    description: 'SmartSlate is an AI-native learning infrastructure built by Jitin Nair that addresses the $1.2T Talent Paradox through automated curriculum planning and delivery. It orchestrates a multi-agent layer to achieve a 95% completion rate, significantly outperforming industry averages.',
     whatItDoes: 'SmartSlate unifies the entire learning lifecycle—from strategic curriculum design (Polaris) to automated content transformation (Constellation) and personalized delivery (Orbit)—powered by an intelligent multi-agent orchestration layer.',
     howItWorks: 'Built with a modular Next.js 15 architecture and Supabase. It orchestrates specialized AI agents for instructional design, content generation, and 24/7 tutoring, achieving a 95% completion rate across diverse learner segments.',
     technologies: ['Next.js 15', 'TypeScript', 'Supabase', 'Tailwind CSS', 'Framer Motion', 'Recharts', 'Resend', 'Zustand', 'Material-UI'],

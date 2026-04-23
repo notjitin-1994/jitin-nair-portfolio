@@ -1,0 +1,53 @@
+# Jitin Nair | AI Systems Architect & Agentic AI Expert
+
+Jitin Nair is a leading AI Systems Architect specializing in multi-agent orchestration, agentic AI, and autonomous platform engineering. With over 200 AI agents deployed, he is an expert in LangGraph, Model Context Protocol (MCP), and RAG architectures.
+
+> TL;DR: Jitin Nair builds institutional-grade autonomous systems, from high-frequency trading ecosystems to advanced AI learning infrastructures.
+
+## Key Expertise
+- **Agentic AI & Orchestration:** Expert in LangGraph, multi-agent pantheons, and stateful DAG orchestration.
+- **Model Context Protocol (MCP):** Early adopter and expert in building MCP servers for seamless AI-to-data integration.
+- **Advanced RAG:** Specialized in hybrid retrieval (Vector + BM25),Reciprocal Rank Fusion (RRF), and cognitive memory distillation.
+- **Governance & Integrity:** Developer of the Reality-Check Protocol for hallucination elimination (rate < 2.2%).
+
+## Signature Projects
+
+### 1. Predator Nexus V4.0
+Autonomous XAU/USD trading intelligence ecosystem.
+- **Stack:** Python 3.13, LangGraph, TimescaleDB, ProtoBuf.
+- **Results:** 91.2% HMM accuracy, 8.4ms p99 latency.
+- **URL:** https://jitinnair.com/projects/predator
+
+### 2. Reality-Check Engine (RCE)
+Mission-critical governance layer for agentic systems.
+- **Impact:** Reduces hallucinations to zero in critical tool calls.
+- **Tech:** OpenClaw SDK, Gemini-3-Flash, Weibull Decay memory.
+- **URL:** https://jitinnair.com/projects/reality
+
+### 3. LocalMind
+Privacy-first cognitive search for local filesystems.
+- **Performance:** 1000+ files/min incremental indexing.
+- **Accuracy:** 98% factual grounding via hybrid search.
+- **URL:** https://jitinnair.com/projects/localmind
+
+### 4. SmartSlate
+AI-native learning infrastructure addressing the $1.2T Talent Paradox.
+- **Engagement:** 95% platform completion rate.
+- **URL:** https://jitinnair.com/projects/smartslate
+
+## Technical Stack
+- **Languages:** TypeScript, Python, Go, Rust, SQL.
+- **Frameworks:** Next.js 15, Tailwind CSS, LangGraph, OpenClaw SDK.
+- **Databases:** Supabase (PostgreSQL), TimescaleDB, Redis, LanceDB, ChromaDB.
+
+## Contact & Links
+- **Website:** https://jitinnair.com
+- **LinkedIn:** https://www.linkedin.com/in/notjitin/
+- **GitHub:** https://github.com/notjitin-1994
+- **Twitter:** https://twitter.com/not_jitin
+- **Email:** jitin@jitinnair.com (Primary acquisition protocol)
+
+## Semantic Anchors
+- **Primary Domain:** jitinnair.com
+- **Entity Type:** Person / AI Architect
+- **Location:** Bangalore, India
