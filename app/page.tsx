@@ -1,25 +1,29 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { Footer } from "./components/Footer";
 import LazySection from "./components/LazySection";
-import { FeaturedInsight } from "./components/FeaturedInsight";
 
-// Import Home Components
+// Static imports for above-the-fold (Critical Path)
 import { useIsMobile } from "./components/home/shared";
 import { MobileHero } from "./components/home/MobileHero";
-import { MobileBento } from "./components/home/MobileBento";
-import { MobileTechStack } from "./components/home/MobileTechStack";
-import { MobileProjects } from "./components/home/MobileProjects";
-import { MobileJourney } from "./components/home/MobileJourney";
-import { MobileContact } from "./components/home/MobileContact";
-
 import { DesktopHero } from "./components/home/DesktopHero";
-import { DesktopExpertiseMarquee } from "./components/desktop-expertise-marquee";
-import { DesktopTechStack } from "./components/home/DesktopTechStack";
-import { DesktopProjects } from "./components/home/DesktopProjects";
-import { DesktopJourney } from "./components/home/DesktopJourney";
-import { DesktopContact } from "./components/home/DesktopContact";
+
+// Dynamic imports for below-the-fold (Quantum Performance)
+const FeaturedInsight = dynamic(() => import("./components/FeaturedInsight").then(mod => mod.FeaturedInsight), { ssr: false });
+const MobileBento = dynamic(() => import("./components/home/MobileBento").then(mod => mod.MobileBento), { ssr: false });
+const MobileTechStack = dynamic(() => import("./components/home/MobileTechStack").then(mod => mod.MobileTechStack), { ssr: false });
+const MobileProjects = dynamic(() => import("./components/home/MobileProjects").then(mod => mod.MobileProjects), { ssr: false });
+const MobileJourney = dynamic(() => import("./components/home/MobileJourney").then(mod => mod.MobileJourney), { ssr: false });
+const MobileContact = dynamic(() => import("./components/home/MobileContact").then(mod => mod.MobileContact), { ssr: false });
+
+const DesktopExpertiseMarquee = dynamic(() => import("./components/desktop-expertise-marquee").then(mod => mod.DesktopExpertiseMarquee), { ssr: false });
+const DesktopTechStack = dynamic(() => import("./components/home/DesktopTechStack").then(mod => mod.DesktopTechStack), { ssr: false });
+const DesktopProjects = dynamic(() => import("./components/home/DesktopProjects").then(mod => mod.DesktopProjects), { ssr: false });
+const DesktopJourney = dynamic(() => import("./components/home/DesktopJourney").then(mod => mod.DesktopJourney), { ssr: false });
+const DesktopContact = dynamic(() => import("./components/home/DesktopContact").then(mod => mod.DesktopContact), { ssr: false });
+
 
 export default function Home() {
   const isMobile = useIsMobile();

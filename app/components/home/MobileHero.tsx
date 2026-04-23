@@ -60,14 +60,15 @@ export function MobileHero({ onUnlock }: { onUnlock?: () => void }) {
         }}
       >
         <Image
-          ref={imgRef}
+          ref={imgRef as any}
           src="/hero-photo.jpg"
           alt="Jitin Nair"
           fill
           className="object-cover"
-          style={{ objectPosition: "center 15%" }}
+          style={{ objectPosition: "center 20%" }}
           onLoad={() => setImageLoaded(true)}
           priority
+          fetchPriority="high"
         />
       </motion.div>
 

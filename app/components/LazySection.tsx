@@ -18,12 +18,16 @@ export default function LazySection({ children, id }: LazySectionProps) {
       id={id}
       initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-5% 0px -5% 0px" }}
+      viewport={{ once: true, margin: "0px 0px 200px 0px" }} // Load slightly before coming into view for speed
       transition={{
         duration: 0.8,
         ease: [0.21, 0.47, 0.32, 0.98], // Aesthetic smooth deceleration
       }}
-      style={{ willChange: "transform, opacity, filter" }}
+      style={{ 
+        willChange: "transform, opacity, filter",
+        contentVisibility: "auto",
+        containIntrinsicSize: "0 800px" 
+      }}
     >
       {children}
     </motion.div>

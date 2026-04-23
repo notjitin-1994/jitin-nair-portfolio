@@ -78,6 +78,7 @@ export function DesktopHero({ onUnlock }: { onUnlock?: () => void }) {
                   style={{ objectPosition: "center 20%" }}
                   onLoad={() => setImageLoaded(true)}
                   priority
+                  fetchPriority="high"
                 />
 
                 {/* Gradient overlay */}
