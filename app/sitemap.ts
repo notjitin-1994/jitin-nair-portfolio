@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const projects = [
     'predator',
-    'smarslate',
+    'smartslate',
     'reality',
     'revos',
     'commune',

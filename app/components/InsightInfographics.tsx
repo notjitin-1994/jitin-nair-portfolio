@@ -366,7 +366,7 @@ export function FrameworkComparisonInfographic() {
 
 const harnessNodes = [
   { id: "gemini", name: "Gemini 1.5 Pro", role: "Deep Reasoning", detail: "Long-context architectural mapping & system-wide logic verification.", color: "blue" },
-  { id: "claude", name: "Claude 3.5 Sonnet", role: "Rapid Iteration", detail: "State-of-the-art coding velocity, refactoring, and UI implementation.", color: "orange" },
+  { id: "claude", name: "Claude Sonnet 4.5 Sonnet", role: "Rapid Iteration", detail: "State-of-the-art coding velocity, refactoring, and UI implementation.", color: "orange" },
   { id: "openclaw", name: "OpenClaw Gateway", role: "Governance & Memory", detail: "Reality-Check enforcement and Dreamcycle memory distillation.", color: "purple" }
 ];
 

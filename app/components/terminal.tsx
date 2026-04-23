@@ -486,7 +486,7 @@ const portfolioData = {
     { name: "Predator Scalping System", type: "Trading & Finance", status: "Production" },
     { name: "AI Agency Ops", type: "Multi-Agentic Framework & Ecosystem", status: "Active" },
     { name: "LocalMind", type: "Local RAG Intelligence", status: "Active" },
-    { name: "Smarslate", type: "L&D Platform", status: "Work in Progress" },
+    { name: "SmartSlate", type: "L&D Platform", status: "Work in Progress" },
     { name: "Project Commune", type: "Community Platform", status: "Beta" },
     { name: "RevOS", type: "Garage Management", status: "Production" },
   ],

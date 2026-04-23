@@ -63,7 +63,7 @@ AI Systems Architect with 10+ years bridging instructional design and autonomous
 **Independent Consultant** | Bangalore, India | Mar 2025 - Present
 
 - Architected and deployed 200+ autonomous AI agents across multi-agent orchestration platforms
-- Built production-grade systems including autonomous trading engine (Predator), multi-agent governance platform (Reality-Check), and AI-powered LMS (Smarslate)
+- Built production-grade systems including autonomous trading engine (Predator), multi-agent governance platform (Reality-Check), and AI-powered LMS (SmartSlate)
 - Developed Model Context Protocol integrations enabling cross-agent tool sharing across 147 agent instances
 - Achieved 96% fleet coverage for truth-verification protocols across distributed agent networks
 
@@ -110,8 +110,8 @@ AI Systems Architect with 10+ years bridging instructional design and autonomous
 
 ## Featured Projects
 
-### Smarslate AI-First Learning Platform
-**Lead Architect & Designer** | smarslate.io
+### SmartSlate AI-First Learning Platform
+**Lead Architect & Designer** | smartslate.io
 
 AI-native L&D platform with Human-in-the-Loop validation, automating discovery to delivery while maintaining quality through expert oversight.
 

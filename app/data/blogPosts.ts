@@ -56,7 +56,7 @@ In the agentic era, your competitive advantage isn't the model you use—it is t
 *Citations:*
 - *[1] Anthropic: Model Context Protocol Specification v2025.11.*
 - *[2] Agentic AI Foundation: The Impact of Stateless Transport on Multi-Agent Latency (2026).*
-- *[3] Smarslate Architecture: Scaling 147+ Agent Instances via MCP Gateways.*`
+- *[3] SmartSlate Architecture: Scaling 147+ Agent Instances via MCP Gateways.*`
   },
   {
     slug: "beyond-the-monolith-compound-ai-systems",
@@ -285,7 +285,7 @@ By treating AI models as modular components in a harness rather than generic cha
 ### 2. The Workflow: Planning, Execution, and Governance
 
 - **Deep Reasoning (Gemini 1.5 Pro):** With its massive 2M+ token context window, Gemini acts as the **Architect**. It maps entire codebases, identifies cross-file dependencies, and plans multi-turn refactors that shorter-context models simply cannot perceive.
-- **Rapid Iteration (Claude 3.5 Sonnet):** Claude is the **Lead Developer**. Its superior coding nuances and UI implementation speed make it the engine for execution. It handles surgical file edits, unit test generation, and frontend polish with industry-leading precision.
+- **Rapid Iteration (Claude Sonnet 4.5 Sonnet):** Claude is the **Lead Developer**. Its superior coding nuances and UI implementation speed make it the engine for execution. It handles surgical file edits, unit test generation, and frontend polish with industry-leading precision.
 - **Governance & Integrity (OpenClaw):** Reality-Check acts as the **Senior Reviewer**. It audits every AI-generated diff for logic errors and security vulnerabilities before they are staged, ensuring the harness doesn't "run away" from the developer.
 
 ### 3. Benchmarking the Harness

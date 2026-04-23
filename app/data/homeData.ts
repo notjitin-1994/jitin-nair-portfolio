@@ -113,8 +113,8 @@ export const projectsData = [
         liveUrl: undefined,
       },
       {
-        name: "Smarslate AI-First Learning Ecosystem",
-        shortName: "Smarslate",
+        name: "Smartslate AI-First Learning Ecosystem",
+        shortName: "Smartslate",
         technologies: [
           "React", "TypeScript", "Vite", "Supabase", "PostgreSQL", "Row Level Security",
           "Claude", "ChatGPT", "Perplexity API", "Webhook Workers",
@@ -127,8 +127,8 @@ export const projectsData = [
           { name: "Async Pipeline", items: ["Webhook Workers", "Job Queue", "Real-time"], color: "#22d3ee" }
         ],
         description: "AI-native Learning & Development platform",
-        whatItDoes: "Smarslate Polaris is a Human-in-the-Loop (HITL) AI learning ecosystem that automates the entire L\u0026D lifecycle-from discovery to delivery. The platform combines automated learning discovery (Polaris), AI-native instructional design (Constellation), intelligent content development (Nova), integrated AI-powered LMS (Orbit), personalized AI tutoring (Nebula), and comprehensive analytics (Spectrum) into a unified pipeline. Every AI output is validated by human experts, ensuring quality while achieving 10x throughput gains.",
-        howItWorks: "The HITL pipeline begins with Polaris automated discovery-AI conducts stakeholder interviews, analyzes organizational context, and generates learning strategy blueprints (Starmaps) with human SME validation at each stage. Constellation automates instructional design using Bloom's Taxonomy, Gagné's 9 Events, and Merrill's First Principles, with ID experts reviewing and refining AI-generated frameworks. Nova handles AI-native content development-generating interactive modules, assessments, and media-while content teams curate and enhance outputs. Orbit delivers via an AI-powered LMS with adaptive learning paths, while Nebula provides 24/7 AI tutoring with escalation to human instructors. Spectrum analytics continuously feed insights back to optimize the entire pipeline.",
+        whatItDoes: "SmartSlate Polaris is an autonomous-first AI learning design ecosystem that automates the entire L&D lifecycle—from discovery to delivery. Utilizing a proprietary Two-Phase Intelligence Engine, it captures 100% of requirements with a Zero Revision Guarantee, achieving 15x launch speed gains over traditional methods.",
+        howItWorks: "The pipeline begins with Polaris Two-Phase Discovery: AI conducts deep-dive stakeholder interviews and analyzes context to generate production-ready Learning Blueprints in under 60 minutes. Constellation then automates instructional design using expert frameworks, while Nova handles AI-native content authoring. Orbit delivers via an AI-powered LMS, Nebula provides 24/7 intelligent tutoring, and Spectrum provides real-time ROI analytics.",
         keyInnovations: [
           "Human-in-the-Loop validation gates at every AI generation stage",
           "Automated discovery via contextual 7-stage AI questionnaires",
@@ -144,7 +144,7 @@ export const projectsData = [
           "Multi-Provider AI Analysis",
           "Async Report Generation Job",
           "Webhook Completion Notification",
-          "Interactive Starmap Delivery"
+          "Interactive Learning Blueprint Delivery"
         ],
         features: [
           "Automated HITL Learning Discovery",
@@ -161,7 +161,8 @@ export const projectsData = [
           { label: "Report Gen Time", value: "45", unit: "seconds" }
         ],
         githubUrl: undefined,
-        liveUrl: "https://smarslate.io",
+        liveUrl: "https://smartslate.io",
+        learnMoreUrl: "/projects/smartslate",
       },
       {
         name: "RevOS",
