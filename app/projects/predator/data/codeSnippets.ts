@@ -11,135 +11,118 @@ export interface CodeSnippet {
 
 export const codeSnippets: CodeSnippet[] = [
   {
-    id: "regime-detection",
-    title: "Gaussian HMM Trainer",
-    filePath: "agents/argus/trainer.py",
+    id: "numba-optimized-indicators",
+    title: "JIT Optimized Indicators",
+    filePath: "agents/regime_agent/price_action_new.py",
     language: "python",
-    description: "Multivariate Gaussian Hidden Markov Model for regime persistence. Uses BIC (Bayesian Information Criterion) to optimize the number of hidden market states.",
-    code: `def find_best_k(self, X: np.ndarray, current_k: Optional[int] = None) -> int:
-    """Find optimal K using BIC sweep."""
-    k_range = [k for k in [current_k - 1, current_k, current_k + 1] if 3 <= k <= 7] if current_k else [3, 4, 5, 6, 7]
-    best_bic, best_k = np.inf, k_range[0]
+    description: "Numba-accelerated technical indicators achieving 10x faster execution than pure Python, critical for high-frequency regime detection.",
+    code: `@njit(cache=True)
+def _calculate_adx_numba(high: np.ndarray, low: np.ndarray, close: np.ndarray, 
+                         period: int = 14) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    \"\"\"Calculate ADX, +DI, and -DI using Numba acceleration.\"\"\"
+    n = len(high)
+    plus_dm = np.zeros(n)
+    minus_dm = np.zeros(n)
     
-    for k in k_range:
-        try:
-            model = hmm.GaussianHMM(n_components=k, covariance_type="full", n_iter=100)
-            model.fit(X)
-            bic = model.bic(X)
-            if bic < best_bic:
-                best_bic, best_k = bic, k
-        except: continue
-    return best_k
-
-async def train_cycle(self):
-    """Main training loop with session-aware normalization."""
-    df = await self.fetch_training_data(30)
-    features_df = extract_regime_features(df)
-    X_scaled = StandardScaler().fit_transform(features_df.values)
-    
-    # Model Evolution
-    best_k = self.find_best_k(X_scaled)
-    model = hmm.GaussianHMM(n_components=best_k, covariance_type="full")
-    model.fit(X_scaled)
-    
-    # Validation & Persistence
-    scores = model.score_samples(X_scaled)
-    ll_5th = np.percentile(scores, 5)
-    
-    bundle = RegimeBundle(model=model, ood_threshold=ll_5th, metadata={"k": best_k})
-    bundle.save(self.model_path)`
-  },
-  {
-    id: "ingestion-daemon",
-    title: "Hermes ProtoBuf Ingestor",
-    filePath: "agents/hermes/main.py",
-    language: "python",
-    description: "High-throughput ProtoBuf stream handler for cTrader OpenAPI. Processes ticks and Depth of Market (LOB) with microsecond precision.",
-    code: `async def handle_tick(self, event):
-    """Processes real-time ticks from cTrader OpenAPI socket."""
-    sid = event.symbolId
-    if sid not in self.symbols: return
-    
-    cache = self.price_cache[sid]
-    if event.HasField('bid'): cache["bid"] = event.bid / 100000.0
-    if event.HasField('ask'): cache["ask"] = event.ask / 100000.0
-    
-    if cache["bid"] and cache["ask"]:
-        now = datetime.now(timezone.utc)
-        symbol = self.symbols[sid]
-        spread = cache["ask"] - cache["bid"]
+    for i in range(1, n):
+        up_move = high[i] - high[i-1]
+        down_move = low[i-1] - low[i]
         
-        # Publish to inter-agent Redis bus
-        await self.redis.publish(f"{symbol.lower()}_ticks", json.dumps({
-            "ts": now.isoformat(), 
-            "bid": cache["bid"], 
-            "ask": cache["ask"]
-        }))
-        
-        # Persistent Time-Series Storage
-        if symbol == "XAUUSD":
-            async with self.db_pool.acquire() as conn:
-                await conn.execute("""
-                    INSERT INTO market_ticks (timestamp, symbol, bid, ask, spread) 
-                    VALUES ($1, 'XAUUSD', $2, $3, $4)
-                """, now, cache["bid"], cache["ask"], spread)`
+        if up_move > down_move and up_move > 0:
+            plus_dm[i] = up_move
+        if down_move > up_move and down_move > 0:
+            minus_dm[i] = down_move
+    
+    tr = _calculate_tr_numba(high, low, close)
+    smoothed_tr = _wilder_smoothing_numba(tr, period)
+    smoothed_plus_dm = _wilder_smoothing_numba(plus_dm, period)
+    smoothed_minus_dm = _wilder_smoothing_numba(minus_dm, period)
+    
+    plus_di = 100.0 * smoothed_plus_dm / smoothed_tr
+    minus_di = 100.0 * smoothed_minus_dm / smoothed_tr
+    dx = 100.0 * abs(plus_di - minus_di) / (plus_di + minus_di)
+    adx = _wilder_smoothing_numba(dx, period)
+    
+    return adx, plus_di, minus_di`
   },
   {
-    id: "bridge-nexus",
-    title: "Redis-to-Socket.io Bridge",
-    filePath: "nexus/api/src/index.ts",
-    language: "typescript",
-    description: "The Nexus bridge acts as a real-time conduit, piping internal agent signals from Redis to the frontend dashboard with zero-copy overhead.",
-    code: `const redisSub = new Redis({ host: process.env.REDIS_HOST });
-
-redisSub.subscribe('xauusd_ticks', 'predator:regime', 'predator:signals');
-
-redisSub.on('message', async (channel, message) => {
-  try {
-    const payload = JSON.parse(message);
-    
-    // Broadcast to dashboard clients
-    io.emit(channel, payload);
-    
-    // Audit Trail Logging
-    if (channel === 'predator:system_logs') {
-      await pool.query(
-        'INSERT INTO system_logs (timestamp, service, level, event, data_json) VALUES ($1, $2, $3, $4, $5)',
-        [payload.timestamp, payload.service, payload.level, payload.event, JSON.stringify(payload.data)]
-      );
-    }
-  } catch (e) {
-    logger.error({ channel, message }, 'Nexus Bridge: Parse Error');
-  }
-});`
-  },
-  {
-    id: "risk-forge",
-    title: "Institutional Risk Forge",
-    filePath: "agents/ares/main.py",
+    id: "psi-drift-detection",
+    title: "PSI Drift Detection",
+    filePath: "agents/regime_agent/drift_detector.py",
     language: "python",
-    description: "Dynamic position sizing with multi-stage circuit breakers and volatility-adjusted Kelly Criterion logic.",
-    code: `def calculate_position_size(self, signal: Signal, balance: float) -> float:
-    """Volatility-adjusted position sizing with institutional caps."""
-    # 1. Base Kelly Fraction
-    kelly = (signal.win_rate * signal.payout_ratio - (1 - signal.win_rate)) / signal.payout_ratio
-    safe_kelly = min(max(kelly, 0), 0.20)  # Cap at 20% fractional
-    
-    # 2. Volatility Normalization
-    vol_scale = 1.0 / (1 + signal.atr_percent * 5)
-    
-    # 3. Size Calculation
-    risk_amount = balance * self.max_drawdown_limit * safe_kelly * vol_scale
-    position_size = risk_amount / signal.stop_loss_pips
-    
-    # 4. Safety Overrides
-    return min(position_size, balance * 0.1) # Max 10% exposure
+    description: "Population Stability Index (PSI) implementation to detect feature distribution shifts between training and production environments.",
+    code: `class PSICalculator:
+    \"\"\"Population Stability Index (PSI) calculator for drift detection.\"\"\"
+    def calculate(self, baseline: np.ndarray, current: np.ndarray) -> float:
+        # Create bins based on baseline distribution
+        bins = np.percentile(baseline, np.linspace(0, 100, self.n_bins + 1))
+        
+        # Calculate frequency in each bin
+        b_counts = np.histogram(baseline, bins=bins)[0] / len(baseline)
+        c_counts = np.histogram(current, bins=bins)[0] / len(current)
+        
+        # Avoid division by zero
+        b_counts = np.clip(b_counts, 1e-6, None)
+        c_counts = np.clip(c_counts, 1e-6, None)
+        
+        # Calculate PSI score
+        psi = np.sum((b_counts - c_counts) * np.log(b_counts / c_counts))
+        return psi`
+  },
+  {
+    id: "mlard-adaptive-logic",
+    title: "MLARD Decision Logic",
+    filePath: "agents/regime_agent/price_action_new.py",
+    language: "python",
+    description: "Multi-Layer Adaptive Regime Detection logic using dynamic volatility thresholds and hysteresis memory to prevent flickering.",
+    code: `def _determine_regime_v2(self, structure: MarketStructure, indicators: TechnicalIndicators) -> Tuple[RegimeType, float]:
+    \"\"\"Enhanced MLARD regime determination with ADX, CHOP, and BBW.\"\"\"
+    # 1. Extreme Volatility Check (Override)
+    if indicators.bb_width > 0.08:
+         return self._apply_hysteresis(RegimeType.VOLATILE, 0.9)
 
-async def monitor_pnl(self):
-    """Real-time circuit breaker monitoring."""
-    if self.current_daily_loss > self.daily_stop_threshold:
-        await self.emergency_shutdown("Daily Loss Limit Breached")
-        self.circuit_breaker_active = True`
+    # 2. Score-based detection
+    scores = {RegimeType.TREND_UP: 0.0, RegimeType.TREND_DOWN: 0.0, RegimeType.RANGE: 0.0}
+    
+    # ADX-based trend strength with MAD normalization
+    if indicators.adx >= self.adx_trend_threshold:
+        trend_boost = (indicators.adx - self.adx_trend_threshold) / 100.0
+        if indicators.plus_di > indicators.minus_di:
+            scores[RegimeType.TREND_UP] += 0.4 + trend_boost
+        else:
+            scores[RegimeType.TREND_DOWN] += 0.4 + trend_boost
+    
+    # Choppiness Index Filter
+    if indicators.choppiness >= self.chop_range_threshold:
+        scores[RegimeType.RANGE] += 0.5
+        
+    candidate = max(scores, key=scores.get)
+    return self._apply_hysteresis(candidate, 0.5 + min(0.45, scores[candidate] * 0.4))`
+  },
+  {
+    id: "model-registry-promotion",
+    title: "Champion/Challenger Promotion",
+    filePath: "agents/regime_agent/model_registry.py",
+    language: "python",
+    description: "Institutional model promotion logic that ensures challengers outperform current champions before being promoted to production.",
+    code: `async def promote_challenger_to_champion(self, challenger_id: str):
+    \"\"\"Statistical validation gate for model promotion.\"\"\"
+    challenger = await self.get_model_version(challenger_id)
+    champion = await self.get_champion_model()
+    
+    if champion:
+        # Require 5% relative improvement in F1-score
+        improvement = (challenger.f1_score - champion.f1_score) / champion.f1_score
+        if improvement < 0.05:
+            raise PromotionError(f"Insufficient improvement: {improvement:.2%}")
+            
+    # Promotion transaction
+    async with self.db_pool.acquire() as conn:
+        async with conn.transaction():
+            await conn.execute("UPDATE models SET stage = 'archived' WHERE stage = 'production'")
+            await conn.execute("UPDATE models SET stage = 'production' WHERE model_id = $1", challenger_id)
+    
+    logger.info("New champion promoted", model_id=challenger_id)`
   }
 ];
 

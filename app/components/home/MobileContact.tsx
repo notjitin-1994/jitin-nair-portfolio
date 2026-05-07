@@ -6,7 +6,6 @@ import {
   Mail, 
   Phone, 
   MessageCircle, 
-  Github, 
   Linkedin, 
   Instagram, 
   ChevronDown, 
@@ -78,21 +77,7 @@ export function MobileContact() {
 
       {/* Main Grid */}
       <div className="space-y-4 mb-8">
-        <div className="grid grid-cols-3 gap-3">
-          {/* GitHub */}
-          <motion.a
-            href="https://github.com/notjitin-1994"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileTap={{ scale: 0.96 }}
-            className="flex flex-col items-center justify-center p-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-cyan-500/40 transition-all duration-300 shadow-xl"
-          >
-            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-2">
-              <Github className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-[10px] font-bold text-slate-200 uppercase tracking-tighter">GitHub</span>
-          </motion.a>
-
+        <div className="grid grid-cols-2 gap-3">
           {/* LinkedIn */}
           <motion.a
             href="https://www.linkedin.com/in/notjitin/"

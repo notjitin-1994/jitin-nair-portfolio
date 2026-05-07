@@ -196,7 +196,6 @@ export function InsightDetail({ slug }: { slug: string }) {
               "url": "https://jitinnair.com",
               "jobTitle": "AI Systems Architect",
               "sameAs": [
-                "https://github.com/notjitin-1994",
                 "https://www.linkedin.com/in/notjitin/",
                 "https://twitter.com/not_jitin",
               ]
@@ -302,14 +301,6 @@ export function InsightDetail({ slug }: { slug: string }) {
                       className="text-xs text-slate-500 hover:text-cyan-400 transition-colors"
                     >
                       jitinnair.com
-                    </a>
-                    <a
-                      href="https://github.com/notjitin-1994"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-slate-500 hover:text-cyan-400 transition-colors"
-                    >
-                      GitHub
                     </a>
                     <a
                       href="https://www.linkedin.com/in/notjitin/"

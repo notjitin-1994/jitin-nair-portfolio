@@ -4,7 +4,6 @@ import { createClient } from "@/utils/supabase/client";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import {
-  Github,
   Linkedin,
   Twitter,
   Mail,
@@ -832,18 +831,6 @@ export function DesktopContact() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <ContactChannelCard
-                icon={Github}
-                name="GitHub"
-                handle="@notjitin-1994"
-                stats={[
-                  { label: "Repositories", value: "45+" },
-                  { label: "Contributions", value: "1.2k" },
-                ]}
-                href="https://github.com/notjitin-1994"
-                color="violet"
-              />
-
-              <ContactChannelCard
                 icon={Linkedin}
                 name="LinkedIn"
                 handle="@jitin-nair"
@@ -974,28 +961,6 @@ export function DesktopContact() {
                   <p className="text-sm text-slate-500">30 min • Google Meet</p>
                 </div>
                 <ArrowRight className="w-5 h-5 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
-              </motion.a>
-
-              <motion.a
-                href="https://github.com/notjitin-1994?tab=repositories"
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 }}
-                whileHover={{ scale: 1.02, x: 5 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-violet-500/30 hover:bg-white/[0.05] transition-all duration-300 group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Github className="w-6 h-6 text-violet-400" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium">View GitHub</p>
-                  <p className="text-sm text-slate-500">45+ repositories</p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-slate-500 group-hover:text-violet-400 group-hover:translate-x-1 transition-all" />
               </motion.a>
             </div>
 

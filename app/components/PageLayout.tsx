@@ -5,8 +5,6 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Footer } from "./Footer";
 
-import { WorkingTogetherCTA } from "./WorkingTogetherCTA";
-
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Insights", href: "/insights" },
@@ -74,9 +72,6 @@ export function PageLayout({ children, title, subtitle }: { children: React.Reac
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-6 pb-10 relative z-10">{children}</div>
-
-      {/* CTA */}
-      <WorkingTogetherCTA />
 
       {/* Footer */}
       <Footer />

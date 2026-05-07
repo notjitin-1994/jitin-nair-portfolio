@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Github, ExternalLink, LayoutDashboard, Shield, 
+  ExternalLink, LayoutDashboard, Shield, 
   CheckCircle, AlertTriangle, Clock, Brain, 
   Database, Workflow, Layers, Activity, Search,
-  Zap, Scale, ChevronRight
+  Zap, Scale, ChevronRight, Rocket
 } from 'lucide-react';
 import Link from 'next/link';
 import { Footer } from '../../components/Footer';
@@ -428,8 +428,6 @@ function InnovationsSection() {
 }
 
 function CTASection() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   return (
     <section className="py-6 sm:py-8 px-4 sm:px-8 md:px-12 border-t border-white/[0.05] relative">
       <div className="max-w-7xl mx-auto relative z-10">
@@ -444,27 +442,24 @@ function CTASection() {
           <div className="relative z-10 max-w-2xl text-left">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 tracking-tight text-white">Truth is Mandatory.</h2>
             <p className="text-slate-400 mb-10 text-lg sm:text-xl font-light leading-relaxed">
-              The Reality-Check Engine source code and the Dreamcycle memory skill are available for OpenClaw users. Explore the implementation of high-stakes AI governance.
+              The Reality-Check Engine (RCE) is a foundational layer for production-grade agentic systems. Explore the fleet of agents or request a deep-dive into the governance implementation.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-              <a
-                href="https://github.com/notjitin-1994/reality-check-engine"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-cyan-500/10 text-cyan-400 font-semibold border border-cyan-500/20 hover:bg-cyan-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <Github className="w-5 h-5" />
-                <span>Request Source Access</span>
-                <ExternalLink className="w-5 h-5" />
-              </a>
-
               <Link
                 href="/agents"
-                className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/[0.05] text-white font-medium border border-white/[0.1] hover:bg-white/[0.1] transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-cyan-500/10 text-cyan-400 font-semibold border border-cyan-500/20 hover:bg-cyan-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <Workflow className="w-5 h-5" />
                 <span>Explore the Fleet</span>
+              </Link>
+
+              <Link
+                href="#contact"
+                className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/[0.05] text-white font-medium border border-white/[0.1] hover:bg-white/[0.1] transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Rocket className="w-5 h-5" />
+                <span>Request Case Study</span>
               </Link>
             </div>
           </div>
@@ -504,7 +499,6 @@ export default function RealityPage() {
         <InnovationsSection />
         <TechStackGrid />
         <CTASection />
-        <WorkingTogetherCTA />
       </div>
 
       <Footer />

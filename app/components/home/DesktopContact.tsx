@@ -6,7 +6,6 @@ import {
   Mail, 
   Phone, 
   MessageCircle, 
-  Github, 
   Linkedin, 
   Instagram, 
   ExternalLink, 
@@ -46,7 +45,6 @@ export function DesktopContact() {
   ];
 
   const staticLinks = [
-    { icon: Github, label: "GitHub", href: "https://github.com/notjitin-1994", description: "View Public Repos" },
     { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/notjitin/", description: "Connect professionally" },
     { icon: Instagram, label: "Instagram", href: "https://instagram.com/not_jitin", description: "@not_jitin" },
   ];

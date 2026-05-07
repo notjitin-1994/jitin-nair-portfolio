@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Github, Linkedin, Twitter, Mail, Phone } from 'lucide-react';
+import { Linkedin, Twitter, Mail, Phone } from 'lucide-react';
 import { projectsData } from '../data/projects';
 import { siteConfig } from '../data/siteConfig';
 import { navigation } from '../data/navigation';
@@ -24,15 +24,6 @@ export function Footer() {
               {siteConfig.description}
             </p>
             <div className="flex items-center gap-3 pt-2">
-              <a
-                href={siteConfig.links.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-all"
-                aria-label="GitHub"
-              >
-                <Github className="w-4 h-4" />
-              </a>
               <a
                 href={siteConfig.links.linkedin}
                 target="_blank"

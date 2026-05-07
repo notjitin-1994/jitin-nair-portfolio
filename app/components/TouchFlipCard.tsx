@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Github, ExternalLink, ArrowRight } from 'lucide-react';
+import { ExternalLink, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 interface TouchFlipCardProps {
@@ -206,23 +206,6 @@ export function TouchFlipCard({ project }: TouchFlipCardProps) {
                   <span>Learn More</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-              )}
-              {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105"
-                  style={{
-                    backgroundColor: 'rgba(34, 211, 238, 0.1)',
-                    color: '#22d3ee',
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  aria-label={`View ${project.name} source code on GitHub`}
-                >
-                  <Github className="w-4 h-4" />
-                  <span>GitHub</span>
-                </a>
               )}
               {project.liveUrl && (
                 <a

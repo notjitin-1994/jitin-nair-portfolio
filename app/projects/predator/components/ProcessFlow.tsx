@@ -4,107 +4,107 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { 
   Zap, Brain, Target, Scale, Rocket, Activity, 
-  ChevronRight, ArrowRight
+  ChevronRight, ArrowRight, ShieldCheck, Database, Search
 } from 'lucide-react';
 
 const iconMap = {
-  Zap, Brain, Target, Scale, Rocket, Activity,
+  Zap, Brain, Target, Scale, Rocket, Activity, ShieldCheck, Database, Search
 };
 
 const processSteps = [
   {
-    id: "hermes",
+    id: "ingestion",
     number: '01',
-    title: "Hermes: Ingestion",
-    subtitle: "High-Frequency Conduit",
-    description: "Real-time ProtoBuf socket connection to cTrader OpenAPI, processing institutional Ticks and LOB (Limit Order Book) data into TimescaleDB.",
-    icon: "Zap",
+    title: "High-Freq Ingestion",
+    subtitle: "The Hermes Daemon",
+    description: "Real-time ProtoBuf socket connection to institutional cTrader endpoints, streaming Ticks and LOB depth with microsecond precision.",
+    icon: "Database",
     color: "#22d3ee",
     details: [
-      "Sub-10ms ingestion precision", 
+      "Sub-ms ingestion latency", 
       "Order Flow Imbalance (OFI) extraction", 
-      "Multithreaded DatabaseWorker pool", 
-      "Absolute Time Anchor synchronization"
+      "TCP Absolute Anchor synchronization", 
+      "TimescaleDB hypertable persistence"
     ],
     metrics: [
       { label: "Throughput", value: "5000+ tps" }, 
-      { label: "LOB Levels", value: "Top 5" }
+      { label: "Precision", value: "Sub-ms" }
     ]
   },
   {
-    id: "argus",
+    id: "detection",
     number: '02',
-    title: "Argus: Detection",
-    subtitle: "Bayesian Confluence",
-    description: "Determines structural market shifts by evaluating a 68-feature matrix through a Multivariate Gaussian Hidden Markov Model (HMM).",
-    icon: "Brain",
+    title: "MLARD Detection",
+    subtitle: "Multi-Layer Adaptive Logic",
+    description: "Identifies market regimes (Trend/Range/Volatile) using adaptive thresholds with MAD normalization to handle non-stationary volatility.",
+    icon: "Search",
     color: "#14b8a6",
     details: [
-      "BIC-optimized state discovery", 
-      "68-feature Random Forest matrix", 
-      "HMM Persistence transition logic", 
-      "M1-Bridge institutional resampling"
+      "Adaptive ADX/BBW barriers", 
+      "MAD (Median Absolute Deviation) scaling", 
+      "Choppiness Index filtering", 
+      "Efficiency Ratio trend validation"
     ],
     metrics: [
-      { label: "Update Freq", value: "M1/M5/M15" }, 
-      { label: "Accuracy", value: "91.2%" }
+      { label: "Accuracy", value: "91.2%" }, 
+      { label: "Stability", value: "Hysteresis" }
     ]
   },
   {
-    id: "athena",
+    id: "orchestration",
     number: '03',
-    title: "Athena: Orchestration",
-    subtitle: "Stateful Execution",
-    description: "A LangGraph-managed DAG (Directed Acyclic Graph) orchestrating a 16-node Strategy Matrix for dynamic execution routing.",
+    title: "Dynamic Routing",
+    subtitle: "Stateful Strategy Matrix",
+    description: "A LangGraph-managed DAG orchestrating a 16-node strategy matrix, hot-swapping logic based on the detected Bayesian regime.",
     icon: "Target",
     color: "#2dd4bf",
     details: [
-      "Context-aware LangGraph routing", 
-      "EMA Pullback & Breakout nodes", 
-      "Mean Reversion state activation", 
-      "Institutional rationale generation"
+      "LangGraph state persistence", 
+      "16-node execution routing", 
+      "Sub-1ms state transitions", 
+      "Institutional rationale engine"
     ],
     metrics: [
-      { label: "Strategy Nodes", value: "16" }, 
-      { label: "Logic", value: "LangGraph" }
+      { label: "Nodes", value: "16 Active" }, 
+      { label: "Logic", value: "Stateful" }
     ]
   },
   {
-    id: "apollo",
+    id: "inference",
     number: '04',
-    title: "Apollo: Inference",
-    subtitle: "Posterior Oracle",
-    description: "Synthesizes multi-factor inputs into a Bayesian posterior probability, issuing high-confidence trade directives.",
+    title: "Bayesian Inference",
+    subtitle: "The Apollo Oracle",
+    description: "Fuses Macro (DXY), Microstructure (OFI), and Sentiment into a unified Bayesian posterior probability for high-confidence directives.",
     icon: "Activity",
     color: "#06b6d4",
     details: [
       "Bayesian posterior fusion", 
-      "Cross-asset DXY correlation", 
+      "Cross-asset correlation analysis", 
       "Neural sentiment vector injection", 
-      "Probabilistic ENTER/EXIT logic"
+      "Probabilistic signal generation"
     ],
     metrics: [
-      { label: "Posterior P", value: "Confidence" }, 
-      { label: "Latency", value: "8ms p99" }
+      { label: "Inference", value: "6.2ms" }, 
+      { label: "Confidence", value: "Dynamic" }
     ]
   },
   {
-    id: "sentinel",
+    id: "integrity",
     number: '05',
-    title: "Guard Rails: Integrity",
-    subtitle: "MLOps & Stability",
-    description: "Continuous monitoring for concept drift and model stability with automated institutional circuit breakers.",
-    icon: "Scale",
+    title: "MLOps Integrity",
+    subtitle: "Guard Rails & Drift",
+    description: "Continuous monitoring of model drift (PSI) and concept drift (ADWIN) with automated institutional circuit breakers.",
+    icon: "ShieldCheck",
     color: "#0ea5e9",
     details: [
-      "ADWIN/PSI Drift Detection", 
-      "Feature distribution tracking", 
-      "Automated Daily Loss limits", 
-      "Prometheus observability stack"
+      "PSI Drift Detection", 
+      "ADWIN concept monitoring", 
+      "Champion/Challenger registry", 
+      "Emergency shutdown protocols"
     ],
     metrics: [
-      { label: "Drift Trigger", value: "PSI > 0.25" }, 
-      { label: "Risk Shield", value: "Active" }
+      { label: "Sensitivity", value: "0.1 PSI" }, 
+      { label: "Uptime", value: "99.9%" }
     ]
   }
 ];
@@ -136,7 +136,7 @@ function StepCard({ step, isExpanded, onToggle, index }: {
       <motion.div
         onClick={onToggle}
         className={`
-          group relative p-5 sm:p-6 rounded-2xl cursor-pointer transition-all duration-300
+          group relative p-5 sm:p-6 rounded-2xl cursor-pointer transition-all duration-300 overflow-hidden
           ${isExpanded ? 'lg:col-span-2' : ''}
         `}
         style={{
@@ -152,7 +152,7 @@ function StepCard({ step, isExpanded, onToggle, index }: {
       >
         {/* Step Number */}
         <div 
-          className="absolute top-4 right-4 text-lg font-bold opacity-10"
+          className="absolute top-4 right-4 text-lg font-bold opacity-10 font-mono"
           style={{ color: step.color }}
         >
           {step.number}
@@ -160,7 +160,7 @@ function StepCard({ step, isExpanded, onToggle, index }: {
 
         {/* Icon */}
         <div 
-          className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-300"
+          className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 shadow-lg"
           style={{ 
             backgroundColor: isExpanded ? `${step.color}20` : 'rgba(255,255,255,0.05)',
             border: `1px solid ${isExpanded ? step.color + '40' : 'rgba(255,255,255,0.1)'}`,
@@ -174,16 +174,16 @@ function StepCard({ step, isExpanded, onToggle, index }: {
 
         {/* Content */}
         <div>
-          <p className="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wider mb-1">
+          <p className="text-[10px] text-slate-500 uppercase tracking-[0.2em] font-mono mb-1">
             {step.subtitle}
           </p>
           <h3 
-            className="text-base sm:text-lg font-semibold mb-2 transition-colors duration-300"
+            className="text-base sm:text-lg font-bold mb-2 transition-colors duration-300 tracking-tight"
             style={{ color: isExpanded ? step.color : '#f8fafc' }}
           >
             {step.title}
           </h3>
-          <p className="text-slate-400 text-xs sm:text-sm leading-relaxed mb-4">
+          <p className="text-slate-400 text-xs sm:text-sm leading-relaxed mb-4 font-light">
             {step.description}
           </p>
 
@@ -192,16 +192,16 @@ function StepCard({ step, isExpanded, onToggle, index }: {
             {step.metrics.map((metric) => (
               <div 
                 key={metric.label}
-                className="p-2.5 rounded-lg transition-colors duration-300"
-                style={{ backgroundColor: isExpanded ? `${step.color}10` : 'rgba(255,255,255,0.03)' }}
+                className="p-2.5 rounded-lg transition-colors duration-300 border border-white/[0.03]"
+                style={{ backgroundColor: isExpanded ? `${step.color}10` : 'rgba(255,255,255,0.02)' }}
               >
                 <p 
-                  className="text-sm font-semibold transition-colors duration-300"
+                  className="text-xs font-bold transition-colors duration-300 font-mono uppercase tracking-wider"
                   style={{ color: isExpanded ? step.color : '#e2e8f0' }}
                 >
                   {metric.value}
                 </p>
-                <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">
+                <p className="text-[8px] text-slate-500 uppercase tracking-widest mt-0.5">
                   {metric.label}
                 </p>
               </div>
@@ -234,12 +234,12 @@ function StepCard({ step, isExpanded, onToggle, index }: {
             className="pt-4 border-t"
             style={{ borderColor: `${step.color}20` }}
           >
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-3">Technical Details</p>
+            <p className="text-[9px] text-slate-500 uppercase tracking-[0.2em] font-mono mb-3">Technical Architecture</p>
             <ul className="space-y-2">
               {step.details.map((detail, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-slate-400 text-xs sm:text-sm">
-                  <span 
-                    className="mt-1 w-1 h-1 rounded-full flex-shrink-0"
+                <li key={i} className="flex items-start gap-2.5 text-slate-400 text-xs font-light">
+                  <div 
+                    className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0 shadow-[0_0_5px_rgba(34,211,238,0.5)]"
                     style={{ backgroundColor: step.color }}
                   />
                   <span>{detail}</span>
@@ -255,7 +255,7 @@ function StepCard({ step, isExpanded, onToggle, index }: {
           initial={false}
           animate={{
             boxShadow: isExpanded 
-              ? `0 0 40px ${step.color}15, inset 0 1px 0 ${step.color}15`
+              ? `0 0 40px ${step.color}10, inset 0 1px 0 ${step.color}15`
               : 'none'
           }}
           transition={{ duration: 0.3 }}
@@ -282,14 +282,14 @@ export function ProcessFlow() {
           viewport={{ once: true }}
           className="text-left mb-8 sm:mb-10"
         >
-          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase mb-3 sm:mb-4">
-            Processing Pipeline
+          <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-[0.3em] uppercase mb-3 sm:mb-4">
+            Pipeline Architecture
           </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
-            How It Works
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 font-display">
+            The MLARD Decision Loop
           </h2>
-          <p className="text-slate-400 max-w-2xl text-sm sm:text-base">
-            From tick ingestion to execution, every step is optimized for sub-50ms latency with institutional-grade risk controls and AI-powered decision making.
+          <p className="text-slate-400 max-w-2xl text-sm sm:text-base font-light">
+            Every tick is processed through a multi-layer adaptive pipeline optimized for sub-10ms latency, balancing statistical rigor with high-frequency execution.
           </p>
         </motion.div>
 
@@ -311,21 +311,21 @@ export function ProcessFlow() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="mt-10 sm:mt-12 flex flex-wrap items-center justify-start gap-6 sm:gap-8"
+          className="mt-10 sm:mt-12 flex flex-wrap items-center justify-start gap-6 sm:gap-8 border-t border-white/[0.05] pt-8"
         >
           {[
             { label: 'Data Ingestion', color: '#22d3ee' },
-            { label: 'AI Processing', color: '#14b8a6' },
-            { label: 'Risk Control', color: '#2dd4bf' },
-            { label: 'Ares', color: '#06b6d4' },
-            { label: 'Monitoring', color: '#0ea5e9' },
+            { label: 'Regime Intelligence', color: '#14b8a6' },
+            { label: 'Agentic Logic', color: '#2dd4bf' },
+            { label: 'Posterior Fusion', color: '#06b6d4' },
+            { label: 'ML Integrity', color: '#0ea5e9' },
           ].map((item) => (
             <div key={item.label} className="flex items-center gap-2">
               <div 
-                className="w-2.5 h-2.5 rounded-full"
+                className="w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.2)]"
                 style={{ backgroundColor: item.color }}
               />
-              <span className="text-xs text-slate-500">{item.label}</span>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500">{item.label}</span>
             </div>
           ))}
         </motion.div>

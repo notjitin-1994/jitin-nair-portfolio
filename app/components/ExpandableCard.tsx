@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import {
-  Github,
   ExternalLink,
   ArrowRight,
   TrendingUp,
@@ -440,27 +439,17 @@ function MobileInlineCard({
             {/* Action Buttons */}
             <div className="px-4 pb-5 pt-2 border-t border-white/[0.08] flex gap-3">
               {project.learnMoreUrl && (
-                <a
+                <motion.a
                   href={project.learnMoreUrl}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all"
-                  style={{ background: CYAN, color: '#0a0a0f' }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all shadow-lg shadow-cyan-500/10"
+                  style={{ background: `linear-gradient(135deg, ${CYAN} 0%, ${TEAL} 100%)`, color: '#0a0a0f' }}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  View Full Project
+                  Explore Full Project
                   <ArrowRight className="w-4 h-4" />
-                </a>
-              )}
-              {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border border-white/20 text-white bg-white/5"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Github className="w-4 h-4" />
-                  Source
-                </a>
+                </motion.a>
               )}
             </div>
           </motion.div>
@@ -598,18 +587,15 @@ function DesktopCard({ project, isExpanded, setIsExpanded, activeTab, setActiveT
         <div className="px-10 pb-10 pt-6 border-t border-white/[0.05] flex items-center justify-between">
           <div className="flex gap-4">
             {project.learnMoreUrl && (
-              <a href={project.learnMoreUrl}
-                className="flex items-center gap-3 px-8 py-4 rounded-2xl text-sm font-black transition-all hover:scale-105 active:scale-95 shadow-xl shadow-cyan-500/20"
-                style={{ background: CYAN, color: '#0a0a0f' }}>
-                VIEW CASE STUDY <ArrowRight className="w-5 h-5" />
-              </a>
-            )}
-            {project.githubUrl && (
-              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" 
-                className="flex items-center gap-3 px-8 py-4 rounded-2xl text-sm font-bold transition-all hover:scale-105 active:scale-95 border border-white/10 text-white bg-white/[0.03] hover:bg-white/[0.08]">
-                <Github className="w-5 h-5" />
-                <span>SOURCE CODE</span>
-              </a>
+              <motion.a
+                href={project.learnMoreUrl}
+                whileHover={{ scale: 1.05, boxShadow: `0 0 25px ${CYAN}40` }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-3 px-8 py-4 rounded-2xl text-sm font-black transition-all shadow-xl shadow-cyan-500/20"
+                style={{ background: `linear-gradient(135deg, ${CYAN} 0%, ${TEAL} 100%)`, color: '#0a0a0f' }}
+              >
+                EXPLORE PROJECT <ArrowRight className="w-5 h-5" />
+              </motion.a>
             )}
           </div>
           

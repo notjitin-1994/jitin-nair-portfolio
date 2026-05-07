@@ -4,107 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileCode, ChevronLeft, ChevronRight, Lock, Unlock, Mail, Phone, ArrowRight, Check } from 'lucide-react';
 import CodeBlock from './ui/CodeBlock';
-
-const codeSnippets = [
-  {
-    id: "bayesian-confluence",
-    title: "Bayesian Confluence",
-    filePath: "agents/regime_agent/confluence.py",
-    language: "python",
-    description: "Argus Bayesian engine fusing Price Action, RF Classifier, and Gaussian HMM into a weighted regime confidence score.",
-    code: `def calculate_confluence(self, pa_regime, ml_regime, hmm_regime) -> dict:
-    # Bayesian Prior Weights
-    PA_WEIGHT, ML_WEIGHT, HMM_WEIGHT = 0.60, 0.30, 0.10
-    
-    regime_probs = {r: 0.0 for r in RegimeType}
-    
-    # Apply evidence fusion
-    regime_probs[pa_regime] += PA_WEIGHT
-    regime_probs[ml_regime] += ML_WEIGHT
-    regime_probs[hmm_regime] += HMM_WEIGHT
-    
-    # Select mode and calculate entropy-based confidence
-    final_regime = max(regime_probs, key=regime_probs.get)
-    confidence = regime_probs[final_regime]
-    
-    return {
-        "regime": final_regime,
-        "confidence": confidence,
-        "is_stable": confidence >= 0.70
-    }`
-  },
-  {
-    id: "strategy-matrix",
-    title: "Strategy Matrix",
-    filePath: "agents/strategy_agent/matrix.py",
-    language: "python",
-    description: "Athena dynamic node switching system that activates specific strategy logic based on the Bayesian regime.",
-    code: `class StrategyMatrix:
-    def __init__(self):
-        self.nodes = {
-            Regime.TREND_UP: EMAPullbackNode(direction="LONG"),
-            Regime.TREND_DOWN: EMAPullbackNode(direction="SHORT"),
-            Regime.RANGE: MeanReversionNode(threshold=2.0),
-            Regime.VOLATILE: BreakoutNode(atr_mult=1.5)
-        }
-
-    async def get_directive(self, state: AgentState) -> StrategyDirective:
-        regime = state["regime_consensus"]
-        node = self.nodes.get(regime, self.nodes[Regime.VOLATILE])
-        
-        # Execute logic for active node
-        decision = await node.evaluate(state["features"])
-        
-        return StrategyDirective(
-            node_id=node.id,
-            decision=decision,
-            rationale=node.generate_rationale(state)
-        )`
-  },
-  {
-    id: "ofi-extraction",
-    title: "OFI Extraction",
-    filePath: "agents/ingestion_agent/hermes.py",
-    language: "python",
-    description: "Hermes Level 2 microstructure analysis extracting Order Flow Imbalance from the top 5 levels of the LOB.",
-    code: `def calculate_ofi(self, snapshot: DepthSnapshot) -> float:
-    \"\"\"Calculates Order Flow Imbalance (OFI) across LOB levels.\"\"\"
-    ofi_sum = 0.0
-    
-    for level in range(5):
-        bid_delta = snapshot.bids[level].size - self.prev_snap.bids[level].size
-        ask_delta = snapshot.asks[level].size - self.prev_snap.asks[level].size
-        
-        # OFI logic: Increase in bid volume or decrease in ask volume is bullish
-        weight = 1.0 / (level + 1)
-        ofi_sum += (bid_delta - ask_delta) * weight
-        
-    self.prev_snap = snapshot
-    return np.tanh(ofi_sum / self.norm_factor)  # Normalized [-1, 1]`
-  },
-  {
-    id: "state-graph",
-    title: "LangGraph Workflow",
-    filePath: "graph.py",
-    language: "python",
-    description: "Stateful agent orchestration using LangGraph to manage the Bayesian Pantheon's decision loop.",
-    code: `def build_nexus_graph():
-    builder = StateGraph(AgentState)
-    
-    builder.add_node("hermes", ingest_data)
-    builder.add_node("argus", detect_regime)
-    builder.add_node("athena", select_strategy)
-    builder.add_node("apollo", generate_signal)
-    
-    builder.set_entry_point("hermes")
-    builder.add_edge("hermes", "argus")
-    builder.add_edge("argus", "athena")
-    builder.add_edge("athena", "apollo")
-    builder.add_edge("apollo", END)
-    
-    return builder.compile()`
-  }
-];
+import { codeSnippets } from '../data/codeSnippets';
 
 // Access Request Form Component
 function AccessRequestForm({ onUnlock }: { onUnlock: () => void }) {
@@ -144,53 +44,53 @@ function AccessRequestForm({ onUnlock }: { onUnlock: () => void }) {
       className="w-full max-w-sm mx-auto"
     >
       {/* Glass Card */}
-      <div className="p-6 rounded-2xl bg-[#0a0a0f]/90 backdrop-blur-xl border border-white/[0.1] shadow-2xl">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#0a0a0f]/90 backdrop-blur-2xl border border-white/[0.1] shadow-[0_0_50px_rgba(0,0,0,0.5)]">
         {/* Header */}
-        <div className="text-center mb-5">
+        <div className="text-center mb-6">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
-            className="w-12 h-12 mx-auto mb-3 rounded-xl bg-cyan-500/20 flex items-center justify-center"
+            className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30"
           >
-            <Lock className="w-6 h-6 text-cyan-400" />
+            <Lock className="w-7 h-7 text-cyan-400" />
           </motion.div>
-          <h3 className="text-base font-bold text-white mb-1">Access Required</h3>
-          <p className="text-slate-400 text-xs">
-            Unlock all code with your details
+          <h3 className="text-xl font-bold text-white mb-2 tracking-tight">Institutional Access</h3>
+          <p className="text-slate-400 text-xs font-light leading-relaxed">
+            Proprietary MLARD algorithms are protected. <br/>Unlock technical implementation details.
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <div className="relative group">
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
               <input
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white text-sm placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40 transition-all"
-                placeholder="Email"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white text-sm placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.05] transition-all"
+                placeholder="Email Address"
               />
             </div>
-            {errors.email && <p className="text-red-400 text-[10px] mt-1 ml-1">{errors.email}</p>}
+            {errors.email && <p className="text-red-400 text-[10px] mt-1.5 ml-1 font-mono">{errors.email}</p>}
           </div>
 
           <div>
-            <div className="relative">
-              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <div className="relative group">
+              <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
               <input
                 type="tel"
                 required
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white text-sm placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40 transition-all"
-                placeholder="Phone"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white text-sm placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.05] transition-all"
+                placeholder="Phone Number"
               />
             </div>
-            {errors.phone && <p className="text-red-400 text-[10px] mt-1 ml-1">{errors.phone}</p>}
+            {errors.phone && <p className="text-red-400 text-[10px] mt-1.5 ml-1 font-mono">{errors.phone}</p>}
           </div>
 
           <motion.button
@@ -198,18 +98,17 @@ function AccessRequestForm({ onUnlock }: { onUnlock: () => void }) {
             disabled={isSubmitting}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/30 transition-all text-sm font-medium disabled:opacity-50 mt-1"
+            className="w-full flex items-center justify-center gap-2.5 px-4 py-3.5 rounded-xl bg-cyan-500 text-[#0a0a0f] hover:bg-cyan-400 transition-all text-sm font-black uppercase tracking-widest disabled:opacity-50 mt-2 shadow-[0_0_20px_rgba(34,211,238,0.2)]"
           >
             {isSubmitting ? (
               <>
-                <div className="w-3.5 h-3.5 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
-                Unlocking...
+                <div className="w-4 h-4 border-2 border-[#0a0a0f]/30 border-t-[#0a0a0f] rounded-full animate-spin" />
+                Validating...
               </>
             ) : (
               <>
-                <Unlock className="w-3.5 h-3.5" />
-                Unlock All Code
-                <ArrowRight className="w-3.5 h-3.5" />
+                <Unlock className="w-4 h-4" />
+                Initialize Session
               </>
             )}
           </motion.button>
@@ -234,17 +133,31 @@ function CodeBlockContainer({
   onUnlock: () => void;
 }) {
   return (
-    <div className="relative min-h-[400px] sm:min-h-[500px] rounded-xl sm:rounded-2xl overflow-hidden bg-[#0a0a0f] border border-white/[0.08]">
+    <div className="relative min-h-[400px] sm:min-h-[550px] rounded-3xl overflow-hidden bg-[#050505] border border-white/[0.06] shadow-2xl">
+      {/* Code Header */}
+      <div className="absolute top-0 left-0 right-0 h-12 bg-white/[0.02] border-b border-white/[0.05] flex items-center justify-between px-6 z-20 backdrop-blur-md">
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/40" />
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40" />
+          <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/40" />
+          <span className="ml-4 text-[10px] font-mono text-slate-500 tracking-wider uppercase">{filePath}</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] font-mono text-cyan-500/50 uppercase tracking-widest">{language}</span>
+        </div>
+      </div>
+
       {/* Code Content - Always rendered, blur controlled by isUnlocked */}
       <motion.div
         animate={{
-          filter: isUnlocked ? 'blur(0px)' : 'blur(10px)',
-          opacity: isUnlocked ? 1 : 0.5,
+          filter: isUnlocked ? 'blur(0px)' : 'blur(12px)',
+          opacity: isUnlocked ? 1 : 0.4,
+          scale: isUnlocked ? 1 : 0.98,
         }}
-        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-        className="absolute inset-0 overflow-auto"
+        transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+        className="absolute inset-0 pt-12 overflow-auto scrollbar-hide"
       >
-        <div className="p-4 sm:p-6">
+        <div className="p-6 sm:p-8">
           <CodeBlock code={code} language={language} filePath={filePath} />
         </div>
       </motion.div>
@@ -256,10 +169,10 @@ function CodeBlockContainer({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            className="absolute inset-0 flex items-center justify-center"
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 flex items-center justify-center z-30"
             style={{
-              background: 'linear-gradient(180deg, rgba(10,10,15,0.7) 0%, rgba(10,10,15,0.85) 50%, rgba(10,10,15,0.7) 100%)'
+              background: 'radial-gradient(circle at center, rgba(10,10,15,0.6) 0%, rgba(10,10,15,0.9) 100%)'
             }}
           >
             <AccessRequestForm onUnlock={onUnlock} />
@@ -271,35 +184,16 @@ function CodeBlockContainer({
       <AnimatePresence>
         {isUnlocked && (
           <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            transition={{ type: 'spring', stiffness: 300, delay: 0.3 }}
-            className="absolute top-3 right-3 z-10"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ type: 'spring', stiffness: 300, delay: 0.4 }}
+            className="absolute top-16 right-6 z-20"
           >
-            <div className="px-2.5 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center gap-1.5">
-              <Check className="w-3 h-3 text-cyan-400" />
-              <span className="text-cyan-400 text-[10px] font-medium">Unlocked</span>
+            <div className="px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 backdrop-blur-md flex items-center gap-2 shadow-xl">
+              <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="text-cyan-400 text-[10px] font-bold uppercase tracking-widest font-mono">Secure Session Active</span>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Unlock Ripple Effect */}
-      <AnimatePresence>
-        {isUnlocked && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
-            className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden"
-          >
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0.8 }}
-              animate={{ scale: 3, opacity: 0 }}
-              transition={{ duration: 0.6 }}
-              className="w-40 h-40 rounded-full border border-cyan-400/30"
-            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -309,13 +203,11 @@ function CodeBlockContainer({
 
 export function CodeShowcase() {
   const [activeTab, setActiveTab] = useState(codeSnippets[0].id);
-  const [showDescription, setShowDescription] = useState(true);
-  const [isUnlocked, setIsUnlocked] = useState(false); // Session-only, no localStorage
+  const [isUnlocked, setIsUnlocked] = useState(false);
   
   const activeSnippet = codeSnippets.find((s) => s.id === activeTab);
   const activeIndex = codeSnippets.findIndex((s) => s.id === activeTab);
 
-  // Unlock all code blocks (session-wide)
   const handleUnlock = () => {
     setIsUnlocked(true);
   };
@@ -331,199 +223,131 @@ export function CodeShowcase() {
   };
 
   return (
-    <section className="py-6 sm:py-8 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-12 sm:py-20 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent relative">
+      {/* Decorative noise/grid background */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
+      
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-left mb-8 sm:mb-12"
+          className="text-left mb-12 sm:mb-16"
         >
-          <div className="flex items-center gap-3 mb-3 sm:mb-4">
-            <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-widest uppercase">Implementation</p>
+          <div className="flex items-center gap-4 mb-6">
+            <p className="text-cyan-400 font-mono text-xs sm:text-sm tracking-[0.4em] uppercase font-bold">Technical Implementation</p>
+            <div className="h-px w-12 bg-white/10" />
             {!isUnlocked ? (
-              <span className="px-2 py-0.5 rounded-full bg-slate-500/10 border border-slate-500/20 text-slate-400 text-[10px] flex items-center gap-1">
+              <span className="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-slate-500 text-[10px] font-mono uppercase tracking-widest flex items-center gap-1.5">
                 <Lock className="w-3 h-3" />
-                Locked
+                Restricted
               </span>
             ) : (
               <motion.span 
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-[10px] flex items-center gap-1"
+                className="px-2.5 py-1 rounded bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-[10px] font-mono uppercase tracking-widest flex items-center gap-1.5 shadow-[0_0_15px_rgba(34,211,238,0.2)]"
               >
                 <Unlock className="w-3 h-3" />
-                Session Unlocked
+                Authenticated
               </motion.span>
             )}
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Key Algorithms</h2>
-          <p className="text-slate-400 max-w-2xl text-sm sm:text-base">
-            Core algorithms powering the Predator system, from regime detection to risk management.
+          <h2 className="text-3xl sm:text-5xl font-bold mb-6 tracking-tight font-display text-white italic">The Neural Logic</h2>
+          <p className="text-slate-400 max-w-2xl text-base sm:text-lg font-light leading-relaxed">
+            Deep dive into the core implementation of Predator&apos;s adaptive decision loop, featuring JIT-optimized indicators and production-grade MLOps monitoring.
           </p>
         </motion.div>
 
-        {/* Mobile: Horizontal Scrollable Tabs + Navigation */}
-        <div className="lg:hidden">
-          {/* Tab Strip */}
-          <div className="relative mb-4">
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
-              {codeSnippets.map((snippet) => (
-                <button
-                  key={snippet.id}
-                  onClick={() => setActiveTab(snippet.id)}
-                  className={`flex-shrink-0 snap-start px-3 py-2 rounded-lg border text-left transition-all min-w-[140px] ${
-                    activeTab === snippet.id
-                      ? 'bg-cyan-500/10 border-cyan-500/30'
-                      : 'bg-white/[0.03] border-white/[0.08]'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                      activeTab === snippet.id ? 'bg-cyan-500/20' : 'bg-white/5'
-                    }`}>
-                      <FileCode className={`w-4 h-4 ${activeTab === snippet.id ? 'text-cyan-400' : 'text-slate-400'}`} />
-                    </div>
-                    <div>
-                      <p className={`text-xs font-medium ${activeTab === snippet.id ? 'text-white' : 'text-slate-300'}`}>
-                        {snippet.title}
-                      </p>
-                      <p className="text-[10px] text-slate-500 truncate max-w-[100px]">{snippet.filePath}</p>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Navigation Arrows */}
-          <div className="flex items-center justify-between mb-4 px-1">
-            <button
-              onClick={prevTab}
-              className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.08] text-slate-400 hover:text-cyan-400 hover:border-cyan-500/20 transition-all"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            
-            <div className="flex gap-1">
-              {codeSnippets.map((snippet) => (
-                <button
-                  key={snippet.id}
-                  onClick={() => setActiveTab(snippet.id)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    activeTab === snippet.id ? 'bg-cyan-400 w-4' : 'bg-white/20'
-                  }`}
-                />
-              ))}
-            </div>
-            
-            <button
-              onClick={nextTab}
-              className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.08] text-slate-400 hover:text-cyan-400 hover:border-cyan-500/20 transition-all"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Description Toggle */}
-          <AnimatePresence>
-            {showDescription && activeSnippet && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-4 p-3 rounded-lg bg-cyan-500/5 border border-cyan-500/10"
-              >
-                <p className="text-slate-400 text-xs leading-relaxed">{activeSnippet.description}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Code Block */}
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {activeSnippet && (
-              <CodeBlockContainer
-                code={activeSnippet.code}
-                language={activeSnippet.language}
-                filePath={activeSnippet.filePath}
-                isUnlocked={isUnlocked}
-                onUnlock={handleUnlock}
-              />
-            )}
-          </motion.div>
-        </div>
-
         {/* Desktop: Side-by-Side Layout */}
-        <div className="hidden lg:grid lg:grid-cols-[320px_1fr] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-8">
+          {/* Sidebar / Navigation */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="space-y-2"
+            className="space-y-3"
           >
             {codeSnippets.map((snippet) => (
               <button
                 key={snippet.id}
                 onClick={() => setActiveTab(snippet.id)}
-                className={`w-full text-left p-4 rounded-xl border transition-all duration-300 group ${
+                className={`w-full text-left p-5 rounded-[1.5rem] border transition-all duration-500 group relative overflow-hidden ${
                   activeTab === snippet.id
-                    ? 'bg-cyan-500/10 border-cyan-500/30'
-                    : 'bg-white/[0.03] border-white/[0.08] hover:border-cyan-500/20'
+                    ? 'bg-cyan-500/[0.08] border-cyan-500/40 shadow-xl'
+                    : 'bg-white/[0.02] border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.04]'
                 }`}
               >
-                <div className="flex items-start gap-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
-                    activeTab === snippet.id ? 'bg-cyan-500/20' : 'bg-white/5 group-hover:bg-cyan-500/10'
+                {activeTab === snippet.id && (
+                  <motion.div 
+                    layoutId="active-bg"
+                    className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent pointer-events-none"
+                  />
+                )}
+                
+                <div className="flex items-start gap-4 relative z-10">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 ${
+                    activeTab === snippet.id ? 'bg-cyan-500 shadow-[0_0_20px_rgba(34,211,238,0.4)]' : 'bg-white/5 group-hover:bg-white/10 shadow-inner'
                   }`}>
-                    <FileCode className={`w-5 h-5 transition-colors ${
-                      activeTab === snippet.id ? 'text-cyan-400' : 'text-slate-400'
+                    <FileCode className={`w-6 h-6 transition-colors duration-500 ${
+                      activeTab === snippet.id ? 'text-[#0a0a0f]' : 'text-slate-500 group-hover:text-slate-300'
                     }`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className={`font-medium mb-1 transition-colors ${
-                      activeTab === snippet.id ? 'text-white' : 'text-slate-300'
+                    <h3 className={`font-bold mb-1 transition-colors duration-500 ${
+                      activeTab === snippet.id ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'
                     }`}>
                       {snippet.title}
                     </h3>
-                    <p className="text-slate-500 text-xs">{snippet.filePath}</p>
+                    <p className={`text-[10px] font-mono uppercase tracking-widest ${activeTab === snippet.id ? 'text-cyan-400/70' : 'text-slate-600'}`}>
+                      {snippet.filePath.split('/').pop()}
+                    </p>
                   </div>
                 </div>
 
                 <AnimatePresence>
                   {activeTab === snippet.id && (
-                    <motion.p
+                    <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="text-slate-400 text-sm mt-3 pt-3 border-t border-white/10"
+                      className="relative z-10"
                     >
-                      {snippet.description}
-                    </motion.p>
+                      <p className="text-slate-400 text-xs mt-4 pt-4 border-t border-cyan-500/20 font-light leading-relaxed">
+                        {snippet.description}
+                      </p>
+                    </motion.div>
                   )}
                 </AnimatePresence>
               </button>
             ))}
+            
+            {/* Visual indicator for "End of Implementation" */}
+            <div className="pt-8 px-6 text-center">
+              <div className="inline-flex items-center gap-2 text-[10px] font-mono text-slate-700 tracking-[0.3em] uppercase">
+                <div className="w-2 h-2 rounded-full border border-slate-800" />
+                Implementation Log
+                <div className="w-2 h-2 rounded-full border border-slate-800" />
+              </div>
+            </div>
           </motion.div>
 
+          {/* Code Viewport */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            className="relative"
           >
             <AnimatePresence mode="wait">
               {activeSnippet && (
                 <motion.div
                   key={activeSnippet.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
+                  initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 1.02, y: -10 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
                 >
                   <CodeBlockContainer
                     code={activeSnippet.code}
@@ -535,6 +359,9 @@ export function CodeShowcase() {
                 </motion.div>
               )}
             </AnimatePresence>
+            
+            {/* Decorative background glow for code block */}
+            <div className="absolute -inset-10 bg-cyan-500/5 blur-[100px] rounded-full pointer-events-none -z-10" />
           </motion.div>
         </div>
       </div>

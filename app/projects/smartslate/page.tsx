@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Github, ExternalLink, Shield, 
+  ExternalLink, Shield, 
   Brain, Database, Search,
   Zap, Scale, ChevronRight, HardDrive, 
   FileSearch, Cpu, Lock, Network,
   Sparkles, Clock, Users, LayoutDashboard,
-  Target, GraduationCap, BarChart3, Workflow
+  Target, GraduationCap, BarChart3, Workflow,
+  Rocket
 } from 'lucide-react';
 import Link from 'next/link';
 import { Footer } from '../../components/Footer';
@@ -427,7 +428,6 @@ export default function SmarslatePage() {
         <CodeShowcase />
         <TechStackGrid />
         <CTASection />
-        <WorkingTogetherCTA />
       </div>
 
       <Footer />

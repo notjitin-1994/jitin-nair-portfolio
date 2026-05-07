@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
-  Github, ExternalLink, Shield, 
+  ExternalLink, Shield, 
   Database, Zap, Scale, ChevronRight, 
   MapPin, Image as ImageIcon, Map, Users, Globe, Network,
   LayoutDashboard, Workflow, Layers, Activity, Search,
-  MessageCircle, Smartphone, Sliders
+  MessageCircle, Smartphone, Sliders, Rocket
 } from 'lucide-react';
 import Link from 'next/link';
 import { Footer } from '../../components/Footer';
@@ -424,7 +424,6 @@ export default function CommunePage() {
         <CodeShowcase />
         <TechStackGrid />
         <CTASection />
-        <WorkingTogetherCTA />
       </div>
 
       <Footer />

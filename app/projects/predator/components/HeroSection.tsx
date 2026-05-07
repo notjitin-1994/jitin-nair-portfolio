@@ -1,14 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ChevronDown, Zap, Brain, Activity, Clock } from 'lucide-react';
+import { ChevronDown, Zap, Brain, Activity, Clock, ShieldCheck, Search } from 'lucide-react';
 import { AnimatedCounter } from '@/app/components/ui/AnimatedCounter';
 
 const heroStats = [
-  { label: 'Latency', value: 8.4, suffix: 'ms', icon: Zap, color: '#22d3ee', decimals: 1 },
-  { label: 'Regime Accuracy', value: 91.2, suffix: '%', icon: Brain, color: '#14b8a6', decimals: 1 },
-  { label: 'Data Ingestion', value: 5000, suffix: 'tps', icon: Activity, color: '#2dd4bf' },
-  { label: 'Active Agents', value: 7, suffix: '', icon: Clock, color: '#06b6d4' },
+  { label: 'p99 Latency', value: 8.4, suffix: 'ms', icon: Zap, color: '#22d3ee', decimals: 1 },
+  { label: 'MLARD Accuracy', value: 91.2, suffix: '%', icon: Brain, color: '#14b8a6', decimals: 1 },
+  { label: 'Drift Sensitivity', value: 0.1, suffix: ' PSI', icon: ShieldCheck, color: '#2dd4bf', decimals: 1 },
+  { label: 'Active Agents', value: 6, suffix: '', icon: Clock, color: '#06b6d4' },
 ];
 
 const pixelLetters = [
@@ -74,7 +74,7 @@ function PixelBanner() {
         transition={{ delay: 1.2 }}
         className="flex items-end mb-1"
       >
-        <span className="px-2 py-0.5 rounded bg-cyan-500 text-[10px] font-black tracking-tighter text-[#0a0a0f] uppercase">Nexus V4.0</span>
+        <span className="px-2 py-0.5 rounded bg-cyan-500 text-[10px] font-black tracking-tighter text-[#0a0a0f] uppercase font-mono">Nexus V4.0</span>
       </motion.div>
     </div>
   );
@@ -97,7 +97,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="group relative rounded-[2.5rem] bg-white/[0.02] border border-white/[0.08] backdrop-blur-2xl p-6 sm:p-10 md:p-14 shadow-2xl overflow-hidden"
+          className="group relative rounded-[2.5rem] bg-white/[0.02] border border-white/[0.08] backdrop-blur-3xl p-6 sm:p-10 md:p-14 shadow-2xl overflow-hidden"
         >
           {/* Spotlight effect */}
           <div className="absolute -inset-px bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-teal-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
@@ -114,12 +114,12 @@ export function HeroSection() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="mb-6 sm:mb-8 relative z-10"
           >
-            <span className="inline-flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs sm:text-sm font-medium tracking-wide">
+            <span className="inline-flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs sm:text-sm font-bold tracking-widest uppercase font-mono">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
               </span>
-              Autonomous Bayesian Market Intelligence
+              Production Ready · MLARD V2.0
             </span>
           </motion.div>
 
@@ -128,13 +128,13 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
-            className="text-slate-100 text-lg sm:text-xl md:text-2xl lg:text-3xl max-w-4xl mb-10 sm:mb-14 leading-relaxed font-semibold relative z-10"
+            className="text-slate-100 text-xl sm:text-2xl md:text-3xl lg:text-4xl max-w-5xl mb-10 sm:mb-14 leading-[1.3] font-bold relative z-10 font-display tracking-tight"
           >
-            A multi-agent ecosystem orchestrating{' '}
-            <span className="text-cyan-400">Bayesian regime detection</span>
+            Institutional-grade trading ecosystem orchestrating{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400">Multi-Layer Adaptive Regime Detection</span>
             {' '}and high-frequency execution with{' '}
-            <span className="text-teal-400 underline underline-offset-8 decoration-teal-500/30">sub-10ms precision</span>
-            {' '}across the institutional XAU/USD landscape.
+            <span className="text-white underline underline-offset-[12px] decoration-cyan-500/30">sub-10ms decision integrity</span>
+            {' '}across XAU/USD.
           </motion.h1>
 
           {/* Stats Grid - Mobile Optimized */}
@@ -152,18 +152,20 @@ export function HeroSection() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.9 + index * 0.1 }}
-                  className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all group active:scale-95 shadow-lg"
+                  className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all group active:scale-95 shadow-lg relative overflow-hidden"
                 >
-                  <div className="flex items-center gap-3 mb-3">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="flex items-center gap-3 mb-3 relative z-10">
                     <div
-                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-inner"
-                      style={{ backgroundColor: `${stat.color}15` }}
+                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-inner border border-white/5"
+                      style={{ backgroundColor: `${stat.color}10` }}
                     >
                       <Icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: stat.color }} />
                     </div>
-                    <span className="text-slate-500 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em]">{stat.label}</span>
+                    <span className="text-slate-500 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] font-mono">{stat.label}</span>
                   </div>
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tighter relative z-10 font-mono">
                     <AnimatedCounter
                       value={stat.value}
                       suffix={stat.suffix}

@@ -6,7 +6,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Quote,
-  Github,
   ExternalLink,
 } from "lucide-react";
 import { PageLayout } from "../../components/PageLayout";
@@ -334,18 +333,6 @@ export function ProjectDetailClient({
           viewport={{ once: true }}
           className="flex flex-wrap gap-4"
         >
-          {project.githubUrl && (
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/[0.08] text-slate-200 font-medium hover:bg-white/[0.12] transition-colors border border-white/[0.12]"
-            >
-              <Github className="w-4 h-4" />
-              View on GitHub
-              <ExternalLink className="w-3 h-3 opacity-50" />
-            </a>
-          )}
           {project.liveUrl && (
             <a
               href={project.liveUrl}

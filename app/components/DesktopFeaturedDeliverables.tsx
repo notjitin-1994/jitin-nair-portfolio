@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Github, ExternalLink, Sparkles, Layers, ArrowUpRight } from 'lucide-react';
+import { ExternalLink, Sparkles, Layers, ArrowUpRight } from 'lucide-react';
 
 interface Project {
   name: string;
@@ -197,11 +197,6 @@ function ProjectCard({
                 Click to explore
               </span>
               <div className="flex gap-2">
-                {project.githubUrl && (
-                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                    <Github className="w-4 h-4 text-slate-400" />
-                  </div>
-                )}
                 {project.liveUrl && (
                   <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
                     <ExternalLink className="w-4 h-4 text-slate-400" />
@@ -310,23 +305,6 @@ function ProjectCard({
 
             {/* Links */}
             <div className="flex gap-3 mt-6 pt-5 border-t border-white/10">
-              {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all hover:scale-105"
-                  style={{
-                    background: 'rgba(34, 211, 238, 0.1)',
-                    color: '#22d3ee',
-                    border: '1px solid rgba(34, 211, 238, 0.25)',
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Github className="w-4 h-4" />
-                  <span>Source</span>
-                </a>
-              )}
               {project.liveUrl && (
                 <a
                   href={project.liveUrl}
@@ -344,9 +322,9 @@ function ProjectCard({
                   <span>Live Demo</span>
                 </a>
               )}
-              {!project.githubUrl && !project.liveUrl && (
+              {!project.liveUrl && (
                 <span className="flex-1 text-center text-slate-500 text-sm py-3">
-                  Private Repository
+                  Production Environment
                 </span>
               )}
             </div>

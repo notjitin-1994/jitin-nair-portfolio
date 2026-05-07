@@ -6,7 +6,6 @@ export const siteConfig = {
   url: "https://jitinnair.com",
   ogImage: "/og-image.jpg",
   links: {
-    github: "https://github.com/notjitin-1994",
     linkedin: "https://www.linkedin.com/in/notjitin/",
     twitter: "https://twitter.com/not_jitin",
     instagram: "https://instagram.com/not_jitin",

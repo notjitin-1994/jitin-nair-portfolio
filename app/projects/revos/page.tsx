@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Github, ExternalLink, Shield, 
+  ExternalLink, Shield, 
   Database, Zap, Scale, ChevronRight, 
   Wrench, Car, Users, LayoutDashboard,
-  ClipboardCheck, Package, Clock, ShieldCheck
+  ClipboardCheck, Package, Clock, ShieldCheck,
+  Rocket
 } from 'lucide-react';
 import Link from 'next/link';
 import { Footer } from '../../components/Footer';
@@ -368,31 +369,27 @@ function CTASection() {
           <div className="relative z-10 max-w-2xl text-left">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 tracking-tight text-white">Streamline Operations.</h2>
             <p className="text-slate-400 mb-10 text-lg sm:text-xl font-light leading-relaxed">
-              RevvOS is a proprietary garage management ecosystem. Explore the institutional workflow and security-first implementation on GitHub.
+              RevvOS is a production-grade infrastructure for automotive service lifecycles. Explore more projects or request a case study deep-dive.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-              <a
-                href="https://github.com/notjitin-1994/revos"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-cyan-500/10 text-cyan-400 font-semibold border border-cyan-500/20 hover:bg-cyan-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <Github className="w-5 h-5" />
-                <span>View Source Code</span>
-                <ExternalLink className="w-5 h-5" />
-              </a>
-
               <Link
                 href="/projects"
-                className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/[0.05] text-white font-medium border border-white/[0.1] hover:bg-white/[0.1] transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-cyan-500/10 text-cyan-400 font-semibold border border-cyan-500/20 hover:bg-cyan-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <LayoutDashboard className="w-5 h-5" />
                 <span>Browse Projects</span>
               </Link>
+
+              <Link
+                href="#contact"
+                className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/[0.05] text-white font-medium border border-white/[0.1] hover:bg-white/[0.1] transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Rocket className="w-5 h-5" />
+                <span>Request Case Study</span>
+              </Link>
             </div>
-          </div>
-        </motion.div>
+          </div>        </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}
@@ -427,7 +424,6 @@ export default function RevosPage() {
         <CodeShowcase />
         <TechStackGrid />
         <CTASection />
-        <WorkingTogetherCTA />
       </div>
 
       <Footer />

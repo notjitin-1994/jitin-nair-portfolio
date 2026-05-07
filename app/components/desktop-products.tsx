@@ -4,7 +4,6 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { 
   ArrowUpRight, 
-  Github,
   ExternalLink, 
   ChevronLeft, 
   ChevronRight, 
@@ -42,17 +41,13 @@ import {
   Users,
   MessageSquare,
   FolderKanban,
-  Send
+  Send,
+  Rocket
 } from 'lucide-react';
 import { 
-  PieChart, 
-  Pie, 
-  Cell, 
   ResponsiveContainer,
   BarChart,
   Bar,
-  XAxis,
-  YAxis,
   AreaChart,
   Area
 } from 'recharts';
@@ -74,7 +69,6 @@ interface Project {
   keyInnovations?: string[];
   processFlow?: string[];
   features: string[];
-  githubUrl?: string;
   liveUrl?: string;
   metrics?: {
     label: string;
@@ -90,25 +84,6 @@ interface Project {
     label: string;
     color?: string;
   }[];
-}
-
-function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: string }) {
-  const numericValue = parseFloat(value.replace(/[^0-9.]/g, ''));
-  const count = useMotionValue(0);
-  const rounded = useTransform(count, (latest) => {
-    if (value.includes('%') || value.includes('ms')) return Math.round(latest);
-    return latest.toFixed(1);
-  });
-  
-  const [displayValue, setDisplayValue] = useState('0');
-  
-  useEffect(() => {
-    const controls = rounded.on('change', (v) => setDisplayValue(String(v)));
-    count.set(numericValue);
-    return controls;
-  }, [count, numericValue, rounded]);
-
-  return <span className="font-mono font-bold">{displayValue}{suffix}</span>;
 }
 
 function CircularGauge({ value, max = 100, size = 60, strokeWidth = 6, color = '#22d3ee', label }: any) {
@@ -188,15 +163,6 @@ function ProgressBar({ value, max = 100, color = '#22d3ee', label, sublabel }: a
   );
 }
 
-function TechTag({ icon, label }: any) {
-  return (
-    <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[9px] text-slate-300">
-      <span className="w-3 h-3 flex items-center justify-center">{icon}</span>
-      <span>{label}</span>
-    </div>
-  );
-}
-
 function ProcessStep({ step, index, isLast }: any) {
   return (
     <div className="flex items-center gap-1">
@@ -211,194 +177,7 @@ function ProcessStep({ step, index, isLast }: any) {
   );
 }
 
-// Access Request Modal Component
-function AccessRequestModal({ isOpen, onClose, projectName }: { isOpen: boolean; onClose: () => void; projectName: string }) {
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsLoading(false);
-    setIsSubmitted(true);
-    // Close modal after showing success
-    setTimeout(() => {
-      onClose();
-      setIsSubmitted(false);
-      setEmail('');
-      setPhone('');
-    }, 2500);
-  };
-
-  return (
-    <>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-            onClick={onClose}
-          />
-          
-          {/* Modal - Centered with flexbox */}
-          <div className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="w-full max-w-md pointer-events-auto"
-            >
-              <div className="relative bg-[#0d0d12] border border-white/[0.1] rounded-2xl p-6 shadow-2xl">
-              {/* Close button */}
-              <button
-                onClick={onClose}
-                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-
-              {!isSubmitted ? (
-                <>
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-400/20 to-teal-400/10 border border-cyan-400/20 flex items-center justify-center">
-                      <Shield className="w-8 h-8 text-cyan-400" />
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-2">Request Access</h3>
-                    <p className="text-sm text-slate-400">
-                      Enter your details to request access to <span className="text-cyan-400">{projectName}</span>
-                    </p>
-                  </div>
-
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-medium text-slate-400 mb-2">Email Address</label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                        <input
-                          type="email"
-                          required
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="you@example.com"
-                          className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-slate-400 mb-2">Phone Number</label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                        <input
-                          type="tel"
-                          required
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="+1 (555) 000-0000"
-                          className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full py-3 px-4 bg-gradient-to-r from-cyan-400 to-teal-400 text-black font-semibold rounded-lg hover:from-cyan-300 hover:to-teal-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                    >
-                      {isLoading ? (
-                        <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
-                          />
-                          <span>Processing...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>Request Access</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
-                    </button>
-                  </form>
-                </>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-8"
-                >
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.1 }}
-                    className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-cyan-400 to-teal-400 flex items-center justify-center"
-                  >
-                    <Check className="w-10 h-10 text-black" />
-                  </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-2">Request Received!</h3>
-                  <p className="text-sm text-slate-400">We&apos;ll get back to you shortly.</p>
-                </motion.div>
-              )}
-            </div>
-          </motion.div>
-        </div>
-        </>
-      )}
-    </>
-  );
-}
-
-function TechStackInfographic({ categories }: { categories: TechCategory[] }) {
-  return (
-    <div className="grid grid-cols-2 gap-2 mb-4">
-      {categories.map((cat, idx) => (
-        <motion.div
-          key={cat.name}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: idx * 0.1 }}
-          className="p-2.5 rounded-lg border border-white/[0.08] bg-white/[0.02]"
-        >
-          <div className="flex items-center gap-1.5 mb-2">
-            <div 
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: cat.color, boxShadow: `0 0 6px ${cat.color}` }}
-            />
-            <span className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: cat.color }}>
-              {cat.name}
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-1">
-            {cat.items.map((item, i) => (
-              <motion.span
-                key={item}
-                initial={{ opacity: 0, x: -5 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 + i * 0.05 }}
-                className="px-1.5 py-0.5 text-[8px] rounded bg-white/5 text-slate-300 border border-white/5"
-              >
-                {item}
-              </motion.span>
-            ))}
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
 function ArchitectureFlow({ project }: { project: Project }) {
-  // Map agent names to Lucide icons
   const getIcon = (name: string) => {
     const iconMap: Record<string, React.ReactNode> = {
       "Ingest": <Radio className="w-4 h-4" />,
@@ -424,7 +203,6 @@ function ArchitectureFlow({ project }: { project: Project }) {
     return iconMap[name] || <Circle className="w-4 h-4" />;
   };
 
-  // Define agent flow based on project
   const getAgentFlow = () => {
     if (project.name.includes("Predator")) {
       return [
@@ -444,42 +222,6 @@ function ArchitectureFlow({ project }: { project: Project }) {
         { name: "Output", tech: "Multi-Channel", color: "#2dd4bf" }
       ];
     }
-    if (project.name.includes("Reality")) {
-      return [
-        { name: "Generate", tech: "Agent Output", color: "#22d3ee" },
-        { name: "Verify", tech: "Truth Check", color: "#06b6d4" },
-        { name: "Validate", tech: "Source Cite", color: "#67e8f9" },
-        { name: "Log", tech: "Audit Trail", color: "#5eead4" },
-        { name: "Enforce", tech: "Compliance", color: "#2dd4bf" }
-      ];
-    }
-    if (project.name.includes("SmartSlate")) {
-      return [
-        { name: "Polaris", tech: "Discovery", color: "#22d3ee" },
-        { name: "Constellation", tech: "Mapping", color: "#06b6d4" },
-        { name: "Nova", tech: "Generation", color: "#67e8f9" },
-        { name: "Orbit+Nebula", tech: "Delivery", color: "#5eead4" },
-        { name: "Spectrum", tech: "Analytics", color: "#2dd4bf" }
-      ];
-    }
-    if (project.name.includes("RevOS")) {
-      return [
-        { name: "Intake", tech: "Vehicle In", color: "#22d3ee" },
-        { name: "Plan", tech: "Service", color: "#06b6d4" },
-        { name: "Execute", tech: "Mechanic", color: "#67e8f9" },
-        { name: "QC", tech: "Quality", color: "#5eead4" },
-        { name: "Deliver", tech: "Customer", color: "#2dd4bf" }
-      ];
-    }
-    if (project.name.includes("Commune")) {
-      return [
-        { name: "Discover", tech: "Map/Tags", color: "#22d3ee" },
-        { name: "Connect", tech: "Network", color: "#06b6d4" },
-        { name: "Collaborate", tech: "Workspace", color: "#67e8f9" },
-        { name: "Manage", tech: "Project", color: "#5eead4" },
-        { name: "Deliver", tech: "Complete", color: "#2dd4bf" }
-      ];
-    }
     return [
       { name: "Input", tech: "API/Web", color: "#22d3ee" },
       { name: "Process", tech: "Core Logic", color: "#06b6d4" },
@@ -490,32 +232,18 @@ function ArchitectureFlow({ project }: { project: Project }) {
   };
   const agents = getAgentFlow();
 
-  // Generate impressive AI/ML description based on project
   const getImpressiveDescription = () => {
     if (project.name.includes("Predator")) {
       return "Production-grade multi-agent trading system featuring regime-aware architecture with 85-90% ML accuracy targets. Numba-optimized calculations deliver 10x performance gains. Adaptive algorithms utilize MAD-based dynamic thresholds, Choppiness Index filtering, and Kaufman Efficiency Ratio for trend validation. Full MLOps stack including model registry with Champion/Challenger gates, PSI drift detection, ADWIN concept drift monitoring, and sub-millisecond feature store. Kelly criterion position sizing with ATR-based risk management achieves 2:1 reward/risk ratios.";
     }
     if (project.name.includes("Agency")) {
-      return "Production-grade multi-agent orchestration platform managing 30+ specialized AI agents through MCP (Model Context Protocol). LangGraph state machines coordinate complex cross-domain workflows across GitHub, Gmail, Slack, Telegram, WhatsApp, and IoT devices. Vector-based semantic memory enables agents to share context and learn from interactions. Real-time event streaming via Redis with sub-second latency. Self-improving skill system allows agents to autonomously expand capabilities through the skill-creator module.";
-    }
-    if (project.name.includes("Reality")) {
-      return "Distributed governance platform enforcing truth-only protocols across 147 AI agents. Automated policy injection modifies AGENTS.md system prompts at scale, achieving 96% fleet coverage (141 agents) in under 3 minutes. Immutable VIOLATIONS.log provides full audit trails. Real-time compliance monitoring detects fictional data generation before it reaches users. Zero-configuration enforcement ensures new agents automatically inherit truth-verification mandates.";
-    }
-    if (project.name.includes("SmartSlate")) {
-      return "Human-in-the-Loop (HITL) AI learning ecosystem automating the entire L\u0026D lifecycle from discovery to delivery. Six integrated modules—Polaris (automated discovery), Constellation (AI instructional design), Nova (content development), Orbit (AI-powered LMS), Nebula (AI Tutor), and Spectrum (analytics)—form a unified pipeline. Every AI output passes through human validation gates, ensuring quality while achieving 15x launch speed. Multi-provider AI orchestration with automated stakeholder interviews, Bloom's Taxonomy-aligned design frameworks, and adaptive learning paths with seamless human escalation.";
-    }
-    if (project.name.includes("RevOS")) {
-      return "Automotive workshop management platform digitizing complete garage operations through intelligent job card lifecycle management. Built with Next.js 14, Supabase PostgreSQL, and TanStack Query for real-time data synchronization. Features end-to-end service tracking from vehicle intake to customer delivery, auto-save inventory management with low-stock alerts, comprehensive vehicle service history for predictive maintenance, and role-based access control for multi-level garage hierarchies. AI-powered analytics dashboard provides workshop optimization insights.";
-    }
-    if (project.name.includes("Commune")) {
-      return "Privacy-first community platform enabling anonymous collaboration through map-based location tagging and WhatsApp-style workspaces. Built with Next.js 14, Leaflet maps, and Supabase Realtime. Features tiered account architecture (Paid/Free Broker, Paid User), anonymous workspace participation without identity exposure, project management with template-based checklists, and role-based permissions. Zustand state management with Framer Motion animations delivers fluid user experience. No personal identifiers exposed between members—complete privacy preservation.";
+      return "Production-grade multi-agent orchestration platform managing 30+ specialized AI agents through MCP (Model Context Protocol). LangGraph state machines coordinate complex cross-domain workflows across Email, Slack, Telegram, WhatsApp, and IoT devices. Vector-based semantic memory enables agents to share context and learn from interactions. Real-time event streaming via Redis with sub-second latency. Self-improving skill system allows agents to autonomously expand capabilities through the skill-creator module.";
     }
     return "AI-native application architecture with intelligent orchestration. Advanced ML pipelines with automated feature engineering and model versioning. Production monitoring with p50/p95/p99 latency tracking and confidence distribution analytics. Drift detection and automated retraining ensure model reliability at scale.";
   };
 
   return (
     <div className="space-y-3">
-      {/* Agent Flow - Center-Aligned Pipeline */}
       <div className="relative flex justify-center">
         <div className="flex items-center">
           {agents.map((agent, i) => (
@@ -549,7 +277,6 @@ function ArchitectureFlow({ project }: { project: Project }) {
         </div>
       </div>
 
-      {/* Core Logic Block */}
       <div className="p-2.5 rounded-lg bg-white/[0.03] border border-white/[0.08]">
         <div className="flex items-center gap-1.5 mb-2">
           <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
@@ -565,7 +292,6 @@ function ArchitectureFlow({ project }: { project: Project }) {
         </div>
       </div>
 
-      {/* AI/ML Description Block - Replaces Tech Stack */}
       <div className="p-2.5 rounded-lg bg-gradient-to-br from-cyan-400/[0.08] to-teal-400/[0.05] border border-white/[0.08]">
         <div className="flex items-center gap-1.5 mb-2">
           <Cpu className="w-3 h-3 text-cyan-400" />
@@ -579,289 +305,106 @@ function ArchitectureFlow({ project }: { project: Project }) {
 
 function ProductCard({ project, index, isFlipped, onFlip }: any) {
   const [isHovered, setIsHovered] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isGithubHovered, setIsGithubHovered] = useState(false);
   const cardHeight = "h-[560px]";
 
   return (
-    <>
+    <motion.div
+      className={`relative ${cardHeight} cursor-pointer group`}
+      style={{ perspective: '1200px' }}
+      onClick={onFlip}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <motion.div
-        className={`relative ${cardHeight} cursor-pointer group`}
-        style={{ perspective: '1200px' }}
-        onClick={onFlip}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        className="absolute -inset-2 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{ background: 'radial-gradient(ellipse at center, rgba(34, 211, 238, 0.2) 0%, transparent 70%)', filter: 'blur(20px)' }}
+        animate={{ scale: isHovered ? 1.05 : 1, opacity: isHovered ? 0.8 : 0 }}
+        transition={{ duration: 0.4 }}
+      />
+
+      <motion.div
+        className="relative w-full h-full"
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+        style={{ transformStyle: 'preserve-3d' }}
       >
-        <motion.div
-          className="absolute -inset-2 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-          style={{ background: 'radial-gradient(ellipse at center, rgba(34, 211, 238, 0.2) 0%, transparent 70%)', filter: 'blur(20px)' }}
-          animate={{ scale: isHovered ? 1.05 : 1, opacity: isHovered ? 0.8 : 0 }}
-          transition={{ duration: 0.4 }}
-        />
+        {/* FRONT SIDE */}
+        <div className="absolute inset-0 rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0d0d12] transition-all duration-300 hover:border-cyan-500/20" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
+          <div className="relative z-10 h-full flex flex-col p-6">
+            <div className="flex items-center mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-cyan-400/15 border border-cyan-400/25 flex items-center justify-center">
+                  {project.name.includes("Predator") ? (
+                    <Target className="w-5 h-5 text-cyan-400" />
+                  ) : project.name.includes("Agency") ? (
+                    <Workflow className="w-5 h-5 text-cyan-400" />
+                  ) : (
+                    <Layers className="w-5 h-5 text-cyan-400" />
+                  )}
+                </div>
+                <span className="text-slate-500 font-mono text-xs">{String(index + 1).padStart(2, '0')}</span>
+              </div>
+            </div>
 
-        <motion.div
-          className="relative w-full h-full"
-          animate={{ rotateY: isFlipped ? 180 : 0 }}
-          transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-          style={{ transformStyle: 'preserve-3d' }}
-        >
-          {/* FRONT SIDE */}
-          <div className="absolute inset-0 rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0d0d12] transition-all duration-300 hover:border-cyan-500/20" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
-            {/* Background image for Predator card */}
-            {project.name.includes("Predator") && (
-              <div 
-                className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage: 'url(/predator-bg.jpg)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  filter: 'blur(8px)'
-                }}
-              />
-            )}
-            {/* Background image for Reality card */}
-            {project.name.includes("Reality") && (
-              <div 
-                className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage: 'url(/reality-bg.jpg)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  filter: 'blur(8px)'
-                }}
-              />
-            )}
-            {project.name.includes("SmartSlate") && (
-              <div 
-                className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage: 'url(/smartslate-bg.jpg)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  filter: 'blur(8px)'
-                }}
-              />
-            )}
-            {project.name.includes("RevOS") && (
-              <div 
-                className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage: 'url(/revos-bg.jpg)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  filter: 'blur(8px)'
-                }}
-              />
-            )}
-            {project.name.includes("Commune") && (
-              <div 
-                className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage: 'url(/commune-bg.jpg)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  filter: 'blur(8px)'
-                }}
-              />
-            )}
-            <div className="relative z-10 h-full flex flex-col p-6">
-              <div className="flex items-center mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-cyan-400/15 border border-cyan-400/25 flex items-center justify-center">
-                    {project.name.includes("Predator") ? (
-                      <Target className="w-5 h-5 text-cyan-400" />
-                    ) : project.name.includes("Reality") ? (
-                      <Shield className="w-5 h-5 text-cyan-400" />
-                    ) : project.name.includes("SmartSlate") ? (
-                      <BookOpen className="w-5 h-5 text-cyan-400" />
-                    ) : project.name.includes("RevOS") ? (
-                      <Wrench className="w-5 h-5 text-cyan-400" />
-                    ) : project.name.includes("Commune") ? (
-                      <Users className="w-5 h-5 text-cyan-400" />
-                    ) : (
-                      <Layers className="w-5 h-5 text-cyan-400" />
-                    )}
-                  </div>
-                  <span className="text-slate-500 font-mono text-xs">{String(index + 1).padStart(2, '0')}</span>
+            <div className="flex-1 flex flex-col">
+              <h3 className="text-xl font-bold text-white leading-tight mb-3">{project.name}</h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-4">{project.description}</p>
+
+              <div className="mb-3">
+                <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5 block">Process Flow</span>
+                <div className="flex flex-wrap items-center gap-y-0.5">
+                  {project.processFlow?.slice(0, 4).map((step: string, i: number) => (
+                    <ProcessStep key={i} step={step} index={i} isLast={i === Math.min(project.processFlow!.length, 4) - 1} />
+                  ))}
                 </div>
               </div>
 
-              <div className="flex-1 flex flex-col">
-                <h3 className="text-xl font-bold text-white leading-tight mb-3">{project.name}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-4">{project.description}</p>
-
-                <div className="mb-3">
-                  <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5 block">Process Flow</span>
-                  <div className="flex flex-wrap items-center gap-y-0.5">
-                    {project.processFlow?.slice(0, 4).map((step: string, i: number) => (
-                      <ProcessStep key={i} step={step} index={i} isLast={i === Math.min(project.processFlow!.length, 4) - 1} />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mb-3">
-                  <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5 block">Tech Stack</span>
-                  <div className="flex flex-wrap gap-1">
-                    {project.technologies.map((tech: string, i: number) => (
-                      <span key={i} className="px-1.5 py-0.5 text-[7px] font-medium rounded whitespace-nowrap" style={{ background: 'rgba(34, 211, 238, 0.06)', color: '#22d3ee', border: '1px solid rgba(34, 211, 238, 0.15)' }}>{tech}</span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mt-auto">
-                  <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5 block">Key Features</span>
-                  <div className="flex flex-wrap gap-1">
-                    {project.features?.slice(0, 5).map((feature: string, i: number) => (
-                      <span key={i} className="px-1.5 py-0.5 text-[8px] rounded bg-white/5 border border-white/10 text-slate-300">{feature}</span>
-                    ))}
-                  </div>
+              <div className="mb-3">
+                <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5 block">Tech Stack</span>
+                <div className="flex flex-wrap gap-1">
+                  {project.technologies.slice(0, 8).map((tech: string, i: number) => (
+                    <span key={i} className="px-1.5 py-0.5 text-[7px] font-medium rounded whitespace-nowrap" style={{ background: 'rgba(34, 211, 238, 0.06)', color: '#22d3ee', border: '1px solid rgba(34, 211, 238, 0.15)' }}>{tech}</span>
+                  ))}
                 </div>
               </div>
 
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
-                <span className="text-slate-500 text-xs flex items-center gap-1.5">
-                  <motion.span animate={{ x: isHovered ? 3 : 0 }} transition={{ duration: 0.2 }}>→</motion.span>
-                  Click to explore
-                </span>                <div className="flex gap-1.5">
-                  {project.githubUrl && (
-                    <motion.button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsModalOpen(true);
-                      }}
-                      onMouseEnter={() => setIsGithubHovered(true)}
-                      onMouseLeave={() => setIsGithubHovered(false)}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="w-6 h-6 rounded-full flex items-center justify-center transition-colors duration-300"
-                      animate={{
-                        backgroundColor: isGithubHovered 
-                          ? (project.name.includes("Reality") ? '#22d3ee' : '#6e5494')
-                          : 'rgba(255,255,255,0.05)',
-                      }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {project.name.includes("Reality") ? (
-                        <ArrowUpRight 
-                          className="w-3 h-3 transition-colors duration-300" 
-                          style={{ color: isGithubHovered ? '#0a0a0f' : '#94a3b8' }}
-                        />
-                      ) : (
-                        <Github 
-                          className="w-3 h-3 transition-colors duration-300" 
-                          style={{ color: isGithubHovered ? '#ffffff' : '#94a3b8' }}
-                        />
-                      )}
-                    </motion.button>
-                  )}
-                  {project.liveUrl && (
-                    <motion.a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      onMouseEnter={() => setIsGithubHovered(true)}
-                      onMouseLeave={() => setIsGithubHovered(false)}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="w-6 h-6 rounded-full flex items-center justify-center transition-colors duration-300"
-                      animate={{
-                        backgroundColor: isGithubHovered ? '#22d3ee' : 'rgba(255,255,255,0.05)',
-                      }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ArrowUpRight 
-                        className="w-3 h-3 transition-colors duration-300" 
-                        style={{ color: isGithubHovered ? '#0a0a0f' : '#94a3b8' }}
-                      />
-                    </motion.a>
-                  )}
+              <div className="mt-auto">
+                <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5 block">Key Features</span>
+                <div className="flex flex-wrap gap-1">
+                  {project.features?.slice(0, 5).map((feature: string, i: number) => (
+                    <span key={i} className="px-1.5 py-0.5 text-[8px] rounded bg-white/5 border border-white/10 text-slate-300">{feature}</span>
+                  ))}
                 </div>
-              </div>            </div>
+              </div>
+            </div>
 
-            <div className="absolute top-0 left-0 w-16 h-16 pointer-events-none">
-              <div className="absolute top-4 left-4 w-6 h-px bg-gradient-to-r from-cyan-400/50 to-transparent" />
-              <div className="absolute top-4 left-4 w-px h-6 bg-gradient-to-b from-cyan-400/50 to-transparent" />
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
+              <span className="text-slate-500 text-xs flex items-center gap-1.5">
+                <motion.span animate={{ x: isHovered ? 3 : 0 }} transition={{ duration: 0.2 }}>→</motion.span>
+                Click to explore
+              </span>
+              <div className="flex gap-1.5">
+                {project.liveUrl && (
+                  <motion.a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-slate-400 hover:text-cyan-400 hover:border-cyan-400/30 transition-all duration-300"
+                  >
+                    <ArrowUpRight className="w-4 h-4" />
+                  </motion.a>
+                )}
+              </div>
             </div>
           </div>
+        </div>
 
-        {/* BACK SIDE - Compact Architecture View */}
+        {/* BACK SIDE */}
         <div className="absolute inset-0 rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0d0d12] transition-all duration-300 hover:border-cyan-400/20" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-          {/* Background image for Predator card */}
-          {project.name.includes("Predator") && (
-            <div 
-              className="absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: 'url(/predator-bg.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                filter: 'blur(8px)'
-              }}
-            />
-          )}
-          {/* Background image for Agency card */}
-          {project.name.includes("Agency") && (
-            <div 
-              className="absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: 'url(/agency-bg.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                filter: 'blur(8px)'
-              }}
-            />
-          )}
-          {/* Background image for Reality card */}
-          {project.name.includes("Reality") && (
-            <div 
-              className="absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: 'url(/reality-bg.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                filter: 'blur(8px)'
-              }}
-            />
-          )}
-          {/* Background image for SmartSlate card */}
-          {project.name.includes("SmartSlate") && (
-            <div 
-              className="absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: 'url(/smartslate-bg.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                filter: 'blur(8px)'
-              }}
-            />
-          )}
-          {/* Background image for RevOS card */}
-          {project.name.includes("RevOS") && (
-            <div 
-              className="absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: 'url(/revos-bg.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                filter: 'blur(8px)'
-              }}
-            />
-          )}
-          {/* Background image for Commune card */}
-          {project.name.includes("Commune") && (
-            <div 
-              className="absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: 'url(/commune-bg.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                filter: 'blur(8px)'
-              }}
-            />
-          )}
-          
           <div className="relative z-10 h-full flex flex-col p-5">
-            {/* Header */}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
@@ -870,12 +413,10 @@ function ProductCard({ project, index, isFlipped, onFlip }: any) {
               <span className="text-[9px] text-slate-500">{project.shortName || project.name}</span>
             </div>
 
-            {/* Architecture Flow - Main Content */}
             <div className="flex-1 overflow-hidden">
               <ArchitectureFlow project={project} />
             </div>
 
-            {/* Compact Metrics Row */}
             <div className="grid grid-cols-4 gap-2 my-3 py-3 border-y border-white/[0.06]">
               {project.metrics?.slice(0, 4).map((metric: any, i: number) => (
                 <div key={i} className="text-center">
@@ -885,33 +426,19 @@ function ProductCard({ project, index, isFlipped, onFlip }: any) {
               ))}
             </div>
 
-            {/* Actions */}
             <div className="flex gap-2">
-              <motion.button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsModalOpen(true);
-                }}
+              <motion.a
+                href={project.liveUrl || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[10px] font-medium relative z-20 pointer-events-auto bg-cyan-400/15 text-cyan-400 border border-cyan-400/40"
+                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[10px] font-medium bg-cyan-400/10 text-cyan-400 border border-cyan-400/30"
               >
                 <BookOpen className="w-3 h-3" />
-                <span>Learn More</span>
-              </motion.button>
-              {project.liveUrl && (
-                <a 
-                  href={project.liveUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[10px] font-medium transition-all hover:scale-105 bg-cyan-400/15 text-cyan-400 border border-cyan-400/30"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  <span>Live</span>
-                </a>
-              )}
+                <span>Visit Project</span>
+              </motion.a>
             </div>
 
             <div className="mt-2 text-center">
@@ -920,15 +447,7 @@ function ProductCard({ project, index, isFlipped, onFlip }: any) {
           </div>
         </div>
       </motion.div>
-      </motion.div>
-
-      {/* Access Request Modal */}
-      <AccessRequestModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        projectName={project.name}
-      />
-    </>
+    </motion.div>
   );
 }
 
@@ -974,17 +493,11 @@ const projectsData: Project[] = [
       "Real-time Streamlit dashboard",
       "Self-healing circuit breaker"
     ],
-    githubUrl: "https://github.com/jitinnair1",
     metrics: [
       { label: "Execution Latency", value: "50", unit: "ms", trend: "down" },
       { label: "Win Rate", value: "67", unit: "%", trend: "up" },
       { label: "Sharpe Ratio", value: "2.4", trend: "up" },
       { label: "Backtest Trades", value: "50000", unit: "+", trend: "neutral" }
-    ],
-    dataViz: [
-      { type: "gauge", value: 67, max: 100, label: "Win Rate", color: "#22d3ee" },
-      { type: "progress", value: 2.4, label: "Sharpe Ratio", color: "#a78bfa" },
-      { type: "progress", value: 50, label: "Latency (ms)", color: "#f472b6" }
     ]
   },
   {
@@ -993,17 +506,17 @@ const projectsData: Project[] = [
     technologies: [
       "Claude", "Google Gemini", "ChatGPT", "Kimi", "Ollama", "Qwen 3.5",
       "Python", "FastAPI", "LangGraph", "Redis", "Model Context Protocols",
-      "Telegram API", "WhatsApp API", "GitHub API", "Slack API"
+      "Telegram API", "WhatsApp API", "Slack API"
     ],
     techCategories: [
       { name: "LLM Suite", items: ["Claude", "Gemini", "ChatGPT", "Kimi", "Qwen 3.5"], color: "#22d3ee" },
       { name: "Orchestration", items: ["LangGraph", "FastAPI", "Python"], color: "#2dd4bf" },
-      { name: "Integrations", items: ["GitHub", "Slack", "Telegram", "WhatsApp"], color: "#5eead4" },
+      { name: "Integrations", items: ["Slack", "Telegram", "WhatsApp"], color: "#5eead4" },
       { name: "Context Management", items: ["Redis", "MCP", "Ollama"], color: "#99f6e4" }
     ],
     description: "Unified multi-agent orchestration platform managing 30+ specialized AI agents—from code automation and content generation to IoT control and knowledge management—with seamless cross-agent collaboration.",
-    whatItDoes: "AI Agency Ops is a comprehensive multi-agent platform that orchestrates 30+ specialized AI agents across diverse domains. From automated GitHub issue resolution and Gmail/Calendar management to IoT device control, content summarization, and image generation—each agent operates autonomously yet collaborates through a shared MCP (Model Context Protocol) bus. The platform enables complex cross-domain workflows like: auto-resolving GitHub issues → generating fix summaries → posting to Slack → updating project documentation in Obsidian.",
-    howItWorks: "The platform uses LangGraph for agent orchestration with a central MCP (Model Context Protocol) hub enabling inter-agent communication. Each specialized agent (gh-issues, gog, himalaya, nano-banana-pro, summarize, wacli, etc.) exposes standardized tools via FastAPI endpoints. Redis Streams handle async event routing between agents. The system supports both reactive triggers (incoming GitHub webhook → auto-fix) and proactive scheduling (daily email summaries, blog monitoring). Agents share context through PostgreSQL with vector embeddings for semantic memory.",
+    whatItDoes: "AI Agency Ops is a comprehensive multi-agent platform that orchestrates 30+ specialized AI agents across diverse domains. From automated task resolution and Gmail/Calendar management to IoT device control, content summarization, and image generation—each agent operates autonomously yet collaborates through a shared MCP (Model Context Protocol) bus. The platform enables complex cross-domain workflows like: auto-resolving issues → generating fix summaries → posting to Slack → updating project documentation in Obsidian.",
+    howItWorks: "The platform uses LangGraph for agent orchestration with a central MCP (Model Context Protocol) hub enabling inter-agent communication. Each specialized agent exposes standardized tools via FastAPI endpoints. Redis Streams handle async event routing between agents. The system supports both reactive triggers (incoming webhook → auto-fix) and proactive scheduling (daily email summaries, blog monitoring). Agents share context through PostgreSQL with vector embeddings for semantic memory.",
     keyInnovations: [
       "Model Context Protocols for cross-agent tool sharing",
       "LangGraph state machines for complex multi-step workflows",
@@ -1029,17 +542,11 @@ const projectsData: Project[] = [
       "Unified observability dashboard",
       "Human-in-the-loop approvals"
     ],
-    githubUrl: "https://github.com/jitinnair1",
     metrics: [
       { label: "Active Agents", value: "32", unit: "", trend: "up" },
       { label: "Daily Tasks", value: "500", unit: "+", trend: "up" },
       { label: "Success Rate", value: "94", unit: "%", trend: "up" },
       { label: "Avg Latency", value: "850", unit: "ms", trend: "down" }
-    ],
-    dataViz: [
-      { type: "gauge", value: 94, max: 100, label: "Success Rate", color: "#22d3ee" },
-      { type: "progress", value: 32, label: "Active Agents", color: "#2dd4bf" },
-      { type: "progress", value: 500, label: "Daily Tasks", color: "#5eead4" }
     ]
   },
   {
@@ -1053,11 +560,6 @@ const projectsData: Project[] = [
       { label: "Content Generated", value: "10000", unit: "+", trend: "up" },
       { label: "Learner Engagement", value: "89", unit: "%", trend: "up" },
       { label: "Completion Rate", value: "78", unit: "%", trend: "up" }
-    ],
-    dataViz: [
-      { type: "gauge", value: 78, max: 100, label: "Completion", color: "#22d3ee" },
-      { type: "progress", value: 89, label: "Engagement", color: "#a78bfa" },
-      { type: "progress", value: 40, label: "Time Saved", color: "#22c55e" }
     ]
   },
   {
@@ -1066,16 +568,10 @@ const projectsData: Project[] = [
     description: "Production safety system ensuring AI output reliability through multi-layer Chain-of-Verification (CoVe).",
     processFlow: ["LLM Generation", "Claim Extraction", "Multi-Source Verification", "Confidence Scoring", "Human Review Queue"],
     features: ["Chain-of-Verification", "Multi-source validation", "Hallucination detection", "Confidence scoring", "Audit trails"],
-    githubUrl: "https://github.com/jitinnair1",
     metrics: [
       { label: "Accuracy", value: "95", unit: "%+", trend: "up" },
       { label: "Hallucinations Caught", value: "99.2", unit: "%", trend: "up" },
       { label: "Verification Time", value: "150", unit: "ms", trend: "down" }
-    ],
-    dataViz: [
-      { type: "gauge", value: 95, max: 100, label: "Accuracy", color: "#22c55e" },
-      { type: "gauge", value: 99.2, max: 100, label: "Detection", color: "#22d3ee" },
-      { type: "progress", value: 150, label: "Latency (ms)", color: "#a78bfa" }
     ]
   },
   {
@@ -1089,11 +585,6 @@ const projectsData: Project[] = [
       { label: "Active Tenants", value: "12", unit: "+", trend: "up" },
       { label: "API Uptime", value: "99.95", unit: "%", trend: "neutral" },
       { label: "Revenue Growth", value: "340", unit: "%", trend: "up" }
-    ],
-    dataViz: [
-      { type: "progress", value: 12, label: "Tenants", color: "#22d3ee" },
-      { type: "gauge", value: 99.95, max: 100, label: "Uptime", color: "#22c55e" },
-      { type: "progress", value: 340, label: "Growth %", color: "#a78bfa" }
     ]
   },
   {
@@ -1102,16 +593,10 @@ const projectsData: Project[] = [
     description: "Visual workflow automation platform enabling non-technical teams to deploy browser-based AI agents.",
     processFlow: ["Visual Workflow Design", "Agent Compilation", "Browser Execution", "Result Capture", "Audit Logging"],
     features: ["No-code workflow builder", "Multi-LLM integration", "Visual session capture", "Self-healing selectors", "Audit trail logging"],
-    githubUrl: "https://github.com/jitinnair1",
     metrics: [
       { label: "Workflows Executed", value: "100000", unit: "+", trend: "up" },
       { label: "Success Rate", value: "98.5", unit: "%", trend: "up" },
       { label: "Time Saved", value: "12000", unit: " hrs", trend: "up" }
-    ],
-    dataViz: [
-      { type: "gauge", value: 98.5, max: 100, label: "Success Rate", color: "#22c55e" },
-      { type: "progress", value: 100000, label: "Executions", color: "#22d3ee" },
-      { type: "progress", value: 12000, label: "Hours Saved", color: "#a78bfa" }
     ]
   }
 ];
@@ -1120,7 +605,7 @@ interface DesktopProductsProps {
   projects: Project[];
 }
 
-export function DesktopProducts({ projects }: DesktopProductsProps) {
+export function DesktopProducts({ projects = projectsData }: DesktopProductsProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
   const containerRef = useRef<HTMLDivElement>(null);
@@ -1129,7 +614,6 @@ export function DesktopProducts({ projects }: DesktopProductsProps) {
     if (typeof window !== 'undefined') {
       const width = window.innerWidth;
       if (width >= 1536) return 3;
-      if (width >= 1280) return 2;
       return 2;
     }
     return 2;
@@ -1138,9 +622,9 @@ export function DesktopProducts({ projects }: DesktopProductsProps) {
   const [cardsPerView, setCardsPerView] = useState(updateCardsPerView);
 
   useEffect(() => {
-    updateCardsPerView();
-    window.addEventListener('resize', updateCardsPerView);
-    return () => window.removeEventListener('resize', updateCardsPerView);
+    const handleResize = () => setCardsPerView(updateCardsPerView());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [updateCardsPerView]);
 
   const maxIndex = Math.max(0, projects.length - cardsPerView);
@@ -1175,10 +659,6 @@ export function DesktopProducts({ projects }: DesktopProductsProps) {
 
   const visibleProjects = projects.slice(currentIndex, currentIndex + cardsPerView);
 
-  const getGridClasses = () => {
-    return "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6";
-  };
-
   return (
     <section id="projects" className="py-6 lg:py-8">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -1203,7 +683,7 @@ export function DesktopProducts({ projects }: DesktopProductsProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white"
           >
             Production <span className="text-cyan-400">Systems</span>
           </motion.h2>
@@ -1219,12 +699,10 @@ export function DesktopProducts({ projects }: DesktopProductsProps) {
         </motion.div>
 
         <div ref={containerRef} className="relative">
-          {/* Desktop Navigation Arrows */}
           <button
             onClick={goToPrev}
             disabled={currentIndex === 0}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 z-20 w-12 h-12 rounded-full bg-surface/80 backdrop-blur-md border border-white/10 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 hidden xl:flex"
-            aria-label="Previous projects"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 z-20 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed hidden xl:flex"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -1232,16 +710,14 @@ export function DesktopProducts({ projects }: DesktopProductsProps) {
           <button
             onClick={goToNext}
             disabled={currentIndex >= maxIndex}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 z-20 w-12 h-12 rounded-full bg-surface/80 backdrop-blur-md border border-white/10 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 hidden xl:flex"
-            aria-label="Next projects"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 z-20 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed hidden xl:flex"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
 
-          {/* Cards Grid */}
           <div className="overflow-hidden px-4">
             <motion.div
-              className={getGridClasses()}
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6"
               layout
             >
               <AnimatePresence mode="popLayout">
@@ -1266,13 +742,6 @@ export function DesktopProducts({ projects }: DesktopProductsProps) {
             </motion.div>
           </div>
 
-          {/* Mobile Navigation */}
-          <div className="flex justify-between items-center mb-4 xl:hidden">
-            <button onClick={goToPrev} disabled={currentIndex === 0} className="w-10 h-10 rounded-full bg-surface/80 backdrop-blur-md border border-white/10 flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-all disabled:opacity-30"><ChevronLeft className="w-5 h-5" /></button>
-            <button onClick={goToNext} disabled={currentIndex >= maxIndex} className="w-10 h-10 rounded-full bg-surface/80 backdrop-blur-md border border-white/10 flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-all disabled:opacity-30"><ChevronRight className="w-5 h-5" /></button>
-          </div>
-
-          {/* Progress Indicators */}
           <div className="flex justify-center items-center gap-3 mt-8">
             <span className="text-slate-500 text-sm font-mono">
               {String(currentIndex + 1).padStart(2, '0')} — {String(Math.min(currentIndex + cardsPerView, projects.length)).padStart(2, '0')} of {String(projects.length).padStart(2, '0')}
@@ -1282,26 +751,9 @@ export function DesktopProducts({ projects }: DesktopProductsProps) {
                 <button
                   key={i}
                   onClick={() => { setCurrentIndex(i); setFlippedCards(new Set()); }}
-                  className={`h-2 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-8 bg-cyan-400' : 'w-2 bg-slate-700 hover:bg-slate-600'}`}
-                  aria-label={`Go to slide ${i + 1}`}
+                  className={`h-2 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-8 bg-cyan-400' : 'w-2 bg-slate-700'}`}
                 />
               ))}
-            </div>
-          </div>
-
-          {/* Keyboard Hint */}
-          <div className="text-center mt-6">
-            <div className="inline-flex items-center gap-4 text-slate-500 text-sm">
-              <span className="flex items-center gap-2">
-                <kbd className="px-2 py-1 rounded bg-white/5 border border-white/10 text-xs">←</kbd>
-                <kbd className="px-2 py-1 rounded bg-white/5 border border-white/10 text-xs">→</kbd>
-                <span>Navigate</span>
-              </span>
-              <span className="text-slate-600">•</span>
-              <span className="flex items-center gap-2">
-                <span className="text-cyan-400">Click cards</span>
-                <span>to flip</span>
-              </span>
             </div>
           </div>
         </div>

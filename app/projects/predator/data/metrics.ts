@@ -10,7 +10,7 @@ export interface Metric {
   description: string;
   trend?: 'up' | 'down' | 'stable';
   trendValue?: string;
-  category: 'performance' | 'accuracy' | 'system' | 'data';
+  category: 'performance' | 'accuracy' | 'integrity' | 'data';
   sparklineData?: number[];
 }
 
@@ -18,35 +18,35 @@ export const metrics: Metric[] = [
   {
     id: "latency",
     label: "Ares Latency",
-    value: 10,
+    value: 8.4,
     unit: "ms",
-    description: "Signal to execution p99 across cTrader socket",
+    description: "Signal to execution p99 across cTrader socket (v2 Optimized)",
     trend: "up",
     trendValue: "5x faster",
     category: "performance",
-    sparklineData: [47, 35, 22, 15, 12, 11, 10, 10, 9, 10]
+    sparklineData: [47, 35, 22, 15, 12, 11, 10, 10, 9, 8.4]
   },
   {
     id: "accuracy",
     label: "Regime Detection",
-    value: 90,
+    value: 91.2,
     unit: "%",
-    description: "Bayesian confluence accuracy on M1/M5 data",
+    description: "MLARD (Multi-Layer Adaptive Regime Detection) accuracy",
     trend: "up",
-    trendValue: "+2%",
+    trendValue: "+35%",
     category: "accuracy",
-    sparklineData: [82, 83, 84, 85, 85, 86, 87, 88, 89, 90]
+    sparklineData: [54.6, 62, 70, 78, 82, 85, 88, 90, 91, 91.2]
   },
   {
-    id: "uptime",
-    label: "System Uptime",
-    value: 99.9,
+    id: "false-switches",
+    label: "False Switches",
+    value: 12.5,
     unit: "%",
-    description: "24/7 continuous autonomous operation",
-    trend: "stable",
-    trendValue: "30d",
-    category: "system",
-    sparklineData: [99.8, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9]
+    description: "Reduction in regime flickering via Hysteresis memory",
+    trend: "down",
+    trendValue: "-60%",
+    category: "integrity",
+    sparklineData: [45, 40, 32, 28, 22, 18, 16, 14, 13, 12.5]
   },
   {
     id: "data-volume",
@@ -61,110 +61,110 @@ export const metrics: Metric[] = [
     sparklineData: [1200, 1500, 2200, 2800, 3500, 4200, 4800, 5000, 5100, 5200]
   },
   {
-    id: "agents",
-    label: "Active Agents",
-    value: 7,
-    unit: "agents",
-    description: "Bayesian Pantheon + Sentinels in production",
-    trend: "up",
-    trendValue: "Nexus v4",
-    category: "system",
-    sparklineData: [5, 5, 5, 6, 6, 7, 7, 7, 7, 7]
+    id: "model-drift",
+    label: "Drift Sensitivity",
+    value: 0.1,
+    unit: "PSI",
+    description: "Continuous monitoring using Population Stability Index",
+    trend: "stable",
+    trendValue: "Active",
+    category: "integrity",
+    sparklineData: [0.08, 0.09, 0.1, 0.1, 0.11, 0.09, 0.1, 0.1, 0.1, 0.1]
   },
   {
-    id: "signals",
-    label: "Signals Evaluated",
-    value: 4500,
-    unit: "/day",
-    description: "Multi-timeframe directives generated",
+    id: "calculations",
+    label: "Compute Speed",
+    value: 10,
+    unit: "x",
+    description: "Vectorized Numba JIT compiled indicator engine",
     trend: "up",
-    trendValue: "+3k",
-    category: "data",
-    sparklineData: [1250, 1400, 1800, 2200, 2800, 3200, 3800, 4200, 4400, 4500]
+    trendValue: "Linear",
+    category: "performance",
+    sparklineData: [1, 2, 4, 6, 8, 9, 10, 10, 10, 10]
   },
   {
     id: "inference-speed",
     label: "Inference Speed",
-    value: 8,
+    value: 6.2,
     unit: "ms",
-    description: "Average Bayesian posterior calculation time",
+    description: "Average MLARD decision loop latency",
     trend: "down",
     trendValue: "-4ms",
     category: "performance",
-    sparklineData: [12, 11, 10, 10, 9, 9, 8, 8, 8, 8]
+    sparklineData: [12, 11, 10, 10, 9, 8, 7.5, 7, 6.5, 6.2]
   },
   {
-    id: "win-rate",
-    label: "Strategy Win Rate",
-    value: 70.2,
+    id: "coverage",
+    label: "Regime Coverage",
+    value: 80,
     unit: "%",
-    description: "Validated performance on institutional data",
+    description: "Percentage of market states successfully classified",
     trend: "up",
-    trendValue: "+7.7%",
+    trendValue: "+33%",
     category: "accuracy",
-    sparklineData: [62.5, 63.2, 64.1, 65.5, 66.2, 67.8, 68.5, 69.2, 69.8, 70.2]
+    sparklineData: [60, 62, 65, 68, 72, 75, 78, 80, 80, 80]
   }
 ];
 
 export const processSteps = [
   {
-    id: "hermes",
-    title: "Hermes: Data Conduit",
-    subtitle: "High-Frequency Ingestion",
+    id: "ingestion",
+    title: "Hermes: High-Freq Ingestion",
+    subtitle: "The Data Conduit",
     description: "Direct cTrader OpenAPI socket integration processing Ticks and Depth of Market (LOB) data into TimescaleDB.",
     details: [
       "Sub-ms ingestion latency",
       "Order Flow Imbalance (OFI) extraction",
-      "Multithreaded DatabaseWorker pool",
-      "Absolute Time Anchor synchronization"
+      "TCP Absolute Anchor synchronization",
+      "TimescaleDB hypertable persistence"
     ]
   },
   {
-    id: "argus",
-    title: "Argus: Regime Observer",
-    subtitle: "Bayesian Confluence",
-    description: "Processes 1200+ bars of M1 data via M1-Bridge. Fuses Price Action, ML Random Forest, and HMM into a unified signal.",
+    id: "detection",
+    title: "Argus: MLARD Detection",
+    subtitle: "Multi-Layer Adaptive Detection",
+    description: "Processes M5 data via adaptive thresholds with MAD normalization. Fuses technical indicators and ML classifiers.",
     details: [
-      "Custom M1-Bridge resampling",
-      "68-feature Random Forest matrix",
-      "Gaussian HMM persistence logic",
-      "Weighted Bayesian scoring (60/30/10)"
+      "Adaptive ADX + BBW thresholds",
+      "Choppiness Index noise filtering",
+      "Kaufman Efficiency Ratio validation",
+      "MAD (Median Absolute Deviation) scaling"
     ]
   },
   {
-    id: "athena",
+    id: "orchestration",
     title: "Athena: Strategy Matrix",
-    subtitle: "Dynamic Orchestration",
-    description: "Manages a 16-node Strategy Matrix, dynamically routing to optimal strategies based on real-time Bayesian regimes.",
+    subtitle: "Dynamic DAG Logic",
+    description: "A LangGraph-managed state machine dynamically routing signals to optimal strategy nodes based on regime consensus.",
     details: [
-      "Context-aware strategy routing",
-      "EMA Pullback & Volatility Breakout",
-      "Mean Reversion node activation",
+      "16-node stateful strategy matrix",
+      "Context-aware execution routing",
+      "Hysteresis state memory (flicker-free)",
       "Institutional-grade rationale generation"
     ]
   },
   {
-    id: "apollo",
-    title: "Apollo: Sentinel Oracle",
-    subtitle: "Probabilistic Signals",
-    description: "Fuses Macro (DXY), Microstructure (OFI), and Sentiment into a unified Bayesian posterior probability.",
+    id: "integrity",
+    title: "Sentinel: Guard Rails",
+    subtitle: "MLOps & Drift Monitoring",
+    description: "Continuous surveillance of model performance and data distribution to ensure production stability.",
     details: [
-      "Bayesian posterior inference",
-      "Cross-asset correlation analysis",
-      "Natural language reasoning",
-      "Contextual ENTER/WAIT/EXIT directives"
+      "PSI (Population Stability Index) drift",
+      "ADWIN concept drift detection",
+      "Champion/Challenger model registry",
+      "Automated institutional circuit breakers"
     ]
   },
   {
-    id: "ares",
+    id: "execution",
     title: "Ares: Battlefield Commander",
     subtitle: "Low-Latency Execution",
-    description: "Acts on Apollo's directives with precision. Manages order lifecycle, dynamic SL/TP, and institutional-grade risk forge.",
+    description: "Acts on Apollo's directives with sub-10ms precision. Manages order lifecycle and dynamic risk controls.",
     details: [
-      "Sub-50ms execution latency",
-      "Dynamic position sizing",
+      "Volatility-adjusted position sizing",
       "Broker-side SL/TP synchronization",
-      "Real-time state persistence"
+      "Real-time state persistence",
+      "Multi-asset correlation shielding"
     ]
   }
 ];
@@ -173,22 +173,22 @@ export const architectureSteps = [
   {
     id: "ingestion",
     title: "Ingestion Layer",
-    description: "Hermes daemon maintaining high-frequency TCP connections to cTrader endpoints with zero-drift time synchronization."
+    description: "Hermes daemon maintaining high-frequency TCP connections with zero-drift synchronization."
   },
   {
     id: "storage",
     title: "Persistence Layer",
-    description: "TimescaleDB acting as the Single Source of Truth, optimized for ultra-fast time-series queries and compression."
+    description: "TimescaleDB hypertables optimized for ultra-fast time-series queries and point-in-time correctness."
   },
   {
     id: "intelligence",
     title: "Bayesian Pantheon",
-    description: "Argus, Athena, and Apollo agents orchestrating the decision loop from regime detection to probabilistic signal generation."
+    description: "MLARD architecture orchestrating the decision loop from adaptive detection to probabilistic inference."
   },
   {
-    id: "interface",
-    title: "Nexus Pulse",
-    description: "Next.js dashboard with real-time WebSocket synchronization, providing visual transparency into agent beliefs and actions."
+    id: "governance",
+    title: "MLOps & Integrity",
+    description: "Model registry and drift detection monitors ensuring long-term model stability and reliability."
   }
 ];
 

@@ -191,10 +191,9 @@ export default function RootLayout({
               },
               sameAs: [
                 "https://jitinnair.com",
-                "https://github.com/notjitin-1994",
                 "https://www.linkedin.com/in/notjitin/",
                 "https://twitter.com/not_jitin",
-                "https://instagram.com/not.jitin",
+                "https://instagram.com/not_jitin",
                 "https://about.me/jitin.nair",
                 "https://scholar.google.ae/citations?user=8DfmchwAAAAJ",
               ],
