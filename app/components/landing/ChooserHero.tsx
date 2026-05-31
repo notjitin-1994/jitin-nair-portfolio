@@ -16,10 +16,10 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 // The story arc: a decade of L&D, then AI systems architecture. The two
 // emphasized words are colour-linked to the two track buttons below
-// (violet = Learning & Development, cyan = AI Systems Architecture).
+// (emerald = Learning & Development, cyan = AI Systems Architecture).
 const HEADLINE: ReactNode[] = [
   <>
-    Ten years designing how humans <span className="text-violet-400">learn</span>.
+    Ten years designing how humans <span className="text-emerald-400">learn</span>.
   </>,
   <>
     Now architecting the <span className="text-cyan-400">AI</span> that empowers them.
@@ -49,9 +49,9 @@ const TRACKS = [
     icon: GraduationCap,
     title: "Learning & Development Systems",
     what: "Adult learning design, proven at scale. 90%+ completion, 70% faster delivery.",
-    accent: "text-violet-400",
-    ring: "hover:border-violet-400/40",
-    glow: "hover:shadow-[0_0_36px_-10px_rgba(139,92,246,0.55)]",
+    accent: "text-emerald-400",
+    ring: "hover:border-emerald-400/40",
+    glow: "hover:shadow-[0_0_36px_-10px_rgba(52,211,153,0.55)]",
   },
 ];
 
@@ -62,7 +62,7 @@ function AuroraBackground() {
   return (
     <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
       <motion.div
-        className={`${orb} left-[-12%] top-[-15%] h-[60vh] w-[60vh] bg-violet-600/20`}
+        className={`${orb} left-[-12%] top-[-15%] h-[60vh] w-[60vh] bg-emerald-500/20`}
         animate={reduced ? undefined : { x: [0, 40, 0], y: [0, 28, 0], scale: [1, 1.08, 1] }}
         transition={reduced ? undefined : { duration: 26, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -216,7 +216,7 @@ function Portrait({ ready }: { ready: boolean }) {
         style={{ perspective: 900 }}
       >
         {/* Dual-tone glow */}
-        <div className="absolute inset-0 scale-110 rounded-[28px] bg-gradient-to-tr from-violet-600/25 to-cyan-500/25 blur-3xl" />
+        <div className="absolute inset-0 scale-110 rounded-[28px] bg-gradient-to-tr from-emerald-500/25 to-cyan-500/25 blur-3xl" />
 
         {/* Clip-path wipe-up reveal + subtle scale settle */}
         <motion.div
