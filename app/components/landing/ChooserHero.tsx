@@ -11,24 +11,28 @@ import {
 } from "framer-motion";
 import { ArrowRight, Cpu, GraduationCap } from "lucide-react";
 
-// Strong ease-out curve (Emil): CSS defaults are too weak for intentional motion.
-const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+// Smooth expo-out curve for reveals. Used for the mask-reveal and image wipe.
+const EASE = [0.16, 1, 0.3, 1] as const;
 
-// Headline is split into mask-reveal lines. The two emphasized words are
-// colour-linked to the two track buttons below (violet = L&D, cyan = AI).
+// The story arc: a decade of L&D, then AI systems architecture. The two
+// emphasized words are colour-linked to the two track buttons below
+// (violet = Learning & Development, cyan = AI Systems Architecture).
 const HEADLINE: ReactNode[] = [
-  <>I design how people <span className="text-violet-400">learn</span>,</>,
+  <>Ten years designing</>,
   <>
-    and build the <span className="text-cyan-400">AI</span>
+    how people <span className="text-violet-400">learn</span>.
   </>,
-  <>that does the work.</>,
+  <>
+    Now I architect the <span className="text-cyan-400">AI</span>.
+  </>,
 ];
 
-// Real proof points from the CV. Count-up animates the numeric part.
+// Proof points, all from the CV and the AI architecture portfolio. Count-up
+// animates the numeric part. One AI stat, one L&D stat, one ROI stat.
 const PROOF = [
-  { to: 200, format: (n: number) => `${Math.round(n)}+`, label: "AI agents deployed" },
-  { to: 50, format: (n: number) => `${Math.round(n)}K+`, label: "learners reached" },
-  { to: 140, format: (n: number) => `$${Math.round(n)}K+`, label: "cost saved" },
+  { to: 200, format: (n: number) => `${Math.round(n)}+`, label: "AI agents in production" },
+  { to: 50, format: (n: number) => `${Math.round(n)}K+`, label: "learners trained" },
+  { to: 140, format: (n: number) => `$${Math.round(n)}K+`, label: "training costs saved" },
 ];
 
 const TRACKS = [
@@ -36,7 +40,7 @@ const TRACKS = [
     href: "/AI-Systems-Architecture-Portfolio",
     icon: Cpu,
     title: "AI Systems Architecture",
-    what: "Multi-agent orchestration and production-grade autonomous systems.",
+    what: "Multi-agent orchestration in production. 200+ agents on LangGraph, MCP, and RAG.",
     accent: "text-cyan-400",
     ring: "hover:border-cyan-400/40",
     glow: "hover:shadow-[0_0_36px_-10px_rgba(34,211,238,0.55)]",
@@ -45,7 +49,7 @@ const TRACKS = [
     href: "/LD-Systems-Portfolio",
     icon: GraduationCap,
     title: "Learning & Development Systems",
-    what: "AI-native learning design, from discovery to delivery.",
+    what: "Adult learning design, proven at scale. 90%+ completion, 70% faster delivery.",
     accent: "text-violet-400",
     ring: "hover:border-violet-400/40",
     glow: "hover:shadow-[0_0_36px_-10px_rgba(139,92,246,0.55)]",
@@ -70,23 +74,6 @@ function AuroraBackground() {
       />
       <div className="absolute inset-0 bg-[#0a0a0f]/35" />
     </div>
-  );
-}
-
-/* ---------- Headline mask-reveal line ---------- */
-function RevealLine({ children, delay }: { children: ReactNode; delay: number }) {
-  const reduced = useReducedMotion();
-  return (
-    <span className="block overflow-hidden pb-[0.12em]">
-      <motion.span
-        className="block"
-        initial={reduced ? false : { y: "115%" }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.85, delay, ease: EASE_OUT }}
-      >
-        {children}
-      </motion.span>
-    </span>
   );
 }
 
@@ -134,7 +121,15 @@ function StatTile({
 }
 
 /* ---------- Magnetic track card ---------- */
-function MagneticCard({ track, delay }: { track: (typeof TRACKS)[number]; delay: number }) {
+function MagneticCard({
+  track,
+  delay,
+  ready,
+}: {
+  track: (typeof TRACKS)[number];
+  delay: number;
+  ready: boolean;
+}) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -157,8 +152,8 @@ function MagneticCard({ track, delay }: { track: (typeof TRACKS)[number]; delay:
   return (
     <motion.div
       initial={reduced ? false : { opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, delay, ease: EASE_OUT }}
+      animate={reduced ? { opacity: 1, y: 0 } : ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+      transition={{ duration: 0.55, delay, ease: EASE }}
     >
       <motion.div ref={ref} style={{ x: sx, y: sy }} onPointerMove={onMove} onPointerLeave={reset}>
         <Link
@@ -187,8 +182,8 @@ function MagneticCard({ track, delay }: { track: (typeof TRACKS)[number]; delay:
   );
 }
 
-/* ---------- Portrait with pointer tilt ---------- */
-function Portrait() {
+/* ---------- Portrait: clip-path reveal, settle, sheen, pointer tilt ---------- */
+function Portrait({ ready }: { ready: boolean }) {
   const reduced = useReducedMotion();
   const mvX = useMotionValue(0);
   const mvY = useMotionValue(0);
@@ -209,9 +204,9 @@ function Portrait() {
 
   return (
     <motion.div
-      initial={reduced ? false : { opacity: 0, scale: 1.04 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1.1, delay: 0.05, ease: EASE_OUT }}
+      initial={reduced ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4, ease: EASE }}
       className="flex justify-center md:justify-start"
     >
       <div
@@ -223,21 +218,43 @@ function Portrait() {
       >
         {/* Dual-tone glow */}
         <div className="absolute inset-0 scale-110 rounded-[28px] bg-gradient-to-tr from-violet-600/25 to-cyan-500/25 blur-3xl" />
+
+        {/* Clip-path wipe-up reveal + subtle scale settle */}
         <motion.div
-          style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-          className="relative h-full w-full overflow-hidden rounded-[28px] border border-white/10 shadow-2xl"
+          initial={reduced ? false : { clipPath: "inset(100% 0% 0% 0% round 28px)", scale: 1.12 }}
+          animate={
+            reduced || ready
+              ? { clipPath: "inset(0% 0% 0% 0% round 28px)", scale: 1 }
+              : { clipPath: "inset(100% 0% 0% 0% round 28px)", scale: 1.12 }
+          }
+          transition={{ duration: 1.15, ease: EASE }}
+          className="relative h-full w-full overflow-hidden rounded-[28px] border border-white/10 shadow-2xl will-change-transform"
         >
-          <Image
-            src="/hero-photo.jpg"
-            alt="Jitin Nair"
-            fill
-            className="object-cover"
-            style={{ objectPosition: "center 20%" }}
-            sizes="(max-width: 768px) 360px, 440px"
-            priority
-            fetchPriority="high"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/55 via-transparent to-transparent" />
+          {/* Pointer tilt layer */}
+          <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="relative h-full w-full">
+            <Image
+              src="/hero-photo.jpg"
+              alt="Jitin Nair"
+              fill
+              className="object-cover"
+              style={{ objectPosition: "center 20%" }}
+              sizes="(max-width: 768px) 360px, 440px"
+              priority
+              fetchPriority="high"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/55 via-transparent to-transparent" />
+
+            {/* One-time sheen sweep as the image reveals */}
+            {!reduced && (
+              <motion.div
+                aria-hidden
+                initial={{ x: "-160%" }}
+                animate={ready ? { x: "160%" } : { x: "-160%" }}
+                transition={{ duration: 1.2, delay: 0.45, ease: "easeInOut" }}
+                className="pointer-events-none absolute inset-y-0 -left-1/2 w-2/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/15 to-transparent"
+              />
+            )}
+          </motion.div>
         </motion.div>
       </div>
     </motion.div>
@@ -247,24 +264,54 @@ function Portrait() {
 /* ---------- Hero ---------- */
 export function ChooserHero() {
   const reduced = useReducedMotion();
+  const [ready, setReady] = useState(false);
   const [countRun, setCountRun] = useState(false);
 
+  // Butter-smooth reveal: wait for the display font to load before animating,
+  // so the serif never swaps mid-reveal (the cause of the previous jank).
   useEffect(() => {
     if (reduced) {
-      setCountRun(true);
+      setReady(true);
       return;
     }
-    const t = setTimeout(() => setCountRun(true), 750);
-    return () => clearTimeout(t);
+    let active = true;
+    const done = () => active && setReady(true);
+    const fallback = setTimeout(done, 1200);
+    if (typeof document !== "undefined" && document.fonts?.ready) {
+      document.fonts.ready.then(done).catch(done);
+    } else {
+      done();
+    }
+    return () => {
+      active = false;
+      clearTimeout(fallback);
+    };
   }, [reduced]);
+
+  useEffect(() => {
+    if (!ready || reduced) return;
+    const t = setTimeout(() => setCountRun(true), 1100);
+    return () => clearTimeout(t);
+  }, [ready, reduced]);
+
+  const container = {
+    hidden: {},
+    show: { transition: { staggerChildren: reduced ? 0 : 0.14, delayChildren: reduced ? 0 : 0.08 } },
+  };
+  const lineVariant = reduced
+    ? { hidden: { y: 0 }, show: { y: 0 } }
+    : {
+        hidden: { y: "112%" },
+        show: { y: 0, transition: { duration: 0.95, ease: EASE } },
+      };
 
   const fade = (delay: number) =>
     reduced
       ? { initial: false as const, animate: { opacity: 1, y: 0 } }
       : {
           initial: { opacity: 0, y: 16 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.6, delay, ease: EASE_OUT },
+          animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 },
+          transition: { duration: 0.6, delay, ease: EASE },
         };
 
   return (
@@ -276,25 +323,32 @@ export function ChooserHero() {
       <AuroraBackground />
 
       <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 py-12 md:grid-cols-[minmax(0,440px)_1fr] md:gap-16">
-        {/* Left — portrait */}
-        <Portrait />
+        {/* Left - portrait */}
+        <Portrait ready={ready} />
 
-        {/* Right — content */}
+        {/* Right - content */}
         <div className="max-w-xl">
-          <h2 className="font-serif text-[2rem] font-medium leading-[1.12] tracking-tight text-white sm:text-[2.6rem] lg:text-[3rem]">
+          <motion.h2
+            variants={container}
+            initial="hidden"
+            animate={ready ? "show" : "hidden"}
+            className="font-serif text-[2rem] font-medium leading-[1.18] tracking-tight text-white sm:text-[2.6rem] lg:text-[3rem]"
+          >
             {HEADLINE.map((line, i) => (
-              <RevealLine key={i} delay={0.15 + i * 0.12}>
-                {line}
-              </RevealLine>
+              <span key={i} className="block overflow-hidden pb-[0.08em]">
+                <motion.span variants={lineVariant} className="block transform-gpu will-change-transform">
+                  {line}
+                </motion.span>
+              </span>
             ))}
-          </h2>
+          </motion.h2>
 
-          <motion.p {...fade(0.6)} className="mt-6 text-base text-neutral-400 sm:text-lg">
-            Learning &amp; Development Designer <span className="text-neutral-600">+</span> AI Systems Architect
+          <motion.p {...fade(0.62)} className="mt-6 text-base text-neutral-400 sm:text-lg">
+            Learning &amp; Development Designer <span className="text-neutral-600">and</span> AI Systems Architect
           </motion.p>
 
           <motion.div
-            {...fade(0.72)}
+            {...fade(0.74)}
             className="mt-8 grid max-w-md grid-cols-3 gap-5 border-t border-white/10 pt-6"
           >
             {PROOF.map((stat) => (
@@ -304,7 +358,7 @@ export function ChooserHero() {
 
           <div className="mt-9 grid gap-3.5">
             {TRACKS.map((track, i) => (
-              <MagneticCard key={track.href} track={track} delay={0.9 + i * 0.09} />
+              <MagneticCard key={track.href} track={track} delay={0.9 + i * 0.09} ready={ready} />
             ))}
           </div>
         </div>
