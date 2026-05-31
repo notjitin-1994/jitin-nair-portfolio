@@ -17,10 +17,11 @@ type Seg = { kind: "cmd" | "out" | "comment"; text: string };
 
 const SCRIPT: Seg[] = [
   { kind: "cmd", text: "whoami" },
-  { kind: "out", text: "Jitin Nair · AI Systems Architect & L&D Engineer" },
-  { kind: "cmd", text: "cat what-i-do.txt" },
-  { kind: "out", text: "I build autonomous AI systems and design the learning that lets teams run them." },
-  { kind: "comment", text: "choose a track to explore" },
+  { kind: "out", text: "Jitin Nair · Learning & Development Designer + AI Systems Architect" },
+  { kind: "cmd", text: "cat profile.txt" },
+  { kind: "out", text: "10 years designing how people learn. Now I build the AI systems that do the work." },
+  { kind: "out", text: "200+ AI agents deployed · 50K+ learners reached · $140K+ saved" },
+  { kind: "comment", text: "pick a track to explore" },
 ];
 
 const TRACKS = [
@@ -28,7 +29,7 @@ const TRACKS = [
     href: "/AI-Systems-Architecture-Portfolio",
     icon: Cpu,
     title: "AI Systems Architecture",
-    what: "Multi-agent orchestration, agentic AI & autonomous systems.",
+    what: "Multi-agent orchestration and production-grade autonomous systems.",
     iconColor: "text-cyan-400",
     hover: "hover:border-cyan-400/40 hover:bg-cyan-500/[0.06]",
     glow: "group-hover:shadow-[0_0_24px_-8px_rgba(34,211,238,0.5)]",
@@ -37,7 +38,7 @@ const TRACKS = [
     href: "/LD-Systems-Portfolio",
     icon: GraduationCap,
     title: "Learning & Development Systems",
-    what: "Instructional design & L&D platforms that scale capability.",
+    what: "AI-native learning design, from discovery to delivery.",
     iconColor: "text-violet-400",
     hover: "hover:border-violet-400/40 hover:bg-violet-500/[0.06]",
     glow: "group-hover:shadow-[0_0_24px_-8px_rgba(139,92,246,0.5)]",
@@ -67,7 +68,7 @@ function ChooserTerminal() {
       return;
     }
     stopped.current = false;
-    const MS_PER_CHAR = 16;
+    const MS_PER_CHAR = 12;
     const PAUSE_CHARS = 9; // virtual chars "spent" pausing after each line
     const START_DELAY = 280;
     const lengths = SCRIPT.map((s) => s.text.length);
@@ -218,7 +219,7 @@ export default function Home() {
   return (
     <main className="relative flex min-h-[100dvh] items-center overflow-hidden bg-[#0a0a0f] px-4 text-[#f8fafc] selection:bg-cyan-500/30">
       <h1 className="sr-only">
-        Jitin Nair · AI Systems Architect and Learning &amp; Development Systems Engineer
+        Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
       </h1>
 
       {/* Backgrounds — same as the site hero */}
