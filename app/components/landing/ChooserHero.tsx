@@ -18,12 +18,11 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 // emphasized words are colour-linked to the two track buttons below
 // (violet = Learning & Development, cyan = AI Systems Architecture).
 const HEADLINE: ReactNode[] = [
-  <>Ten years designing</>,
   <>
-    how people <span className="text-violet-400">learn</span>.
+    Ten years designing how humans <span className="text-violet-400">learn</span>.
   </>,
   <>
-    Now I architect the <span className="text-cyan-400">AI</span>.
+    Now architecting the <span className="text-cyan-400">AI</span> that empowers them.
   </>,
 ];
 
@@ -327,7 +326,7 @@ export function ChooserHero() {
         <Portrait ready={ready} />
 
         {/* Right - content */}
-        <div className="max-w-xl">
+        <div className="max-w-2xl">
           <motion.h2
             variants={container}
             initial="hidden"
