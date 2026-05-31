@@ -287,30 +287,40 @@ export function ChooserHero() {
     };
   }, [reduced]);
 
+  // Sequenced reveal timeline (seconds), all gated on the same `ready` trigger:
+  //   image reveals first (t=0), heading 1s later, the rest 1s after that.
+  const HEADING_DELAY = 1.0;
+  const REST_DELAY = 2.0;
+
   useEffect(() => {
     if (!ready || reduced) return;
-    const t = setTimeout(() => setCountRun(true), 1100);
+    const t = setTimeout(() => setCountRun(true), REST_DELAY * 1000 + 150);
     return () => clearTimeout(t);
   }, [ready, reduced]);
 
   const container = {
     hidden: {},
-    show: { transition: { staggerChildren: reduced ? 0 : 0.14, delayChildren: reduced ? 0 : 0.08 } },
+    show: {
+      transition: {
+        staggerChildren: reduced ? 0 : 0.18,
+        delayChildren: reduced ? 0 : HEADING_DELAY,
+      },
+    },
   };
   const lineVariant = reduced
     ? { hidden: { y: 0 }, show: { y: 0 } }
     : {
         hidden: { y: "112%" },
-        show: { y: 0, transition: { duration: 0.95, ease: EASE } },
+        show: { y: 0, transition: { duration: 1.1, ease: EASE } },
       };
 
   const fade = (delay: number) =>
     reduced
       ? { initial: false as const, animate: { opacity: 1, y: 0 } }
       : {
-          initial: { opacity: 0, y: 16 },
-          animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 },
-          transition: { duration: 0.6, delay, ease: EASE },
+          initial: { opacity: 0, y: 18 },
+          animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 },
+          transition: { duration: 0.8, delay, ease: EASE },
         };
 
   return (
@@ -342,12 +352,12 @@ export function ChooserHero() {
             ))}
           </motion.h2>
 
-          <motion.p {...fade(0.62)} className="mt-6 text-base text-neutral-400 sm:text-lg">
+          <motion.p {...fade(REST_DELAY)} className="mt-6 text-base text-neutral-400 sm:text-lg">
             Learning &amp; Development Designer <span className="text-neutral-600">and</span> AI Systems Architect
           </motion.p>
 
           <motion.div
-            {...fade(0.74)}
+            {...fade(REST_DELAY + 0.12)}
             className="mt-8 grid max-w-md grid-cols-3 gap-5 border-t border-white/10 pt-6"
           >
             {PROOF.map((stat) => (
@@ -357,7 +367,7 @@ export function ChooserHero() {
 
           <div className="mt-9 grid gap-3.5">
             {TRACKS.map((track, i) => (
-              <MagneticCard key={track.href} track={track} delay={0.9 + i * 0.09} ready={ready} />
+              <MagneticCard key={track.href} track={track} delay={REST_DELAY + 0.24 + i * 0.1} ready={ready} />
             ))}
           </div>
         </div>
