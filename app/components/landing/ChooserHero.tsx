@@ -206,13 +206,13 @@ function Portrait({ ready }: { ready: boolean }) {
       initial={reduced ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4, ease: EASE }}
-      className="flex justify-center md:justify-start"
+      className="flex h-[360px] w-full items-stretch justify-center sm:h-[440px] md:h-full md:justify-start"
     >
       <div
         ref={ref}
         onPointerMove={onMove}
         onPointerLeave={reset}
-        className="relative aspect-square w-full max-w-[300px] sm:max-w-[360px] md:max-w-[440px]"
+        className="relative h-full w-full"
         style={{ perspective: 900 }}
       >
         {/* Dual-tone glow */}
@@ -321,7 +321,7 @@ export function ChooserHero() {
 
       <AuroraBackground />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 py-12 md:grid-cols-[minmax(0,440px)_1fr] md:gap-16">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-10 py-16 md:grid-cols-2 md:items-stretch md:gap-14">
         {/* Left - portrait */}
         <Portrait ready={ready} />
 
