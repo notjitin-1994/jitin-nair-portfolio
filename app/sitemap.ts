@@ -27,6 +27,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const routes = [
     { route: '', priority: 1.0, frequency: 'weekly' as const },
+    { route: '/AI-Systems-Architecture-Portfolio', priority: 1.0, frequency: 'weekly' as const },
+    { route: '/LD-Systems-Portfolio', priority: 0.6, frequency: 'monthly' as const },
     { route: '/insights', priority: 0.9, frequency: 'weekly' as const },
   ].map(({ route, priority, frequency }) => ({
     url: `${baseUrl}${route}`,
