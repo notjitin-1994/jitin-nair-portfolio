@@ -12,6 +12,10 @@ interface VortexProps {
   particleCount?: number;
   rangeY?: number;
   baseHue?: number;
+  rangeHue?: number;
+  saturation?: number;
+  lightness?: number;
+  subtleGlow?: boolean;
   baseSpeed?: number;
   rangeSpeed?: number;
   baseRadius?: number;
@@ -33,12 +37,16 @@ export function Vortex(props: VortexProps) {
   const baseRadius = props.baseRadius || 1;
   const rangeRadius = props.rangeRadius || 3;
   const baseHue = props.baseHue || 220;
-  const rangeHue = 100;
+  const rangeHue = props.rangeHue ?? 100;
+  const saturation = props.saturation ?? 100;
+  const lightness = props.lightness ?? 60;
+  const subtleGlow = props.subtleGlow ?? false;
   const noiseSteps = 3;
   const xOff = 0.00125;
   const yOff = 0.00125;
   const zOff = 0.0005;
   const backgroundColor = props.backgroundColor || "#000000";
+  const transparentBg = backgroundColor === "transparent";
   let tick = 0;
   const noise3D = createNoise3D();
   let particleProps = new Float32Array(particlePropsLength);
@@ -109,8 +117,10 @@ export function Vortex(props: VortexProps) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (!transparentBg) {
+      ctx.fillStyle = backgroundColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
 
     drawParticles(ctx);
     renderGlow(canvas, ctx);
@@ -178,7 +188,7 @@ export function Vortex(props: VortexProps) {
     ctx.save();
     ctx.lineCap = "round";
     ctx.lineWidth = radius;
-    ctx.strokeStyle = `hsla(${hue},100%,60%,${fadeInOut(life, ttl)})`;
+    ctx.strokeStyle = `hsla(${hue},${saturation}%,${lightness}%,${fadeInOut(life, ttl)})`;
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x2, y2);
@@ -214,6 +224,17 @@ export function Vortex(props: VortexProps) {
     ctx: CanvasRenderingContext2D,
   ) => {
     if (canvas.width === 0 || canvas.height === 0) return;
+
+    if (subtleGlow) {
+      // Single soft pass for a gentle, low-intensity halo.
+      ctx.save();
+      ctx.filter = "blur(6px) brightness(130%)";
+      ctx.globalCompositeOperation = "lighter";
+      ctx.drawImage(canvas, 0, 0);
+      ctx.restore();
+      return;
+    }
+
     ctx.save();
     ctx.filter = "blur(8px) brightness(200%)";
     ctx.globalCompositeOperation = "lighter";
