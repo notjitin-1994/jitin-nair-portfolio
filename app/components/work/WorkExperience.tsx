@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight, Mail, Linkedin, MapPin } from "lucide-react";
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "../ld/primitives";
 import {
@@ -21,6 +21,31 @@ const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 
 const fmt = (n: number, prefix = "", suffix = "") =>
   `${prefix}${Math.round(n).toLocaleString()}${suffix}`;
+
+/* Shared stagger primitives. Cascading entry (Emil: items shouldn't all pop at once). */
+const groupVariants: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
+};
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+};
+
+function StaggerGroup({ children, className }: { children: ReactNode; className?: string }) {
+  const reduced = useReducedMotion();
+  return (
+    <motion.div
+      className={className}
+      variants={reduced ? undefined : groupVariants}
+      initial={reduced ? false : "hidden"}
+      whileInView="show"
+      viewport={{ once: true, margin: "-60px" }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 /* ---------- Nav ---------- */
 function Nav() {
@@ -65,11 +90,11 @@ function Hero() {
   const reduced = useReducedMotion();
   const ready = useFontsReady();
 
-  const container = {
+  const container: Variants = {
     hidden: {},
     show: { transition: { staggerChildren: reduced ? 0 : 0.16, delayChildren: reduced ? 0 : 0.1 } },
   };
-  const line = reduced
+  const line: Variants = reduced
     ? { hidden: { y: 0 }, show: { y: 0 } }
     : { hidden: { y: "112%" }, show: { y: 0, transition: { duration: 1.0, ease: EASE } } };
 
@@ -86,9 +111,9 @@ function Hero() {
         >
           <Link
             href="/LD-Systems-Portfolio"
-            className="inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
+            className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
           >
-            <ArrowLeft className="h-4 w-4" strokeWidth={2} />
+            <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2} />
             Back to L&amp;D portfolio
           </Link>
         </motion.div>
@@ -101,12 +126,12 @@ function Hero() {
         >
           <span className="block overflow-hidden pb-[0.08em]">
             <motion.span variants={line} className="block transform-gpu will-change-transform">
-              A decade turning learning into
+              Ten years turning learning into
             </motion.span>
           </span>
           <span className="block overflow-hidden pb-[0.08em]">
             <motion.span variants={line} className="block transform-gpu will-change-transform">
-              <span className="text-emerald-400">measurable performance</span>.
+              measurable <span className="text-emerald-400">business performance</span>.
             </motion.span>
           </span>
         </motion.h1>
@@ -117,7 +142,7 @@ function Hero() {
           transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
           className="mt-6 max-w-xl text-base leading-relaxed text-neutral-400 sm:text-lg"
         >
-          Ten years across instructional design and AI systems, told role by role with the numbers behind each.
+          From the support floor to AI systems architecture. Every role here moved a number the business cared about.
         </motion.p>
       </div>
     </section>
@@ -128,25 +153,29 @@ function Hero() {
 function SummaryBand() {
   return (
     <section className="px-5 pb-8">
-      <Reveal className="mx-auto grid max-w-5xl grid-cols-2 gap-x-6 gap-y-10 border-y border-white/[0.08] py-12 md:grid-cols-4">
+      <StaggerGroup className="mx-auto grid max-w-5xl grid-cols-2 gap-x-6 gap-y-10 border-y border-white/[0.08] py-12 md:grid-cols-4">
         {workSummary.map((s) => (
-          <div key={s.label}>
+          <motion.div key={s.label} variants={itemVariants}>
             <CountUp
               to={s.to}
               format={(n) => fmt(n, s.prefix, s.suffix)}
               className="font-serif text-4xl font-medium tracking-tight text-white sm:text-5xl"
             />
             <div className="mt-2 text-sm leading-snug text-neutral-500">{s.label}</div>
-          </div>
+          </motion.div>
         ))}
-      </Reveal>
+      </StaggerGroup>
     </section>
   );
 }
 
 /* ---------- Career arc (interactive horizontal progression) ---------- */
 function CareerArc() {
+  const reduced = useReducedMotion();
   const [active, setActive] = useState(careerArc.length - 1);
+  // Track fill reaches the active node. Nodes sit at 0 / 25 / 50 / 75% of the row.
+  const fillScale = active / (careerArc.length - 1);
+
   return (
     <section className="px-5 py-20 sm:py-28">
       <div className="mx-auto max-w-5xl">
@@ -155,13 +184,20 @@ function CareerArc() {
             From the floor to the architecture.
           </h2>
           <p className="mt-3 leading-relaxed text-neutral-400">
-            Each step widened the scope: train people, design programs, scale them globally, then build the systems that run them.
+            Each move widened the mandate: train the people, design the programs, scale them across a global org, then build the AI that runs them.
           </p>
         </Reveal>
 
         {/* Desktop: horizontal track */}
         <div className="relative hidden md:block">
-          <div className="absolute left-0 right-0 top-[11px] h-px bg-white/[0.08]" />
+          <div className="absolute left-0 right-[25%] top-[11px] h-px bg-white/[0.08]" />
+          {/* Animated emerald fill up to the active node */}
+          <motion.div
+            aria-hidden
+            className="absolute left-0 right-[25%] top-[11px] h-px origin-left bg-gradient-to-r from-emerald-400 to-teal-400"
+            animate={{ scaleX: reduced ? 1 : fillScale }}
+            transition={{ duration: 0.5, ease: EASE }}
+          />
           <div className="grid grid-cols-4">
             {careerArc.map((step, i) => {
               const on = i === active;
@@ -170,30 +206,30 @@ function CareerArc() {
                   key={step.year}
                   onMouseEnter={() => setActive(i)}
                   onFocus={() => setActive(i)}
-                  className="group relative flex flex-col items-start pr-6 text-left outline-none"
+                  className="group relative flex flex-col items-start pr-6 text-left outline-none transition-transform duration-200 active:scale-[0.98]"
                 >
                   <span
-                    className={`relative z-10 h-[23px] w-[23px] rounded-full border-2 transition-colors duration-300 ${
-                      on ? "border-emerald-400 bg-emerald-400/20" : "border-white/20 bg-[#0a0a0f]"
+                    className={`relative z-10 grid h-[23px] w-[23px] place-items-center rounded-full border-2 transition-colors duration-300 ${
+                      on ? "border-emerald-400 bg-emerald-400/15" : "border-white/20 bg-[#0a0a0f]"
                     }`}
                   >
-                    <span
-                      className={`absolute inset-[5px] rounded-full transition-colors duration-300 ${
-                        on ? "bg-emerald-400" : "bg-white/15"
-                      }`}
+                    <motion.span
+                      className="h-[9px] w-[9px] rounded-full bg-emerald-400"
+                      animate={{ scale: on ? 1 : 0, opacity: on ? 1 : 0 }}
+                      transition={{ duration: 0.3, ease: EASE }}
                     />
                   </span>
-                  <span className={`mt-5 text-sm tabular-nums transition-colors ${on ? "text-emerald-400" : "text-neutral-500"}`}>
+                  <span className={`mt-5 text-sm tabular-nums transition-colors duration-300 ${on ? "text-emerald-400" : "text-neutral-500"}`}>
                     {step.year}
                   </span>
-                  <span className={`mt-1 font-serif text-lg font-medium tracking-tight transition-colors ${on ? "text-white" : "text-neutral-400"}`}>
+                  <span className={`mt-1 font-serif text-lg font-medium leading-snug tracking-tight transition-colors duration-300 ${on ? "text-white" : "text-neutral-400"}`}>
                     {step.title}
                   </span>
                   <span className="mt-1 text-sm text-emerald-400/70">{step.org}</span>
                   <motion.span
-                    initial={false}
-                    animate={{ opacity: on ? 1 : 0.45 }}
                     className="mt-2 text-sm leading-relaxed text-neutral-500"
+                    animate={{ opacity: on ? 1 : 0.4 }}
+                    transition={{ duration: 0.3, ease: EASE }}
                   >
                     {step.scope}
                   </motion.span>
@@ -219,7 +255,7 @@ function CareerArc() {
   );
 }
 
-/* ---------- Animated progress bar ---------- */
+/* ---------- Animated progress bar (GPU: scaleX, not width) ---------- */
 function Bar({ stat }: { stat: ProgressStat }) {
   const reduced = useReducedMotion();
   return (
@@ -230,9 +266,9 @@ function Bar({ stat }: { stat: ProgressStat }) {
       </div>
       <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400"
-          initial={reduced ? false : { width: 0 }}
-          whileInView={{ width: `${stat.value}%` }}
+          className="h-full w-full origin-left rounded-full bg-gradient-to-r from-emerald-400 to-teal-400"
+          initial={reduced ? false : { transform: "scaleX(0)" }}
+          whileInView={{ transform: `scaleX(${stat.value / 100})` }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 1.1, ease: EASE }}
         />
@@ -244,6 +280,7 @@ function Bar({ stat }: { stat: ProgressStat }) {
 
 /* ---------- Role dossier ---------- */
 function RoleDossier({ role }: { role: WorkRole }) {
+  const cols = role.metrics.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3";
   return (
     <div className="grid gap-10 border-t border-white/[0.08] pt-12 lg:grid-cols-[300px_1fr] lg:gap-16">
       {/* Sticky rail */}
@@ -265,7 +302,7 @@ function RoleDossier({ role }: { role: WorkRole }) {
               <MapPin className="h-3.5 w-3.5" strokeWidth={1.75} />
               {role.location}
             </div>
-            <div className="inline-flex items-center gap-2 pt-1">
+            <div className="pt-1">
               <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-0.5 text-xs text-neutral-400">
                 {role.tenure}
               </span>
@@ -281,53 +318,49 @@ function RoleDossier({ role }: { role: WorkRole }) {
         </Reveal>
 
         {/* Metric tiles */}
-        <Reveal delay={0.1}>
-          <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.04] sm:grid-cols-3">
-            {role.metrics.map((m) => {
-              const Icon = m.icon;
-              return (
-                <div key={m.label} className="flex flex-col bg-[#0a0a0f] p-5">
-                  <Icon className="h-5 w-5 text-emerald-400" strokeWidth={1.75} />
-                  <CountUp
-                    to={m.to}
-                    format={(n) => fmt(n, m.prefix, m.suffix)}
-                    className="mt-4 font-serif text-3xl font-medium tracking-tight text-white"
-                  />
-                  <div className="mt-1.5 text-sm leading-snug text-neutral-500">{m.label}</div>
-                </div>
-              );
-            })}
-          </div>
-        </Reveal>
+        <StaggerGroup className={`mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.06] ${cols}`}>
+          {role.metrics.map((m) => {
+            const Icon = m.icon;
+            return (
+              <motion.div key={m.label} variants={itemVariants} className="flex flex-col bg-[#0a0a0f] p-5">
+                <Icon className="h-5 w-5 text-emerald-400" strokeWidth={1.75} />
+                <CountUp
+                  to={m.to}
+                  format={(n) => fmt(n, m.prefix, m.suffix)}
+                  className="mt-4 font-serif text-3xl font-medium tracking-tight text-white"
+                />
+                <div className="mt-1.5 text-sm leading-snug text-neutral-500">{m.label}</div>
+              </motion.div>
+            );
+          })}
+        </StaggerGroup>
 
         {/* Bars (only some roles) */}
         {role.bars && (
-          <Reveal delay={0.12}>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2">
-              {role.bars.map((b) => (
-                <Bar key={b.label} stat={b} />
-              ))}
-            </div>
-          </Reveal>
+          <StaggerGroup className="mt-8 grid gap-6 sm:grid-cols-2">
+            {role.bars.map((b) => (
+              <motion.div key={b.label} variants={itemVariants}>
+                <Bar stat={b} />
+              </motion.div>
+            ))}
+          </StaggerGroup>
         )}
 
-        {/* Achievements */}
-        <Reveal delay={0.14}>
-          <ul className="mt-10 space-y-px overflow-hidden rounded-2xl border border-white/[0.06]">
-            {role.achievements.map((a) => (
-              <li
-                key={a}
-                className="flex items-start gap-3 bg-white/[0.02] px-5 py-4 leading-relaxed text-neutral-300 transition-colors duration-200 hover:bg-emerald-400/[0.05]"
-              >
-                <span className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-400" />
-                <span>{a}</span>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+        {/* Achievements: left-accent rows, no decorative dots */}
+        <StaggerGroup className="mt-10 flex flex-col gap-1.5">
+          {role.achievements.map((a) => (
+            <motion.div
+              key={a}
+              variants={itemVariants}
+              className="rounded-lg border-l-2 border-white/[0.1] bg-white/[0.01] px-4 py-3 leading-relaxed text-neutral-300 transition-[border-color,background-color,transform] duration-200 hover:border-emerald-400/70 hover:bg-emerald-400/[0.04]"
+            >
+              {a}
+            </motion.div>
+          ))}
+        </StaggerGroup>
 
         {/* Stack */}
-        <Reveal delay={0.16}>
+        <Reveal delay={0.08}>
           <div className="mt-8 flex flex-wrap gap-2">
             {role.stack.map((t) => (
               <span
@@ -363,14 +396,14 @@ function Competencies() {
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
-            What I bring to the table.
+            Where learning science meets systems engineering.
           </h2>
         </Reveal>
-        <div className="grid gap-5 md:grid-cols-2">
-          {competencyDomains.map((d, i) => {
+        <StaggerGroup className="grid gap-5 md:grid-cols-2">
+          {competencyDomains.map((d) => {
             const Icon = d.icon;
             return (
-              <Reveal key={d.title} delay={i * 0.05}>
+              <motion.div key={d.title} variants={itemVariants}>
                 <div className="h-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 transition-colors duration-200 hover:border-emerald-400/25">
                   <div className="flex items-center gap-3">
                     <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-400/[0.08] text-emerald-400">
@@ -389,10 +422,10 @@ function Competencies() {
                     ))}
                   </div>
                 </div>
-              </Reveal>
+              </motion.div>
             );
           })}
-        </div>
+        </StaggerGroup>
       </div>
     </section>
   );
@@ -433,9 +466,8 @@ function LanguagesAndEducation() {
             </div>
             <ul className="mt-6 space-y-3">
               {education.notes.map((n) => (
-                <li key={n} className="flex items-start gap-3 leading-relaxed text-neutral-400">
-                  <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-400/60" />
-                  <span>{n}</span>
+                <li key={n} className="leading-relaxed text-neutral-400">
+                  {n}
                 </li>
               ))}
             </ul>
@@ -457,7 +489,7 @@ function Contact() {
           </h2>
           <p className="mx-auto mt-6 max-w-xl leading-relaxed text-neutral-400">
             Open to L&amp;D leadership roles, AI-in-learning strategy, and advisory. If you are scaling a learning
-            function or removing its bottlenecks, let&apos;s talk.
+            function or clearing its bottlenecks, let&apos;s talk.
           </p>
           <div className="mt-10 flex justify-center">
             <MagneticButton href={EMAIL} variant="primary">
@@ -486,16 +518,6 @@ function Contact() {
 
 /* ---------- Footer ---------- */
 function WorkFooter() {
-  const cols = [
-    {
-      head: "Portfolio",
-      links: [
-        { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-        { label: "AI Systems Portfolio", href: "/AI-Systems-Architecture-Portfolio" },
-        { label: "Insights", href: "/insights" },
-      ],
-    },
-  ];
   return (
     <footer className="border-t border-white/[0.08] bg-[#0a0a0f]">
       <div className="mx-auto max-w-6xl px-5 py-16">
@@ -524,20 +546,26 @@ function WorkFooter() {
               </a>
             </div>
           </div>
-          {cols.map((c) => (
-            <div key={c.head}>
-              <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white">{c.head}</h3>
-              <ul className="space-y-3">
-                {c.links.map((l) => (
-                  <li key={l.href}>
-                    <Link href={l.href} className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div>
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white">Portfolio</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/LD-Systems-Portfolio" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
+                  L&amp;D Portfolio
+                </Link>
+              </li>
+              <li>
+                <Link href="/AI-Systems-Architecture-Portfolio" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
+                  AI Systems Portfolio
+                </Link>
+              </li>
+              <li>
+                <Link href="/insights" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
+                  Insights
+                </Link>
+              </li>
+            </ul>
+          </div>
           <div>
             <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white">Get in touch</h3>
             <ul className="space-y-3">

@@ -49,41 +49,41 @@ export type WorkRole = {
   bars?: ProgressStat[];
   achievements: string[];
   stack: string[];
-  // Visual treatment selector so each dossier reads differently.
+  // Short label that frames what the role proves.
   accentNote: string;
 };
 
 export const workSummary = [
-  { to: 10, suffix: "+ yrs", label: "across learning and AI" },
-  { to: 50, suffix: "K+", label: "learners reached" },
-  { to: 140, prefix: "$", suffix: "K+", label: "training cost saved" },
-  { to: 200, suffix: "+", label: "AI agents deployed" },
+  { to: 10, suffix: "+ yrs", label: "across L&D and AI" },
+  { to: 50, suffix: "K+", label: "learners trained" },
+  { to: 140, prefix: "$", suffix: "K+", label: "in training cost removed" },
+  { to: 200, suffix: "+", label: "AI agents in production" },
 ];
 
 export const careerArc = [
   {
     year: "2015",
-    title: "Where the instinct started",
+    title: "Learned to teach under pressure",
     org: "247.ai",
-    scope: "Training new joiners on the floor",
+    scope: "Training every new hire on a live support floor",
   },
   {
     year: "2019",
-    title: "L&D as a discipline",
+    title: "Made L&D a measurable discipline",
     org: "Accenture",
-    scope: "Multi-format design across client teams",
+    scope: "Multi-format program design across client teams",
   },
   {
     year: "2022",
-    title: "Learning at global scale",
+    title: "Scaled learning across a global org",
     org: "Moody's Ratings",
-    scope: "Standardised pipelines for worldwide teams",
+    scope: "Standardized production for worldwide teams",
   },
   {
     year: "2025",
-    title: "Architecting the systems",
+    title: "Started building the systems",
     org: "Independent",
-    scope: "AI that automates discovery to delivery",
+    scope: "AI that automates discovery through delivery",
   },
 ];
 
@@ -96,17 +96,17 @@ export const workRoles: WorkRole[] = [
     location: "Bangalore, India",
     period: "Mar 2025 - Present",
     tenure: "Current",
-    lede: "I build the AI infrastructure that removes the slowest parts of learning and operations. The same engineering that runs autonomous agent fleets now automates L&D from discovery through delivery, with expert validation kept in the loop so quality never trades for speed.",
+    lede: "I build the AI infrastructure that strips weeks out of learning and operations. The agent fleets and pipelines I run now carry the heavy lifting of L&D, from discovery to delivery, with expert review wired in so speed never costs quality.",
     metrics: [
-      { to: 200, suffix: "+", label: "autonomous agents deployed", icon: Bot },
+      { to: 200, suffix: "+", label: "autonomous agents in production", icon: Bot },
       { to: 147, suffix: "", label: "agent instances sharing tools via MCP", icon: Network },
-      { to: 96, suffix: "%", label: "fleet coverage on truth-verification", icon: ShieldCheck },
+      { to: 96, suffix: "%", label: "truth-verification fleet coverage", icon: ShieldCheck },
     ],
     achievements: [
       "Architected and deployed 200+ autonomous AI agents across multi-agent orchestration platforms.",
-      "Shipped production systems end to end: an autonomous trading engine (Predator), a multi-agent governance platform (Reality-Check), and an AI-native LMS (SmartSlate).",
-      "Built Model Context Protocol integrations that let 147 agent instances share tools and context safely.",
-      "Reached 96% fleet coverage for truth-verification protocols across distributed agent networks, eliminating fabricated outputs.",
+      "Shipped three production systems end to end: an autonomous trading engine, a multi-agent governance platform, and an AI-native LMS.",
+      "Built Model Context Protocol integrations so 147 agent instances share tools and context without stepping on each other.",
+      "Drove truth-verification coverage to 96% across the fleet, ending fabricated outputs at the source.",
     ],
     stack: ["LangGraph", "Python", "TimescaleDB", "Claude", "ChatGPT", "FastAPI", "MCP", "RAG"],
     accentNote: "Systems and governance",
@@ -119,7 +119,7 @@ export const workRoles: WorkRole[] = [
     location: "Bangalore, India",
     period: "Sep 2022 - Mar 2025",
     tenure: "2.5 years",
-    lede: "I took video-based learning at a global ratings agency from slow, bespoke builds to a repeatable production system. Standardised templates and automated workflows meant quality scaled across worldwide teams without effort scaling alongside it.",
+    lede: "I turned video learning at a global ratings agency from slow, one-off builds into a production line. Templates and automation let quality scale across worldwide teams while the effort behind each module dropped sharply.",
     metrics: [
       { to: 60, suffix: "%", label: "less content production time", icon: Gauge },
       { to: 90, suffix: "%+", label: "module completion rate", icon: Globe2 },
@@ -129,23 +129,23 @@ export const workRoles: WorkRole[] = [
         label: "Production time",
         value: 40,
         display: "60% faster",
-        caption: "Automation and template standardisation cut build time on every module.",
+        caption: "Automation and standardized templates cut build time on every module.",
       },
       {
         label: "Completion rate",
         value: 90,
         display: "90%+",
-        caption: "Interactive modules held attention through complex financial concepts.",
+        caption: "Interactive design held attention through dense financial material.",
       },
     ],
     achievements: [
-      "Led video-based learning development for a global ratings agency, creating standardised templates and automated workflows.",
-      "Built scalable production pipelines that changed how financial knowledge is disseminated across global teams.",
-      "Cut content production time by 60% through automation and template standardisation.",
-      "Designed interactive modules for complex financial concepts that sustained 90%+ completion rates.",
+      "Led video-based learning for a global ratings agency, building the templates and workflows the function now runs on.",
+      "Stood up production pipelines that changed how financial knowledge moves across global teams.",
+      "Cut content production time by 60% through automation and standardization.",
+      "Designed interactive modules for dense financial topics that held 90%+ completion.",
     ],
     stack: ["Articulate Storyline", "Video Production", "SCORM", "LMS Administration", "ADDIE"],
-    accentNote: "Scale and standardisation",
+    accentNote: "Scale and standardization",
   },
   {
     id: "accenture",
@@ -155,33 +155,33 @@ export const workRoles: WorkRole[] = [
     location: "Bangalore, India",
     period: "Jan 2019 - Sep 2022",
     tenure: "3.75 years",
-    lede: "Across multiple client teams I matched the modality to the need, then automated the audit and reporting work that used to eat weeks. The result was faster upskilling, retained knowledge, and six figures of measured savings, all of it auditable at scale.",
+    lede: "Across multiple client teams I matched each program to the outcome it had to move, then automated the audit work that used to swallow weeks. The result was faster upskilling, retained knowledge, and six figures in measured savings, all of it provable.",
     metrics: [
-      { to: 140, prefix: "$", suffix: "K+", label: "training cost saved", icon: PiggyBank },
-      { to: 300, suffix: "+", label: "employees on New Joiner Training", icon: Users },
-      { to: 1400, suffix: "+", label: "lines of VBA automating TNA audits", icon: Code2 },
+      { to: 140, prefix: "$", suffix: "K+", label: "training cost removed", icon: PiggyBank },
+      { to: 300, suffix: "+", label: "people on the New Joiner program", icon: Users },
+      { to: 1400, suffix: "+", label: "lines of VBA automating audits", icon: Code2 },
     ],
     bars: [
       {
         label: "F&A learning time",
         value: 30,
-        display: "70% reduction",
-        caption: "Video-based redesign cut time to competency while holding 54% knowledge retention.",
+        display: "70% lower",
+        caption: "A video-first redesign cut time to competency while retention held.",
       },
       {
         label: "Knowledge retention",
         value: 54,
-        display: "54% maintained",
-        caption: "Retention held even as learning time fell sharply.",
+        display: "54% held",
+        caption: "Retention stayed steady even as learning time fell sharply.",
       },
     ],
     achievements: [
-      "Managed learning needs for 50+ employees, running TNA and delivering content to close skill gaps.",
-      "Built courses across modalities (ILT, video, e-learning, gamified) grounded in instructional design theory and adult-learning principles.",
-      "Led a video-based redesign for an F&A client, cutting learning time 70% at 54% retention and saving roughly $80,000 in training time.",
-      "Built a hybrid upskilling model for an HRO client that held retention while saving roughly $60,000 in training time.",
-      "Designed the New Joiner Training program: 4 modules, 20+ topics, 50+ assessments, now used by 16 teams and 300+ employees.",
-      "Wrote a 1,400-line MS Excel VBA suite for TNA audits, generating pivot tables, charts, and automated feedback emails, used pan-India.",
+      "Owned learning needs for 50+ employees, running TNA and closing skill gaps with targeted content.",
+      "Built across every modality (ILT, video, e-learning, gamified), grounded in instructional design and adult-learning theory.",
+      "Redesigned F&A training as video-first: 70% less learning time at 54% retention, roughly $80,000 saved.",
+      "Built a hybrid upskilling model for an HRO client that held retention and saved roughly $60,000.",
+      "Designed the New Joiner Training program (4 modules, 20+ topics, 50+ assessments), now used by 16 teams and 300+ people.",
+      "Wrote a 1,400-line VBA suite that automated TNA audits, pivots, charts, and feedback emails across pan-India teams.",
     ],
     stack: ["Excel VBA", "Video Production", "Instructional Design", "E-Learning", "TNA"],
     accentNote: "Impact and automation",
@@ -194,18 +194,18 @@ export const workRoles: WorkRole[] = [
     location: "Bangalore, India",
     period: "May 2015 - Dec 2017",
     tenure: "2.5 years",
-    lede: "The training instinct started on the support floor. Beyond handling customer operations for a US retail giant, I trained new joiners and ran quality and refresher programs until they could operate independently. The performance got noticed fast.",
+    lede: "The L&D instinct started on a live support floor. Alongside running operations for a US retail giant, I trained every new hire and owned quality and refresher coaching until they could run solo. The results got noticed fast.",
     metrics: [
-      { to: 3, suffix: "x", label: "top performer, consecutive months", icon: Trophy },
-      { to: 24, suffix: " mo", label: "to be identified for leadership", icon: Repeat },
+      { to: 3, suffix: "x", label: "top performer, months running", icon: Trophy },
+      { to: 24, suffix: " mo", label: "to the leadership track", icon: Repeat },
     ],
     achievements: [
-      "Managed back-end customer support for a US retail and eCommerce giant, resolving seller-buyer issues for a seamless customer experience.",
-      "Trained new joiners on process and ran quality assurance and refresher programs until independent operation.",
-      "Awarded top performer for three consecutive months and identified for a leadership position within 24 months.",
+      "Ran back-end support for a US retail and eCommerce giant, resolving seller and buyer issues end to end.",
+      "Trained every new hire on process and owned QA and refresher coaching until they operated independently.",
+      "Named top performer three months running and flagged for leadership inside 24 months.",
     ],
     stack: ["Customer Support", "QA", "Training", "Problem Solving"],
-    accentNote: "Foundation and recognition",
+    accentNote: "Where it started",
   },
 ];
 
@@ -265,7 +265,7 @@ export const education = {
   period: "2012 - 2015",
   notes: [
     "Built the foundation in business administration and analytical thinking.",
-    "Self-taught programming through college and shipped first web applications.",
+    "Taught myself to code through college and shipped my first web applications.",
   ],
   icon: Sparkles,
 };
