@@ -12,6 +12,7 @@ import {
 } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Mail, Linkedin } from "lucide-react";
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "./primitives";
+import { LdVortexBackground } from "./LdVortexBackground";
 import {
   ldImpact,
   ldCaseStudies,
@@ -108,8 +109,13 @@ function Hero() {
 
   return (
     <section className="relative flex min-h-[100dvh] items-center overflow-hidden px-5 pt-28 pb-16">
-      {/* Emerald aurora */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      {/* Desktop: particle vortex in emerald */}
+      <div aria-hidden className="hidden md:block absolute inset-0 z-0 pointer-events-none">
+        <LdVortexBackground />
+      </div>
+
+      {/* Mobile: emerald aurora fallback */}
+      <div aria-hidden className="md:hidden pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <motion.div
           className="absolute left-[-10%] top-[-12%] h-[55vh] w-[55vh] rounded-full bg-emerald-500/20 blur-[120px]"
           animate={reduced ? undefined : { x: [0, 36, 0], y: [0, 26, 0], scale: [1, 1.08, 1] }}
@@ -122,7 +128,7 @@ function Hero() {
         />
       </div>
 
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
         {/* Content */}
         <div className="order-2 md:order-1">
           <motion.h1
@@ -529,22 +535,95 @@ function Contact() {
 
 /* ---------- Footer ---------- */
 function LdFooter() {
+  const LD_SECTIONS = [
+    { label: "Work", href: "#work" },
+    { label: "Approach", href: "#approach" },
+    { label: "Capabilities", href: "#capabilities" },
+    { label: "Contact", href: "#contact" },
+  ];
+
+  const PORTFOLIO_LINKS = [
+    { label: "Home", href: "/" },
+    { label: "AI Systems Portfolio", href: "/AI-Systems-Architecture-Portfolio" },
+    { label: "Insights", href: "/insights" },
+  ];
+
   return (
-    <footer className="border-t border-white/[0.08] px-5 py-12">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm text-neutral-500 sm:flex-row">
-        <span className="text-neutral-400">Jitin Nair</span>
-        <div className="flex items-center gap-6">
-          <Link href="/" className="transition-colors hover:text-white">
-            All work
-          </Link>
-          <Link href="/AI-Systems-Architecture-Portfolio" className="transition-colors hover:text-white">
-            AI Systems
-          </Link>
-          <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white">
-            LinkedIn
-          </a>
+    <footer className="border-t border-white/[0.08] bg-[#0a0a0f]">
+      <div className="mx-auto max-w-6xl px-5 py-16">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+          {/* Brand */}
+          <div className="space-y-4">
+            <Link href="/" className="inline-block">
+              <span className="text-xl font-bold text-white">Jitin Nair</span>
+            </Link>
+            <p className="text-sm leading-relaxed text-slate-400">
+              L&amp;D leader and AI systems architect. A decade turning learning into measurable performance.
+            </p>
+            <div className="flex items-center gap-3 pt-2">
+              <a
+                href={LINKEDIN}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-slate-400 transition-all hover:border-emerald-500/30 hover:text-emerald-400"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-4 w-4" />
+              </a>
+              <a
+                href="mailto:not.jitin@gmail.com"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-slate-400 transition-all hover:border-emerald-500/30 hover:text-emerald-400"
+                aria-label="Email"
+              >
+                <Mail className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* This page */}
+          <div>
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white">This page</h3>
+            <ul className="space-y-3">
+              {LD_SECTIONS.map((item) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    className="text-sm text-slate-400 transition-colors hover:text-emerald-400"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Portfolio */}
+          <div>
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white">Portfolio</h3>
+            <ul className="space-y-3">
+              {PORTFOLIO_LINKS.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-slate-400 transition-colors hover:text-emerald-400"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-        <span className="text-neutral-600">© {new Date().getFullYear()}</span>
+
+        {/* Bottom bar */}
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.08] pt-8 sm:flex-row">
+          <p className="text-sm text-slate-500">
+            © {new Date().getFullYear()} Jitin Nair. All rights reserved.
+          </p>
+          <p className="text-xs text-slate-600">
+            Built with Next.js, TypeScript &amp; Tailwind CSS
+          </p>
+        </div>
       </div>
     </footer>
   );
