@@ -28,7 +28,7 @@ const EMAIL = "mailto:not.jitin@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 
 const NAV = [
-  { label: "Work", href: "#work" },
+  { label: "Work", href: "/work" },
   { label: "Approach", href: "#approach" },
   { label: "Capabilities", href: "#capabilities" },
   { label: "Contact", href: "#contact" },
@@ -54,17 +54,23 @@ function Label({ children }: { children: ReactNode }) {
 function Nav() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-5">
-      <nav className="mx-auto mt-4 flex h-14 max-w-6xl items-center justify-between rounded-full border border-white/[0.08] bg-[#0a0a0f]/70 pl-5 pr-3 backdrop-blur-xl">
+      <nav className="mx-auto mt-4 flex h-14 max-w-6xl items-center justify-between rounded-full border border-emerald-400/25 bg-[#0a0a0f]/70 pl-5 pr-3 shadow-[0_0_28px_-8px_rgba(52,211,153,0.5)] backdrop-blur-xl">
         <Link href="/" className="flex items-center gap-2 text-sm font-semibold text-white">
           Jitin Nair
           <span className="hidden text-emerald-400/70 sm:inline">· L&amp;D</span>
         </Link>
         <div className="hidden items-center gap-7 md:flex">
-          {NAV.map((n) => (
-            <a key={n.href} href={n.href} className="text-sm text-neutral-400 transition-colors hover:text-white">
-              {n.label}
-            </a>
-          ))}
+          {NAV.map((n) =>
+            n.href.startsWith("/") ? (
+              <Link key={n.href} href={n.href} className="text-sm text-neutral-400 transition-colors hover:text-white">
+                {n.label}
+              </Link>
+            ) : (
+              <a key={n.href} href={n.href} className="text-sm text-neutral-400 transition-colors hover:text-white">
+                {n.label}
+              </a>
+            )
+          )}
         </div>
         <a
           href="#contact"
@@ -297,6 +303,16 @@ function Work() {
             <CaseStudy key={cs.id} cs={cs} index={i} flip={i % 2 === 1} />
           ))}
         </div>
+
+        <Reveal className="mt-16 flex justify-center border-t border-white/[0.06] pt-12">
+          <Link
+            href="/work"
+            className="group inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/[0.06] px-7 py-3.5 text-sm font-semibold text-emerald-300 transition-[transform,background-color,border-color] duration-200 ease-out hover:border-emerald-400/70 hover:bg-emerald-400/[0.12] hover:text-emerald-200 active:scale-[0.97]"
+          >
+            Read the full experience
+            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" strokeWidth={2} />
+          </Link>
+        </Reveal>
       </div>
     </section>
   );
@@ -433,7 +449,7 @@ function Journey() {
         </Reveal>
 
         <div ref={ref} className="relative pl-10">
-          {/* Track */}
+          {/* Track (centered under the dots at x=7.5px) */}
           <div className="absolute left-[7px] top-2 bottom-2 w-px bg-white/[0.08]" />
           {!reduced && (
             <motion.div
@@ -445,7 +461,7 @@ function Journey() {
           <div className="space-y-12">
             {ldJourney.map((j) => (
               <Reveal key={j.year} className="relative">
-                <span className="absolute -left-[34px] top-1.5 h-[15px] w-[15px] rounded-full border-2 border-emerald-400 bg-[#0a0a0f]" />
+                <span className="absolute -left-10 top-1.5 h-[15px] w-[15px] rounded-full border-2 border-emerald-400 bg-[#0a0a0f]" />
                 <div className="flex flex-wrap items-baseline gap-x-3">
                   <span className="font-serif text-xl font-medium text-white">{j.role}</span>
                   <span className="text-sm text-emerald-400/80">{j.org}</span>

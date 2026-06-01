@@ -19,7 +19,7 @@ const AI_NAV = [
 function NavAI() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-5">
-      <nav className="mx-auto mt-4 flex h-14 max-w-6xl items-center justify-between rounded-full border border-white/[0.08] bg-[#0a0a0f]/70 pl-5 pr-3 backdrop-blur-xl">
+      <nav className="mx-auto mt-4 flex h-14 max-w-6xl items-center justify-between rounded-full border border-cyan-400/25 bg-[#0a0a0f]/70 pl-5 pr-3 shadow-[0_0_28px_-8px_rgba(34,211,238,0.5)] backdrop-blur-xl">
         <Link href="/" className="flex items-center gap-2 text-sm font-semibold text-white">
           Jitin Nair
           <span className="hidden text-cyan-400/70 sm:inline">· AI Systems</span>
