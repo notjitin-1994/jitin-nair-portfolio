@@ -109,19 +109,19 @@ export const leadershipCases: LeadershipCase[] = [
     competency: "Change management",
     icon: Rocket,
     title: "A 90-day playbook for landing a modern learning ecosystem",
-    org: "Smartslate · operating playbook",
-    context: "From fragmented legacy tools to learning in the flow of work",
+    org: "Smartslate Solara · operating playbook",
+    context: "From fragmented legacy tools to unified, AI-powered infrastructure",
     imageSeed: "modern-learning-platform-4417",
     problem:
-      "Most organizations run a fragmented stack: clunky legacy LMS, siloed knowledge, low engagement. People cannot find the answer when the job actually demands it.",
+      "Most organizations run a fragmented stack: clunky legacy LMS, siloed knowledge, low engagement. People cannot find the answer when the job actually demands it, relying on 7-15 disconnected tools.",
     solution:
-      "I lead the phased rollout of a modular, AI-native ecosystem that pulls knowledge into the flow of work and adapts to behavior and skill gaps. The platform is real; the rollout is a discipline I run to the same playbook every time.",
+      "I lead the phased rollout of a modular, AI-native ecosystem (Solara) that replaces fragmented tools with unified infrastructure. It pulls knowledge into the flow of work and adapts to behavior. The platform is real; the rollout is a discipline I run to the same playbook every time.",
     leadership:
       "Adoption is won or lost on change management, not features. I run a champion-led, manager-enabled rollout and prove value with usage data before asking for scale.",
     outcomes: [
-      { value: "45 sec", label: "to generate a tailored learning report" },
+      { value: "45 sec", label: "to generate a tailored learning blueprint" },
       { value: "500+", label: "automated jobs run every day" },
-      { value: "7-stage", label: "AI-guided, expert-validated discovery" },
+      { value: "95%", label: "completion in pilot programs" },
     ],
   },
   {

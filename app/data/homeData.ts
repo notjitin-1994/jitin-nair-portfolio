@@ -113,7 +113,7 @@ export const projectsData = [
         liveUrl: undefined,
       },
       {
-        name: "Smartslate AI-First Learning Ecosystem",
+        name: "Smartslate",
         shortName: "Smartslate",
         technologies: [
           "React", "TypeScript", "Vite", "Supabase", "PostgreSQL", "Row Level Security",
@@ -126,38 +126,38 @@ export const projectsData = [
           { name: "Backend & Data", items: ["Supabase", "PostgreSQL RLS", "Edge Functions"], color: "#22d3ee" },
           { name: "Async Pipeline", items: ["Webhook Workers", "Job Queue", "Real-time"], color: "#22d3ee" }
         ],
-        description: "AI-native Learning & Development platform",
-        whatItDoes: "Smartslate Polaris is an autonomous-first AI learning design ecosystem that automates the entire L&D lifecycle—from discovery to delivery. Utilizing a proprietary Two-Phase Intelligence Engine, it captures 100% of requirements with a Zero Revision Guarantee, achieving 15x launch speed gains over traditional methods.",
-        howItWorks: "The pipeline begins with Polaris Two-Phase Discovery: AI conducts deep-dive stakeholder interviews and analyzes context to generate production-ready Learning Blueprints in under 60 minutes. Constellation then automates instructional design using expert frameworks, while Nova handles AI-native content authoring. Orbit delivers via an AI-powered LMS, Nebula provides 24/7 intelligent tutoring, and Spectrum provides real-time ROI analytics.",
+        description: "Comprehensive AI-powered learning infrastructure",
+        whatItDoes: "Smartslate is an AI-powered educational technology ecosystem engineered to bridge the talent gap. It completely replaces fragmented legacy L&D tools through three interconnected platforms: Solara (a unified AI-native learning infrastructure), Ignite (a rigorous classroom-to-career talent verification pipeline), and Strategic Skills Architecture (bespoke, proprietary enterprise learning solutions).",
+        howItWorks: "The ecosystem operates across three pillars. Solara handles the full learning lifecycle: Polaris (Live) automates stakeholder discovery into Learning Blueprints in minutes, while upcoming modules like Constellation, Nova, and Orbit handle AI-assisted content curation, authoring, and personalized delivery. Ignite partners with industry to create verified, competency-based talent pipelines. Strategic Skills Architecture (SSA) delivers custom, proprietary training programs built specifically for an enterprise's unique business DNA.",
         keyInnovations: [
+          "Three-platform ecosystem: Solara, Ignite, and SSA",
+          "Polaris: AI-powered Learning Experience Design in under 60 minutes",
+          "Ignite: Industry-forged curriculum with earned, verified certification",
+          "SSA: Bespoke, IP-owned enterprise capability building",
           "Human-in-the-Loop validation gates at every AI generation stage",
           "Automated discovery via contextual 7-stage AI questionnaires",
-          "AI-native instructional design using established learning frameworks",
-          "Integrated content development with SME curation workflows",
-          "Unified AI-powered LMS with adaptive learning paths",
-          "24/7 AI Tutor with seamless human escalation",
-          "Closed-loop analytics feeding continuous improvement"
+          "Unified infrastructure replacing 7-15 disconnected legacy L&D tools"
         ],
         processFlow: [
-          "Role & Organization Discovery",
-          "Contextual 7-Stage Questionnaire",
-          "Multi-Provider AI Analysis",
-          "Async Report Generation Job",
-          "Webhook Completion Notification",
-          "Interactive Learning Blueprint Delivery"
+          "Platform Selection (Solara / Ignite / SSA)",
+          "Polaris AI Stakeholder Discovery",
+          "Multi-Provider AI Blueprint Generation",
+          "Human-in-the-Loop Validation",
+          "Personalized Learning Delivery (Orbit)",
+          "Outcome & ROI Measurement (Spectrum)"
         ],
         features: [
-          "Automated HITL Learning Discovery",
-          "Automated HITL Instructional Design",
-          "AI-native Learning Content Development",
-          "AI-powered LMS",
-          "AI Tutor",
-          "AI-Powered Data Analytics"
+          "Unified AI-Powered Infrastructure",
+          "Automated HITL Discovery",
+          "Rigorous Talent Verification",
+          "Bespoke Enterprise Solutions",
+          "Predictive Learning Analytics",
+          "24/7 AI Tutoring Engine"
         ],
         metrics: [
-          { label: "Questionnaire Stages", value: "7", unit: "stages" },
-          { label: "AI Providers", value: "3", unit: "providers" },
-          { label: "Async Jobs", value: "500+", unit: "daily" },
+          { label: "Active Learners", value: "100K", unit: "+" },
+          { label: "Enterprise Pipeline", value: "500", unit: "+" },
+          { label: "Pilot Completion", value: "95", unit: "%" },
           { label: "Report Gen Time", value: "45", unit: "seconds" }
         ],
         githubUrl: undefined,

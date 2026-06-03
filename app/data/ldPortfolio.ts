@@ -39,16 +39,16 @@ export const ldCaseStudies: LdCaseStudy[] = [
     id: "smartslate",
     org: "Smartslate",
     context: "smartslate.io · Lead Architect & Designer",
-    title: "An L&D engine that designs as fast as the business moves",
+    title: "An L&D ecosystem that designs as fast as the business moves",
     challenge:
-      "Learning discovery and design is slow, manual, and inconsistent. It is the bottleneck between a business need and a solution that ships.",
+      "Learning discovery and design is slow, manual, and inconsistent. Organizations rely on 7-15 disconnected tools, creating a bottleneck between a business need and the learning solution that solves it.",
     strategy:
-      "Build an AI-native platform that automates discovery through delivery, with human-in-the-loop validation so quality is never traded for speed.",
-    note: "Multi-provider AI (Claude, ChatGPT, Perplexity) with expert oversight at every stage.",
+      "Architect a three-platform ecosystem (Solara, Ignite, SSA) that replaces fragmented tools with unified, AI-powered infrastructure. Solara Polaris automates stakeholder discovery into blueprints in 45 seconds.",
+    note: "Multi-provider AI (Claude, ChatGPT, Perplexity) with human-in-the-loop validation.",
     outcomes: [
-      { value: "45 sec", label: "to generate a tailored learning report" },
+      { value: "45 sec", label: "to a tailored learning blueprint" },
       { value: "500+", label: "automated jobs run every day" },
-      { value: "7-stage", label: "AI-guided, expert-validated discovery" },
+      { value: "95%", label: "completion in pilot programs" },
     ],
   },
   {
@@ -156,7 +156,7 @@ export const ldJourney = [
     year: "2025",
     role: "AI Systems Architect",
     org: "Independent · Smartslate",
-    note: "AI-native learning infrastructure and 200+ deployed agents, automating L&D from discovery to delivery.",
+    note: "AI-native learning infrastructure replacing 7-15 fragmented legacy tools. 200+ deployed agents automating L&D from discovery to delivery.",
   },
 ];
 

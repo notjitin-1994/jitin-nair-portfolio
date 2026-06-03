@@ -63,16 +63,16 @@ export type CapabilityDomain = {
 export const capabilityDomains: CapabilityDomain[] = [
   {
     id: "ai-native",
-    title: "AI-native learning design",
+    title: "AI-native learning infrastructure",
     icon: Sparkles,
     featured: true,
-    statement: "Learning systems where AI does the heavy lifting and experts guarantee the quality.",
+    statement: "Replacing fragmented legacy tools with unified, AI-powered ecosystems.",
     detail:
-      "I architect platforms that automate discovery through delivery with human-in-the-loop validation, so quality is never traded for speed.",
+      "I architect platforms like Solara that automate discovery through delivery with human-in-the-loop validation, completely replacing the traditional 7-15 tool L&D stack.",
     expert: ["Multi-provider LLM integration", "Human-in-the-loop design", "Agentic workflows", "Prompt engineering"],
     advanced: ["RAG & vector retrieval", "Chain-of-verification", "MCP tool sharing"],
     proofValue: "45 sec",
-    proofLabel: "to a tailored learning report (Smartslate)",
+    proofLabel: "to a tailored learning blueprint (Solara Polaris)",
     bgSeed: "ai-learning-platform-interface-77",
     viz: { kind: "speed", label: "average report generation" },
   },
