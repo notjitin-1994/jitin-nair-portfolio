@@ -23,6 +23,7 @@ import {
   ldRecognition,
   type LdCaseStudy,
 } from "../../data/ldPortfolio";
+import { leadershipCases } from "../../data/leadership";
 
 const EMAIL = "mailto:not.jitin@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
@@ -323,11 +324,15 @@ function Approach() {
   return (
     <section id="approach" className="scroll-mt-24 px-5 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
-        <Reveal className="mb-16 max-w-2xl">
+        <Reveal className="mb-14 max-w-2xl">
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
             How I lead L&amp;D.
           </h2>
+          <p className="mt-3 leading-relaxed text-neutral-400">
+            Four principles I run every program by, each proven across a leadership case study.
+          </p>
         </Reveal>
+
         <div className="grid gap-x-12 gap-y-12 md:grid-cols-2">
           {ldPrinciples.map((p, i) => (
             <Reveal key={p.k} delay={i * 0.05} className="border-t border-white/[0.08] pt-6">
@@ -337,6 +342,44 @@ function Approach() {
             </Reveal>
           ))}
         </div>
+
+        {/* Leadership case-study teaser, deep version lives on /leading-ld */}
+        <Reveal className="mt-20 overflow-hidden rounded-3xl border border-emerald-400/15 bg-gradient-to-br from-emerald-500/[0.07] to-transparent p-8 sm:p-12">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+            <div>
+              <h3 className="font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl">
+                Leadership, proven in the numbers.
+              </h3>
+              <p className="mt-4 max-w-md leading-relaxed text-neutral-300">
+                Four case studies across the competencies a leadership panel scores you on, each backed by a real
+                program and a real result.
+              </p>
+              <Link
+                href="/leading-ld"
+                className="group mt-7 inline-flex items-center gap-2 rounded-full bg-emerald-400 px-6 py-3 text-sm font-semibold text-[#062a1d] transition-[transform,background-color] duration-200 ease-out hover:bg-emerald-300 active:scale-[0.97]"
+              >
+                Explore the case studies
+                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2} />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {leadershipCases.map((cs, i) => {
+                const Icon = cs.icon;
+                return (
+                  <Reveal key={cs.id} delay={i * 0.06}>
+                    <div className="h-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors duration-200 hover:border-emerald-400/30">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/[0.1] text-emerald-400">
+                        <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
+                      </span>
+                      <div className="mt-4 font-medium text-white">{cs.competency}</div>
+                      <div className="mt-1 text-sm leading-snug text-neutral-500">{cs.context}</div>
+                    </div>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
