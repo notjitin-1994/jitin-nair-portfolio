@@ -6,7 +6,7 @@
 <title>Jitin Nair — Learning &amp; Development Leader</title>
 <style>
 
-/* ── Fonts ──────────────────────────────────────────── */
+/* ── Fonts ──────────────────────────────────────────────────────── */
 @font-face {
   font-family: 'Playfair Display';
   src: url('./public/fonts/playfair-display-latin-700-normal.woff2') format('woff2');
@@ -38,27 +38,38 @@
   font-weight: 700; font-style: normal;
 }
 
-/* ── Reset & Base ────────────────────────────────────── */
+/* ── Reset ──────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── Design Tokens ──────────────────────────────────────────────── */
 :root {
-  --ink:        #1A1A1A;
-  --body:       #374151;
-  --muted:      #6B7280;
-  --faint:      #9CA3AF;
-  --accent:     #065F46;
-  --accent-lt:  #D1FAE5;
-  --rule:       #E5E7EB;
-  --bg:         #FFFFFF;
-  --serif: 'Playfair Display', Georgia, serif;
-  --sans:  'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+  /* Emerald scale */
+  --e900: #064E3B;   /* deepest — name */
+  --e800: #065F46;   /* dark — section labels, titles */
+  --e700: #047857;   /* mid — role org, accents */
+  --e600: #059669;   /* bright — decorative elements */
+  --e400: #34D399;   /* vivid — accent lines / decoration */
+  --e200: #A7F3D0;   /* light — tag borders */
+  --e100: #D1FAE5;   /* lightest — tag fills, tinted backgrounds */
+  --e050: #ECFDF5;   /* near-white emerald — section bg */
+
+  /* Neutrals */
+  --ink:    #1A2820;   /* near-black with emerald warmth */
+  --body:   #2D3A35;   /* dark body text */
+  --muted:  #5C7066;   /* muted — companies, secondary */
+  --faint:  #8BA89E;   /* faint — dates, footnotes */
+  --rule:   #D4E7DF;   /* dividers — emerald-tinted */
+
+  /* Page */
+  --bg:     #F5FAF7;   /* off-white, subtle mint — not pure white */
+
+  /* Typography */
+  --serif:  'Playfair Display', Georgia, 'Times New Roman', serif;
+  --sans:   'DM Sans', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* ── Page ────────────────────────────────────────────── */
-@page {
-  size: A4 portrait;
-  margin: 0;
-}
+/* ── Page setup ─────────────────────────────────────────────────── */
+@page { size: A4 portrait; margin: 0; }
 
 html, body {
   width: 210mm;
@@ -67,274 +78,329 @@ html, body {
   color: var(--body);
   font-family: var(--sans);
   font-size: 9pt;
-  line-height: 1.45;
+  line-height: 1.55;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
-/* ── Layout ──────────────────────────────────────────── */
+/* ── Page wrapper ───────────────────────────────────────────────── */
 .page {
   width: 210mm;
   min-height: 297mm;
-  padding: 12mm 20mm 14mm 20mm;
+  padding: 0 0 16mm 0;
   background: var(--bg);
 }
 
-/* ── Header ──────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════════════════════════ */
+
+/* Top accent bar */
+.header-bar {
+  height: 5px;
+  background: linear-gradient(90deg, var(--e900) 0%, var(--e600) 55%, var(--e400) 100%);
+  width: 100%;
+  margin-bottom: 0;
+}
+
 .header {
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--accent);
-  margin-bottom: 11px;
+  padding: 14px 22mm 14px 22mm;
+  border-bottom: 1.5px solid var(--e200);
+  background: var(--bg);
+  margin-bottom: 0;
 }
 
 .header__name {
   font-family: var(--serif);
-  font-size: 28pt;
+  font-size: 30pt;
   font-weight: 700;
-  color: var(--ink);
-  letter-spacing: -0.01em;
-  line-height: 1.05;
-  margin-bottom: 3px;
+  color: var(--e900);
+  letter-spacing: -0.02em;
+  line-height: 1.0;
+  margin-bottom: 4px;
 }
 
 .header__title {
   font-family: var(--sans);
   font-size: 9.5pt;
   font-weight: 500;
-  color: var(--accent);
-  letter-spacing: 0.08em;
+  color: var(--e700);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .header__contact {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 20px;
+  gap: 3px 18px;
   font-size: 8pt;
   color: var(--muted);
   font-weight: 400;
 }
 
-.header__contact span {
+.header__contact a {
+  color: var(--e700);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CONTENT AREA
+══════════════════════════════════════════════════════════════════ */
+
+.content {
+  padding: 0 22mm;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SECTIONS
+══════════════════════════════════════════════════════════════════ */
+
+.section {
+  margin-top: 20px;
+  margin-bottom: 4px;
+}
+
+/* Section label as a styled pill */
+.section__label {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-}
-
-.header__contact a {
-  color: var(--muted);
-  text-decoration: none;
-}
-
-/* ── Section ─────────────────────────────────────────── */
-.section {
+  font-family: var(--sans);
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--e800);
+  background: var(--e100);
+  padding: 3px 9px;
+  border-radius: 3px;
   margin-bottom: 11px;
 }
 
-.section__label {
-  font-family: var(--sans);
-  font-size: 7.5pt;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 3px;
-  margin-bottom: 8px;
+/* Full-width rule below section label */
+.section__rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--rule);
+  margin-top: -9px;
+  margin-bottom: 12px;
 }
 
-/* ── Summary ─────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════
+   SUMMARY
+══════════════════════════════════════════════════════════════════ */
+
 .summary p {
   font-size: 9pt;
   color: var(--body);
-  line-height: 1.5;
-  max-width: 100%;
+  line-height: 1.6;
 }
 
-/* ── Impact row ──────────────────────────────────────── */
-.impact {
-  display: flex;
-  gap: 0;
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 11px;
+.summary p em {
+  color: var(--e800);
+  font-style: normal;
+  font-weight: 600;
 }
 
-.impact__item {
-  flex: 1;
-  padding: 7px 10px;
-  border-right: 1px solid var(--rule);
-  text-align: center;
-}
+/* ══════════════════════════════════════════════════════════════════
+   EXPERIENCE
+══════════════════════════════════════════════════════════════════ */
 
-.impact__item:last-child { border-right: none; }
-
-.impact__num {
-  font-family: var(--serif);
-  font-size: 17pt;
-  font-weight: 700;
-  color: var(--accent);
-  display: block;
-  line-height: 1.1;
-}
-
-.impact__label {
-  font-size: 7pt;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  display: block;
-  margin-top: 1px;
-}
-
-/* ── Experience ──────────────────────────────────────── */
 .role {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--rule);
 }
 
-.role:last-child { margin-bottom: 0; }
+.role:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
 
 .role__header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: 8px;
   margin-bottom: 1px;
 }
 
 .role__title {
-  font-size: 10pt;
+  font-size: 10.5pt;
   font-weight: 700;
-  color: var(--ink);
+  color: var(--e900);
   font-family: var(--sans);
+  flex: 1;
 }
 
 .role__dates {
-  font-size: 8pt;
+  font-size: 7.5pt;
   color: var(--faint);
-  font-weight: 400;
+  font-weight: 500;
   white-space: nowrap;
-  margin-left: 8px;
   flex-shrink: 0;
+  letter-spacing: 0.02em;
 }
 
 .role__org {
   font-size: 8.5pt;
-  color: var(--muted);
-  font-weight: 500;
-  margin-bottom: 4px;
+  color: var(--e700);
+  font-weight: 600;
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
 }
 
 .role__bullets {
-  padding-left: 12px;
+  padding-left: 13px;
   margin: 0;
 }
 
 .role__bullets li {
-  margin-bottom: 2.5px;
+  margin-bottom: 4px;
   font-size: 8.5pt;
   color: var(--body);
-  line-height: 1.45;
+  line-height: 1.5;
   list-style-type: disc;
 }
 
 .role__bullets li::marker {
-  color: var(--accent);
+  color: var(--e600);
+  font-size: 7pt;
 }
 
-/* ── Competencies ────────────────────────────────────── */
-.competencies {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+/* Emphasis within bullets */
+.role__bullets strong {
+  color: var(--e900);
+  font-weight: 700;
 }
 
-.competency-tag {
-  font-size: 7.5pt;
-  color: var(--body);
-  background: #F9FAFB;
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 2.5px 7px;
-  font-weight: 400;
+.role__bullets .hi {
+  color: var(--e800);
+  font-weight: 700;
 }
 
-/* ── Project ─────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════
+   FEATURED PLATFORM
+══════════════════════════════════════════════════════════════════ */
+
 .project {
-  background: #F9FAFB;
-  border-left: 3px solid var(--accent);
-  padding: 7px 10px;
-  border-radius: 0 4px 4px 0;
+  background: var(--e050);
+  border: 1px solid var(--e200);
+  border-left: 4px solid var(--e600);
+  border-radius: 0 5px 5px 0;
+  padding: 11px 13px 11px 13px;
 }
 
 .project__header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 2px;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .project__name {
-  font-size: 10pt;
+  font-size: 10.5pt;
   font-weight: 700;
-  color: var(--ink);
+  color: var(--e900);
+  font-family: var(--sans);
 }
 
 .project__role {
-  font-size: 8pt;
-  color: var(--muted);
+  font-size: 7.5pt;
+  color: var(--e700);
+  font-weight: 500;
   font-style: italic;
+  white-space: nowrap;
 }
 
 .project__desc {
   font-size: 8.5pt;
   color: var(--body);
-  margin-bottom: 4px;
-  line-height: 1.45;
+  margin-bottom: 7px;
+  line-height: 1.5;
 }
 
 .project__bullets {
-  padding-left: 12px;
+  padding-left: 13px;
   margin: 0;
 }
 
 .project__bullets li {
   font-size: 8.5pt;
   color: var(--body);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   list-style-type: disc;
+  line-height: 1.5;
 }
 
-.project__bullets li::marker { color: var(--accent); }
+.project__bullets li::marker { color: var(--e600); }
+
+.project__bullets strong {
+  color: var(--e900);
+  font-weight: 700;
+}
 
 .project__stack {
-  margin-top: 5px;
+  margin-top: 7px;
   font-size: 7.5pt;
   color: var(--muted);
-  font-style: italic;
 }
 
-/* ── Education + Languages ───────────────────────────── */
-.two-col {
+.project__stack-label {
+  font-weight: 700;
+  color: var(--e800);
+  letter-spacing: 0.05em;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPETENCY TAGS
+══════════════════════════════════════════════════════════════════ */
+
+.competencies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 6px;
+}
+
+.competency-tag {
+  font-size: 7.5pt;
+  color: var(--e800);
+  background: var(--e100);
+  border: 1px solid var(--e200);
+  border-radius: 3px;
+  padding: 3px 8px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   EDUCATION + LANGUAGES
+══════════════════════════════════════════════════════════════════ */
+
+.edu-lang {
   display: flex;
   gap: 24px;
+  align-items: flex-start;
 }
 
-.two-col > div {
-  flex: 1;
-}
+.edu-block { flex: 1.1; }
+.lang-block { flex: 0.9; }
 
 .edu__degree {
   font-size: 9.5pt;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 1px;
+  font-weight: 700;
+  color: var(--e900);
+  margin-bottom: 2px;
 }
 
 .edu__school {
   font-size: 8.5pt;
-  color: var(--muted);
+  color: var(--e700);
+  font-weight: 500;
   margin-bottom: 1px;
 }
 
@@ -346,24 +412,28 @@ html, body {
 .lang-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 3px 12px;
+  gap: 4px 14px;
 }
 
 .lang-item {
   font-size: 8.5pt;
   color: var(--body);
+  line-height: 1.6;
 }
 
 .lang-item strong {
-  color: var(--ink);
-  font-weight: 600;
+  color: var(--e800);
+  font-weight: 700;
 }
 
-/* ── Footer rule ─────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════
+   PAGE FOOTER
+══════════════════════════════════════════════════════════════════ */
+
 .page-footer {
-  margin-top: 10px;
-  border-top: 1px solid var(--rule);
-  padding-top: 5px;
+  margin: 18px 22mm 0 22mm;
+  border-top: 1.5px solid var(--e200);
+  padding-top: 7px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -372,7 +442,13 @@ html, body {
 .page-footer span {
   font-size: 7pt;
   color: var(--faint);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.page-footer a {
+  color: var(--e700);
+  text-decoration: none;
 }
 
 </style>
@@ -380,7 +456,10 @@ html, body {
 <body>
 <div class="page">
 
-  <!-- ── HEADER ─────────────────────────────────── -->
+  <!-- ── TOP ACCENT BAR ─────────────────────────────── -->
+  <div class="header-bar"></div>
+
+  <!-- ── HEADER ─────────────────────────────────────── -->
   <header class="header">
     <h1 class="header__name">Jitin Nair</h1>
     <div class="header__title">Learning &amp; Development Leader &nbsp;·&nbsp; AI-Enabled L&amp;D Architect</div>
@@ -393,167 +472,224 @@ html, body {
     </div>
   </header>
 
-  <!-- ── SUMMARY ────────────────────────────────── -->
-  <section class="section summary">
-    <h2 class="section__label">Professional Summary</h2>
-    <p>
-      L&amp;D leader with 10+ years designing learning architectures that move measurable business outcomes. Built and led programmes across global financial services and consulting organisations — cutting training time by 70%, saving $140K+ in costs, and achieving 90%+ completion on complex curricula. Now architecting AI-native L&amp;D platforms that compress the discovery-to-delivery cycle from weeks to minutes while preserving the expert-led quality standards that make programmes actually work. Uniquely positioned at the intersection of instructional science and AI systems engineering.
-    </p>
-  </section>
+  <div class="content">
 
-  <!-- ── IMPACT NUMBERS ─────────────────────────── -->
-  <div class="impact">
-    <div class="impact__item">
-      <span class="impact__num">5K+</span>
-      <span class="impact__label">Learners Trained</span>
-    </div>
-    <div class="impact__item">
-      <span class="impact__num">70%</span>
-      <span class="impact__label">Training Time Reduction</span>
-    </div>
-    <div class="impact__item">
-      <span class="impact__num">$140K+</span>
-      <span class="impact__label">Training Cost Saved</span>
-    </div>
-    <div class="impact__item">
-      <span class="impact__num">90%+</span>
-      <span class="impact__label">Course Completion Rate</span>
-    </div>
-    <div class="impact__item">
-      <span class="impact__num">60%</span>
-      <span class="impact__label">Production Efficiency Gain</span>
-    </div>
-  </div>
-
-  <!-- ── EXPERIENCE ──────────────────────────────── -->
-  <section class="section">
-    <h2 class="section__label">Professional Experience</h2>
-
-    <div class="role">
-      <div class="role__header">
-        <span class="role__title">AI-Enabled L&amp;D Architect &amp; Platform Designer</span>
-        <span class="role__dates">Mar 2025 – Present</span>
+    <!-- ── PROFESSIONAL SUMMARY ──────────────────────── -->
+    <section class="section">
+      <h2 class="section__label">Professional Summary</h2>
+      <span class="section__rule"></span>
+      <div class="summary">
+        <p>
+          L&amp;D leader with <em>10+ years</em> designing learning architectures that move measurable business outcomes.
+          Built and led programmes across <em>global financial services and consulting organisations</em> — cutting training
+          time by <em>70%</em>, saving <em>$140K+ in costs</em>, and achieving <em>90%+ completion</em> on complex curricula.
+          Now architecting AI-native L&amp;D platforms that compress the discovery-to-delivery cycle from weeks to minutes,
+          while preserving the expert-led quality standards that make programmes actually work. Uniquely positioned at the
+          intersection of instructional science and AI systems engineering.
+        </p>
       </div>
-      <div class="role__org">Independent Consultant · Bangalore, India</div>
-      <ul class="role__bullets">
-        <li>Architected <strong>Smartslate</strong>, an AI-native L&amp;D platform compressing full programme discovery and design from weeks to under 45 seconds — with human-in-the-loop validation at every stage to maintain expert-level quality.</li>
-        <li>Built a 7-stage contextual discovery pipeline integrating Claude, ChatGPT, and Perplexity, running 500+ automated daily jobs across client learning briefs while keeping instructional integrity non-negotiable.</li>
-        <li>Designed scalable L&amp;D orchestration infrastructure enabling teams to deliver bespoke learning strategies at volume, without proportional headcount growth.</li>
-        <li>Applied learning science frameworks (ADDIE, Bloom's Taxonomy, performance mapping) as the design backbone of an AI system — ensuring outputs are pedagogically sound, not just technically impressive.</li>
-      </ul>
-    </div>
+    </section>
 
-    <div class="role">
-      <div class="role__header">
-        <span class="role__title">Instructional Designer</span>
-        <span class="role__dates">Sep 2022 – Mar 2025</span>
+    <!-- ── PROFESSIONAL EXPERIENCE ───────────────────── -->
+    <section class="section">
+      <h2 class="section__label">Professional Experience</h2>
+      <span class="section__rule"></span>
+
+      <!-- Role 1 -->
+      <div class="role">
+        <div class="role__header">
+          <span class="role__title">AI-Enabled L&amp;D Architect &amp; Platform Designer</span>
+          <span class="role__dates">Mar 2025 – Present</span>
+        </div>
+        <div class="role__org">Independent Consultant &nbsp;·&nbsp; Bangalore, India</div>
+        <ul class="role__bullets">
+          <li>
+            Architected <strong>Smartslate</strong>, an AI-native L&amp;D platform that compresses full programme
+            discovery and design from weeks to <strong>under 45 seconds</strong> — with human-in-the-loop validation
+            at every stage to preserve instructional rigour.
+          </li>
+          <li>
+            Built a <strong>7-stage contextual discovery pipeline</strong> integrating Claude, ChatGPT, and Perplexity,
+            running <strong>500+ automated daily jobs</strong> across client learning briefs while keeping
+            instructional integrity non-negotiable.
+          </li>
+          <li>
+            Applied <strong>ADDIE, Bloom's Taxonomy, and performance-mapping frameworks</strong> as the design backbone
+            of an AI system — ensuring outputs are pedagogically sound, not just technically impressive.
+          </li>
+          <li>
+            Designed scalable L&amp;D orchestration infrastructure enabling teams to deliver bespoke learning strategies
+            at volume, <strong>without proportional headcount growth</strong>.
+          </li>
+        </ul>
       </div>
-      <div class="role__org">Moody's Ratings · Bangalore, India (Global Remit)</div>
-      <ul class="role__bullets">
-        <li>Led video-based learning development for a global credit ratings agency, creating standardised templates and automated production workflows that served international teams across multiple business units.</li>
-        <li>Reduced content production time by <strong>60%</strong> through systematic automation and template standardisation — enabling faster programme cycles without sacrificing quality or compliance.</li>
-        <li>Achieved <strong>90%+ module completion rates</strong> on complex financial curriculum by applying adult learning principles, chunked content design, and iterative stakeholder feedback loops.</li>
-        <li>Built scalable content pipelines that removed single-point dependencies, enabling the team to absorb increased demand without linear headcount expansion.</li>
-      </ul>
-    </div>
 
-    <div class="role">
-      <div class="role__header">
-        <span class="role__title">Instructor Analyst → Senior Analyst</span>
-        <span class="role__dates">Jan 2019 – Sep 2022</span>
+      <!-- Role 2 -->
+      <div class="role">
+        <div class="role__header">
+          <span class="role__title">Instructional Designer</span>
+          <span class="role__dates">Sep 2022 – Mar 2025</span>
+        </div>
+        <div class="role__org">Moody's Ratings &nbsp;·&nbsp; Bangalore, India &nbsp;(Global Remit)</div>
+        <ul class="role__bullets">
+          <li>
+            Led video-based learning development for a <strong>global credit ratings agency</strong>, creating
+            standardised templates and automated production workflows serving international teams across multiple
+            business units.
+          </li>
+          <li>
+            Reduced content production time by <strong class="hi">60%</strong> through systematic automation and
+            template standardisation — enabling faster programme cycles without sacrificing quality or
+            compliance standards.
+          </li>
+          <li>
+            Achieved <strong class="hi">90%+ module completion rates</strong> on complex financial curriculum by
+            applying adult learning principles, chunked content design, and iterative stakeholder feedback loops.
+          </li>
+          <li>
+            Built scalable content pipelines that removed single-point dependencies, enabling the team to absorb
+            increased demand <strong>without linear headcount expansion</strong>.
+          </li>
+        </ul>
       </div>
-      <div class="role__org">Accenture · Bangalore, India (F&amp;A · HRO · New Joiner Portfolio)</div>
-      <ul class="role__bullets">
-        <li>Owned L&amp;D for <strong>300+ employees across 16 client teams</strong>, conducting training needs analyses (TNA) and delivering modality-matched interventions — ILT, video, e-learning, and gamification.</li>
-        <li>Designed New Joiner Training with 4 modules, 20+ topics, and 50+ assessments; adopted as the standard onboarding programme across the full F&amp;A and HRO portfolio.</li>
-        <li>Delivered a hybrid blended learning model for an F&amp;A client reducing learning time by <strong>70% while maintaining 54% knowledge retention</strong> — saving ~$80K in training costs.</li>
-        <li>Built a second upskilling model for an HRO client achieving retention parity at an additional ~$60K in savings (total: <strong>$140K+ across both programmes</strong>).</li>
-        <li>Engineered a 1,400-line VBA automation suite for pan-India TNA audits — automating pivot tables, charts, and feedback emails and eliminating weeks of manual reporting across the network.</li>
-      </ul>
-    </div>
 
-    <div class="role">
-      <div class="role__header">
-        <span class="role__title">Senior Executive — Operations &amp; Training</span>
-        <span class="role__dates">May 2015 – Dec 2017</span>
+      <!-- Role 3 -->
+      <div class="role">
+        <div class="role__header">
+          <span class="role__title">Instructor Analyst → Senior Analyst</span>
+          <span class="role__dates">Jan 2019 – Sep 2022</span>
+        </div>
+        <div class="role__org">Accenture &nbsp;·&nbsp; Bangalore, India &nbsp;(F&amp;A · HRO · New Joiner Portfolio)</div>
+        <ul class="role__bullets">
+          <li>
+            Owned L&amp;D for <strong class="hi">300+ employees across 16 client teams</strong>, conducting
+            training needs analyses (TNA) and delivering modality-matched interventions — ILT, video,
+            e-learning, and gamification.
+          </li>
+          <li>
+            Designed New Joiner Training with <strong>4 modules, 20+ topics, and 50+ assessments</strong>;
+            adopted as the standard onboarding programme across the full F&amp;A and HRO portfolio.
+          </li>
+          <li>
+            Delivered a blended learning model for an F&amp;A client reducing learning time by
+            <strong class="hi">70%</strong> while maintaining <strong class="hi">54% knowledge retention</strong>
+            — saving <strong>~$80K</strong> in training costs through hybrid design.
+          </li>
+          <li>
+            Built a second upskilling model for an HRO client achieving retention parity with an additional
+            <strong>~$60K</strong> in savings — total <strong class="hi">$140K+ cost avoided</strong> across
+            both programmes.
+          </li>
+          <li>
+            Engineered a <strong>1,400-line VBA automation suite</strong> for pan-India TNA audits — automating
+            pivot tables, charts, and feedback emails across the network and eliminating weeks of manual
+            reporting overhead.
+          </li>
+        </ul>
       </div>
-      <div class="role__org">[24]7.ai · Bangalore, India</div>
-      <ul class="role__bullets">
-        <li>Managed back-end customer operations for a US retail and e-commerce client; ran new joiner training, QA programmes, and refresher sessions to maintain team performance above benchmark.</li>
-        <li>Recognised as <strong>top performer three consecutive months</strong>; identified for a leadership development track within 24 months of joining — the fastest accelerated path available.</li>
-      </ul>
-    </div>
-  </section>
 
-  <!-- ── FEATURED PLATFORM ───────────────────────── -->
-  <section class="section">
-    <h2 class="section__label">Featured Platform</h2>
-    <div class="project">
-      <div class="project__header">
-        <span class="project__name">Smartslate · AI-Native L&amp;D Platform</span>
-        <span class="project__role">Lead Architect &amp; L&amp;D Designer · smartslate.io</span>
+      <!-- Role 4 -->
+      <div class="role">
+        <div class="role__header">
+          <span class="role__title">Senior Executive — Operations &amp; Training</span>
+          <span class="role__dates">May 2015 – Dec 2017</span>
+        </div>
+        <div class="role__org">[24]7.ai &nbsp;·&nbsp; Bangalore, India</div>
+        <ul class="role__bullets">
+          <li>
+            Managed back-end operations for a US retail and e-commerce client; ran <strong>new joiner training,
+            QA programmes, and refresher sessions</strong> maintaining team performance consistently above
+            benchmark.
+          </li>
+          <li>
+            Recognised as <strong class="hi">top performer three consecutive months</strong>; identified for a
+            leadership development track within 24 months — the fastest accelerated path available.
+          </li>
+        </ul>
       </div>
-      <p class="project__desc">AI-first platform that automates the entire L&amp;D lifecycle — from contextual discovery through curriculum design and delivery — with expert validation built into every stage. Purpose-built to scale instructional design output without diluting design quality.</p>
-      <ul class="project__bullets">
-        <li>Generates tailored learning blueprints in <strong>45 seconds</strong> via a 7-stage AI discovery pipeline (vs. traditional 2–4 week design sprints)</li>
-        <li>Runs <strong>500+ automated background jobs daily</strong> across active learning programmes with zero manual intervention</li>
-        <li>Multi-provider AI integration (Claude, ChatGPT, Perplexity) with human-in-the-loop quality checkpoints at every stage boundary</li>
-        <li>Designed to Kirkpatrick Level 4 measurement standards — every output maps to a stated business metric</li>
-      </ul>
-      <p class="project__stack">Stack: Next.js · Supabase · Claude · ChatGPT · Perplexity · PostgreSQL</p>
-    </div>
-  </section>
+    </section>
 
-  <!-- ── COMPETENCIES ────────────────────────────── -->
-  <section class="section">
-    <h2 class="section__label">L&amp;D Competencies</h2>
-    <div class="competencies">
-      <span class="competency-tag">ADDIE Model</span>
-      <span class="competency-tag">Bloom's Taxonomy</span>
-      <span class="competency-tag">Kirkpatrick Evaluation</span>
-      <span class="competency-tag">Training Needs Analysis</span>
-      <span class="competency-tag">Instructional Design</span>
-      <span class="competency-tag">Video-Based Learning</span>
-      <span class="competency-tag">E-Learning Development</span>
-      <span class="competency-tag">Blended Learning</span>
-      <span class="competency-tag">Microlearning Design</span>
-      <span class="competency-tag">SCORM / xAPI</span>
-      <span class="competency-tag">LMS Administration</span>
-      <span class="competency-tag">Learning Analytics</span>
-      <span class="competency-tag">Articulate Storyline</span>
-      <span class="competency-tag">ILT Facilitation</span>
-      <span class="competency-tag">Stakeholder Management</span>
-      <span class="competency-tag">AI-Native L&amp;D Design</span>
-      <span class="competency-tag">Programme Leadership</span>
-      <span class="competency-tag">ROI Measurement</span>
-    </div>
-  </section>
-
-  <!-- ── EDUCATION + LANGUAGES ──────────────────── -->
-  <section class="section">
-    <h2 class="section__label">Education &amp; Languages</h2>
-    <div class="two-col">
-      <div>
-        <div class="edu__degree">Bachelor of Commerce (B.Com)</div>
-        <div class="edu__school">Sindhi College of Commerce · Bangalore, India</div>
-        <div class="edu__year">2012 – 2015</div>
+    <!-- ── FEATURED PLATFORM ──────────────────────────── -->
+    <section class="section">
+      <h2 class="section__label">Featured Platform</h2>
+      <span class="section__rule"></span>
+      <div class="project">
+        <div class="project__header">
+          <span class="project__name">Smartslate &nbsp;·&nbsp; AI-Native L&amp;D Platform</span>
+          <span class="project__role">Lead Architect &amp; L&amp;D Designer &nbsp;·&nbsp; smartslate.io</span>
+        </div>
+        <p class="project__desc">
+          AI-first platform automating the entire L&amp;D lifecycle — contextual discovery through curriculum
+          delivery — with expert validation built into every stage. Purpose-built to scale instructional design
+          output without diluting quality or pedagogy.
+        </p>
+        <ul class="project__bullets">
+          <li>Generates tailored learning blueprints in <strong>45 seconds</strong> via a 7-stage AI discovery pipeline (vs. traditional 2–4 week design sprints)</li>
+          <li>Runs <strong>500+ automated background jobs daily</strong> across active client programmes with zero manual intervention required</li>
+          <li>Multi-provider AI (Claude, ChatGPT, Perplexity) with <strong>human-in-the-loop quality checkpoints</strong> at every stage boundary</li>
+          <li>Designed to <strong>Kirkpatrick Level 4 measurement standards</strong> — every output maps to a stated business metric</li>
+        </ul>
+        <p class="project__stack">
+          <span class="project__stack-label">Stack:</span>
+          Next.js &nbsp;·&nbsp; Supabase &nbsp;·&nbsp; Claude &nbsp;·&nbsp; ChatGPT &nbsp;·&nbsp; Perplexity &nbsp;·&nbsp; PostgreSQL
+        </p>
       </div>
-      <div>
-        <div class="lang-row">
-          <span class="lang-item"><strong>English</strong> — Native</span>
-          <span class="lang-item"><strong>Malayalam</strong> — Native</span>
-          <span class="lang-item"><strong>Hindi</strong> — Fluent</span>
-          <span class="lang-item"><strong>Tamil</strong> — Conversational</span>
-          <span class="lang-item"><strong>Kannada</strong> — Conversational</span>
+    </section>
+
+    <!-- ── L&D COMPETENCIES ───────────────────────────── -->
+    <section class="section">
+      <h2 class="section__label">L&amp;D Competencies</h2>
+      <span class="section__rule"></span>
+      <div class="competencies">
+        <span class="competency-tag">ADDIE Model</span>
+        <span class="competency-tag">Bloom's Taxonomy</span>
+        <span class="competency-tag">Kirkpatrick Evaluation</span>
+        <span class="competency-tag">Training Needs Analysis</span>
+        <span class="competency-tag">Instructional Design</span>
+        <span class="competency-tag">Video-Based Learning</span>
+        <span class="competency-tag">E-Learning Development</span>
+        <span class="competency-tag">Blended Learning</span>
+        <span class="competency-tag">Microlearning Design</span>
+        <span class="competency-tag">SCORM / xAPI</span>
+        <span class="competency-tag">LMS Administration</span>
+        <span class="competency-tag">Learning Analytics</span>
+        <span class="competency-tag">Articulate Storyline</span>
+        <span class="competency-tag">ILT Facilitation</span>
+        <span class="competency-tag">Stakeholder Management</span>
+        <span class="competency-tag">AI-Native L&amp;D Design</span>
+        <span class="competency-tag">Programme Leadership</span>
+        <span class="competency-tag">ROI Measurement</span>
+      </div>
+    </section>
+
+    <!-- ── EDUCATION + LANGUAGES ─────────────────────── -->
+    <section class="section">
+      <h2 class="section__label">Education &amp; Languages</h2>
+      <span class="section__rule"></span>
+      <div class="edu-lang">
+        <div class="edu-block">
+          <div class="edu__degree">Bachelor of Commerce (B.Com)</div>
+          <div class="edu__school">Sindhi College of Commerce &nbsp;·&nbsp; Bangalore, India</div>
+          <div class="edu__year">2012 – 2015</div>
+        </div>
+        <div class="lang-block">
+          <div class="lang-row">
+            <span class="lang-item"><strong>English</strong> — Native</span>
+            <span class="lang-item"><strong>Malayalam</strong> — Native</span>
+            <span class="lang-item"><strong>Hindi</strong> — Fluent</span>
+            <span class="lang-item"><strong>Tamil</strong> — Conversational</span>
+            <span class="lang-item"><strong>Kannada</strong> — Conversational</span>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ── PAGE FOOTER ─────────────────────────────── -->
+  </div><!-- /content -->
+
+  <!-- ── PAGE FOOTER ─────────────────────────────────── -->
   <div class="page-footer">
-    <span>Jitin Nair · Learning &amp; Development Leader</span>
-    <span>not.jitin@gmail.com · jitinnair.com</span>
+    <span>Jitin Nair &nbsp;·&nbsp; Learning &amp; Development Leader</span>
+    <span><a href="mailto:not.jitin@gmail.com">not.jitin@gmail.com</a> &nbsp;·&nbsp; <a href="https://jitinnair.com">jitinnair.com</a></span>
   </div>
 
 </div>
