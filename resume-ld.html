@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jitin Nair — Learning &amp; Development Leader</title>
+<style>
+
+/* ── Fonts ──────────────────────────────────────────── */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('./public/fonts/playfair-display-latin-700-normal.woff2') format('woff2');
+  font-weight: 700; font-style: normal;
+}
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('./public/fonts/playfair-display-latin-500-normal.woff2') format('woff2');
+  font-weight: 500; font-style: normal;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('./public/fonts/dm-sans-latin-400-normal.woff2') format('woff2');
+  font-weight: 400; font-style: normal;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('./public/fonts/dm-sans-latin-500-normal.woff2') format('woff2');
+  font-weight: 500; font-style: normal;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('./public/fonts/dm-sans-latin-600-normal.woff2') format('woff2');
+  font-weight: 600; font-style: normal;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('./public/fonts/dm-sans-latin-700-normal.woff2') format('woff2');
+  font-weight: 700; font-style: normal;
+}
+
+/* ── Reset & Base ────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:        #1A1A1A;
+  --body:       #374151;
+  --muted:      #6B7280;
+  --faint:      #9CA3AF;
+  --accent:     #065F46;
+  --accent-lt:  #D1FAE5;
+  --rule:       #E5E7EB;
+  --bg:         #FFFFFF;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans:  'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ── Page ────────────────────────────────────────────── */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+html, body {
+  width: 210mm;
+  min-height: 297mm;
+  background: var(--bg);
+  color: var(--body);
+  font-family: var(--sans);
+  font-size: 9pt;
+  line-height: 1.45;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Layout ──────────────────────────────────────────── */
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 12mm 20mm 14mm 20mm;
+  background: var(--bg);
+}
+
+/* ── Header ──────────────────────────────────────────── */
+.header {
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
+  margin-bottom: 11px;
+}
+
+.header__name {
+  font-family: var(--serif);
+  font-size: 28pt;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  margin-bottom: 3px;
+}
+
+.header__title {
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.header__contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  font-size: 8pt;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.header__contact span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header__contact a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+/* ── Section ─────────────────────────────────────────── */
+.section {
+  margin-bottom: 11px;
+}
+
+.section__label {
+  font-family: var(--sans);
+  font-size: 7.5pt;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 3px;
+  margin-bottom: 8px;
+}
+
+/* ── Summary ─────────────────────────────────────────── */
+.summary p {
+  font-size: 9pt;
+  color: var(--body);
+  line-height: 1.5;
+  max-width: 100%;
+}
+
+/* ── Impact row ──────────────────────────────────────── */
+.impact {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 11px;
+}
+
+.impact__item {
+  flex: 1;
+  padding: 7px 10px;
+  border-right: 1px solid var(--rule);
+  text-align: center;
+}
+
+.impact__item:last-child { border-right: none; }
+
+.impact__num {
+  font-family: var(--serif);
+  font-size: 17pt;
+  font-weight: 700;
+  color: var(--accent);
+  display: block;
+  line-height: 1.1;
+}
+
+.impact__label {
+  font-size: 7pt;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: block;
+  margin-top: 1px;
+}
+
+/* ── Experience ──────────────────────────────────────── */
+.role {
+  margin-bottom: 10px;
+}
+
+.role:last-child { margin-bottom: 0; }
+
+.role__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1px;
+}
+
+.role__title {
+  font-size: 10pt;
+  font-weight: 700;
+  color: var(--ink);
+  font-family: var(--sans);
+}
+
+.role__dates {
+  font-size: 8pt;
+  color: var(--faint);
+  font-weight: 400;
+  white-space: nowrap;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.role__org {
+  font-size: 8.5pt;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.role__bullets {
+  padding-left: 12px;
+  margin: 0;
+}
+
+.role__bullets li {
+  margin-bottom: 2.5px;
+  font-size: 8.5pt;
+  color: var(--body);
+  line-height: 1.45;
+  list-style-type: disc;
+}
+
+.role__bullets li::marker {
+  color: var(--accent);
+}
+
+/* ── Competencies ────────────────────────────────────── */
+.competencies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.competency-tag {
+  font-size: 7.5pt;
+  color: var(--body);
+  background: #F9FAFB;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 2.5px 7px;
+  font-weight: 400;
+}
+
+/* ── Project ─────────────────────────────────────────── */
+.project {
+  background: #F9FAFB;
+  border-left: 3px solid var(--accent);
+  padding: 7px 10px;
+  border-radius: 0 4px 4px 0;
+}
+
+.project__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+
+.project__name {
+  font-size: 10pt;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.project__role {
+  font-size: 8pt;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.project__desc {
+  font-size: 8.5pt;
+  color: var(--body);
+  margin-bottom: 4px;
+  line-height: 1.45;
+}
+
+.project__bullets {
+  padding-left: 12px;
+  margin: 0;
+}
+
+.project__bullets li {
+  font-size: 8.5pt;
+  color: var(--body);
+  margin-bottom: 2px;
+  list-style-type: disc;
+}
+
+.project__bullets li::marker { color: var(--accent); }
+
+.project__stack {
+  margin-top: 5px;
+  font-size: 7.5pt;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── Education + Languages ───────────────────────────── */
+.two-col {
+  display: flex;
+  gap: 24px;
+}
+
+.two-col > div {
+  flex: 1;
+}
+
+.edu__degree {
+  font-size: 9.5pt;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 1px;
+}
+
+.edu__school {
+  font-size: 8.5pt;
+  color: var(--muted);
+  margin-bottom: 1px;
+}
+
+.edu__year {
+  font-size: 8pt;
+  color: var(--faint);
+}
+
+.lang-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 12px;
+}
+
+.lang-item {
+  font-size: 8.5pt;
+  color: var(--body);
+}
+
+.lang-item strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ── Footer rule ─────────────────────────────────────── */
+.page-footer {
+  margin-top: 10px;
+  border-top: 1px solid var(--rule);
+  padding-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-footer span {
+  font-size: 7pt;
+  color: var(--faint);
+  letter-spacing: 0.05em;
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HEADER ─────────────────────────────────── -->
+  <header class="header">
+    <h1 class="header__name">Jitin Nair</h1>
+    <div class="header__title">Learning &amp; Development Leader &nbsp;·&nbsp; AI-Enabled L&amp;D Architect</div>
+    <div class="header__contact">
+      <span>not.jitin@gmail.com</span>
+      <span>+91 90088 98642</span>
+      <span>Bangalore, India</span>
+      <span><a href="https://linkedin.com/in/notjitin">linkedin.com/in/notjitin</a></span>
+      <span><a href="https://jitinnair.com">jitinnair.com</a></span>
+    </div>
+  </header>
+
+  <!-- ── SUMMARY ────────────────────────────────── -->
+  <section class="section summary">
+    <h2 class="section__label">Professional Summary</h2>
+    <p>
+      L&amp;D leader with 10+ years designing learning architectures that move measurable business outcomes. Built and led programmes across global financial services and consulting organisations — cutting training time by 70%, saving $140K+ in costs, and achieving 90%+ completion on complex curricula. Now architecting AI-native L&amp;D platforms that compress the discovery-to-delivery cycle from weeks to minutes while preserving the expert-led quality standards that make programmes actually work. Uniquely positioned at the intersection of instructional science and AI systems engineering.
+    </p>
+  </section>
+
+  <!-- ── IMPACT NUMBERS ─────────────────────────── -->
+  <div class="impact">
+    <div class="impact__item">
+      <span class="impact__num">5K+</span>
+      <span class="impact__label">Learners Trained</span>
+    </div>
+    <div class="impact__item">
+      <span class="impact__num">70%</span>
+      <span class="impact__label">Training Time Reduction</span>
+    </div>
+    <div class="impact__item">
+      <span class="impact__num">$140K+</span>
+      <span class="impact__label">Training Cost Saved</span>
+    </div>
+    <div class="impact__item">
+      <span class="impact__num">90%+</span>
+      <span class="impact__label">Course Completion Rate</span>
+    </div>
+    <div class="impact__item">
+      <span class="impact__num">60%</span>
+      <span class="impact__label">Production Efficiency Gain</span>
+    </div>
+  </div>
+
+  <!-- ── EXPERIENCE ──────────────────────────────── -->
+  <section class="section">
+    <h2 class="section__label">Professional Experience</h2>
+
+    <div class="role">
+      <div class="role__header">
+        <span class="role__title">AI-Enabled L&amp;D Architect &amp; Platform Designer</span>
+        <span class="role__dates">Mar 2025 – Present</span>
+      </div>
+      <div class="role__org">Independent Consultant · Bangalore, India</div>
+      <ul class="role__bullets">
+        <li>Architected <strong>Smartslate</strong>, an AI-native L&amp;D platform compressing full programme discovery and design from weeks to under 45 seconds — with human-in-the-loop validation at every stage to maintain expert-level quality.</li>
+        <li>Built a 7-stage contextual discovery pipeline integrating Claude, ChatGPT, and Perplexity, running 500+ automated daily jobs across client learning briefs while keeping instructional integrity non-negotiable.</li>
+        <li>Designed scalable L&amp;D orchestration infrastructure enabling teams to deliver bespoke learning strategies at volume, without proportional headcount growth.</li>
+        <li>Applied learning science frameworks (ADDIE, Bloom's Taxonomy, performance mapping) as the design backbone of an AI system — ensuring outputs are pedagogically sound, not just technically impressive.</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div class="role__header">
+        <span class="role__title">Instructional Designer</span>
+        <span class="role__dates">Sep 2022 – Mar 2025</span>
+      </div>
+      <div class="role__org">Moody's Ratings · Bangalore, India (Global Remit)</div>
+      <ul class="role__bullets">
+        <li>Led video-based learning development for a global credit ratings agency, creating standardised templates and automated production workflows that served international teams across multiple business units.</li>
+        <li>Reduced content production time by <strong>60%</strong> through systematic automation and template standardisation — enabling faster programme cycles without sacrificing quality or compliance.</li>
+        <li>Achieved <strong>90%+ module completion rates</strong> on complex financial curriculum by applying adult learning principles, chunked content design, and iterative stakeholder feedback loops.</li>
+        <li>Built scalable content pipelines that removed single-point dependencies, enabling the team to absorb increased demand without linear headcount expansion.</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div class="role__header">
+        <span class="role__title">Instructor Analyst → Senior Analyst</span>
+        <span class="role__dates">Jan 2019 – Sep 2022</span>
+      </div>
+      <div class="role__org">Accenture · Bangalore, India (F&amp;A · HRO · New Joiner Portfolio)</div>
+      <ul class="role__bullets">
+        <li>Owned L&amp;D for <strong>300+ employees across 16 client teams</strong>, conducting training needs analyses (TNA) and delivering modality-matched interventions — ILT, video, e-learning, and gamification.</li>
+        <li>Designed New Joiner Training with 4 modules, 20+ topics, and 50+ assessments; adopted as the standard onboarding programme across the full F&amp;A and HRO portfolio.</li>
+        <li>Delivered a hybrid blended learning model for an F&amp;A client reducing learning time by <strong>70% while maintaining 54% knowledge retention</strong> — saving ~$80K in training costs.</li>
+        <li>Built a second upskilling model for an HRO client achieving retention parity at an additional ~$60K in savings (total: <strong>$140K+ across both programmes</strong>).</li>
+        <li>Engineered a 1,400-line VBA automation suite for pan-India TNA audits — automating pivot tables, charts, and feedback emails and eliminating weeks of manual reporting across the network.</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div class="role__header">
+        <span class="role__title">Senior Executive — Operations &amp; Training</span>
+        <span class="role__dates">May 2015 – Dec 2017</span>
+      </div>
+      <div class="role__org">[24]7.ai · Bangalore, India</div>
+      <ul class="role__bullets">
+        <li>Managed back-end customer operations for a US retail and e-commerce client; ran new joiner training, QA programmes, and refresher sessions to maintain team performance above benchmark.</li>
+        <li>Recognised as <strong>top performer three consecutive months</strong>; identified for a leadership development track within 24 months of joining — the fastest accelerated path available.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── FEATURED PLATFORM ───────────────────────── -->
+  <section class="section">
+    <h2 class="section__label">Featured Platform</h2>
+    <div class="project">
+      <div class="project__header">
+        <span class="project__name">Smartslate · AI-Native L&amp;D Platform</span>
+        <span class="project__role">Lead Architect &amp; L&amp;D Designer · smartslate.io</span>
+      </div>
+      <p class="project__desc">AI-first platform that automates the entire L&amp;D lifecycle — from contextual discovery through curriculum design and delivery — with expert validation built into every stage. Purpose-built to scale instructional design output without diluting design quality.</p>
+      <ul class="project__bullets">
+        <li>Generates tailored learning blueprints in <strong>45 seconds</strong> via a 7-stage AI discovery pipeline (vs. traditional 2–4 week design sprints)</li>
+        <li>Runs <strong>500+ automated background jobs daily</strong> across active learning programmes with zero manual intervention</li>
+        <li>Multi-provider AI integration (Claude, ChatGPT, Perplexity) with human-in-the-loop quality checkpoints at every stage boundary</li>
+        <li>Designed to Kirkpatrick Level 4 measurement standards — every output maps to a stated business metric</li>
+      </ul>
+      <p class="project__stack">Stack: Next.js · Supabase · Claude · ChatGPT · Perplexity · PostgreSQL</p>
+    </div>
+  </section>
+
+  <!-- ── COMPETENCIES ────────────────────────────── -->
+  <section class="section">
+    <h2 class="section__label">L&amp;D Competencies</h2>
+    <div class="competencies">
+      <span class="competency-tag">ADDIE Model</span>
+      <span class="competency-tag">Bloom's Taxonomy</span>
+      <span class="competency-tag">Kirkpatrick Evaluation</span>
+      <span class="competency-tag">Training Needs Analysis</span>
+      <span class="competency-tag">Instructional Design</span>
+      <span class="competency-tag">Video-Based Learning</span>
+      <span class="competency-tag">E-Learning Development</span>
+      <span class="competency-tag">Blended Learning</span>
+      <span class="competency-tag">Microlearning Design</span>
+      <span class="competency-tag">SCORM / xAPI</span>
+      <span class="competency-tag">LMS Administration</span>
+      <span class="competency-tag">Learning Analytics</span>
+      <span class="competency-tag">Articulate Storyline</span>
+      <span class="competency-tag">ILT Facilitation</span>
+      <span class="competency-tag">Stakeholder Management</span>
+      <span class="competency-tag">AI-Native L&amp;D Design</span>
+      <span class="competency-tag">Programme Leadership</span>
+      <span class="competency-tag">ROI Measurement</span>
+    </div>
+  </section>
+
+  <!-- ── EDUCATION + LANGUAGES ──────────────────── -->
+  <section class="section">
+    <h2 class="section__label">Education &amp; Languages</h2>
+    <div class="two-col">
+      <div>
+        <div class="edu__degree">Bachelor of Commerce (B.Com)</div>
+        <div class="edu__school">Sindhi College of Commerce · Bangalore, India</div>
+        <div class="edu__year">2012 – 2015</div>
+      </div>
+      <div>
+        <div class="lang-row">
+          <span class="lang-item"><strong>English</strong> — Native</span>
+          <span class="lang-item"><strong>Malayalam</strong> — Native</span>
+          <span class="lang-item"><strong>Hindi</strong> — Fluent</span>
+          <span class="lang-item"><strong>Tamil</strong> — Conversational</span>
+          <span class="lang-item"><strong>Kannada</strong> — Conversational</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PAGE FOOTER ─────────────────────────────── -->
+  <div class="page-footer">
+    <span>Jitin Nair · Learning &amp; Development Leader</span>
+    <span>not.jitin@gmail.com · jitinnair.com</span>
+  </div>
+
+</div>
+</body>
+</html>
