@@ -9,7 +9,7 @@ import {
   useSpring,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, Cpu, GraduationCap } from "lucide-react";
+import { ArrowRight, Cpu, GraduationCap, Sparkles, TrendingUp, Users, Target } from "lucide-react";
 
 // Smooth expo-out curve for reveals. Used for the mask-reveal and image wipe.
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -19,7 +19,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 // (emerald = Learning & Development, cyan = AI Systems Architecture).
 const HEADLINE: ReactNode[] = [
   <>
-    Ten years designing how humans <span className="text-emerald-400">learn</span>.
+    A decade of designing how humans <span className="text-emerald-400">learn</span>.
   </>,
   <>
     Now architecting the <span className="text-cyan-400">AI</span> that empowers them.
@@ -29,9 +29,9 @@ const HEADLINE: ReactNode[] = [
 // Proof points, all from the CV and the AI architecture portfolio. Count-up
 // animates the numeric part. One AI stat, one L&D stat, one ROI stat.
 const PROOF = [
-  { to: 200, format: (n: number) => `${Math.round(n)}+`, label: "AI agents in production" },
-  { to: 5, format: (n: number) => `${Math.round(n)}K+`, label: "learners trained" },
-  { to: 140, format: (n: number) => `$${Math.round(n)}K+`, label: "training costs saved" },
+  { to: 200, format: (n: number) => `${Math.round(n)}+`, label: "AI agents deployed", icon: Cpu },
+  { to: 5, format: (n: number) => `${Math.round(n)}K+`, label: "Learners trained", icon: Users },
+  { to: 140, format: (n: number) => `$${Math.round(n)}K+`, label: "Training costs saved", icon: TrendingUp },
 ];
 
 const TRACKS = [
@@ -55,23 +55,25 @@ const TRACKS = [
   },
 ];
 
-/* ---------- Background: brand-neutral dual-tone aurora ---------- */
+/* ---------- Background: Refined mesh-like aurora with noise ---------- */
 function AuroraBackground() {
   const reduced = useReducedMotion();
-  const orb = "pointer-events-none absolute rounded-full blur-[120px]";
+  const orb = "pointer-events-none absolute rounded-full blur-[140px] mix-blend-screen";
   return (
-    <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
+    <div aria-hidden className="absolute inset-0 z-0 overflow-hidden bg-[#050508]">
+      {/* Noise texture overlay */}
+      <div className="absolute inset-0 z-10 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+      
       <motion.div
-        className={`${orb} left-[-12%] top-[-15%] h-[60vh] w-[60vh] bg-emerald-500/20`}
-        animate={reduced ? undefined : { x: [0, 40, 0], y: [0, 28, 0], scale: [1, 1.08, 1] }}
-        transition={reduced ? undefined : { duration: 26, repeat: Infinity, ease: "easeInOut" }}
+        className={`${orb} left-[-15%] top-[-10%] h-[70vh] w-[70vh] bg-emerald-500/10`}
+        animate={reduced ? undefined : { x: [0, 60, 0], y: [0, 40, 0], scale: [1, 1.15, 1] }}
+        transition={reduced ? undefined : { duration: 24, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className={`${orb} bottom-[-15%] right-[-12%] h-[55vh] w-[55vh] bg-cyan-500/20`}
-        animate={reduced ? undefined : { x: [0, -36, 0], y: [0, -26, 0], scale: [1, 1.1, 1] }}
-        transition={reduced ? undefined : { duration: 30, repeat: Infinity, ease: "easeInOut" }}
+        className={`${orb} bottom-[-10%] right-[-15%] h-[65vh] w-[65vh] bg-cyan-500/10`}
+        animate={reduced ? undefined : { x: [0, -50, 0], y: [0, -35, 0], scale: [1, 1.2, 1] }}
+        transition={reduced ? undefined : { duration: 28, repeat: Infinity, ease: "easeInOut" }}
       />
-      <div className="absolute inset-0 bg-[#0a0a0f]/35" />
     </div>
   );
 }
@@ -82,11 +84,13 @@ function StatTile({
   format,
   label,
   run,
+  icon: Icon,
 }: {
   to: number;
   format: (n: number) => string;
   label: string;
   run: boolean;
+  icon?: any;
 }) {
   const reduced = useReducedMotion();
   const [val, setVal] = useState(reduced ? to : 0);
@@ -98,11 +102,11 @@ function StatTile({
     }
     let raf = 0;
     const start = performance.now();
-    const duration = 1100;
-    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+    const duration = 1500; // Slightly slower for elegance
+    const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / duration);
-      setVal(to * easeOutCubic(t));
+      setVal(to * easeOutQuart(t));
       if (t < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -110,11 +114,14 @@ function StatTile({
   }, [reduced, run, to]);
 
   return (
-    <div>
-      <div className="font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl">
-        {format(val)}
+    <div className="group/stat relative">
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="h-3.5 w-3.5 text-neutral-500 transition-colors group-hover/stat:text-white" />}
+        <div className="font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl transition-transform group-hover/stat:scale-105 duration-300">
+          {format(val)}
+        </div>
       </div>
-      <div className="mt-1 text-xs text-neutral-500">{label}</div>
+      <div className="mt-1 text-[11px] uppercase tracking-widest text-neutral-500 transition-colors group-hover/stat:text-neutral-400">{label}</div>
     </div>
   );
 }
@@ -140,8 +147,9 @@ function MagneticCard({
   const onMove = (e: React.PointerEvent) => {
     if (reduced || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
-    x.set((e.clientX - (r.left + r.width / 2)) * 0.15);
-    y.set((e.clientY - (r.top + r.height / 2)) * 0.28);
+    // More subtle and physics-driven feel
+    x.set((e.clientX - (r.left + r.width / 2)) * 0.12);
+    y.set((e.clientY - (r.top + r.height / 2)) * 0.22);
   };
   const reset = () => {
     x.set(0);
@@ -150,31 +158,33 @@ function MagneticCard({
 
   return (
     <motion.div
-      initial={reduced ? false : { opacity: 0, y: 14 }}
-      animate={reduced ? { opacity: 1, y: 0 } : ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
-      transition={{ duration: 0.55, delay, ease: EASE }}
+      initial={reduced ? false : { opacity: 0, y: 20 }}
+      animate={reduced ? { opacity: 1, y: 0 } : ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.7, delay, ease: EASE }}
     >
       <motion.div ref={ref} style={{ x: sx, y: sy }} onPointerMove={onMove} onPointerLeave={reset}>
         <Link
           href={track.href}
-          className={`group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 transition-[transform,border-color,box-shadow] duration-200 ease-out active:scale-[0.98] ${track.ring} ${track.glow}`}
+          className={`group relative flex items-center gap-5 overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.02] px-6 py-5 transition-all duration-300 ease-out active:scale-[0.97] ${track.ring} ${track.glow} hover:bg-white/[0.04] hover:border-white/20`}
         >
-          {/* Sheen sweep on hover */}
+          {/* Refined Liquid Sheen */}
           <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
-            <span className="absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[320%]" />
+            <span className="absolute inset-y-0 -left-full w-2/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent transition-transform duration-1000 ease-in-out group-hover:translate-x-[400%]" />
           </span>
 
-          <span className={`relative flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.05] ${track.accent}`}>
-            <Icon className="h-5 w-5" strokeWidth={1.75} />
+          <span className={`relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-white/[0.04] transition-all duration-300 group-hover:scale-110 group-hover:bg-white/[0.08] ${track.accent}`}>
+            <Icon className="h-5.5 w-5.5" strokeWidth={1.5} />
           </span>
           <span className="relative min-w-0">
-            <span className="block text-[15px] font-semibold text-white">{track.title}</span>
-            <span className="block text-[13px] leading-snug text-neutral-400">{track.what}</span>
+            <span className="block text-[16px] font-semibold text-white tracking-tight">{track.title}</span>
+            <span className="block mt-0.5 text-[13px] leading-relaxed text-neutral-400 group-hover:text-neutral-300 transition-colors">{track.what}</span>
           </span>
-          <ArrowRight
-            className={`relative ml-auto h-5 w-5 flex-shrink-0 ${track.accent} transition-transform duration-200 ease-out group-hover:translate-x-1`}
-            strokeWidth={2}
-          />
+          <div className={`relative ml-auto flex h-8 w-8 items-center justify-center rounded-full border border-white/5 bg-white/[0.03] transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/10 ${track.accent}`}>
+            <ArrowRight
+              className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+              strokeWidth={2.5}
+            />
+          </div>
         </Link>
       </motion.div>
     </motion.div>
@@ -193,8 +203,9 @@ function Portrait({ ready }: { ready: boolean }) {
   const onMove = (e: React.PointerEvent) => {
     if (reduced || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
-    mvX.set(((e.clientX - r.left) / r.width - 0.5) * 10);
-    mvY.set((0.5 - (e.clientY - r.top) / r.height) * 10);
+    // Refined tilt sensitivity
+    mvX.set(((e.clientX - r.left) / r.width - 0.5) * 8);
+    mvY.set((0.5 - (e.clientY - r.top) / r.height) * 8);
   };
   const reset = () => {
     mvX.set(0);
@@ -203,54 +214,58 @@ function Portrait({ ready }: { ready: boolean }) {
 
   return (
     <motion.div
-      initial={reduced ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4, ease: EASE }}
-      className="flex h-[360px] w-full items-stretch justify-center sm:h-[440px] md:h-full md:justify-start"
+      initial={reduced ? false : { opacity: 0, scale: 0.98 }}
+      animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
+      transition={{ duration: 0.8, ease: EASE }}
+      className="flex h-[400px] w-full items-stretch justify-center sm:h-[480px] md:h-full md:justify-start"
     >
       <div
         ref={ref}
         onPointerMove={onMove}
         onPointerLeave={reset}
-        className="relative h-full w-full"
-        style={{ perspective: 900 }}
+        className="relative h-full w-full group/portrait"
+        style={{ perspective: 1200 }}
       >
-        {/* Dual-tone glow */}
-        <div className="absolute inset-0 scale-110 rounded-[28px] bg-gradient-to-tr from-emerald-500/25 to-cyan-500/25 blur-3xl" />
+        {/* Refined Accent Glow */}
+        <div className="absolute inset-0 -inset-x-4 -inset-y-4 scale-105 rounded-[40px] bg-gradient-to-tr from-emerald-500/15 to-cyan-500/15 blur-2xl transition-opacity duration-700 opacity-50 group-hover/portrait:opacity-100" />
 
         {/* Clip-path wipe-up reveal + subtle scale settle */}
         <motion.div
-          initial={reduced ? false : { clipPath: "inset(100% 0% 0% 0% round 28px)", scale: 1.12 }}
+          initial={reduced ? false : { clipPath: "inset(100% 0% 0% 0% round 32px)", scale: 1.08 }}
           animate={
             reduced || ready
-              ? { clipPath: "inset(0% 0% 0% 0% round 28px)", scale: 1 }
-              : { clipPath: "inset(100% 0% 0% 0% round 28px)", scale: 1.12 }
+              ? { clipPath: "inset(0% 0% 0% 0% round 32px)", scale: 1 }
+              : { clipPath: "inset(100% 0% 0% 0% round 32px)", scale: 1.08 }
           }
-          transition={{ duration: 1.15, ease: EASE }}
-          className="relative h-full w-full overflow-hidden rounded-[28px] border border-white/10 shadow-2xl will-change-transform"
+          transition={{ duration: 1.4, ease: [0.23, 1, 0.32, 1] }}
+          className="relative h-full w-full overflow-hidden rounded-[32px] border border-white/10 shadow-3xl will-change-transform bg-neutral-900"
         >
           {/* Pointer tilt layer */}
-          <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="relative h-full w-full">
+          <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="relative h-full w-full transform-gpu">
             <Image
               src="/hero-photo.jpg"
               alt="Jitin Nair"
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 group-hover/portrait:scale-105"
               style={{ objectPosition: "center 20%" }}
-              sizes="(max-width: 768px) 360px, 440px"
+              sizes="(max-width: 768px) 400px, 500px"
               priority
               fetchPriority="high"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/55 via-transparent to-transparent" />
+            
+            {/* Edge highlights */}
+            <div className="absolute inset-0 rounded-[32px] border border-white/5 pointer-events-none" />
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-[#050508]/60 via-transparent to-transparent opacity-80" />
 
-            {/* One-time sheen sweep as the image reveals */}
+            {/* Premium Sheen Reveal */}
             {!reduced && (
               <motion.div
                 aria-hidden
-                initial={{ x: "-160%" }}
-                animate={ready ? { x: "160%" } : { x: "-160%" }}
-                transition={{ duration: 1.2, delay: 0.45, ease: "easeInOut" }}
-                className="pointer-events-none absolute inset-y-0 -left-1/2 w-2/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/15 to-transparent"
+                initial={{ x: "-180%" }}
+                animate={ready ? { x: "180%" } : { x: "-180%" }}
+                transition={{ duration: 1.8, delay: 0.6, ease: [0.23, 1, 0.32, 1] }}
+                className="pointer-events-none absolute inset-y-0 -left-1/2 w-full -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
               />
             )}
           </motion.div>
@@ -318,33 +333,44 @@ export function ChooserHero() {
     reduced
       ? { initial: false as const, animate: { opacity: 1, y: 0 } }
       : {
-          initial: { opacity: 0, y: 18 },
-          animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 },
-          transition: { duration: 0.8, delay, ease: EASE },
+          initial: { opacity: 0, y: 20 },
+          animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
+          transition: { duration: 1.0, delay, ease: [0.23, 1, 0.32, 1] },
         };
 
   return (
-    <main className="relative flex min-h-[100dvh] items-center overflow-hidden bg-[#0a0a0f] px-5 text-[#f8fafc] selection:bg-cyan-500/30">
+    <main className="relative flex min-h-[100dvh] items-center overflow-hidden bg-[#050508] px-6 text-[#f8fafc] selection:bg-cyan-500/30">
       <h1 className="sr-only">
         Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
       </h1>
 
       <AuroraBackground />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-10 py-16 md:grid-cols-2 md:items-stretch md:gap-14">
+      {/* Grid Pattern Overlay */}
+      <div className="absolute inset-0 z-[1] opacity-[0.05] pointer-events-none bg-[dim-grid]" 
+           style={{ backgroundImage: 'linear-gradient(to right, #ffffff10 1px, transparent 1px), linear-gradient(to bottom, #ffffff10 1px, transparent 1px)', backgroundSize: '64px 64px' }} />
+
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 py-20 md:grid-cols-2 md:items-stretch md:gap-20">
         {/* Left - portrait */}
-        <Portrait ready={ready} />
+        <div className="relative order-2 md:order-1">
+          <Portrait ready={ready} />
+        </div>
 
         {/* Right - content */}
-        <div className="max-w-2xl">
+        <div className="max-w-2xl flex flex-col justify-center order-1 md:order-2">
+          <motion.div {...fade(HEADING_DELAY - 0.2)} className="mb-6 flex items-center gap-2">
+            <div className="h-[1px] w-8 bg-white/20" />
+            <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-neutral-500">Based in Bangalore, India</span>
+          </motion.div>
+
           <motion.h2
             variants={container}
             initial="hidden"
             animate={ready ? "show" : "hidden"}
-            className="font-serif text-[2rem] font-medium leading-[1.18] tracking-tight text-white sm:text-[2.6rem] lg:text-[3rem]"
+            className="font-serif text-[2.2rem] font-medium leading-[1.1] tracking-tight text-white sm:text-[3rem] lg:text-[3.8rem]"
           >
             {HEADLINE.map((line, i) => (
-              <span key={i} className="block overflow-hidden pb-[0.08em]">
+              <span key={i} className="block overflow-hidden pb-1">
                 <motion.span variants={lineVariant} className="block transform-gpu will-change-transform">
                   {line}
                 </motion.span>
@@ -352,24 +378,36 @@ export function ChooserHero() {
             ))}
           </motion.h2>
 
-          <motion.p {...fade(REST_DELAY)} className="mt-6 text-base text-neutral-400 sm:text-lg">
-            Learning &amp; Development Designer <span className="text-neutral-600">and</span> AI Systems Architect
+          <motion.p {...fade(REST_DELAY - 0.2)} className="mt-8 text-lg text-neutral-400 sm:text-xl leading-relaxed font-light">
+            Architecting high-agency systems where <span className="text-white/80 font-medium">intelligence meets scale</span>.
           </motion.p>
 
           <motion.div
-            {...fade(REST_DELAY + 0.12)}
-            className="mt-8 grid max-w-md grid-cols-3 gap-5 border-t border-white/10 pt-6"
+            {...fade(REST_DELAY)}
+            className="mt-10 grid max-w-lg grid-cols-3 gap-8 border-t border-white/5 pt-8"
           >
-            {PROOF.map((stat) => (
+            {PROOF.map((stat, i) => (
               <StatTile key={stat.label} {...stat} run={countRun} />
             ))}
           </motion.div>
 
-          <div className="mt-9 grid gap-3.5">
+          <div className="mt-12 grid gap-4">
             {TRACKS.map((track, i) => (
-              <MagneticCard key={track.href} track={track} delay={REST_DELAY + 0.24 + i * 0.1} ready={ready} />
+              <MagneticCard key={track.href} track={track} delay={REST_DELAY + 0.3 + i * 0.12} ready={ready} />
             ))}
           </div>
+
+          <motion.div {...fade(REST_DELAY + 0.6)} className="mt-10 flex items-center gap-6">
+             <Link href="/work" className="text-[13px] font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-2 group">
+                Explore full journey 
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+             </Link>
+             <div className="h-1 w-1 rounded-full bg-neutral-700" />
+             <Link href="mailto:jitin@jitinnair.com" className="text-[13px] font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-2 group">
+                Get in touch
+                <Sparkles className="h-3.5 w-3.5 transition-colors group-hover:text-cyan-400" />
+             </Link>
+          </motion.div>
         </div>
       </div>
     </main>
