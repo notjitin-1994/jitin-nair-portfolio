@@ -115,7 +115,7 @@ function Hero() {
     : { hidden: { y: "112%" }, show: { y: 0, transition: { duration: 1.0, ease: EASE } } };
 
   return (
-    <section className="relative flex min-h-[100dvh] items-center overflow-hidden px-5 pt-28 pb-16">
+    <section className="relative flex min-h-[100dvh] items-center overflow-hidden px-5 pt-24 pb-8">
       {/* Desktop: particle vortex in emerald */}
       <div aria-hidden className="hidden md:block absolute inset-0 z-0 pointer-events-none">
         <LdVortexBackground />
@@ -227,8 +227,8 @@ function Hero() {
 /* ---------- Impact strip ---------- */
 function Impact() {
   return (
-    <section className="px-5 py-10">
-      <Reveal className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 border-y border-white/[0.08] py-12 md:grid-cols-4">
+    <section className="px-5 py-6 md:py-8">
+      <Reveal className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 border-y border-white/[0.08] py-8 md:grid-cols-4">
         {ldImpact.map((s) => (
           <div key={s.label}>
             <CountUp
@@ -291,7 +291,7 @@ function CaseStudy({ cs, index, flip }: { cs: LdCaseStudy; index: number; flip: 
 
 function Work() {
   return (
-    <section id="work" className="scroll-mt-24 px-5 py-24 sm:py-32">
+    <section id="work" className="scroll-mt-24 px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-16 max-w-2xl">
           <Label>Selected work</Label>
@@ -305,7 +305,7 @@ function Work() {
           ))}
         </div>
 
-        <Reveal className="mt-16 flex justify-center border-t border-white/[0.06] pt-12">
+        <Reveal className="mt-16 flex border-t border-white/[0.06] pt-12">
           <Link
             href="/work"
             className="group inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/[0.06] px-7 py-3.5 text-sm font-semibold text-emerald-300 transition-[transform,background-color,border-color] duration-200 ease-out hover:border-emerald-400/70 hover:bg-emerald-400/[0.12] hover:text-emerald-200 active:scale-[0.97]"
@@ -322,7 +322,7 @@ function Work() {
 /* ---------- Approach ---------- */
 function Approach() {
   return (
-    <section id="approach" className="scroll-mt-24 px-5 py-24 sm:py-32">
+    <section id="approach" className="scroll-mt-24 px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
@@ -388,7 +388,7 @@ function Approach() {
 /* ---------- AI lever ---------- */
 function AiLever() {
   return (
-    <section className="px-5 py-24 sm:py-32">
+    <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="relative overflow-hidden rounded-3xl border border-emerald-400/15 bg-gradient-to-br from-emerald-500/[0.07] to-transparent p-8 sm:p-12 lg:p-16">
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
@@ -425,7 +425,7 @@ function AiLever() {
 /* ---------- Capabilities (bento, proof-backed) ---------- */
 function Capabilities() {
   return (
-    <section id="capabilities" className="scroll-mt-24 px-5 py-24 sm:py-32">
+    <section id="capabilities" className="scroll-mt-24 px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
           <Label>What I bring</Label>
@@ -448,38 +448,34 @@ function Capabilities() {
                       : "border-white/[0.08] bg-white/[0.02] hover:border-emerald-400/30 hover:bg-white/[0.04]"
                   }`}
                 >
-                  <div className="flex items-start justify-between">
-                    <span
-                      className={`flex h-11 w-11 items-center justify-center rounded-xl ${
-                        c.featured ? "bg-emerald-400/15 text-emerald-300" : "bg-white/[0.05] text-emerald-400"
-                      }`}
-                    >
-                      <Icon className="h-5 w-5" strokeWidth={1.75} />
-                    </span>
-                    <div className="text-right">
-                      <div className={`font-serif font-medium tracking-tight text-white ${c.featured ? "text-3xl" : "text-2xl"}`}>
+                  <span
+                    className={`flex h-11 w-11 items-center justify-center rounded-xl ${
+                      c.featured ? "bg-emerald-400/15 text-emerald-300" : "bg-white/[0.05] text-emerald-400"
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                  </span>
+                  <div className="mt-auto pt-6">
+                    <div className="flex items-baseline gap-2">
+                      <span className={`font-serif font-medium tracking-tight text-white ${c.featured ? "text-3xl" : "text-2xl"}`}>
                         {c.proofValue}
-                      </div>
+                      </span>
+                      {c.featured && <span className="text-xs text-emerald-300/80">{c.proofLabel}</span>}
                     </div>
+                    <h3 className={`mt-2 font-serif font-medium tracking-tight text-white ${c.featured ? "text-2xl sm:text-3xl" : "text-xl"}`}>
+                      {c.title}
+                    </h3>
+                    <p className={`mt-1.5 leading-relaxed text-neutral-400 ${c.featured ? "max-w-sm text-base" : "text-sm"}`}>
+                      {c.featured ? c.detail : c.statement}
+                    </p>
                   </div>
-                  <h3 className={`mt-auto pt-6 font-serif font-medium tracking-tight text-white ${c.featured ? "text-2xl sm:text-3xl" : "text-xl"}`}>
-                    {c.title}
-                  </h3>
-                  <p className={`mt-2 leading-relaxed text-neutral-400 ${c.featured ? "max-w-sm text-base" : "text-sm"}`}>
-                    {c.featured ? c.detail : c.statement}
-                  </p>
-                  {c.featured && (
-                    <div className="mt-5 inline-flex w-fit items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs font-medium text-emerald-300">
-                      {c.proofValue} · {c.proofLabel}
-                    </div>
-                  )}
                 </div>
               </Reveal>
             );
           })}
         </div>
 
-        <Reveal className="mt-12 flex justify-center">
+        <Reveal className="mt-12 flex">
           <Link
             href="/capabilities"
             className="group inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/[0.06] px-7 py-3.5 text-sm font-semibold text-emerald-300 transition-[transform,background-color,border-color] duration-200 ease-out hover:border-emerald-400/70 hover:bg-emerald-400/[0.12] hover:text-emerald-200 active:scale-[0.97]"
@@ -501,7 +497,7 @@ function Journey() {
   const fill = useSpring(scrollYProgress, { stiffness: 90, damping: 30, restDelta: 0.001 });
 
   return (
-    <section className="px-5 py-24 sm:py-32">
+    <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-3xl">
         <Reveal className="mb-16">
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">The path here.</h2>
@@ -540,7 +536,7 @@ function Journey() {
 /* ---------- Recognition ---------- */
 function Recognition() {
   return (
-    <section className="px-5 py-24 sm:py-32">
+    <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">Recognition &amp; range.</h2>
@@ -574,23 +570,23 @@ function Recognition() {
 /* ---------- Contact ---------- */
 function Contact() {
   return (
-    <section id="contact" className="scroll-mt-24 px-5 py-24 sm:py-36">
-      <div className="mx-auto max-w-3xl text-center">
+    <section id="contact" className="scroll-mt-24 px-5 py-6 md:py-8">
+      <div className="mx-auto max-w-6xl">
         <Reveal>
           <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
             Let&apos;s build your capability engine.
           </h2>
-          <p className="mx-auto mt-6 max-w-xl leading-relaxed text-neutral-400">
+          <p className="mt-6 max-w-xl leading-relaxed text-neutral-400">
             Open to L&amp;D leadership roles, AI-in-learning strategy, and advisory. If you are scaling a learning
             function or removing its bottlenecks, let&apos;s talk.
           </p>
-          <div className="mt-10 flex justify-center">
+          <div className="mt-10 flex">
             <MagneticButton href={EMAIL} variant="primary">
               Get in touch
               <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2} />
             </MagneticButton>
           </div>
-          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-neutral-500">
+          <div className="mt-8 flex items-center gap-6 text-sm text-neutral-500">
             <a href={EMAIL} className="inline-flex items-center gap-2 transition-colors hover:text-white">
               <Mail className="h-4 w-4" strokeWidth={1.75} /> not.jitin@gmail.com
             </a>

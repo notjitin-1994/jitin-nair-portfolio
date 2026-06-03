@@ -83,7 +83,7 @@ function Hero() {
     : { hidden: { y: "112%" }, show: { y: 0, transition: { duration: 1.0, ease: EASE } } };
 
   return (
-    <section className="relative overflow-hidden px-5 pt-28 pb-16 sm:pt-32">
+    <section className="relative overflow-hidden px-5 pt-24 pb-8">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute left-[-5%] top-[-15%] h-[55vh] w-[55vh] rounded-full bg-emerald-500/12 blur-[140px]" />
         <div className="absolute right-[-5%] bottom-[-20%] h-[45vh] w-[45vh] rounded-full bg-teal-500/10 blur-[140px]" />
@@ -187,7 +187,7 @@ function Hero() {
 /* ---------- Philosophy (the 4 principles, with proof) ---------- */
 function Philosophy() {
   return (
-    <section className="px-5 py-20 sm:py-28">
+    <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
           <Eyebrow>How I lead</Eyebrow>
@@ -384,7 +384,7 @@ function CaseImpactMeasurement() {
               total="$140K+"
             />
           </Reveal>
-          <Reveal delay={0.05} className="flex items-center justify-center rounded-3xl border border-white/[0.08] bg-white/[0.02] p-7">
+          <Reveal delay={0.05} className="flex items-center rounded-3xl border border-white/[0.08] bg-white/[0.02] p-7">
             <RadialStat value={54} display="54%" label="knowledge retention held while learning time fell 70%" />
           </Reveal>
         </div>
@@ -399,7 +399,7 @@ function CaseImpactMeasurement() {
 
 function Cases() {
   return (
-    <section id="cases" className="scroll-mt-24 px-5 py-12 sm:py-16">
+    <section id="cases" className="scroll-mt-24 px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl space-y-20">
         <CaseBusinessAlignment />
         <CaseChangeManagement />
@@ -413,23 +413,23 @@ function Cases() {
 /* ---------- Contact ---------- */
 function Contact() {
   return (
-    <section id="contact" className="scroll-mt-24 px-5 py-24 sm:py-32">
-      <div className="mx-auto max-w-3xl text-center">
+    <section id="contact" className="scroll-mt-24 px-5 py-6 md:py-8">
+      <div className="mx-auto max-w-6xl">
         <Reveal>
           <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
             Let&apos;s build your capability engine.
           </h2>
-          <p className="mx-auto mt-6 max-w-xl leading-relaxed text-neutral-400">
+          <p className="mt-6 max-w-xl leading-relaxed text-neutral-400">
             Open to L&amp;D leadership roles, AI-in-learning strategy, and advisory. If you are scaling a learning
             function or clearing its bottlenecks, let&apos;s talk.
           </p>
-          <div className="mt-10 flex justify-center">
+          <div className="mt-10 flex">
             <MagneticButton href={EMAIL} variant="primary">
               Get in touch
               <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2} />
             </MagneticButton>
           </div>
-          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-neutral-500">
+          <div className="mt-8 flex items-center gap-6 text-sm text-neutral-500">
             <a href={EMAIL} className="inline-flex items-center gap-2 transition-colors hover:text-white">
               <Mail className="h-4 w-4" strokeWidth={1.75} /> not.jitin@gmail.com
             </a>

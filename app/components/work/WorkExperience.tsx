@@ -99,7 +99,7 @@ function Hero() {
     : { hidden: { y: "112%" }, show: { y: 0, transition: { duration: 1.0, ease: EASE } } };
 
   return (
-    <section className="relative overflow-hidden px-5 pt-32 pb-16 sm:pt-36">
+    <section className="relative overflow-hidden px-5 pt-24 pb-8">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute left-1/2 top-[-20%] h-[60vh] w-[60vh] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-[140px]" />
       </div>
@@ -153,7 +153,7 @@ function Hero() {
 function SummaryBand() {
   return (
     <section className="px-5 pb-8">
-      <StaggerGroup className="mx-auto grid max-w-5xl grid-cols-2 gap-x-6 gap-y-10 border-y border-white/[0.08] py-12 md:grid-cols-4">
+      <StaggerGroup className="mx-auto grid max-w-5xl grid-cols-2 gap-x-6 gap-y-10 border-y border-white/[0.08] py-8 md:grid-cols-4">
         {workSummary.map((s) => (
           <motion.div key={s.label} variants={itemVariants}>
             <CountUp
@@ -177,7 +177,7 @@ function CareerArc() {
   const fillScale = active / (careerArc.length - 1);
 
   return (
-    <section className="px-5 py-20 sm:py-28">
+    <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-5xl">
         <Reveal className="mb-14 max-w-2xl">
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
@@ -379,7 +379,7 @@ function RoleDossier({ role }: { role: WorkRole }) {
 
 function Roles() {
   return (
-    <section className="px-5 py-12 sm:py-16">
+    <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl space-y-20">
         {workRoles.map((role) => (
           <RoleDossier key={role.id} role={role} />
@@ -392,7 +392,7 @@ function Roles() {
 /* ---------- Competencies ---------- */
 function Competencies() {
   return (
-    <section className="px-5 py-20 sm:py-28">
+    <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
@@ -435,7 +435,7 @@ function Competencies() {
 function LanguagesAndEducation() {
   const EduIcon = education.icon;
   return (
-    <section className="px-5 py-20 sm:py-28">
+    <section className="px-5 py-6 md:py-8">
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
           <h2 className="font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl">Languages</h2>
@@ -481,23 +481,23 @@ function LanguagesAndEducation() {
 /* ---------- Contact ---------- */
 function Contact() {
   return (
-    <section id="contact" className="scroll-mt-24 px-5 py-24 sm:py-32">
-      <div className="mx-auto max-w-3xl text-center">
+    <section id="contact" className="scroll-mt-24 px-5 py-6 md:py-8">
+      <div className="mx-auto max-w-6xl">
         <Reveal>
           <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
             Let&apos;s build your capability engine.
           </h2>
-          <p className="mx-auto mt-6 max-w-xl leading-relaxed text-neutral-400">
+          <p className="mt-6 max-w-xl leading-relaxed text-neutral-400">
             Open to L&amp;D leadership roles, AI-in-learning strategy, and advisory. If you are scaling a learning
             function or clearing its bottlenecks, let&apos;s talk.
           </p>
-          <div className="mt-10 flex justify-center">
+          <div className="mt-10 flex">
             <MagneticButton href={EMAIL} variant="primary">
               Get in touch
               <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2} />
             </MagneticButton>
           </div>
-          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-neutral-500">
+          <div className="mt-8 flex items-center gap-6 text-sm text-neutral-500">
             <a href={EMAIL} className="inline-flex items-center gap-2 transition-colors hover:text-white">
               <Mail className="h-4 w-4" strokeWidth={1.75} /> not.jitin@gmail.com
             </a>

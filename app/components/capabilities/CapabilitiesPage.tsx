@@ -69,7 +69,7 @@ function Hero() {
     : { hidden: { y: "112%" }, show: { y: 0, transition: { duration: 1.0, ease: EASE } } };
 
   return (
-    <section className="relative overflow-hidden px-5 pt-28 pb-16 sm:pt-32">
+    <section className="relative overflow-hidden px-5 pt-24 pb-8">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute left-[-5%] top-[-15%] h-[55vh] w-[55vh] rounded-full bg-emerald-500/12 blur-[140px]" />
         <div className="absolute right-[-5%] bottom-[-20%] h-[45vh] w-[45vh] rounded-full bg-teal-500/10 blur-[140px]" />
@@ -194,7 +194,7 @@ function Pillar({ title, icon: Icon, items }: { title: string; icon: any; items:
 function DualFluency() {
   const reduced = useReducedMotion();
   return (
-    <section className="px-5 py-20 sm:py-28">
+    <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
           <Eyebrow>The differentiator</Eyebrow>
@@ -249,29 +249,24 @@ function CapabilityCard({ d, wide }: { d: CapabilityDomain; wide: boolean }) {
           : "border-white/[0.08] bg-white/[0.02] hover:border-emerald-400/30"
       }`}
     >
-      <div className="flex items-start justify-between gap-6">
-        <div className="flex items-center gap-3">
-          <span
-            className={`flex h-11 w-11 items-center justify-center rounded-xl ${
-              d.featured ? "bg-emerald-400/15 text-emerald-300" : "bg-white/[0.05] text-emerald-400"
-            }`}
-          >
-            <Icon className="h-5 w-5" strokeWidth={1.75} />
-          </span>
-          <h3 className="font-serif text-xl font-medium tracking-tight text-white sm:text-2xl">{d.title}</h3>
-        </div>
-        <div className="hidden flex-shrink-0 text-right sm:block">
-          <div className="font-serif text-2xl font-medium tracking-tight text-white">{d.proofValue}</div>
-          <div className="mt-0.5 max-w-[10rem] text-xs leading-snug text-neutral-500">{d.proofLabel}</div>
-        </div>
+      <div className="flex items-center gap-3">
+        <span
+          className={`flex h-11 w-11 items-center justify-center rounded-xl ${
+            d.featured ? "bg-emerald-400/15 text-emerald-300" : "bg-white/[0.05] text-emerald-400"
+          }`}
+        >
+          <Icon className="h-5 w-5" strokeWidth={1.75} />
+        </span>
+        <h3 className="font-serif text-xl font-medium tracking-tight text-white sm:text-2xl">{d.title}</h3>
       </div>
 
       <p className={`mt-5 leading-relaxed text-neutral-300 ${wide ? "max-w-2xl text-lg" : ""}`}>{d.statement}</p>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-neutral-500">{d.detail}</p>
 
-      {/* proof metric on mobile */}
-      <div className="mt-5 inline-flex items-center gap-2 self-start rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs font-medium text-emerald-300 sm:hidden">
-        {d.proofValue} · {d.proofLabel}
+      {/* proof metric */}
+      <div className="mt-5 inline-flex items-center gap-2 self-start rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs font-medium text-emerald-300">
+        <span className="font-serif text-sm">{d.proofValue}</span>
+        <span className="text-emerald-300/70">{d.proofLabel}</span>
       </div>
 
       <div className={`mt-6 grid gap-5 ${wide ? "sm:grid-cols-2" : ""}`}>
@@ -302,7 +297,7 @@ function CapabilityCard({ d, wide }: { d: CapabilityDomain; wide: boolean }) {
 
 function Domains() {
   return (
-    <section id="domains" className="scroll-mt-24 px-5 py-20 sm:py-28">
+    <section id="domains" className="scroll-mt-24 px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
           <Eyebrow>What I bring</Eyebrow>
@@ -348,7 +343,7 @@ function SkillChips({ items, tier }: { items: string[]; tier: "expert" | "advanc
 function SkillMatrix() {
   const reduced = useReducedMotion();
   return (
-    <section className="px-5 py-20 sm:py-28">
+    <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-12 max-w-2xl">
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">The full skill matrix.</h2>
@@ -392,23 +387,23 @@ function SkillMatrix() {
 /* ---------- Contact ---------- */
 function Contact() {
   return (
-    <section id="contact" className="scroll-mt-24 px-5 py-24 sm:py-32">
-      <div className="mx-auto max-w-3xl text-center">
+    <section id="contact" className="scroll-mt-24 px-5 py-6 md:py-8">
+      <div className="mx-auto max-w-6xl">
         <Reveal>
           <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
             Let&apos;s build your capability engine.
           </h2>
-          <p className="mx-auto mt-6 max-w-xl leading-relaxed text-neutral-400">
+          <p className="mt-6 max-w-xl leading-relaxed text-neutral-400">
             Open to L&amp;D leadership roles, AI-in-learning strategy, and advisory. If you are scaling a learning
             function or clearing its bottlenecks, let&apos;s talk.
           </p>
-          <div className="mt-10 flex justify-center">
+          <div className="mt-10 flex">
             <MagneticButton href={EMAIL} variant="primary">
               Get in touch
               <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2} />
             </MagneticButton>
           </div>
-          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-neutral-500">
+          <div className="mt-8 flex items-center gap-6 text-sm text-neutral-500">
             <a href={EMAIL} className="inline-flex items-center gap-2 transition-colors hover:text-white">
               <Mail className="h-4 w-4" strokeWidth={1.75} /> not.jitin@gmail.com
             </a>

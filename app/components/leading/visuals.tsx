@@ -110,7 +110,7 @@ export function RadialStat({
   const target = c * (1 - value / 100);
 
   return (
-    <div ref={ref} className="flex flex-col items-center">
+    <div ref={ref} className="flex flex-col items-start">
       <div className="relative" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="-rotate-90">
           <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={stroke} />
@@ -138,7 +138,7 @@ export function RadialStat({
           <span className="font-serif text-3xl font-medium text-white">{display}</span>
         </div>
       </div>
-      <span className="mt-4 max-w-[12rem] text-center text-sm leading-snug text-neutral-400">{label}</span>
+      <span className="mt-4 max-w-[12rem] text-left text-sm leading-snug text-neutral-400">{label}</span>
     </div>
   );
 }
