@@ -18,12 +18,12 @@ import {
   ldCaseStudies,
   ldPrinciples,
   ldAiLever,
-  ldCapabilities,
   ldJourney,
   ldRecognition,
   type LdCaseStudy,
 } from "../../data/ldPortfolio";
 import { leadershipCases } from "../../data/leadership";
+import { capabilityDomains } from "../../data/capabilities";
 
 const EMAIL = "mailto:not.jitin@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
@@ -422,26 +422,25 @@ function AiLever() {
   );
 }
 
-/* ---------- Capabilities (bento) ---------- */
+/* ---------- Capabilities (bento, proof-backed) ---------- */
 function Capabilities() {
   return (
     <section id="capabilities" className="scroll-mt-24 px-5 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
-        <Reveal className="mb-16 max-w-2xl">
+        <Reveal className="mb-14 max-w-2xl">
           <Label>What I bring</Label>
           <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
             Range across learning and the systems that scale it.
           </h2>
+          <p className="mt-3 leading-relaxed text-neutral-400">
+            Six capability domains, each one backed by a result rather than a buzzword.
+          </p>
         </Reveal>
-        <div className="grid grid-cols-1 gap-4 lg:auto-rows-[180px] lg:grid-cols-3">
-          {ldCapabilities.map((c, i) => {
+        <div className="grid grid-cols-1 gap-4 lg:auto-rows-[210px] lg:grid-cols-3">
+          {capabilityDomains.map((c, i) => {
             const Icon = c.icon;
             return (
-              <Reveal
-                key={c.title}
-                delay={i * 0.05}
-                className={c.featured ? "lg:col-span-2 lg:row-span-2" : ""}
-              >
+              <Reveal key={c.id} delay={i * 0.05} className={c.featured ? "lg:col-span-2 lg:row-span-2" : ""}>
                 <div
                   className={`group flex h-full flex-col rounded-2xl border p-6 transition-colors duration-200 ${
                     c.featured
@@ -449,28 +448,46 @@ function Capabilities() {
                       : "border-white/[0.08] bg-white/[0.02] hover:border-emerald-400/30 hover:bg-white/[0.04]"
                   }`}
                 >
-                  <span
-                    className={`flex h-11 w-11 items-center justify-center rounded-xl ${
-                      c.featured ? "bg-emerald-400/15 text-emerald-300" : "bg-white/[0.05] text-emerald-400"
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" strokeWidth={1.75} />
-                  </span>
-                  <h3
-                    className={`mt-auto pt-6 font-serif font-medium tracking-tight text-white ${
-                      c.featured ? "text-2xl sm:text-3xl" : "text-xl"
-                    }`}
-                  >
+                  <div className="flex items-start justify-between">
+                    <span
+                      className={`flex h-11 w-11 items-center justify-center rounded-xl ${
+                        c.featured ? "bg-emerald-400/15 text-emerald-300" : "bg-white/[0.05] text-emerald-400"
+                      }`}
+                    >
+                      <Icon className="h-5 w-5" strokeWidth={1.75} />
+                    </span>
+                    <div className="text-right">
+                      <div className={`font-serif font-medium tracking-tight text-white ${c.featured ? "text-3xl" : "text-2xl"}`}>
+                        {c.proofValue}
+                      </div>
+                    </div>
+                  </div>
+                  <h3 className={`mt-auto pt-6 font-serif font-medium tracking-tight text-white ${c.featured ? "text-2xl sm:text-3xl" : "text-xl"}`}>
                     {c.title}
                   </h3>
                   <p className={`mt-2 leading-relaxed text-neutral-400 ${c.featured ? "max-w-sm text-base" : "text-sm"}`}>
-                    {c.body}
+                    {c.featured ? c.detail : c.statement}
                   </p>
+                  {c.featured && (
+                    <div className="mt-5 inline-flex w-fit items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs font-medium text-emerald-300">
+                      {c.proofValue} · {c.proofLabel}
+                    </div>
+                  )}
                 </div>
               </Reveal>
             );
           })}
         </div>
+
+        <Reveal className="mt-12 flex justify-center">
+          <Link
+            href="/capabilities"
+            className="group inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/[0.06] px-7 py-3.5 text-sm font-semibold text-emerald-300 transition-[transform,background-color,border-color] duration-200 ease-out hover:border-emerald-400/70 hover:bg-emerald-400/[0.12] hover:text-emerald-200 active:scale-[0.97]"
+          >
+            See the full capability map
+            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" strokeWidth={2} />
+          </Link>
+        </Reveal>
       </div>
     </section>
   );
