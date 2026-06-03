@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jitin Nair — AI Systems Architect</title>
+<style>
+
+/* ── Local fonts ──────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('./public/fonts/playfair-display-latin-700-normal.woff2') format('woff2');
+  font-weight: 700; font-style: normal;
+}
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('./public/fonts/playfair-display-latin-500-normal.woff2') format('woff2');
+  font-weight: 500; font-style: normal;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('./public/fonts/dm-sans-latin-400-normal.woff2') format('woff2');
+  font-weight: 400; font-style: normal;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('./public/fonts/dm-sans-latin-500-normal.woff2') format('woff2');
+  font-weight: 500; font-style: normal;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('./public/fonts/dm-sans-latin-600-normal.woff2') format('woff2');
+  font-weight: 600; font-style: normal;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('./public/fonts/dm-sans-latin-700-normal.woff2') format('woff2');
+  font-weight: 700; font-style: normal;
+}
+
+/* ── Reset ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Design tokens — identical structure to L&D resume; cyan replaces emerald */
+:root {
+  --bg:    #FAFAFA;
+  --ink:   #0D1A14;
+  --text:  #374151;
+  --muted: #6B7280;
+  --faint: #9CA3AF;
+  --ghost: #D1D5DB;
+
+  /* Cyan accent — brand colour for AI Systems track */
+  --ac:    #0E7490;   /* primary: org names, metric highlights, top bar */
+
+  --serif: 'Playfair Display', 'Georgia', serif;
+  --sans:  'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+
+  --sp1: 4px;  --sp2: 8px;  --sp3: 12px;
+  --sp4: 16px; --sp5: 20px; --sp6: 24px;
+}
+
+/* ── Page ─────────────────────────────────────────────────────────────────── */
+@page { size: A4 portrait; margin: 0; }
+
+html, body {
+  width: 210mm;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 8.5pt;
+  line-height: 1.55;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* ── Top bar — solid cyan ─────────────────────────────────────────────────── */
+.top-bar { height: 4px; background: var(--ac); width: 100%; }
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.header {
+  padding: 14px 21mm 14px 21mm;
+  border-bottom: 0.75px solid var(--ghost);
+}
+
+.header__name {
+  font-family: var(--serif);
+  font-size: 33pt;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.025em;
+  line-height: 1.0;
+  margin-bottom: 4px;
+}
+
+.header__title {
+  font-size: 8pt;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  margin-bottom: 9px;
+}
+
+.header__contact {
+  font-size: 7.5pt;
+  color: var(--faint);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.header__contact a { color: var(--ac); text-decoration: none; font-weight: 500; }
+.sep { color: var(--ghost); margin: 0 6px; }
+
+/* ── Content wrapper ──────────────────────────────────────────────────────── */
+.content { padding: 0 21mm; }
+
+/* ── Section — Playfair label + extending rule ────────────────────────────── */
+.section { margin-top: 20px; }
+
+.section__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--serif);
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.section__label::after {
+  content: '';
+  flex: 1;
+  height: 0.5px;
+  background: var(--ghost);
+  display: block;
+}
+
+/* ── Summary ──────────────────────────────────────────────────────────────── */
+.summary p { font-size: 8.5pt; line-height: 1.62; color: var(--text); }
+.em  { color: var(--ac); font-weight: 600; }
+
+/* ── Experience ───────────────────────────────────────────────────────────── */
+.role {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 0.5px solid var(--ghost);
+}
+.role:last-child,
+.role--page-end { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+
+.role__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp2);
+  margin-bottom: 1px;
+}
+
+.role__title {
+  font-size: 10pt;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  flex: 1;
+}
+
+.role__dates {
+  font-size: 7.5pt;
+  color: var(--faint);
+  font-weight: 400;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.01em;
+}
+
+.role__org {
+  font-size: 8.5pt;
+  font-weight: 500;
+  color: var(--ac);
+  margin-bottom: 5px;
+  letter-spacing: 0.01em;
+}
+
+.role__bullets { padding-left: 11px; margin: 0; }
+
+.role__bullets li {
+  font-size: 8.5pt;
+  color: var(--text);
+  line-height: 1.52;
+  margin-bottom: 3.5px;
+  list-style-type: disc;
+}
+
+.role__bullets li::marker { color: var(--ghost); font-size: 7pt; }
+.role__bullets li:last-child { margin-bottom: 0; }
+.role__bullets strong { color: var(--ink); font-weight: 700; }
+.hi { color: var(--ac); font-weight: 700; }
+
+/* ── Project entry (systems portfolio) ───────────────────────────────────── */
+.project {
+  background: #F8F9FA;
+  border-left: 2.5px solid var(--ac);
+  padding: 9px 13px;
+  margin-bottom: 10px;
+}
+.project:last-child { margin-bottom: 0; }
+
+.project__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp2);
+  margin-bottom: 3px;
+}
+
+.project__name {
+  font-size: 9.5pt;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.project__meta {
+  font-size: 7.5pt;
+  color: var(--muted);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.project__desc {
+  font-size: 8.5pt;
+  color: var(--text);
+  line-height: 1.52;
+  margin-bottom: 5px;
+}
+
+.project__bullets { padding-left: 11px; margin: 0 0 6px 0; }
+
+.project__bullets li {
+  font-size: 8.5pt;
+  color: var(--text);
+  line-height: 1.5;
+  margin-bottom: 3px;
+  list-style-type: disc;
+}
+
+.project__bullets li::marker { color: var(--ghost); font-size: 7pt; }
+.project__bullets li:last-child { margin-bottom: 0; }
+
+.project__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 4px;
+  margin-top: 6px;
+}
+
+.chip {
+  display: inline-block;
+  font-size: 7pt;
+  font-weight: 500;
+  color: var(--ac);
+  border: 0.75px solid var(--ac);
+  border-radius: 2px;
+  padding: 1.5px 6px;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+}
+
+/* ── Technical Stack ──────────────────────────────────────────────────────── */
+.stack-row {
+  display: flex;
+  gap: 0;
+  margin-bottom: 5px;
+  font-size: 8.5pt;
+  line-height: 1.52;
+}
+
+.stack-row:last-child { margin-bottom: 0; }
+
+.stack-label {
+  font-size: 7pt;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  min-width: 120px;
+  padding-top: 1px;
+}
+
+.stack-items { color: var(--text); }
+
+/* ── Education + Languages ────────────────────────────────────────────────── */
+.edu-lang { display: flex; gap: 28px; align-items: flex-start; }
+.edu-block { flex: 1.1; }
+.lang-block { flex: 0.9; }
+
+.edu__degree { font-size: 9.5pt; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; margin-bottom: 1px; }
+.edu__school { font-size: 8.5pt; color: var(--ac); font-weight: 500; margin-bottom: 1px; }
+.edu__year   { font-size: 7.5pt; color: var(--faint); }
+
+.lang-row { font-size: 8pt; color: var(--text); line-height: 1.7; }
+.lang-row strong { color: var(--ink); font-weight: 600; }
+
+/* ── Page 1 end ───────────────────────────────────────────────────────────── */
+.page-1-end {
+  margin-top: 18px;
+  padding-top: 8px;
+  border-top: 0.5px solid var(--ghost);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-1-end span {
+  font-size: 6.5pt;
+  color: var(--faint);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+/* ── Page 2 start ─────────────────────────────────────────────────────────── */
+.page-2-start { break-before: page; padding-top: 16mm; }
+
+.page-2-bar {
+  height: 4px;
+  background: var(--ac);
+  margin: 0 -21mm;
+  width: calc(100% + 42mm);
+  margin-bottom: 11px;
+}
+
+.page-2-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 8px;
+  border-bottom: 0.75px solid var(--ghost);
+  margin-bottom: 18px;
+}
+
+.page-2-header__name {
+  font-family: var(--serif);
+  font-size: 13pt;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.page-2-header__meta {
+  font-size: 6.5pt;
+  color: var(--faint);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ── Page footer ──────────────────────────────────────────────────────────── */
+.page-footer {
+  margin: 16px 21mm 0 21mm;
+  border-top: 0.75px solid var(--ghost);
+  padding-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-footer span {
+  font-size: 6.5pt;
+  color: var(--faint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.page-footer a { color: var(--ac); text-decoration: none; }
+
+</style>
+</head>
+<body>
+
+  <!-- ── TOP BAR ───────────────────────────────────────────────────────────── -->
+  <div class="top-bar"></div>
+
+  <!-- ── HEADER ───────────────────────────────────────────────────────────── -->
+  <header class="header">
+    <h1 class="header__name">Jitin Nair</h1>
+    <p class="header__title">AI Systems Architect &nbsp;·&nbsp; Multi-Agent Orchestration Specialist</p>
+    <p class="header__contact">
+      not.jitin@gmail.com
+      <span class="sep">·</span>+91 90088 98642
+      <span class="sep">·</span>Bangalore, India
+      <span class="sep">·</span><a href="https://linkedin.com/in/notjitin">linkedin.com/in/notjitin</a>
+      <span class="sep">·</span><a href="https://jitinnair.com">jitinnair.com</a>
+    </p>
+  </header>
+
+  <div class="content">
+
+    <!-- ── PROFESSIONAL SUMMARY ──────────────────────────────────────────── -->
+    <section class="section">
+      <h2 class="section__label">Professional Summary</h2>
+      <div class="summary">
+        <p>
+          AI Systems Architect with <span class="em">200+ autonomous agents in production</span> and a decade of
+          engineering context spanning learning science, data systems, and agentic AI. Specialised in
+          <span class="em">multi-agent orchestration</span> (LangGraph, Model Context Protocol),
+          <span class="em">RAG architecture</span>, and institutional-grade autonomous platforms. Built
+          Predator Nexus (HFT engine, 91.2% regime accuracy), Reality-Check (governance for 147 agents,
+          96% fleet coverage), LocalMind (local RAG, 98% factual grounding), and Smartslate (AI-native
+          L&amp;D platform, 45-second blueprint generation). A background in instructional design and human
+          performance provides rare depth in <span class="em">human-AI collaboration systems</span> and
+          explainability requirements.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── PROFESSIONAL EXPERIENCE ───────────────────────────────────────── -->
+    <section class="section">
+      <h2 class="section__label">Professional Experience</h2>
+
+      <!-- Role 1 -->
+      <div class="role">
+        <div class="role__header">
+          <span class="role__title">AI Systems Architect</span>
+          <span class="role__dates">Mar 2025 – Present</span>
+        </div>
+        <div class="role__org">Independent Consultant &nbsp;·&nbsp; Bangalore, India</div>
+        <ul class="role__bullets">
+          <li>Deployed <span class="hi">200+ autonomous AI agents</span> across production multi-agent orchestration platforms, engineered on LangGraph with stateful DAG execution and real-time Redis state pulses.</li>
+          <li>Architected <strong>Model Context Protocol (MCP)</strong> integrations enabling cross-agent tool sharing across <span class="hi">147 agent instances</span> — achieving 96% fleet coverage for truth-verification protocols with zero active violations post-deployment.</li>
+          <li>Built <strong>Predator Nexus V4.0</strong>: institutional-grade HFT engine fusing Multivariate Gaussian HMM, LangGraph DAG orchestration, and Bayesian posterior inference at <span class="hi">8.4ms p99 latency</span> — 91.2% regime accuracy, 70.2% validated strategy yield across 10,000+ cycles.</li>
+          <li>Engineered <strong>LocalMind</strong>: privacy-first local RAG platform indexing <span class="hi">1,000 files per minute</span> via SHA-256 delta indexing, achieving 98% factual grounding and 1s p99 hybrid-search latency.</li>
+          <li>Designed <strong>Smartslate</strong>, an AI-native L&amp;D platform running <span class="hi">500+ daily automated jobs</span> that compresses full programme discovery from weeks to <span class="hi">45 seconds</span> — multi-provider AI (Claude, ChatGPT, Perplexity) with human-in-the-loop validation at every stage.</li>
+          <li>Applied <strong>chain-of-verification (CoVe)</strong> and factual-grounding protocols across agent fleets to eliminate hallucination in downstream decisions — reducing fictional data generation to below 2.2% across monitored deployments.</li>
+        </ul>
+      </div>
+
+      <!-- Role 2 -->
+      <div class="role">
+        <div class="role__header">
+          <span class="role__title">Instructional Designer &nbsp;|&nbsp; Lead: Video Based Learning</span>
+          <span class="role__dates">Sep 2022 – Mar 2025</span>
+        </div>
+        <div class="role__org">Moody's Ratings &nbsp;·&nbsp; Bangalore, India &nbsp;(Global Remit)</div>
+        <ul class="role__bullets">
+          <li>Built <strong>automated content production pipelines</strong> for a global credit ratings agency — reducing build time by <span class="hi">60%</span> and achieving <span class="hi">90%+</span> module completion at scale.</li>
+          <li>Developed template standardisation systems and workflow automation, establishing <strong>repeatable production infrastructure</strong> that served as the foundation for later AI-pipeline thinking in Smartslate.</li>
+          <li>Applied <strong>learning systems thinking</strong> to complex financial knowledge architecture — directly informing subsequent AI agent design patterns for knowledge retrieval and structured output.</li>
+        </ul>
+      </div>
+
+      <!-- Role 3 — last on page 1 -->
+      <div class="role role--page-end">
+        <div class="role__header">
+          <span class="role__title">Instructor Analyst → Senior Analyst</span>
+          <span class="role__dates">Jan 2019 – Sep 2022</span>
+        </div>
+        <div class="role__org">Accenture &nbsp;·&nbsp; Bangalore, India</div>
+        <ul class="role__bullets">
+          <li>Engineered a <strong>1,400-line VBA automation suite</strong> for pan-India training-needs audits — generating pivot tables, charts, and automated feedback emails, eliminating weeks of manual overhead across the network.</li>
+          <li>Built multiple <strong>hybrid learning systems</strong> combining modality-matching with measurable outcome tracking — reducing F&amp;A client learning time by <span class="hi">70%</span> while maintaining 54% knowledge retention.</li>
+          <li>Led L&amp;D for <span class="hi">300+ employees across 16 client teams</span>, delivering $140K+ in training cost savings through systematic automation and blended design.</li>
+        </ul>
+      </div>
+
+      <!-- ── PAGE 1 END ────────────────────────────────────────────────────── -->
+      <div class="page-1-end">
+        <span>Jitin Nair &mdash; AI Systems Architect</span>
+        <span>Continued on page&nbsp;2 &rarr;</span>
+      </div>
+
+      <!-- ── PAGE 2 ─────────────────────────────────────────────────────────── -->
+      <div class="page-2-start">
+
+        <div class="page-2-bar"></div>
+
+        <div class="page-2-header">
+          <span class="page-2-header__name">Jitin Nair</span>
+          <span class="page-2-header__meta">AI Systems Architect &nbsp;&middot;&nbsp; Page 2 of 2</span>
+        </div>
+
+        <!-- Role 4 -->
+        <div class="role">
+          <div class="role__header">
+            <span class="role__title">Senior Executive &mdash; Operations &amp; Training</span>
+            <span class="role__dates">May 2015 – Dec 2017</span>
+          </div>
+          <div class="role__org">[24]7.ai &nbsp;&middot;&nbsp; Bangalore, India</div>
+          <ul class="role__bullets">
+            <li>Managed high-volume back-end operations for a US retail and e-commerce client, running training, QA, and refresher programmes maintaining team performance above benchmark.</li>
+            <li>Recognised as <span class="hi">top performer three consecutive months</span>; identified for leadership track within 24 months — earliest accelerated path available.</li>
+          </ul>
+        </div>
+
+      </div><!-- /page-2-start -->
+    </section>
+
+    <!-- ── SYSTEMS ARCHITECTURE PORTFOLIO ────────────────────────────────── -->
+    <section class="section">
+      <h2 class="section__label">Systems Architecture Portfolio</h2>
+
+      <!-- Project 1 -->
+      <div class="project">
+        <div class="project__header">
+          <span class="project__name">Predator Nexus V4.0</span>
+          <span class="project__meta">Lead Architect &nbsp;·&nbsp; Institutional-Grade HFT Engine</span>
+        </div>
+        <p class="project__desc">Bayesian multi-agent orchestration ecosystem for autonomous XAU/USD trading — 7 specialised agents (Hermes, Argus, Athena, Apollo) coordinated via LangGraph DAG with sub-10ms posterior inference.</p>
+        <ul class="project__bullets">
+          <li><span class="hi">8.4ms p99</span> end-to-end signal-to-socket latency &nbsp;·&nbsp; <span class="hi">91.2%</span> Multivariate HMM regime accuracy</li>
+          <li><span class="hi">70.2%</span> validated strategy yield across 10,000+ cycles &nbsp;·&nbsp; 5,000+ msg/sec ProtoBuf throughput, zero packet loss</li>
+        </ul>
+        <div class="project__chips">
+          <span class="chip">Python 3.13</span><span class="chip">LangGraph</span><span class="chip">TimescaleDB</span>
+          <span class="chip">Bayesian HMM</span><span class="chip">cTrader OpenAPI</span><span class="chip">Redis Streams</span><span class="chip">Numba</span>
+        </div>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="project">
+        <div class="project__header">
+          <span class="project__name">Reality-Check Governance Protocol</span>
+          <span class="project__meta">Lead Architect &nbsp;·&nbsp; Distributed AI Governance</span>
+        </div>
+        <p class="project__desc">Governance enforcement layer for 147 AI agents — implements truth-only protocols, automated policy injection, and audit logging to eliminate hallucination and fictional data generation at fleet scale.</p>
+        <ul class="project__bullets">
+          <li><span class="hi">96% fleet coverage</span> (141/147 agents) &nbsp;·&nbsp; <span class="hi">3-minute</span> full-fleet policy rollout &nbsp;·&nbsp; zero active violations post-deployment</li>
+          <li>Automated policy injection + audit trail with full observability across the distributed agent network</li>
+        </ul>
+        <div class="project__chips">
+          <span class="chip">Python</span><span class="chip">Node.js</span><span class="chip">Bash</span>
+          <span class="chip">YAML</span><span class="chip">Audit Logging</span><span class="chip">MCP</span>
+        </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="project">
+        <div class="project__header">
+          <span class="project__name">LocalMind</span>
+          <span class="project__meta">Lead Architect &nbsp;·&nbsp; Privacy-First Local RAG</span>
+        </div>
+        <p class="project__desc">Local-first RAG intelligence platform — SHA-256 delta indexing, hybrid semantic search, and source-only grounding for 100% on-premise operation with no data leaving the machine.</p>
+        <ul class="project__bullets">
+          <li><span class="hi">1,000 files/min</span> delta-indexing &nbsp;·&nbsp; <span class="hi">1s p99</span> hybrid-search latency &nbsp;·&nbsp; <span class="hi">98%</span> factual grounding (source-only)</li>
+          <li>Fully air-gapped operation — all inference, retrieval, and storage runs on-device</li>
+        </ul>
+        <div class="project__chips">
+          <span class="chip">Next.js</span><span class="chip">Python</span><span class="chip">pgvector</span>
+          <span class="chip">Ollama</span><span class="chip">SHA-256 Delta Index</span><span class="chip">Supabase</span>
+        </div>
+      </div>
+
+      <!-- Project 4 -->
+      <div class="project">
+        <div class="project__header">
+          <span class="project__name">Smartslate &nbsp;&middot;&nbsp; AI-Native L&amp;D Platform</span>
+          <span class="project__meta">Lead Architect &amp; L&amp;D Designer &nbsp;·&nbsp; smartslate.io</span>
+        </div>
+        <p class="project__desc">AI-first platform automating the full L&amp;D lifecycle — 7-stage contextual discovery pipeline with multi-provider AI and human-in-the-loop validation at every stage boundary.</p>
+        <ul class="project__bullets">
+          <li><span class="hi">45-second</span> tailored learning blueprint generation (vs. 2–4 week traditional sprints)</li>
+          <li><span class="hi">500+ daily automated jobs</span> with zero manual intervention &nbsp;·&nbsp; Kirkpatrick Level 4 measurement standard</li>
+        </ul>
+        <div class="project__chips">
+          <span class="chip">Next.js 15</span><span class="chip">Supabase</span><span class="chip">Claude</span>
+          <span class="chip">ChatGPT</span><span class="chip">Perplexity</span><span class="chip">PostgreSQL</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TECHNICAL STACK ────────────────────────────────────────────────── -->
+    <section class="section">
+      <h2 class="section__label">Technical Stack</h2>
+      <div class="stack-row">
+        <span class="stack-label">AI / Agentic</span>
+        <span class="stack-items">LangGraph &nbsp;·&nbsp; Model Context Protocol (MCP) &nbsp;·&nbsp; Claude &nbsp;·&nbsp; ChatGPT &nbsp;·&nbsp; Gemini &nbsp;·&nbsp; RAG Architecture &nbsp;·&nbsp; Vector DBs &nbsp;·&nbsp; Prompt Engineering &nbsp;·&nbsp; Chain-of-Verification</span>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Languages</span>
+        <span class="stack-items">Python 3.13 &nbsp;·&nbsp; TypeScript &nbsp;·&nbsp; Node.js &nbsp;·&nbsp; Bash</span>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Data &amp; Systems</span>
+        <span class="stack-items">TimescaleDB &nbsp;·&nbsp; PostgreSQL &nbsp;·&nbsp; Redis Streams &nbsp;·&nbsp; pgvector &nbsp;·&nbsp; Prometheus &nbsp;·&nbsp; Docker &nbsp;·&nbsp; GitHub Actions</span>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Full-Stack</span>
+        <span class="stack-items">Next.js 15 &nbsp;·&nbsp; React &nbsp;·&nbsp; FastAPI &nbsp;·&nbsp; Supabase &nbsp;·&nbsp; Playwright &nbsp;·&nbsp; Tailwind CSS</span>
+      </div>
+    </section>
+
+    <!-- ── EDUCATION + LANGUAGES ─────────────────────────────────────────── -->
+    <section class="section">
+      <h2 class="section__label">Education &amp; Languages</h2>
+      <div class="edu-lang">
+        <div class="edu-block">
+          <div class="edu__degree">Bachelor of Commerce (B.Com)</div>
+          <div class="edu__school">Sindhi College of Commerce &nbsp;&middot;&nbsp; Bangalore, India</div>
+          <div class="edu__year">2012 – 2015 &nbsp;&middot;&nbsp; Self-taught programmer; built first web applications during undergraduate years</div>
+        </div>
+        <div class="lang-block">
+          <p class="lang-row">
+            <strong>English</strong> — Native &nbsp;&nbsp;
+            <strong>Malayalam</strong> — Native &nbsp;&nbsp;
+            <strong>Hindi</strong> — Fluent &nbsp;&nbsp;
+            <strong>Tamil</strong> — Conversational &nbsp;&nbsp;
+            <strong>Kannada</strong> — Conversational
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+
+  <!-- ── PAGE FOOTER ───────────────────────────────────────────────────────── -->
+  <div class="page-footer">
+    <span>Jitin Nair &nbsp;&middot;&nbsp; AI Systems Architect</span>
+    <span><a href="mailto:not.jitin@gmail.com">not.jitin@gmail.com</a> &nbsp;&middot;&nbsp; <a href="https://jitinnair.com">jitinnair.com</a></span>
+  </div>
+
+</body>
+</html>

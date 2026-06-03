@@ -11,8 +11,9 @@ import {
   useMotionValue,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink, Download } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink } from "lucide-react";
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "./primitives";
+import { DownloadResumeButton } from "./DownloadResumeButton";
 import { LdVortexBackground } from "./LdVortexBackground";
 import {
   ldImpact,
@@ -186,10 +187,7 @@ function Hero() {
             transition={{ duration: 0.7, delay: 0.68, ease: EASE }}
             className="mt-9 flex flex-wrap items-center gap-3"
           >
-            <MagneticButton href="/resume.pdf" variant="primary" download>
-              Download Resume
-              <Download className="h-4 w-4 transition-transform duration-200 group-hover:translate-y-0.5" strokeWidth={2} />
-            </MagneticButton>
+            <DownloadResumeButton />
             <MagneticButton href="#contact" variant="ghost" className="bg-white/[0.07] backdrop-blur-md">
               Get in touch
             </MagneticButton>
