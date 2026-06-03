@@ -427,6 +427,79 @@ html, body {
 }
 
 /* ══════════════════════════════════════════════════════════════════
+   PAGE BREAK / PAGE TRANSITION STYLING
+══════════════════════════════════════════════════════════════════ */
+
+/* The Accenture role loses its bottom border since page-1-end takes over */
+.role--page-end {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* Decorative close of page 1 — sits right after Accenture */
+.page-1-end {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-1-end span {
+  font-size: 7pt;
+  color: var(--faint);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.page-1-end__arrow {
+  color: var(--e600);
+  font-size: 8pt;
+}
+
+/* ── Page 2 opener — forces hard break, then shows mini header ── */
+.page-2-start {
+  break-before: page;
+  padding-top: 14mm;   /* breathing room from top of page */
+}
+
+/* Thin accent stripe echoing the page 1 header bar */
+.page-2-accent {
+  height: 3px;
+  background: linear-gradient(90deg, var(--e900) 0%, var(--e600) 55%, var(--e400) 100%);
+  margin: 0 -22mm 0 -22mm;   /* bleed to content edge */
+  width: calc(100% + 44mm);
+  margin-bottom: 12px;
+}
+
+/* Mini header on page 2 */
+.page-2-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 9px;
+  border-bottom: 1.5px solid var(--e200);
+  margin-bottom: 18px;
+}
+
+.page-2-header__name {
+  font-family: var(--serif);
+  font-size: 14pt;
+  font-weight: 700;
+  color: var(--e900);
+  letter-spacing: -0.01em;
+}
+
+.page-2-header__meta {
+  font-size: 7.5pt;
+  color: var(--faint);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════════════════════════
    PAGE FOOTER
 ══════════════════════════════════════════════════════════════════ */
 
@@ -527,7 +600,7 @@ html, body {
       <!-- Role 2 -->
       <div class="role">
         <div class="role__header">
-          <span class="role__title">Instructional Designer</span>
+          <span class="role__title">Instructional Designer &nbsp;|&nbsp; Lead: Video Based Learning</span>
           <span class="role__dates">Sep 2022 – Mar 2025</span>
         </div>
         <div class="role__org">Moody's Ratings &nbsp;·&nbsp; Bangalore, India &nbsp;(Global Remit)</div>
@@ -553,8 +626,8 @@ html, body {
         </ul>
       </div>
 
-      <!-- Role 3 -->
-      <div class="role">
+      <!-- Role 3 — last role on page 1; no bottom border (page-1-end takes over) -->
+      <div class="role role--page-end">
         <div class="role__header">
           <span class="role__title">Instructor Analyst → Senior Analyst</span>
           <span class="role__dates">Jan 2019 – Sep 2022</span>
@@ -588,25 +661,45 @@ html, body {
         </ul>
       </div>
 
-      <!-- Role 4 -->
-      <div class="role">
-        <div class="role__header">
-          <span class="role__title">Senior Executive — Operations &amp; Training</span>
-          <span class="role__dates">May 2015 – Dec 2017</span>
-        </div>
-        <div class="role__org">[24]7.ai &nbsp;·&nbsp; Bangalore, India</div>
-        <ul class="role__bullets">
-          <li>
-            Managed back-end operations for a US retail and e-commerce client; ran <strong>new joiner training,
-            QA programmes, and refresher sessions</strong> maintaining team performance consistently above
-            benchmark.
-          </li>
-          <li>
-            Recognised as <strong class="hi">top performer three consecutive months</strong>; identified for a
-            leadership development track within 24 months — the fastest accelerated path available.
-          </li>
-        </ul>
+      <!-- ── PAGE 1 END ─────────────────────────────────────── -->
+      <div class="page-1-end">
+        <span>Jitin Nair — Learning &amp; Development Leader</span>
+        <span class="page-1-end__arrow">Continued on page 2 &nbsp;→</span>
       </div>
+
+      <!-- ── PAGE 2 OPENS HERE ───────────────────────────────── -->
+      <div class="page-2-start">
+
+        <!-- Top accent stripe (mirrors page 1 header bar) -->
+        <div class="page-2-accent"></div>
+
+        <!-- Mini header repeated for page 2 -->
+        <div class="page-2-header">
+          <span class="page-2-header__name">Jitin Nair</span>
+          <span class="page-2-header__meta">Learning &amp; Development Leader &nbsp;·&nbsp; Page 2 of 2</span>
+        </div>
+
+        <!-- Role 4: [24]7.ai — first item on page 2 -->
+        <div class="role">
+          <div class="role__header">
+            <span class="role__title">Senior Executive — Operations &amp; Training</span>
+            <span class="role__dates">May 2015 – Dec 2017</span>
+          </div>
+          <div class="role__org">[24]7.ai &nbsp;·&nbsp; Bangalore, India</div>
+          <ul class="role__bullets">
+            <li>
+              Managed back-end operations for a US retail and e-commerce client; ran <strong>new joiner training,
+              QA programmes, and refresher sessions</strong> maintaining team performance consistently above
+              benchmark.
+            </li>
+            <li>
+              Recognised as <strong class="hi">top performer three consecutive months</strong>; identified for a
+              leadership development track within 24 months — the fastest accelerated path available.
+            </li>
+          </ul>
+        </div>
+
+      </div><!-- /page-2-start -->
     </section>
 
     <!-- ── FEATURED PLATFORM ──────────────────────────── -->
