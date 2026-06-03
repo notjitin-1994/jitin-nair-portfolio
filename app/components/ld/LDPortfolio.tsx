@@ -122,7 +122,7 @@ function Hero() {
         <LdVortexBackground />
       </div>
 
-      {/* Mobile: emerald aurora fallback */}
+      {/* Mobile: emerald aurora fallback (kept as base layer / image-load fallback) */}
       <div aria-hidden className="md:hidden pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <motion.div
           className="absolute left-[-10%] top-[-12%] h-[55vh] w-[55vh] rounded-full bg-emerald-500/20 blur-[120px]"
@@ -136,9 +136,26 @@ function Hero() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
+      {/* Mobile: hero photo as full-bleed background */}
+      <div aria-hidden className="md:hidden absolute inset-0 z-[1] overflow-hidden">
+        <Image
+          src="/hero-photo.jpg"
+          alt=""
+          fill
+          className="object-cover"
+          style={{ objectPosition: "center 15%" }}
+          priority
+          sizes="100vw"
+        />
+        {/* Gradient overlay: transparent at top (shows face), dark at bottom (readable text) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/20 via-[#0a0a0f]/55 to-[#0a0a0f]/90" />
+        {/* Emerald accent tint at very bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-emerald-950/40 to-transparent" />
+      </div>
+
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-end md:items-center gap-12 md:grid-cols-2 md:gap-16">
         {/* Content */}
-        <div className="order-2 md:order-1">
+        <div className="order-2 md:order-1 pb-4 md:pb-0">
           <motion.h1
             variants={container}
             initial="hidden"
@@ -179,12 +196,12 @@ function Hero() {
           </motion.div>
         </div>
 
-        {/* Portrait */}
+        {/* Portrait — desktop only; hidden on mobile (photo is the full-bleed background instead) */}
         <motion.div
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, ease: EASE }}
-          className="order-1 flex justify-center md:order-2 md:justify-end"
+          className="order-1 hidden md:flex justify-center md:order-2 md:justify-end"
         >
           <div
             ref={pRef}
