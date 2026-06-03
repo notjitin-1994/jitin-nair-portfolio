@@ -91,12 +91,7 @@ html, body {
 ══════════════════════════════════════════════════════════════════════════ */
 .top-bar {
   height: 4px;
-  background: linear-gradient(90deg,
-    var(--ink)  0%,
-    var(--em)   40%,
-    var(--em-lt) 70%,
-    var(--em-vv) 100%
-  );
+  background: var(--em);
   width: 100%;
 }
 
@@ -166,9 +161,10 @@ html, body {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 6.5pt;
+  font-family: var(--serif);
+  font-size: 7pt;
   font-weight: 700;
-  letter-spacing: 0.30em;       /* extreme tracking — editorial signature */
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ink);
   margin-bottom: 10px;
@@ -339,19 +335,25 @@ html, body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   COMPETENCIES — middot-separated inline list (ATS clean, typographically elegant)
+   COMPETENCIES — emerald-accented chips
 ══════════════════════════════════════════════════════════════════════════ */
 .competencies {
-  font-size: 8pt;
-  color: var(--text);
-  line-height: 1.7;
-  letter-spacing: 0.01em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 5px;
 }
 
-.dot {
-  color: var(--ghost);
-  margin: 0 5px;
-  font-size: 7pt;
+.chip {
+  display: inline-block;
+  font-size: 7.5pt;
+  font-weight: 500;
+  color: var(--em);
+  background: transparent;
+  border: 0.75px solid var(--em);
+  border-radius: 2px;
+  padding: 2px 7px;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -425,13 +427,8 @@ html, body {
 
 /* Full-bleed accent bar (mirrors page 1 top) */
 .page-2-bar {
-  height: 3px;
-  background: linear-gradient(90deg,
-    var(--ink)   0%,
-    var(--em)    40%,
-    var(--em-lt) 70%,
-    var(--em-vv) 100%
-  );
+  height: 4px;
+  background: var(--em);
   margin: 0 -21mm;
   width: calc(100% + 42mm);
   margin-bottom: 11px;
@@ -585,7 +582,7 @@ html, body {
 
         <div class="page-2-header">
           <span class="page-2-header__name">Jitin Nair</span>
-          <span class="page-2-header__meta">Learning &amp; Development Leader &nbsp;&middot;&nbsp; Page 2 of 2</span>
+          <span class="page-2-header__meta">L&amp;D Architect &nbsp;&middot;&nbsp; Page 2 of 2</span>
         </div>
 
         <!-- Role 4 — first item on page 2 -->
@@ -629,9 +626,26 @@ html, body {
     <!-- ── L&D COMPETENCIES ──────────────────────────────────────────────── -->
     <section class="section">
       <h2 class="section__label">L&amp;D Competencies</h2>
-      <p class="competencies">
-        ADDIE Model<span class="dot">&middot;</span>Bloom's Taxonomy<span class="dot">&middot;</span>Kirkpatrick Evaluation<span class="dot">&middot;</span>Training Needs Analysis<span class="dot">&middot;</span>Instructional Design<span class="dot">&middot;</span>Video-Based Learning<span class="dot">&middot;</span>E-Learning Development<span class="dot">&middot;</span>Blended Learning<span class="dot">&middot;</span>Microlearning Design<span class="dot">&middot;</span>SCORM / xAPI<span class="dot">&middot;</span>LMS Administration<span class="dot">&middot;</span>Learning Analytics<span class="dot">&middot;</span>Articulate Storyline<span class="dot">&middot;</span>ILT Facilitation<span class="dot">&middot;</span>Stakeholder Management<span class="dot">&middot;</span>AI-Native L&amp;D Design<span class="dot">&middot;</span>Programme Leadership<span class="dot">&middot;</span>ROI Measurement
-      </p>
+      <div class="competencies">
+        <span class="chip">ADDIE Model</span>
+        <span class="chip">Bloom's Taxonomy</span>
+        <span class="chip">Kirkpatrick Evaluation</span>
+        <span class="chip">Training Needs Analysis</span>
+        <span class="chip">Instructional Design</span>
+        <span class="chip">Video-Based Learning</span>
+        <span class="chip">E-Learning Development</span>
+        <span class="chip">Blended Learning</span>
+        <span class="chip">Microlearning Design</span>
+        <span class="chip">SCORM / xAPI</span>
+        <span class="chip">LMS Administration</span>
+        <span class="chip">Learning Analytics</span>
+        <span class="chip">Articulate Storyline</span>
+        <span class="chip">ILT Facilitation</span>
+        <span class="chip">Stakeholder Management</span>
+        <span class="chip">AI-Native L&amp;D Design</span>
+        <span class="chip">Programme Leadership</span>
+        <span class="chip">ROI Measurement</span>
+      </div>
     </section>
 
     <!-- ── EDUCATION + LANGUAGES ─────────────────────────────────────────── -->
@@ -659,7 +673,7 @@ html, body {
 
   <!-- ── PAGE FOOTER ───────────────────────────────────────────────────────── -->
   <div class="page-footer">
-    <span>Jitin Nair &nbsp;&middot;&nbsp; Learning &amp; Development Leader</span>
+    <span>Jitin Nair &nbsp;&middot;&nbsp; L&amp;D Architect</span>
     <span><a href="mailto:not.jitin@gmail.com">not.jitin@gmail.com</a> &nbsp;&middot;&nbsp; <a href="https://jitinnair.com">jitinnair.com</a></span>
   </div>
 
