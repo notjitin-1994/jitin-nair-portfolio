@@ -112,11 +112,13 @@ export function MagneticButton({
   children,
   variant = "primary",
   className = "",
+  download,
 }: {
   href: string;
   children: ReactNode;
   variant?: "primary" | "ghost";
   className?: string;
+  download?: boolean;
 }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
@@ -154,7 +156,11 @@ export function MagneticButton({
       onPointerLeave={reset}
       className="inline-block"
     >
-      {isInternal ? (
+      {download ? (
+        <a href={href} download className={inner}>
+          {children}
+        </a>
+      ) : isInternal ? (
         <Link href={href} className={inner}>
           {children}
         </Link>
