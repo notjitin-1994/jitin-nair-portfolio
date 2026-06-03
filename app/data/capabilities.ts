@@ -38,6 +38,13 @@ export const dualFluency = {
   },
 };
 
+export type TileViz =
+  | { kind: "bar"; value: number; label: string }
+  | { kind: "stack"; segments: { v: number; label: string }[] }
+  | { kind: "speed"; label: string }
+  | { kind: "checks"; items: string[] }
+  | { kind: "scale"; label: string };
+
 export type CapabilityDomain = {
   id: string;
   title: string;
@@ -49,6 +56,8 @@ export type CapabilityDomain = {
   advanced: string[];
   proofValue: string;
   proofLabel: string;
+  bgSeed: string;
+  viz: TileViz;
 };
 
 export const capabilityDomains: CapabilityDomain[] = [
@@ -64,6 +73,8 @@ export const capabilityDomains: CapabilityDomain[] = [
     advanced: ["RAG & vector retrieval", "Chain-of-verification", "MCP tool sharing"],
     proofValue: "45 sec",
     proofLabel: "to a tailored learning report (SmartSlate)",
+    bgSeed: "ai-learning-platform-interface-77",
+    viz: { kind: "speed", label: "average report generation" },
   },
   {
     id: "instructional-design",
@@ -75,6 +86,8 @@ export const capabilityDomains: CapabilityDomain[] = [
     advanced: ["Bloom's taxonomy", "Gamification", "H5P"],
     proofValue: "70%",
     proofLabel: "less learning time (Accenture F&A)",
+    bgSeed: "instructional-design-workshop-21",
+    viz: { kind: "bar", value: 70, label: "less learning time" },
   },
   {
     id: "video",
@@ -86,6 +99,8 @@ export const capabilityDomains: CapabilityDomain[] = [
     advanced: ["SCORM/xAPI", "LMS administration"],
     proofValue: "60%",
     proofLabel: "less production time (Moody's)",
+    bgSeed: "video-production-studio-lighting-08",
+    viz: { kind: "bar", value: 60, label: "less production time" },
   },
   {
     id: "analytics",
@@ -97,6 +112,8 @@ export const capabilityDomains: CapabilityDomain[] = [
     advanced: ["xAPI analytics", "Dashboards & reporting"],
     proofValue: "$140K+",
     proofLabel: "training cost removed, measured",
+    bgSeed: "data-analytics-charts-screen-44",
+    viz: { kind: "stack", segments: [{ v: 80, label: "$80K F&A" }, { v: 60, label: "$60K HRO" }] },
   },
   {
     id: "microlearning",
@@ -108,6 +125,8 @@ export const capabilityDomains: CapabilityDomain[] = [
     advanced: ["Mobile-first learning", "Just-in-time content"],
     proofValue: "Audit-ready",
     proofLabel: "compliance learning in regulated environments",
+    bgSeed: "mobile-microlearning-flow-63",
+    viz: { kind: "checks", items: ["Regulated-ready", "Audit-ready", "In the flow of work"] },
   },
   {
     id: "automation",
@@ -119,6 +138,8 @@ export const capabilityDomains: CapabilityDomain[] = [
     advanced: ["Playwright", "n8n", "CI/CD", "Docker"],
     proofValue: "1,400-line",
     proofLabel: "VBA suite automating audits pan-India",
+    bgSeed: "automation-workflow-code-pipeline-90",
+    viz: { kind: "scale", label: "lines of VBA automating audits" },
   },
 ];
 

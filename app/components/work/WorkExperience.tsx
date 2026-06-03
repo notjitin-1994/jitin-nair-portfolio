@@ -103,7 +103,7 @@ function Hero() {
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute left-1/2 top-[-20%] h-[60vh] w-[60vh] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-[140px]" />
       </div>
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-6xl">
         <motion.div
           initial={reduced ? false : { opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -153,7 +153,7 @@ function Hero() {
 function SummaryBand() {
   return (
     <section className="px-5 pb-8">
-      <StaggerGroup className="mx-auto grid max-w-5xl grid-cols-2 gap-x-6 gap-y-10 border-y border-white/[0.08] py-8 md:grid-cols-4">
+      <StaggerGroup className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 border-y border-white/[0.08] py-8 md:grid-cols-4">
         {workSummary.map((s) => (
           <motion.div key={s.label} variants={itemVariants}>
             <CountUp
@@ -178,7 +178,7 @@ function CareerArc() {
 
   return (
     <section className="px-5 py-6 md:py-8">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
             From the floor to the architecture.

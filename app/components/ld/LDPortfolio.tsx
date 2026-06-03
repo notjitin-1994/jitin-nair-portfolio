@@ -10,7 +10,7 @@ import {
   useMotionValue,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Mail, Linkedin } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Mail, Linkedin, Check } from "lucide-react";
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "./primitives";
 import { LdVortexBackground } from "./LdVortexBackground";
 import {
@@ -23,7 +23,7 @@ import {
   type LdCaseStudy,
 } from "../../data/ldPortfolio";
 import { leadershipCases } from "../../data/leadership";
-import { capabilityDomains } from "../../data/capabilities";
+import { capabilityDomains, type CapabilityDomain } from "../../data/capabilities";
 
 const EMAIL = "mailto:not.jitin@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
@@ -422,7 +422,162 @@ function AiLever() {
   );
 }
 
-/* ---------- Capabilities (bento, proof-backed) ---------- */
+/* ---------- Capability tile infographic ---------- */
+const capPicsum = (seed: string) => `https://picsum.photos/seed/${seed}/700/500`;
+
+function TileViz({ c }: { c: CapabilityDomain }) {
+  const reduced = useReducedMotion();
+  const viz = c.viz;
+  const headline = (
+    <span className="font-serif text-[2rem] font-medium leading-none tracking-tight text-white">{c.proofValue}</span>
+  );
+
+  if (viz.kind === "bar") {
+    return (
+      <div>
+        <div className="flex items-baseline gap-2">
+          {headline}
+          <span className="text-xs text-neutral-400">{viz.label}</span>
+        </div>
+        <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
+          <motion.div
+            className="h-full w-full origin-left rounded-full bg-gradient-to-r from-emerald-400 to-teal-400"
+            initial={reduced ? false : { transform: "scaleX(0)" }}
+            whileInView={{ transform: `scaleX(${viz.value / 100})` }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 1, ease: EASE }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (viz.kind === "stack") {
+    const sum = viz.segments.reduce((a, s) => a + s.v, 0);
+    return (
+      <div>
+        <div className="flex items-baseline gap-2">
+          {headline}
+          <span className="text-xs text-neutral-400">removed</span>
+        </div>
+        <div className="mt-3 flex h-2 w-full overflow-hidden rounded-full bg-white/10">
+          {viz.segments.map((s, i) => (
+            <motion.div
+              key={s.label}
+              className={`h-full ${i === 0 ? "bg-emerald-400" : "bg-teal-400/80"}`}
+              initial={reduced ? false : { width: 0 }}
+              whileInView={{ width: `${(s.v / sum) * 100}%` }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.9, delay: i * 0.15, ease: EASE }}
+            />
+          ))}
+        </div>
+        <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1">
+          {viz.segments.map((s, i) => (
+            <span key={s.label} className="flex items-center gap-1.5 text-xs text-neutral-400">
+              <span className={`h-2 w-2 rounded-full ${i === 0 ? "bg-emerald-400" : "bg-teal-400/80"}`} />
+              {s.label}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (viz.kind === "speed") {
+    return (
+      <div>
+        <div className="flex items-baseline gap-2">
+          {headline}
+          <span className="text-xs text-neutral-400">{viz.label}</span>
+        </div>
+        <div className="relative mt-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
+          <motion.div
+            className="absolute inset-y-0 w-1/3 rounded-full bg-gradient-to-r from-transparent via-emerald-400 to-transparent"
+            initial={{ x: "-120%" }}
+            animate={reduced ? { x: "150%" } : { x: ["-120%", "320%"] }}
+            transition={reduced ? { duration: 0 } : { duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (viz.kind === "checks") {
+    return (
+      <div>
+        {headline}
+        <div className="mt-3 space-y-1.5">
+          {viz.items.map((it, i) => (
+            <motion.div
+              key={it}
+              className="flex items-center gap-2 text-xs text-neutral-300"
+              initial={reduced ? false : { opacity: 0, x: -8 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.4, delay: i * 0.1, ease: EASE }}
+            >
+              <Check className="h-3.5 w-3.5 flex-shrink-0 text-emerald-400" strokeWidth={2.5} />
+              {it}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // scale: sequence of ticks lighting up, paired with the real figure
+  return (
+    <div>
+      <div className="flex items-baseline gap-2">
+        {headline}
+        <span className="text-xs text-neutral-400">{viz.label}</span>
+      </div>
+      <div className="mt-3 flex items-center gap-1">
+        {Array.from({ length: 14 }).map((_, i) => (
+          <motion.span
+            key={i}
+            className="h-5 w-1 rounded-full bg-emerald-400"
+            initial={reduced ? false : { opacity: 0.15 }}
+            whileInView={{ opacity: [0.15, 1, 0.5] }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.5, delay: i * 0.04, ease: EASE }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CapabilityTile({ c }: { c: CapabilityDomain }) {
+  const Icon = c.icon;
+  return (
+    <div className="group relative flex h-full min-h-[268px] flex-col overflow-hidden rounded-2xl border border-white/[0.08] transition-colors duration-200 hover:border-emerald-400/30">
+      {/* Blurred contextual background */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={capPicsum(c.bgSeed)}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-[0.18] blur-[3px] transition-opacity duration-300 group-hover:opacity-[0.26]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f]/92 via-[#0a0a0f]/82 to-emerald-950/40" />
+      <div className="relative z-10 flex h-full flex-col p-6">
+        <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-400/15 bg-emerald-400/10 text-emerald-400">
+          <Icon className="h-5 w-5" strokeWidth={1.75} />
+        </span>
+        <h3 className="mt-5 font-serif text-xl font-medium tracking-tight text-white">{c.title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-300/90">{c.statement}</p>
+        <div className="mt-auto pt-7">
+          <TileViz c={c} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Capabilities ---------- */
 function Capabilities() {
   return (
     <section id="capabilities" className="scroll-mt-24 px-5 py-6 md:py-8">
@@ -436,43 +591,12 @@ function Capabilities() {
             Six capability domains, each one backed by a result rather than a buzzword.
           </p>
         </Reveal>
-        <div className="grid grid-cols-1 gap-4 lg:auto-rows-[210px] lg:grid-cols-3">
-          {capabilityDomains.map((c, i) => {
-            const Icon = c.icon;
-            return (
-              <Reveal key={c.id} delay={i * 0.05} className={c.featured ? "lg:col-span-2 lg:row-span-2" : ""}>
-                <div
-                  className={`group flex h-full flex-col rounded-2xl border p-6 transition-colors duration-200 ${
-                    c.featured
-                      ? "border-emerald-400/20 bg-emerald-500/[0.06] hover:border-emerald-400/40"
-                      : "border-white/[0.08] bg-white/[0.02] hover:border-emerald-400/30 hover:bg-white/[0.04]"
-                  }`}
-                >
-                  <span
-                    className={`flex h-11 w-11 items-center justify-center rounded-xl ${
-                      c.featured ? "bg-emerald-400/15 text-emerald-300" : "bg-white/[0.05] text-emerald-400"
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" strokeWidth={1.75} />
-                  </span>
-                  <div className="mt-auto pt-6">
-                    <div className="flex items-baseline gap-2">
-                      <span className={`font-serif font-medium tracking-tight text-white ${c.featured ? "text-3xl" : "text-2xl"}`}>
-                        {c.proofValue}
-                      </span>
-                      {c.featured && <span className="text-xs text-emerald-300/80">{c.proofLabel}</span>}
-                    </div>
-                    <h3 className={`mt-2 font-serif font-medium tracking-tight text-white ${c.featured ? "text-2xl sm:text-3xl" : "text-xl"}`}>
-                      {c.title}
-                    </h3>
-                    <p className={`mt-1.5 leading-relaxed text-neutral-400 ${c.featured ? "max-w-sm text-base" : "text-sm"}`}>
-                      {c.featured ? c.detail : c.statement}
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-            );
-          })}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {capabilityDomains.map((c, i) => (
+            <Reveal key={c.id} delay={(i % 3) * 0.05}>
+              <CapabilityTile c={c} />
+            </Reveal>
+          ))}
         </div>
 
         <Reveal className="mt-12 flex">
@@ -498,13 +622,14 @@ function Journey() {
 
   return (
     <section className="px-5 py-6 md:py-8">
-      <div className="mx-auto max-w-3xl">
-        <Reveal className="mb-16">
-          <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">The path here.</h2>
-          <p className="mt-3 text-neutral-400">Ten years of growing scope: from training teams to architecting the systems that train them.</p>
-        </Reveal>
+      <div className="mx-auto max-w-6xl">
+        <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+          <Reveal className="lg:sticky lg:top-28 lg:self-start">
+            <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">The path here.</h2>
+            <p className="mt-3 leading-relaxed text-neutral-400">Ten years of growing scope: from training teams to architecting the systems that train them.</p>
+          </Reveal>
 
-        <div ref={ref} className="relative pl-10">
+          <div ref={ref} className="relative pl-10">
           {/* Track (centered under the dots at x=7.5px) */}
           <div className="absolute left-[7px] top-2 bottom-2 w-px bg-white/[0.08]" />
           {!reduced && (
@@ -526,6 +651,7 @@ function Journey() {
                 <p className="mt-2 leading-relaxed text-neutral-400">{j.note}</p>
               </Reveal>
             ))}
+          </div>
           </div>
         </div>
       </div>
