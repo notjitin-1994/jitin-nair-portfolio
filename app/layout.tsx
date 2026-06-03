@@ -1,22 +1,34 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
+const dmSans = localFont({
+  src: [
+    { path: "../public/fonts/dm-sans-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/dm-sans-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/dm-sans-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/dm-sans-latin-700-normal.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-dm-sans",
   display: "swap",
-  weight: ["400", "500", "600", "700"],
 });
 
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
+const jetbrains = localFont({
+  src: [
+    { path: "../public/fonts/jetbrains-mono-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/jetbrains-mono-latin-700-normal.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-jetbrains",
   display: "swap",
 });
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
+const playfair = localFont({
+  src: [
+    { path: "../public/fonts/playfair-display-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/playfair-display-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/playfair-display-latin-700-normal.woff2", weight: "700", style: "normal" },
+    { path: "../public/fonts/playfair-display-latin-900-normal.woff2", weight: "900", style: "normal" },
+  ],
   variable: "--font-playfair",
   display: "swap",
 });

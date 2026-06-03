@@ -127,7 +127,7 @@ export const projectsData = [
           { name: "Async Pipeline", items: ["Webhook Workers", "Job Queue", "Real-time"], color: "#22d3ee" }
         ],
         description: "AI-native Learning & Development platform",
-        whatItDoes: "SmartSlate Polaris is an autonomous-first AI learning design ecosystem that automates the entire L&D lifecycle—from discovery to delivery. Utilizing a proprietary Two-Phase Intelligence Engine, it captures 100% of requirements with a Zero Revision Guarantee, achieving 15x launch speed gains over traditional methods.",
+        whatItDoes: "Smartslate Polaris is an autonomous-first AI learning design ecosystem that automates the entire L&D lifecycle—from discovery to delivery. Utilizing a proprietary Two-Phase Intelligence Engine, it captures 100% of requirements with a Zero Revision Guarantee, achieving 15x launch speed gains over traditional methods.",
         howItWorks: "The pipeline begins with Polaris Two-Phase Discovery: AI conducts deep-dive stakeholder interviews and analyzes context to generate production-ready Learning Blueprints in under 60 minutes. Constellation then automates instructional design using expert frameworks, while Nova handles AI-native content authoring. Orbit delivers via an AI-powered LMS, Nebula provides 24/7 intelligent tutoring, and Spectrum provides real-time ROI analytics.",
         keyInnovations: [
           "Human-in-the-Loop validation gates at every AI generation stage",

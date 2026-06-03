@@ -37,7 +37,7 @@ export type LdCaseStudy = {
 export const ldCaseStudies: LdCaseStudy[] = [
   {
     id: "smartslate",
-    org: "SmartSlate",
+    org: "Smartslate",
     context: "smartslate.io · Lead Architect & Designer",
     title: "An L&D engine that designs as fast as the business moves",
     challenge:
@@ -112,7 +112,7 @@ export const ldAiLever = {
   heading: "AI as a lever, not a layer",
   body: "I do not just adopt AI tools, I architect them. The same engineering behind 200+ deployed agents removes the real L&D bottlenecks: automated discovery and design, self-running content pipelines, and audits that used to eat weeks.",
   points: [
-    "Discovery to delivery automated, with expert validation (SmartSlate)",
+    "Discovery to delivery automated, with expert validation (Smartslate)",
     "Production pipelines that cut build time by 60% (Moody's)",
     "Audit and reporting automation across pan-India teams (Accenture)",
   ],
@@ -155,7 +155,7 @@ export const ldJourney = [
   {
     year: "2025",
     role: "AI Systems Architect",
-    org: "Independent · SmartSlate",
+    org: "Independent · Smartslate",
     note: "AI-native learning infrastructure and 200+ deployed agents, automating L&D from discovery to delivery.",
   },
 ];

@@ -63,7 +63,7 @@ export const leadingPrinciples: Principle[] = [
     icon: Waypoints,
     title: "Meet people in the flow of work",
     body: "The right modality at the point of need, so learning fits the job instead of interrupting it.",
-    proof: "45-second answers at SmartSlate",
+    proof: "45-second answers at Smartslate",
   },
 ];
 
@@ -109,7 +109,7 @@ export const leadershipCases: LeadershipCase[] = [
     competency: "Change management",
     icon: Rocket,
     title: "A 90-day playbook for landing a modern learning ecosystem",
-    org: "SmartSlate · operating playbook",
+    org: "Smartslate · operating playbook",
     context: "From fragmented legacy tools to learning in the flow of work",
     imageSeed: "modern-learning-platform-4417",
     problem:

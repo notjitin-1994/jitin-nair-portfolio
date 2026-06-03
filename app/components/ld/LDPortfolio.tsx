@@ -1,16 +1,17 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
   motion,
+  AnimatePresence,
   useScroll,
   useSpring,
   useMotionValue,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Mail, Linkedin, Check } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink } from "lucide-react";
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "./primitives";
 import { LdVortexBackground } from "./LdVortexBackground";
 import {
@@ -22,6 +23,7 @@ import {
   ldRecognition,
   type LdCaseStudy,
 } from "../../data/ldPortfolio";
+import { CaseStudyInfographic } from "./CaseStudyInfographics";
 import { leadershipCases } from "../../data/leadership";
 import { capabilityDomains, type CapabilityDomain } from "../../data/capabilities";
 
@@ -31,8 +33,7 @@ const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 const NAV = [
   { label: "Work", href: "/work" },
   { label: "Approach", href: "#approach" },
-  { label: "Capabilities", href: "#capabilities" },
-  { label: "Contact", href: "#contact" },
+  { label: "Capabilities", href: "/capabilities" },
 ];
 
 const HERO_LINES: ReactNode[] = [
@@ -244,24 +245,19 @@ function Impact() {
   );
 }
 
-/* ---------- Case study (sticky metric panel on desktop) ---------- */
+/* ---------- Case study (sticky infographic panel on desktop) ---------- */
 function CaseStudy({ cs, index, flip }: { cs: LdCaseStudy; index: number; flip: boolean }) {
   return (
     <div className="grid gap-8 border-t border-white/[0.06] pt-12 lg:grid-cols-2 lg:gap-16">
-      {/* Metric panel */}
+      {/* Infographic panel */}
       <div className={`self-start lg:sticky lg:top-28 ${flip ? "lg:order-2" : ""}`}>
         <Reveal>
-          <div className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">
+          <div className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-400">
             {String(index + 1).padStart(2, "0")} / {cs.org}
           </div>
           <div className="mt-2 text-sm text-neutral-500">{cs.context}</div>
-          <div className="mt-8 grid gap-6 sm:grid-cols-3 lg:grid-cols-1 lg:gap-7">
-            {cs.outcomes.map((o) => (
-              <div key={o.label} className="border-l-2 border-emerald-400/50 pl-4">
-                <div className="font-serif text-3xl font-medium tracking-tight text-white">{o.value}</div>
-                <div className="mt-1 text-sm leading-snug text-neutral-400">{o.label}</div>
-              </div>
-            ))}
+          <div className="mt-8">
+            <CaseStudyInfographic id={cs.id} />
           </div>
         </Reveal>
       </div>
@@ -694,38 +690,218 @@ function Recognition() {
 }
 
 /* ---------- Contact ---------- */
+const CONTACT_OPTIONS = [
+  {
+    icon: Mail,
+    label: "Email",
+    href: "mailto:not.jitin@gmail.com",
+    color: "from-emerald-500/20 to-emerald-400/10",
+    borderColor: "border-emerald-500/30",
+    iconColor: "text-emerald-400",
+  },
+  {
+    icon: Phone,
+    label: "Call",
+    href: "tel:+919008898642",
+    color: "from-teal-500/20 to-teal-400/10",
+    borderColor: "border-teal-500/30",
+    iconColor: "text-teal-400",
+  },
+  {
+    icon: MessageCircle,
+    label: "WhatsApp",
+    href: "https://wa.me/919008898642",
+    color: "from-emerald-500/15 to-teal-500/15",
+    borderColor: "border-emerald-500/25",
+    iconColor: "text-emerald-400",
+  },
+];
+
+const SOCIAL_LINKS = [
+  {
+    icon: Linkedin,
+    label: "LinkedIn",
+    href: LINKEDIN,
+    description: "Connect professionally",
+  },
+  {
+    icon: Instagram,
+    label: "Instagram",
+    href: "https://instagram.com/not_jitin",
+    description: "@not_jitin",
+  },
+];
+
 function Contact() {
+  const [connectOpen, setConnectOpen] = useState(false);
+
   return (
     <section id="contact" className="scroll-mt-24 px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
-        <Reveal>
-          <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
-            Let&apos;s build your capability engine.
-          </h2>
-          <p className="mt-6 max-w-xl leading-relaxed text-neutral-400">
-            Open to L&amp;D leadership roles, AI-in-learning strategy, and advisory. If you are scaling a learning
-            function or removing its bottlenecks, let&apos;s talk.
-          </p>
-          <div className="mt-10 flex">
-            <MagneticButton href={EMAIL} variant="primary">
-              Get in touch
-              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2} />
-            </MagneticButton>
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-start">
+          {/* Left — headline + availability */}
+          <div>
+            <Reveal>
+              <Label>Get in touch</Label>
+              <h2 className="mt-4 font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
+                Let&apos;s build your capability engine.
+              </h2>
+              <p className="mt-6 max-w-xl leading-relaxed text-neutral-400">
+                Open to L&amp;D leadership roles, AI-in-learning strategy, and advisory. If you are scaling a learning
+                function or removing its bottlenecks, let&apos;s talk.
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <div className="mt-8 inline-block rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-colors hover:border-emerald-500/30">
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="relative flex h-3 w-3">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500" />
+                  </span>
+                  <span className="font-medium text-emerald-400">Available for new opportunities</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {["Full-time", "Contract", "Advisory"].map((t) => (
+                    <span key={t} className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm text-emerald-400">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
           </div>
-          <div className="mt-8 flex items-center gap-6 text-sm text-neutral-500">
-            <a href={EMAIL} className="inline-flex items-center gap-2 transition-colors hover:text-white">
-              <Mail className="h-4 w-4" strokeWidth={1.75} /> not.jitin@gmail.com
-            </a>
-            <a
-              href={LINKEDIN}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 transition-colors hover:text-white"
+
+          {/* Right — social + connect cards */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {/* Static social links */}
+            {SOCIAL_LINKS.map((link, i) => {
+              const Icon = link.icon;
+              return (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="group rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white/[0.06]"
+                >
+                  <div className="mb-4 flex items-start justify-between">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 transition-colors group-hover:bg-emerald-500/20">
+                      <Icon className="h-6 w-6 text-emerald-400" strokeWidth={1.75} />
+                    </div>
+                    <ExternalLink className="h-5 w-5 text-neutral-600 transition-colors group-hover:text-emerald-400" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white transition-colors group-hover:text-emerald-400">
+                    {link.label}
+                  </h3>
+                  <p className="mt-1 text-sm text-neutral-500">{link.description}</p>
+                </motion.a>
+              );
+            })}
+
+            {/* Expandable connect card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.25 }}
+              className={`relative overflow-hidden rounded-2xl border transition-all duration-500 ${
+                connectOpen
+                  ? "border-emerald-500/40 bg-gradient-to-br from-emerald-500/10 to-teal-500/10"
+                  : "border-white/[0.08] bg-white/[0.03] hover:border-emerald-500/30 hover:bg-white/[0.06]"
+              }`}
             >
-              <Linkedin className="h-4 w-4" strokeWidth={1.75} /> LinkedIn
-            </a>
+              <AnimatePresence mode="wait">
+                {!connectOpen ? (
+                  <motion.button
+                    key="collapsed"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.2 }}
+                    onClick={() => setConnectOpen(true)}
+                    className="group w-full p-6 text-left"
+                  >
+                    <div className="mb-4 flex items-start justify-between">
+                      <div className="relative flex h-12 w-12 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 transition-colors group-hover:bg-emerald-500/20">
+                        <Users className="h-6 w-6 text-emerald-400" strokeWidth={1.75} />
+                        <span className="absolute -right-1 -top-1 h-3 w-3 animate-pulse rounded-full border-2 border-[#0a0a0f] bg-emerald-400" />
+                      </div>
+                      <ChevronRight className="h-5 w-5 text-neutral-600 transition-all group-hover:translate-x-1 group-hover:text-emerald-400" strokeWidth={1.5} />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white transition-colors group-hover:text-emerald-400">Connect</h3>
+                    <p className="mt-1 text-sm text-neutral-500">Click to see options</p>
+                  </motion.button>
+                ) : (
+                  <motion.div
+                    key="expanded"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-6"
+                  >
+                    <div className="mb-5 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/20 shadow-lg shadow-emerald-500/10">
+                          <Users className="h-5 w-5 text-emerald-400" strokeWidth={1.75} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-white">Choose how to connect</p>
+                          <p className="text-xs text-neutral-500">Direct contact options</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setConnectOpen(false)}
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 transition-colors hover:bg-white/10"
+                      >
+                        <X className="h-4 w-4 text-neutral-400" strokeWidth={1.75} />
+                      </button>
+                    </div>
+
+                    <div className="mb-5 grid grid-cols-3 gap-3">
+                      {CONTACT_OPTIONS.map((opt, i) => {
+                        const Icon = opt.icon;
+                        return (
+                          <motion.a
+                            key={opt.label}
+                            href={opt.href}
+                            target={opt.label === "WhatsApp" ? "_blank" : undefined}
+                            rel={opt.label === "WhatsApp" ? "noopener noreferrer" : undefined}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: i * 0.08 }}
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            whileTap={{ scale: 0.97 }}
+                            className={`flex flex-col items-center gap-2 rounded-xl border bg-gradient-to-br p-4 transition-all duration-200 ${opt.color} ${opt.borderColor}`}
+                          >
+                            <Icon className={`h-6 w-6 ${opt.iconColor}`} strokeWidth={1.75} />
+                            <span className="text-xs font-medium text-neutral-200">{opt.label}</span>
+                          </motion.a>
+                        );
+                      })}
+                    </div>
+
+                    <div className="space-y-2 border-t border-white/[0.08] pt-4">
+                      <div className="flex items-center gap-2 text-sm text-neutral-400">
+                        <Mail className="h-4 w-4 text-emerald-400" strokeWidth={1.75} />
+                        <span>not.jitin@gmail.com</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-neutral-400">
+                        <Phone className="h-4 w-4 text-teal-400" strokeWidth={1.75} />
+                        <span>+91 90088 98642</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );
@@ -734,10 +910,9 @@ function Contact() {
 /* ---------- Footer ---------- */
 function LdFooter() {
   const LD_SECTIONS = [
-    { label: "Work", href: "#work" },
-    { label: "Approach", href: "#approach" },
-    { label: "Capabilities", href: "#capabilities" },
-    { label: "Contact", href: "#contact" },
+    { label: "Work", href: "/work", isLink: true },
+    { label: "Approach", href: "#approach", isLink: false },
+    { label: "Capabilities", href: "/capabilities", isLink: true },
   ];
 
   const PORTFOLIO_LINKS = [
@@ -753,7 +928,7 @@ function LdFooter() {
           {/* Brand */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
-              <span className="text-xl font-bold text-white">Jitin Nair</span>
+              <span className="font-serif text-xl font-bold text-white">Jitin Nair</span>
             </Link>
             <p className="text-sm leading-relaxed text-slate-400">
               L&amp;D leader and AI systems architect. A decade turning learning into measurable performance.
@@ -767,6 +942,15 @@ function LdFooter() {
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-4 w-4" />
+              </a>
+              <a
+                href="https://instagram.com/not_jitin"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-slate-400 transition-all hover:border-emerald-500/30 hover:text-emerald-400"
+                aria-label="Instagram"
+              >
+                <Instagram className="h-4 w-4" />
               </a>
               <a
                 href="mailto:not.jitin@gmail.com"
@@ -784,12 +968,15 @@ function LdFooter() {
             <ul className="space-y-3">
               {LD_SECTIONS.map((item) => (
                 <li key={item.href}>
-                  <a
-                    href={item.href}
-                    className="text-sm text-slate-400 transition-colors hover:text-emerald-400"
-                  >
-                    {item.label}
-                  </a>
+                  {item.isLink ? (
+                    <Link href={item.href} className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <a href={item.href} className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
+                      {item.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>

@@ -72,7 +72,7 @@ export const capabilityDomains: CapabilityDomain[] = [
     expert: ["Multi-provider LLM integration", "Human-in-the-loop design", "Agentic workflows", "Prompt engineering"],
     advanced: ["RAG & vector retrieval", "Chain-of-verification", "MCP tool sharing"],
     proofValue: "45 sec",
-    proofLabel: "to a tailored learning report (SmartSlate)",
+    proofLabel: "to a tailored learning report (Smartslate)",
     bgSeed: "ai-learning-platform-interface-77",
     viz: { kind: "speed", label: "average report generation" },
   },
