@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bot, VideoIcon, Users, Headphones, GraduationCap, ChevronDown, Sparkles } from "lucide-react";
+import { Bot, GraduationCap, ChevronDown, Sparkles } from "lucide-react";
+import { MoodysLogo, AccentureLogo, TwentyFourSevenLogo } from "./CompanyLogos";
 
 export function MobileJourney() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -34,7 +35,7 @@ export function MobileJourney() {
       role: "Moody's Ratings",
       description: "Led video-based learning production for global ratings agency. Built scalable content pipelines and automated workflows, reducing production time by 60% while maintaining 90%+ completion rates for complex financial curriculum.",
       highlights: ["60% Production Save", "90%+ Completion", "Global L&D Scale"],
-      icon: VideoIcon,
+      icon: MoodysLogo,
       bgImage: "/journey-finance.jpg",
       gradient: "from-emerald-500/20 to-teal-500/20",
       stats: { production: "-60%", completion: "90%+", reach: "Global" }
@@ -46,7 +47,7 @@ export function MobileJourney() {
       role: "Accenture",
       description: "Managed L&D for 300+ employees. Developed hybrid learning models that reduced training time by 70% while maintaining retention, saving ~$140K. Engineered a 1,400+ line VBA automation suite for pan-India TNA audits.",
       highlights: ["$140K Cost Savings", "70% Time Reduction", "VBA Audit Engine"],
-      icon: Users,
+      icon: AccentureLogo,
       bgImage: "/journey-training.jpg",
       gradient: "from-teal-500/20 to-cyan-500/20",
       stats: { savings: "$140K+", reduction: "70%", reach: "300+" }
@@ -58,7 +59,7 @@ export function MobileJourney() {
       role: "247.ai",
       description: "Managed back-end support for a US retail giant, ensuring seamless buyer-seller experiences. Recognized as 3x Top Performer and identified for the leadership track within 24 months for excellence in process training and problem solving.",
       highlights: ["3x Top Performer", "Leadership Track", "Customer Success"],
-      icon: Headphones,
+      icon: TwentyFourSevenLogo,
       bgImage: "/journey-support.jpg",
       gradient: "from-cyan-500/20 to-emerald-500/20",
       stats: { performance: "Top 1%", tenure: "2.5y", training: "SME" }

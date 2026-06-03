@@ -2,8 +2,9 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { Bot, VideoIcon, Users, Headphones, GraduationCap } from "lucide-react";
+import { Bot, GraduationCap } from "lucide-react";
 import { JourneyCard } from "./shared";
+import { MoodysLogo, AccentureLogo, TwentyFourSevenLogo } from "./CompanyLogos";
 
 export function DesktopJourney() {
   const containerRef = useRef(null);
@@ -41,7 +42,7 @@ export function DesktopJourney() {
       period: "Sept 2022 - Mar 2025",
       description: "Led video-based learning production for global ratings agency. Built scalable content pipelines and automated workflows, reducing production time by 60% while maintaining 90%+ completion rates for complex financial curriculum.",
       highlights: ["60% Production Save", "90%+ Completion", "Global L&D Scale"],
-      icon: VideoIcon,
+      icon: MoodysLogo,
       bgImage: "/journey-finance.jpg",
       gradient: "from-emerald-500/20 to-teal-500/20"
     },
@@ -52,7 +53,7 @@ export function DesktopJourney() {
       period: "Jan 2019 - Sept 2022",
       description: "Managed L&D for 300+ employees. Developed hybrid learning models that reduced training time by 70% while maintaining retention, saving ~$140K. Engineered a 1,400+ line VBA automation suite for pan-India TNA audits.",
       highlights: ["$140K Cost Savings", "70% Time Reduction", "VBA Audit Engine"],
-      icon: Users,
+      icon: AccentureLogo,
       bgImage: "/journey-training.jpg",
       gradient: "from-teal-500/20 to-cyan-500/20"
     },
@@ -63,7 +64,7 @@ export function DesktopJourney() {
       period: "May 2015 - Dec 2017",
       description: "Managed back-end support for a US retail giant, ensuring seamless buyer-seller experiences. Recognized as 3x Top Performer and identified for the leadership track within 24 months for excellence in process training and problem solving.",
       highlights: ["3x Top Performer", "Leadership Track", "Customer Success"],
-      icon: Headphones,
+      icon: TwentyFourSevenLogo,
       bgImage: "/journey-support.jpg",
       gradient: "from-cyan-500/20 to-emerald-500/20"
     },

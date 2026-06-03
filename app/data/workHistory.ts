@@ -55,7 +55,7 @@ export type WorkRole = {
 
 export const workSummary = [
   { to: 10, suffix: "+ yrs", label: "across L&D and AI" },
-  { to: 50, suffix: "K+", label: "learners trained" },
+  { to: 5, suffix: "K+", label: "learners trained" },
   { to: 140, prefix: "$", suffix: "K+", label: "in training cost removed" },
   { to: 200, suffix: "+", label: "AI agents in production" },
 ];

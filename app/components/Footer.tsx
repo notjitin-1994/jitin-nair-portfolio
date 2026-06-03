@@ -16,7 +16,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
-              <span className="text-xl font-bold text-white">
+              <span className="font-serif text-xl font-bold text-white">
                 {siteConfig.name}
               </span>
             </Link>

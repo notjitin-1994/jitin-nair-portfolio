@@ -1,20 +1,68 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { ChevronDown } from "lucide-react";
 import { Footer } from "./Footer";
 import LazySection from "./LazySection";
+import { projectsData } from "../data/projects";
 
 // Static imports for above-the-fold (Critical Path)
 import { useIsMobile } from "./home/shared";
 
-const AI_NAV = [
-  { label: "Systems", href: "#projects" },
-  { label: "Tech Stack", href: "#techstack" },
-  { label: "Insights", href: "#insights" },
-  { label: "Contact", href: "#contact" },
-];
+function ProjectsDropdown() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-1 text-sm text-neutral-400 transition-colors hover:text-white"
+      >
+        Projects
+        <ChevronDown
+          className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          strokeWidth={2}
+        />
+      </button>
+
+      {open && (
+        <div className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3">
+          <div className="min-w-[200px] overflow-hidden rounded-2xl border border-white/[0.12] bg-[#0a0a0f]/95 p-1.5 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+            {projectsData.map((p) => (
+              <Link
+                key={p.id}
+                href={`/projects/${p.id}`}
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-neutral-400 transition-colors hover:bg-white/[0.06] hover:text-white"
+              >
+                <span className="font-mono text-[10px] font-bold text-cyan-400/60">
+                  {String(p.number).padStart(2, "0")}
+                </span>
+                {p.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function NavAI() {
   return (
@@ -25,11 +73,13 @@ function NavAI() {
           <span className="hidden text-cyan-400/70 sm:inline">· AI Systems</span>
         </Link>
         <div className="hidden items-center gap-7 md:flex">
-          {AI_NAV.map((n) => (
-            <a key={n.href} href={n.href} className="text-sm text-neutral-400 transition-colors hover:text-white">
-              {n.label}
-            </a>
-          ))}
+          <ProjectsDropdown />
+          <a href="#techstack" className="text-sm text-neutral-400 transition-colors hover:text-white">
+            Tech Stack
+          </a>
+          <Link href="/insights" className="text-sm text-neutral-400 transition-colors hover:text-white">
+            Insights
+          </Link>
         </div>
         <a
           href="#contact"

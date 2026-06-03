@@ -17,7 +17,7 @@ import {
 // numbers were hallucinated and are deliberately NOT used.
 
 export const ldImpact: { to: number; prefix?: string; suffix?: string; label: string }[] = [
-  { to: 50, suffix: "K+", label: "learners reached" },
+  { to: 5, suffix: "K+", label: "learners reached" },
   { to: 70, suffix: "%", label: "faster training delivery" },
   { to: 140, prefix: "$", suffix: "K+", label: "training cost saved" },
   { to: 90, suffix: "%+", label: "course completion" },

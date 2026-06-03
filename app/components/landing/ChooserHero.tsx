@@ -30,7 +30,7 @@ const HEADLINE: ReactNode[] = [
 // animates the numeric part. One AI stat, one L&D stat, one ROI stat.
 const PROOF = [
   { to: 200, format: (n: number) => `${Math.round(n)}+`, label: "AI agents in production" },
-  { to: 50, format: (n: number) => `${Math.round(n)}K+`, label: "learners trained" },
+  { to: 5, format: (n: number) => `${Math.round(n)}K+`, label: "learners trained" },
   { to: 140, format: (n: number) => `$${Math.round(n)}K+`, label: "training costs saved" },
 ];
 
