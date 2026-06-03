@@ -301,12 +301,12 @@ function Work() {
           ))}
         </div>
 
-        <Reveal className="mt-16 flex border-t border-white/[0.06] pt-12">
+        <Reveal className="mt-12 flex">
           <Link
             href="/work"
             className="group inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/[0.06] px-7 py-3.5 text-sm font-semibold text-emerald-300 transition-[transform,background-color,border-color] duration-200 ease-out hover:border-emerald-400/70 hover:bg-emerald-400/[0.12] hover:text-emerald-200 active:scale-[0.97]"
           >
-            Read the full experience
+            Full Work Experience
             <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" strokeWidth={2} />
           </Link>
         </Reveal>
@@ -395,7 +395,7 @@ function AiLever() {
               <p className="mt-6 max-w-md leading-relaxed text-neutral-300">{ldAiLever.body}</p>
               <Link
                 href={ldAiLever.link.href}
-                className="group mt-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
+                className="group mt-8 inline-flex items-center gap-2 text-sm font-semibold text-cyan-400 transition-colors hover:text-cyan-300"
               >
                 {ldAiLever.link.label}
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />

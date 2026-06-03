@@ -408,7 +408,7 @@ export function JourneyCard({ item, index, isLast }: {
         </motion.div>
 
         {/* Icon Hub with Connection */}
-        <div className="w-24 flex-shrink-0 flex items-center justify-center relative">
+        <div className={`${item.logoSrc ? 'w-36' : 'w-24'} flex-shrink-0 flex items-center justify-center relative`}>
           {/* Connector Line */}
           <motion.div
             className={`absolute h-0.5 bg-cyan-400 ${isEven ? 'left-0 right-1/2' : 'left-1/2 right-0'}`}
@@ -419,39 +419,40 @@ export function JourneyCard({ item, index, isLast }: {
             style={{ originX: isEven ? 0 : 1 }}
           />
 
-          {/* Pulsing Icon Container */}
+          {/* Logo or Icon Container */}
           <motion.div
-            initial={{ scale: 0, rotate: -180 }}
+            initial={{ scale: 0, rotate: item.logoSrc ? 0 : -180 }}
             whileInView={{ scale: 1, rotate: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4, type: "spring", stiffness: 200, damping: 15 }}
-            whileHover={{ scale: 1.15, rotate: 5 }}
+            whileHover={{ scale: 1.08 }}
             className="relative z-10"
           >
-            {/* Pulse Ring */}
-            <motion.div
-              className="absolute inset-0 rounded-2xl bg-cyan-400/30"
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.5, 0, 0.5]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-
-            {/* Icon */}
-            <motion.div
-              className="relative w-14 h-14 rounded-2xl bg-[#0a0a0f] border-2 border-cyan-400/60 flex items-center justify-center shadow-lg shadow-cyan-400/30"
-              whileHover={{
-                boxShadow: "0 0 30px rgba(34, 211, 238, 0.5)",
-                borderColor: "rgba(34, 211, 238, 1)"
-              }}
-            >
-              <item.icon className="w-6 h-6 text-cyan-400" />
-            </motion.div>
+            {item.logoSrc ? (
+              /* Real company logo pill */
+              <div className="relative w-32 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden px-3 py-1.5 shadow-lg shadow-black/30">
+                <img
+                  src={item.logoSrc}
+                  alt={item.role}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+            ) : (
+              /* Generic icon with pulse ring */
+              <>
+                <motion.div
+                  className="absolute inset-0 rounded-2xl bg-cyan-400/30"
+                  animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.div
+                  className="relative w-14 h-14 rounded-2xl bg-[#0a0a0f] border-2 border-cyan-400/60 flex items-center justify-center shadow-lg shadow-cyan-400/30"
+                  whileHover={{ boxShadow: "0 0 30px rgba(34, 211, 238, 0.5)", borderColor: "rgba(34, 211, 238, 1)" }}
+                >
+                  <item.icon className="w-6 h-6 text-cyan-400" />
+                </motion.div>
+              </>
+            )}
           </motion.div>
         </div>
 
@@ -468,9 +469,17 @@ export function JourneyCard({ item, index, isLast }: {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="relative z-10 w-12 h-12 rounded-xl bg-[#0a0a0f] border-2 border-cyan-400/50 flex items-center justify-center shadow-lg shadow-cyan-400/20"
+            className={`relative z-10 flex items-center justify-center shadow-lg ${
+              item.logoSrc
+                ? "w-24 h-9 rounded-xl bg-white overflow-hidden px-2 py-1 shadow-black/30"
+                : "w-12 h-12 rounded-xl bg-[#0a0a0f] border-2 border-cyan-400/50 shadow-cyan-400/20"
+            }`}
           >
-            <item.icon className="w-5 h-5 text-cyan-400" />
+            {item.logoSrc ? (
+              <img src={item.logoSrc} alt={item.role} className="max-w-full max-h-full object-contain" />
+            ) : (
+              <item.icon className="w-5 h-5 text-cyan-400" />
+            )}
           </motion.div>
 
           {!isLast && (
