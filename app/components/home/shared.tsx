@@ -429,7 +429,7 @@ export function JourneyCard({ item, index, isLast }: {
             className="relative z-10"
           >
             {item.logoSrc ? (
-              /* Real company logo pill */
+              /* Real company logo pill on a neutral white background */
               <div className="relative w-32 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden px-3 py-1.5 shadow-lg shadow-black/30">
                 <img
                   src={item.logoSrc}
@@ -438,7 +438,7 @@ export function JourneyCard({ item, index, isLast }: {
                 />
               </div>
             ) : (
-              /* Generic icon with pulse ring */
+              /* Generic icon with pulse ring, neutral logo tile */
               <>
                 <motion.div
                   className="absolute inset-0 rounded-2xl bg-cyan-400/30"
@@ -446,10 +446,10 @@ export function JourneyCard({ item, index, isLast }: {
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 />
                 <motion.div
-                  className="relative w-14 h-14 rounded-2xl bg-[#0a0a0f] border-2 border-cyan-400/60 flex items-center justify-center shadow-lg shadow-cyan-400/30"
-                  whileHover={{ boxShadow: "0 0 30px rgba(34, 211, 238, 0.5)", borderColor: "rgba(34, 211, 238, 1)" }}
+                  className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-white to-neutral-300 ring-2 ring-cyan-400/50 flex items-center justify-center shadow-lg shadow-cyan-400/20"
+                  whileHover={{ boxShadow: "0 0 30px rgba(34, 211, 238, 0.4)" }}
                 >
-                  <item.icon className="w-6 h-6 text-cyan-400" />
+                  <item.icon className="w-6 h-6 text-neutral-800" />
                 </motion.div>
               </>
             )}
@@ -472,13 +472,13 @@ export function JourneyCard({ item, index, isLast }: {
             className={`relative z-10 flex items-center justify-center shadow-lg ${
               item.logoSrc
                 ? "w-24 h-9 rounded-xl bg-white overflow-hidden px-2 py-1 shadow-black/30"
-                : "w-12 h-12 rounded-xl bg-[#0a0a0f] border-2 border-cyan-400/50 shadow-cyan-400/20"
+                : "w-12 h-12 rounded-xl bg-gradient-to-br from-white to-neutral-300 ring-2 ring-cyan-400/40 shadow-cyan-400/15"
             }`}
           >
             {item.logoSrc ? (
               <img src={item.logoSrc} alt={item.role} className="max-w-full max-h-full object-contain" />
             ) : (
-              <item.icon className="w-5 h-5 text-cyan-400" />
+              <item.icon className="w-5 h-5 text-neutral-800" />
             )}
           </motion.div>
 

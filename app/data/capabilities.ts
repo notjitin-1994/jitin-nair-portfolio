@@ -39,11 +39,12 @@ export const dualFluency = {
 };
 
 export type TileViz =
+  | { kind: "gauge"; fill: number; label: string }
+  | { kind: "donut"; value: number; label: string }
   | { kind: "bar"; value: number; label: string }
-  | { kind: "stack"; segments: { v: number; label: string }[] }
-  | { kind: "speed"; label: string }
+  | { kind: "columns"; segments: { v: number; label: string }[] }
   | { kind: "checks"; items: string[] }
-  | { kind: "scale"; label: string };
+  | { kind: "sparkline"; to: number; label: string };
 
 export type CapabilityDomain = {
   id: string;
@@ -74,7 +75,7 @@ export const capabilityDomains: CapabilityDomain[] = [
     proofValue: "45 sec",
     proofLabel: "to a tailored learning blueprint (Solara Polaris)",
     bgSeed: "ai-learning-platform-interface-77",
-    viz: { kind: "speed", label: "average report generation" },
+    viz: { kind: "gauge", fill: 0.82, label: "average report generation" },
   },
   {
     id: "instructional-design",
@@ -87,7 +88,7 @@ export const capabilityDomains: CapabilityDomain[] = [
     proofValue: "70%",
     proofLabel: "less learning time (Accenture F&A)",
     bgSeed: "instructional-design-workshop-21",
-    viz: { kind: "bar", value: 70, label: "less learning time" },
+    viz: { kind: "donut", value: 70, label: "less learning time" },
   },
   {
     id: "video",
@@ -113,7 +114,7 @@ export const capabilityDomains: CapabilityDomain[] = [
     proofValue: "$140K+",
     proofLabel: "training cost removed, measured",
     bgSeed: "data-analytics-charts-screen-44",
-    viz: { kind: "stack", segments: [{ v: 80, label: "$80K F&A" }, { v: 60, label: "$60K HRO" }] },
+    viz: { kind: "columns", segments: [{ v: 80, label: "$80K F&A" }, { v: 60, label: "$60K HRO" }] },
   },
   {
     id: "microlearning",
@@ -139,7 +140,7 @@ export const capabilityDomains: CapabilityDomain[] = [
     proofValue: "1,400-line",
     proofLabel: "VBA suite automating audits pan-India",
     bgSeed: "automation-workflow-code-pipeline-90",
-    viz: { kind: "scale", label: "lines of VBA automating audits" },
+    viz: { kind: "sparkline", to: 1400, label: "lines of VBA automating audits" },
   },
 ];
 

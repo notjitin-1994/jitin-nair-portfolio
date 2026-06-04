@@ -439,10 +439,93 @@ const capPicsum = (seed: string) => `https://picsum.photos/seed/${seed}/700/500`
 function TileViz({ c }: { c: CapabilityDomain }) {
   const reduced = useReducedMotion();
   const viz = c.viz;
+  const inView = { once: true, margin: "-40px" } as const;
   const headline = (
     <span className="font-serif text-[2rem] font-medium leading-none tracking-tight text-white">{c.proofValue}</span>
   );
 
+  // 1. Semicircle speed gauge
+  if (viz.kind === "gauge") {
+    const len = 148;
+    const needle = -90 + viz.fill * 180;
+    return (
+      <div>
+        <div className="mx-auto w-full max-w-[150px]">
+          <svg viewBox="0 0 110 64" className="w-full">
+            <path d="M8 56 A47 47 0 0 1 102 56" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="7" strokeLinecap="round" />
+            <motion.path
+              d="M8 56 A47 47 0 0 1 102 56"
+              fill="none"
+              stroke="url(#capGauge)"
+              strokeWidth="7"
+              strokeLinecap="round"
+              strokeDasharray={len}
+              initial={reduced ? false : { strokeDashoffset: len }}
+              whileInView={{ strokeDashoffset: len * (1 - viz.fill) }}
+              viewport={inView}
+              transition={{ duration: 1.2, ease: EASE }}
+            />
+            <motion.line
+              x1="55" y1="56" x2="55" y2="20"
+              stroke="#e5e7eb" strokeWidth="2.5" strokeLinecap="round"
+              style={{ transformOrigin: "55px 56px" }}
+              initial={reduced ? false : { rotate: -90 }}
+              whileInView={{ rotate: needle }}
+              viewport={inView}
+              transition={{ duration: 1.2, ease: EASE }}
+            />
+            <circle cx="55" cy="56" r="4" fill="#34d399" />
+            <defs>
+              <linearGradient id="capGauge" x1="0" x2="1">
+                <stop offset="0%" stopColor="#34d399" />
+                <stop offset="100%" stopColor="#2dd4bf" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div className="mt-1 flex items-baseline gap-2">
+          {headline}
+          <span className="text-xs text-neutral-400">{viz.label}</span>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Donut ring
+  if (viz.kind === "donut") {
+    const r = 26;
+    const circ = 2 * Math.PI * r;
+    return (
+      <div className="flex items-center gap-4">
+        <div className="relative h-[68px] w-[68px] flex-shrink-0">
+          <svg viewBox="0 0 68 68" className="h-full w-full -rotate-90">
+            <circle cx="34" cy="34" r={r} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="7" />
+            <motion.circle
+              cx="34" cy="34" r={r}
+              fill="none" stroke="url(#capDonut)" strokeWidth="7" strokeLinecap="round"
+              strokeDasharray={circ}
+              initial={reduced ? false : { strokeDashoffset: circ }}
+              whileInView={{ strokeDashoffset: circ * (1 - viz.value / 100) }}
+              viewport={inView}
+              transition={{ duration: 1.2, ease: EASE }}
+            />
+            <defs>
+              <linearGradient id="capDonut" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#34d399" />
+                <stop offset="100%" stopColor="#2dd4bf" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div className="absolute inset-0 grid place-items-center">
+            <span className="font-serif text-lg font-medium text-white">{c.proofValue}</span>
+          </div>
+        </div>
+        <span className="text-sm leading-snug text-neutral-400">{viz.label}</span>
+      </div>
+    );
+  }
+
+  // 3. Horizontal bar
   if (viz.kind === "bar") {
     return (
       <div>
@@ -455,7 +538,7 @@ function TileViz({ c }: { c: CapabilityDomain }) {
             className="h-full w-full origin-left rounded-full bg-gradient-to-r from-emerald-400 to-teal-400"
             initial={reduced ? false : { transform: "scaleX(0)" }}
             whileInView={{ transform: `scaleX(${viz.value / 100})` }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={inView}
             transition={{ duration: 1, ease: EASE }}
           />
         </div>
@@ -463,57 +546,35 @@ function TileViz({ c }: { c: CapabilityDomain }) {
     );
   }
 
-  if (viz.kind === "stack") {
-    const sum = viz.segments.reduce((a, s) => a + s.v, 0);
+  // 4. Vertical column chart
+  if (viz.kind === "columns") {
+    const max = Math.max(...viz.segments.map((s) => s.v));
     return (
       <div>
         <div className="flex items-baseline gap-2">
           {headline}
           <span className="text-xs text-neutral-400">removed</span>
         </div>
-        <div className="mt-3 flex h-2 w-full overflow-hidden rounded-full bg-white/10">
+        <div className="mt-3 flex items-end gap-3" style={{ height: 58 }}>
           {viz.segments.map((s, i) => (
-            <motion.div
-              key={s.label}
-              className={`h-full ${i === 0 ? "bg-emerald-400" : "bg-teal-400/80"}`}
-              initial={reduced ? false : { width: 0 }}
-              whileInView={{ width: `${(s.v / sum) * 100}%` }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.9, delay: i * 0.15, ease: EASE }}
-            />
-          ))}
-        </div>
-        <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1">
-          {viz.segments.map((s, i) => (
-            <span key={s.label} className="flex items-center gap-1.5 text-xs text-neutral-400">
-              <span className={`h-2 w-2 rounded-full ${i === 0 ? "bg-emerald-400" : "bg-teal-400/80"}`} />
-              {s.label}
-            </span>
+            <div key={s.label} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+              <motion.div
+                className="w-full origin-bottom rounded-t-md bg-gradient-to-t from-emerald-500/40 to-emerald-400"
+                style={{ height: `${(s.v / max) * 100}%` }}
+                initial={reduced ? false : { transform: "scaleY(0)" }}
+                whileInView={{ transform: "scaleY(1)" }}
+                viewport={inView}
+                transition={{ duration: 0.8, delay: i * 0.12, ease: EASE }}
+              />
+              <span className="text-[10px] text-neutral-400">{s.label}</span>
+            </div>
           ))}
         </div>
       </div>
     );
   }
 
-  if (viz.kind === "speed") {
-    return (
-      <div>
-        <div className="flex items-baseline gap-2">
-          {headline}
-          <span className="text-xs text-neutral-400">{viz.label}</span>
-        </div>
-        <div className="relative mt-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
-          <motion.div
-            className="absolute inset-y-0 w-1/3 rounded-full bg-gradient-to-r from-transparent via-emerald-400 to-transparent"
-            initial={{ x: "-120%" }}
-            animate={reduced ? { x: "150%" } : { x: ["-120%", "320%"] }}
-            transition={reduced ? { duration: 0 } : { duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
-      </div>
-    );
-  }
-
+  // 5. Checklist
   if (viz.kind === "checks") {
     return (
       <div>
@@ -525,10 +586,12 @@ function TileViz({ c }: { c: CapabilityDomain }) {
               className="flex items-center gap-2 text-xs text-neutral-300"
               initial={reduced ? false : { opacity: 0, x: -8 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
+              viewport={inView}
               transition={{ duration: 0.4, delay: i * 0.1, ease: EASE }}
             >
-              <Check className="h-3.5 w-3.5 flex-shrink-0 text-emerald-400" strokeWidth={2.5} />
+              <span className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-emerald-400/15">
+                <Check className="h-2.5 w-2.5 text-emerald-400" strokeWidth={3} />
+              </span>
               {it}
             </motion.div>
           ))}
@@ -537,25 +600,47 @@ function TileViz({ c }: { c: CapabilityDomain }) {
     );
   }
 
-  // scale: sequence of ticks lighting up, paired with the real figure
+  // 6. Area sparkline with count-up
+  const linePath = "M2,38 L13,30 L24,33 L35,20 L46,24 L57,12 L68,16 L79,6";
+  const areaPath = `${linePath} L79,44 L2,44 Z`;
   return (
     <div>
       <div className="flex items-baseline gap-2">
-        {headline}
+        <CountUp
+          to={viz.to}
+          format={(n) => Math.round(n).toLocaleString()}
+          className="font-serif text-[2rem] font-medium leading-none tracking-tight text-white"
+        />
         <span className="text-xs text-neutral-400">{viz.label}</span>
       </div>
-      <div className="mt-3 flex items-center gap-1">
-        {Array.from({ length: 14 }).map((_, i) => (
-          <motion.span
-            key={i}
-            className="h-5 w-1 rounded-full bg-emerald-400"
-            initial={reduced ? false : { opacity: 0.15 }}
-            whileInView={{ opacity: [0.15, 1, 0.5] }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.5, delay: i * 0.04, ease: EASE }}
-          />
-        ))}
-      </div>
+      <svg viewBox="0 0 81 46" preserveAspectRatio="none" className="mt-3 h-12 w-full">
+        <motion.path
+          d={areaPath}
+          fill="url(#capSpark)"
+          initial={reduced ? false : { opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={inView}
+          transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
+        />
+        <motion.path
+          d={linePath}
+          fill="none"
+          stroke="#34d399"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={reduced ? false : { pathLength: 0 }}
+          whileInView={{ pathLength: 1 }}
+          viewport={inView}
+          transition={{ duration: 1.1, ease: EASE }}
+        />
+        <defs>
+          <linearGradient id="capSpark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#34d399" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#34d399" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
   );
 }

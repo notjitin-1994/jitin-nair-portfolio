@@ -93,49 +93,51 @@ export function MobileJourney() {
       {/* Header */}
       <div className="mb-6 px-5 sm:px-6" suppressHydrationWarning>        <p className={`text-cyan-400 font-mono text-xs tracking-widest uppercase mb-3 ${mounted ? 'mobile-section-subtitle' : 'opacity-0'}`}>Journey So Far</p>
         <h2 className={`text-3xl font-bold mb-2 ${mounted ? 'mobile-section-title' : 'opacity-0'}`}>Career Timeline</h2>
-        <p className={`text-slate-400 text-sm ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}>From commerce grad to AI architect — {journeyData.length} milestones</p>
+        <p className={`text-slate-400 text-sm ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}>From commerce grad to AI architect, {journeyData.length} milestones</p>
       </div>
 
-      {/* Progress Stepper - Simplified for performance */}
-      <div
-        className={`flex items-center justify-between mb-8 px-2 ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}
-      >
-        {journeyData.map((item, index) => {
-          const Icon = item.icon;
-          const isActive = index === activeIndex;
-          const isPast = index < activeIndex;
-          
-          return (
-            <motion.button
-              key={item.year + item.title}
-              onClick={() => scrollToCard(index)}
-              className={`relative flex flex-col items-center gap-2 transition-all ${
-                isActive ? 'scale-110' : 'opacity-60 hover:opacity-100'
-              }`}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${
-                isActive 
-                  ? 'bg-cyan-500/20 border-cyan-400 shadow-lg shadow-cyan-500/20' 
-                  : isPast
-                    ? 'bg-cyan-500/10 border-cyan-500/30'
-                    : 'bg-white/5 border-white/10'
-              }`}>
-                <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
-              </div>
-              <span className={`text-xs font-medium ${isActive ? 'text-cyan-400' : 'text-slate-500'}`}>
-                {item.year}
-              </span>
-              
-              {/* Connector Line */}
-              {index < journeyData.length - 1 && (
-                <div className={`absolute top-5 left-full w-[calc(100%-1rem)] h-0.5 -ml-1 ${
-                  isPast ? 'bg-cyan-500' : 'bg-white/10'
-                }`} style={{ width: '2rem' }} />
-              )}
-            </motion.button>
-          );
-        })}
+      {/* Progress Stepper */}
+      <div className={`mb-8 px-5 ${mounted ? 'mobile-section-desc' : 'opacity-0'}`}>
+        <div className="relative">
+          {/* Track + animated progress (aligned to node centres at 10% .. 90%) */}
+          <div className="absolute top-5 left-[10%] right-[10%] h-0.5 -translate-y-1/2 rounded-full bg-white/10" />
+          <motion.div
+            className="absolute top-5 left-[10%] h-0.5 -translate-y-1/2 rounded-full bg-gradient-to-r from-cyan-500 to-teal-400"
+            initial={false}
+            animate={{ width: `${(activeIndex / (journeyData.length - 1)) * 80}%` }}
+            transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+          />
+
+          {/* Nodes */}
+          <div className="relative flex items-start justify-between">
+            {journeyData.map((item, index) => {
+              const Icon = item.icon;
+              const isActive = index === activeIndex;
+
+              return (
+                <motion.button
+                  key={item.year + item.title}
+                  onClick={() => scrollToCard(index)}
+                  className="relative flex flex-1 flex-col items-center gap-2"
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div
+                    className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-white to-neutral-300 transition-all ${
+                      isActive
+                        ? 'ring-2 ring-cyan-400 shadow-lg shadow-cyan-500/30'
+                        : 'ring-1 ring-black/10 opacity-80'
+                    }`}
+                  >
+                    <Icon className="h-[18px] w-[18px] text-neutral-800" />
+                  </div>
+                  <span className={`text-xs font-medium ${isActive ? 'text-cyan-400' : 'text-slate-500'}`}>
+                    {item.year}
+                  </span>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Timeline Cards */}
@@ -163,7 +165,7 @@ export function MobileJourney() {
               <motion.div
                 layout
                 onClick={() => setExpandedCard(isExpanded ? null : index)}
-                className={`ml-10 relative rounded-2xl border overflow-hidden cursor-pointer transition-all ${
+                className={`ml-10 mr-5 relative rounded-2xl border overflow-hidden cursor-pointer transition-all ${
                   isExpanded 
                     ? 'border-cyan-500/40 bg-white/[0.05]' 
                     : 'border-white/[0.08] bg-white/[0.03] hover:border-white/[0.12]'
@@ -188,14 +190,14 @@ export function MobileJourney() {
                   <div className="flex items-start gap-4 mb-4">
                     {/* Icon */}
                     <motion.div
-                      animate={{ 
-                        boxShadow: isExpanded 
-                          ? '0 0 20px rgba(34, 211, 238, 0.3)' 
+                      animate={{
+                        boxShadow: isExpanded
+                          ? '0 0 20px rgba(34, 211, 238, 0.25)'
                           : '0 0 0px rgba(34, 211, 238, 0)'
                       }}
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br ${item.gradient} border border-white/10`}
+                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-white to-neutral-300 ring-1 ring-inset ring-black/10"
                     >
-                      <Icon className="w-6 h-6 text-white" />
+                      <Icon className="w-6 h-6 text-neutral-800" />
                     </motion.div>
                     
                     {/* Title Group */}

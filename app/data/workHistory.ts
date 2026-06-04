@@ -1,5 +1,7 @@
 import {
   Bot,
+  Video,
+  Headphones,
   ShieldCheck,
   Network,
   Gauge,
@@ -39,6 +41,7 @@ export type WorkRole = {
   id: string;
   org: string;
   monogram: string;
+  logo: LucideIcon;
   role: string;
   location: string;
   period: string;
@@ -92,6 +95,7 @@ export const workRoles: WorkRole[] = [
     id: "independent",
     org: "Independent Consultant",
     monogram: "AI",
+    logo: Bot,
     role: "AI Systems Architect",
     location: "Bangalore, India",
     period: "Mar 2025 - Present",
@@ -115,6 +119,7 @@ export const workRoles: WorkRole[] = [
     id: "moodys",
     org: "Moody's Ratings",
     monogram: "M",
+    logo: Video,
     role: "Instructional Designer",
     location: "Bangalore, India",
     period: "Sep 2022 - Mar 2025",
@@ -151,6 +156,7 @@ export const workRoles: WorkRole[] = [
     id: "accenture",
     org: "Accenture",
     monogram: "A",
+    logo: Users,
     role: "Instructor Analyst to Senior Analyst",
     location: "Bangalore, India",
     period: "Jan 2019 - Sep 2022",
@@ -190,6 +196,7 @@ export const workRoles: WorkRole[] = [
     id: "247ai",
     org: "247.ai",
     monogram: "24",
+    logo: Headphones,
     role: "Senior Executive",
     location: "Bangalore, India",
     period: "May 2015 - Dec 2017",

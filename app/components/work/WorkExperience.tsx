@@ -287,8 +287,8 @@ function RoleDossier({ role }: { role: WorkRole }) {
       <div className="self-start lg:sticky lg:top-28">
         <Reveal>
           <div className="flex items-center gap-4">
-            <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.07] font-serif text-xl font-medium text-emerald-300">
-              {role.monogram}
+            <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-white to-neutral-300 shadow-sm ring-1 ring-inset ring-emerald-400/20">
+              <role.logo className="h-6 w-6 text-neutral-800" strokeWidth={1.75} />
             </span>
             <div>
               <div className="font-serif text-xl font-medium leading-tight tracking-tight text-white">{role.org}</div>
