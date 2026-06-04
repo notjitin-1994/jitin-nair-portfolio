@@ -42,6 +42,7 @@ export type WorkRole = {
   org: string;
   monogram: string;
   logo: LucideIcon;
+  logoSrc?: string;
   role: string;
   location: string;
   period: string;
@@ -120,6 +121,7 @@ export const workRoles: WorkRole[] = [
     org: "Moody's Ratings",
     monogram: "M",
     logo: Video,
+    logoSrc: "/logos/moodys.svg",
     role: "Instructional Designer",
     location: "Bangalore, India",
     period: "Sep 2022 - Mar 2025",
@@ -157,6 +159,7 @@ export const workRoles: WorkRole[] = [
     org: "Accenture",
     monogram: "A",
     logo: Users,
+    logoSrc: "/logos/accenture.svg",
     role: "Instructor Analyst to Senior Analyst",
     location: "Bangalore, India",
     period: "Jan 2019 - Sep 2022",
@@ -197,6 +200,7 @@ export const workRoles: WorkRole[] = [
     org: "247.ai",
     monogram: "24",
     logo: Headphones,
+    logoSrc: "/logos/247ai.svg",
     role: "Senior Executive",
     location: "Bangalore, India",
     period: "May 2015 - Dec 2017",

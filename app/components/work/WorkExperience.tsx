@@ -287,8 +287,17 @@ function RoleDossier({ role }: { role: WorkRole }) {
       <div className="self-start lg:sticky lg:top-28">
         <Reveal>
           <div className="flex items-center gap-4">
-            <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-white to-neutral-300 shadow-sm ring-1 ring-inset ring-emerald-400/20">
-              <role.logo className="h-6 w-6 text-neutral-800" strokeWidth={1.75} />
+            <span
+              className={`flex h-14 flex-shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-inset ring-emerald-400/20 ${
+                role.logoSrc ? "px-3" : "w-14"
+              }`}
+            >
+              {role.logoSrc ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={role.logoSrc} alt={role.org} className="max-h-7 max-w-[96px] object-contain" />
+              ) : (
+                <role.logo className="h-6 w-6 text-neutral-800" strokeWidth={1.75} />
+              )}
             </span>
             <div>
               <div className="font-serif text-xl font-medium leading-tight tracking-tight text-white">{role.org}</div>

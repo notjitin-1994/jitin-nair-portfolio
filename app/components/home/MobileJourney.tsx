@@ -188,16 +188,23 @@ export function MobileJourney() {
                 <div className="relative z-10 p-5">
                   {/* Header Row */}
                   <div className="flex items-start gap-4 mb-4">
-                    {/* Icon */}
+                    {/* Logo / icon on a neutral white tile */}
                     <motion.div
                       animate={{
                         boxShadow: isExpanded
                           ? '0 0 20px rgba(34, 211, 238, 0.25)'
                           : '0 0 0px rgba(34, 211, 238, 0)'
                       }}
-                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-white to-neutral-300 ring-1 ring-inset ring-black/10"
+                      className={`h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-white ring-1 ring-inset ring-black/10 ${
+                        item.logoSrc ? 'px-2.5' : 'w-12'
+                      }`}
                     >
-                      <Icon className="w-6 h-6 text-neutral-800" />
+                      {item.logoSrc ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={item.logoSrc} alt={item.role} className="max-h-6 max-w-[88px] object-contain" />
+                      ) : (
+                        <Icon className="w-6 h-6 text-neutral-800" />
+                      )}
                     </motion.div>
                     
                     {/* Title Group */}
