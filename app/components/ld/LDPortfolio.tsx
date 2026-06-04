@@ -468,7 +468,7 @@ function TileViz({ c }: { c: CapabilityDomain }) {
             <motion.line
               x1="55" y1="56" x2="55" y2="20"
               stroke="#e5e7eb" strokeWidth="2.5" strokeLinecap="round"
-              style={{ transformOrigin: "55px 56px" }}
+              style={{ transformOrigin: "55px 56px", transformBox: "view-box" }}
               initial={reduced ? false : { rotate: -90 }}
               whileInView={{ rotate: needle }}
               viewport={inView}
@@ -872,8 +872,8 @@ function Contact() {
             </Reveal>
           </div>
 
-          {/* Right — social + connect cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {/* Right — social + connect cards, one per line */}
+          <div className="grid grid-cols-1 gap-4">
             {/* Static social links */}
             {SOCIAL_LINKS.map((link, i) => {
               const Icon = link.icon;

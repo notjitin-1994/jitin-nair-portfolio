@@ -103,8 +103,8 @@ export function DesktopContact() {
             </motion.div>
           </div>
 
-          {/* Right - Links Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Right - Links stacked one per line */}
+          <div className="grid grid-cols-1 gap-4">
             {/* Static Links */}
             {staticLinks.map((link, index) => (
               <motion.a

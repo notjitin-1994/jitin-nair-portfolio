@@ -77,19 +77,19 @@ export function MobileContact() {
 
       {/* Main Grid */}
       <div className="space-y-4 mb-8">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {/* LinkedIn */}
           <motion.a
             href="https://www.linkedin.com/in/notjitin/"
             target="_blank"
             rel="noopener noreferrer"
             whileTap={{ scale: 0.96 }}
-            className="flex flex-col items-center justify-center p-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-cyan-500/40 transition-all duration-300 shadow-xl"
+            className="flex flex-row items-center gap-3 p-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-cyan-500/40 transition-all duration-300 shadow-xl"
           >
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-2">
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center flex-shrink-0">
               <Linkedin className="w-5 h-5 text-cyan-400" />
             </div>
-            <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-tighter">LinkedIn</span>
+            <span className="text-sm font-bold text-cyan-400 uppercase tracking-tight">LinkedIn</span>
           </motion.a>
 
           {/* Instagram */}
@@ -98,12 +98,12 @@ export function MobileContact() {
             target="_blank"
             rel="noopener noreferrer"
             whileTap={{ scale: 0.96 }}
-            className="flex flex-col items-center justify-center p-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-teal-500/40 transition-all duration-300 shadow-xl"
+            className="flex flex-row items-center gap-3 p-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md active:border-teal-500/40 transition-all duration-300 shadow-xl"
           >
-            <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center mb-2">
+            <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center flex-shrink-0">
               <Instagram className="w-5 h-5 text-teal-400" />
             </div>
-            <span className="text-[10px] font-bold text-teal-400 uppercase tracking-tighter">Instagram</span>
+            <span className="text-sm font-bold text-teal-400 uppercase tracking-tight">Instagram</span>
           </motion.a>
         </div>
 
