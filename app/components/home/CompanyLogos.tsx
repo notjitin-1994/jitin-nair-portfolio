@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 /**
  * Real company logo images served from /public/logos/.
  * These are rendered inside white pill containers in JourneyCard
@@ -13,9 +15,11 @@
 
 export function MoodysLogo({ className }: { className?: string }) {
   return (
-    <img
+    <Image
       src="/logos/moodys.svg"
       alt="Moody's Ratings"
+      width={120}
+      height={40}
       className={className}
       style={{ objectFit: "contain" }}
     />
@@ -24,9 +28,11 @@ export function MoodysLogo({ className }: { className?: string }) {
 
 export function AccentureLogo({ className }: { className?: string }) {
   return (
-    <img
+    <Image
       src="/logos/accenture.svg"
       alt="Accenture"
+      width={120}
+      height={40}
       className={className}
       style={{ objectFit: "contain" }}
     />
@@ -35,9 +41,11 @@ export function AccentureLogo({ className }: { className?: string }) {
 
 export function TwentyFourSevenLogo({ className }: { className?: string }) {
   return (
-    <img
+    <Image
       src="/logos/247ai.svg"
       alt="[24]7.ai"
+      width={120}
+      height={40}
       className={className}
       style={{ objectFit: "contain" }}
     />

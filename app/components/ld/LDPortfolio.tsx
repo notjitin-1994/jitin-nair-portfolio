@@ -355,8 +355,22 @@ function Approach() {
         </div>
 
         {/* Leadership case-study teaser, deep version lives on /leading-ld */}
-        <Reveal className="mt-20 overflow-hidden rounded-3xl border border-emerald-400/15 bg-gradient-to-br from-emerald-500/[0.07] to-transparent p-8 sm:p-12">
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+        <Reveal className="relative mt-20 overflow-hidden rounded-3xl border border-emerald-400/15 bg-[#0a0a0f] p-8 sm:p-12">
+          {/* Blurred aesthetic background video */}
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="h-full w-full object-cover opacity-30 blur-[10px] scale-105"
+            >
+              <source src="https://player.vimeo.com/external/494252666.sd.mp4?s=727e3354bb0cf76dca3376722247b9ad981a82f8&profile_id=165&oauth2_token_id=57447761" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f]/90 via-[#0a0a0f]/60 to-emerald-950/40" />
+          </div>
+
+          <div className="relative z-10 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
             <div>
               <h3 className="font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl">
                 Leadership, proven in the numbers.
@@ -378,12 +392,21 @@ function Approach() {
                 const Icon = cs.icon;
                 return (
                   <Reveal key={cs.id} delay={i * 0.06}>
-                    <div className="h-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors duration-200 hover:border-emerald-400/30">
-                      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/[0.1] text-emerald-400">
-                        <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
-                      </span>
-                      <div className="mt-4 font-medium text-white">{cs.competency}</div>
-                      <div className="mt-1 text-sm leading-snug text-neutral-500">{cs.context}</div>
+                    <div className="group/card relative h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors duration-200 hover:border-emerald-400/30">
+                      {/* Contextual background stock image */}
+                      <Image
+                        src={cs.bgImage}
+                        alt=""
+                        fill
+                        className="absolute inset-0 z-0 object-cover opacity-[0.08] transition-opacity duration-300 group-hover/card:opacity-[0.15]"
+                      />
+                      <div className="relative z-10">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/[0.1] text-emerald-400">
+                          <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
+                        </span>
+                        <div className="mt-4 font-medium text-white">{cs.competency}</div>
+                        <div className="mt-1 text-sm leading-snug text-neutral-500">{cs.context}</div>
+                      </div>
                     </div>
                   </Reveal>
                 );
@@ -650,12 +673,11 @@ function CapabilityTile({ c }: { c: CapabilityDomain }) {
   return (
     <div className="group relative flex h-full min-h-[268px] flex-col overflow-hidden rounded-2xl border border-white/[0.08] transition-colors duration-200 hover:border-emerald-400/30">
       {/* Blurred contextual background */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src={capPicsum(c.bgSeed)}
         alt=""
         aria-hidden
-        loading="lazy"
+        fill
         className="absolute inset-0 h-full w-full scale-110 object-cover opacity-[0.18] blur-[3px] transition-opacity duration-300 group-hover:opacity-[0.26]"
       />
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f]/92 via-[#0a0a0f]/82 to-emerald-950/40" />

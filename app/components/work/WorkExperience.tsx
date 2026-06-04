@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight, Mail, Linkedin, MapPin } from "lucide-react";
@@ -293,8 +294,7 @@ function RoleDossier({ role }: { role: WorkRole }) {
               }`}
             >
               {role.logoSrc ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={role.logoSrc} alt={role.org} className="max-h-7 max-w-[96px] object-contain" />
+                <Image src={role.logoSrc} alt={role.org} width={96} height={28} className="max-h-7 object-contain" />
               ) : (
                 <role.logo className="h-6 w-6 text-neutral-800" strokeWidth={1.75} />
               )}

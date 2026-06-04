@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
+import Image from "next/image";
 import { motion, useReducedMotion, useInView } from "framer-motion";
 import { EASE } from "../ld/primitives";
 import { Check, Minus, ArrowUpRight } from "lucide-react";
@@ -69,8 +70,7 @@ export function SceneMedia({
               <source src={video} type="video/mp4" />
             </video>
           ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={picsum(seed, 1200, 1500)} alt={alt} className="h-full w-full object-cover" loading="lazy" />
+            <Image src={picsum(seed, 1200, 1500)} alt={alt} fill className="object-cover" />
           )}
         </motion.div>
       </motion.div>

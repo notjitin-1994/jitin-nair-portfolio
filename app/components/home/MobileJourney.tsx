@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bot, GraduationCap, ChevronDown, Sparkles } from "lucide-react";
 import { MoodysLogo, AccentureLogo, TwentyFourSevenLogo } from "./CompanyLogos";
@@ -173,14 +174,9 @@ export function MobileJourney() {
                 whileTap={{ scale: 0.98 }}
               >
                 {/* Background Image - subtle blur */}
-                <div 
-                  className="absolute inset-0 scale-105"
-                  style={{
-                    backgroundImage: `url(${item.bgImage})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                />
+                <div className="absolute inset-0 scale-105 overflow-hidden">
+                  <Image src={item.bgImage} alt="" fill className="object-cover" />
+                </div>
                 <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-30`} />
                 <div className="absolute inset-0 bg-[#0a0a0f]/80 backdrop-blur-[8px]" />
 
@@ -200,8 +196,7 @@ export function MobileJourney() {
                       }`}
                     >
                       {item.logoSrc ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={item.logoSrc} alt={item.role} className="max-h-6 max-w-[88px] object-contain" />
+                        <Image src={item.logoSrc} alt={item.role} width={88} height={24} className="max-h-6 object-contain" />
                       ) : (
                         <Icon className="w-6 h-6 text-neutral-800" />
                       )}

@@ -2,11 +2,17 @@
 const nextConfig = {
   // Enterprise Grade Image Optimization
   images: {
-    unoptimized: false, // Enable optimization for WebP/AVIF support on Vercel
+    unoptimized: false,
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'images.pexels.com' },
+      { protocol: 'https', hostname: 'picsum.photos' },
+      { protocol: 'https', hostname: 'cdn.pixabay.com' },
+    ],
   },
   
   // Enterprise Grade Security & SEO Headers

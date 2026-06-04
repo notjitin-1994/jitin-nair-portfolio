@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
@@ -431,9 +432,11 @@ export function JourneyCard({ item, index, isLast }: {
             {item.logoSrc ? (
               /* Real company logo pill on a neutral white background */
               <div className="relative w-32 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden px-3 py-1.5 shadow-lg shadow-black/30">
-                <img
+                <Image
                   src={item.logoSrc}
                   alt={item.role}
+                  width={128}
+                  height={40}
                   className="max-w-full max-h-full object-contain"
                 />
               </div>
@@ -476,7 +479,7 @@ export function JourneyCard({ item, index, isLast }: {
             }`}
           >
             {item.logoSrc ? (
-              <img src={item.logoSrc} alt={item.role} className="max-w-full max-h-full object-contain" />
+              <Image src={item.logoSrc} alt={item.role} width={96} height={36} className="max-w-full max-h-full object-contain" />
             ) : (
               <item.icon className="w-5 h-5 text-neutral-800" />
             )}
@@ -506,15 +509,14 @@ export function JourneyCard({ item, index, isLast }: {
             className="relative p-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl overflow-hidden"
             whileHover={{ scale: 1.02, borderColor: "rgba(34, 211, 238, 0.2)" }}
           >
-            <motion.div
-              className="absolute inset-0 opacity-15"
-              style={{
-                backgroundImage: `url(${item.bgImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                filter: 'blur(10px)'
-              }}
-            />
+            <div className="absolute inset-0 opacity-15 overflow-hidden">
+              <Image
+                src={item.bgImage}
+                alt=""
+                fill
+                className="object-cover blur-[10px]"
+              />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f]/90 via-[#0a0a0f]/80 to-transparent" />
 
             <div className="relative z-10">

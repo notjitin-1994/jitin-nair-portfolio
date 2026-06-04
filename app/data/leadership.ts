@@ -77,6 +77,7 @@ export type LeadershipCase = {
   org: string;
   context: string;
   imageSeed: string;
+  bgImage: string;
   problem: string;
   solution: string;
   leadership: string;
@@ -92,6 +93,7 @@ export const leadershipCases: LeadershipCase[] = [
     org: "Moody's Ratings · Accenture",
     context: "Regulated financial environments",
     imageSeed: "regulated-finance-compliance-9021",
+    bgImage: "https://images.unsplash.com/photo-1454165833767-027ff33027ef?auto=format&fit=crop&q=80&w=800",
     problem:
       "In a regulated environment, a compliance gap is a balance-sheet risk. At Moody's the work sat inside the regulatory framework governing the ratings business; at Accenture it ran against HIPAA. The default reflex was long, disruptive classroom training that pulled analysts off the floor for hours.",
     solution:
@@ -112,6 +114,7 @@ export const leadershipCases: LeadershipCase[] = [
     org: "Smartslate Solara · operating playbook",
     context: "From fragmented legacy tools to unified, AI-powered infrastructure",
     imageSeed: "modern-learning-platform-4417",
+    bgImage: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800",
     problem:
       "Most organizations run a fragmented stack: clunky legacy LMS, siloed knowledge, low engagement. People cannot find the answer when the job actually demands it, relying on 7-15 disconnected tools.",
     solution:
@@ -132,6 +135,7 @@ export const leadershipCases: LeadershipCase[] = [
     org: "Moody's Ratings",
     context: "Leading designers and content developers through an automation shift",
     imageSeed: "design-team-studio-7733",
+    bgImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800",
     problem:
       "My team of instructional designers and content developers was trapped in slow, traditional production cycles while the business needed content faster than the cycles could ship it.",
     solution:
@@ -152,6 +156,7 @@ export const leadershipCases: LeadershipCase[] = [
     org: "Accenture",
     context: "Proving L&D as an efficiency driver, not a cost center",
     imageSeed: "business-analytics-strategy-2890",
+    bgImage: "https://images.unsplash.com/photo-1551288049-bbbda536ad37?auto=format&fit=crop&q=80&w=800",
     problem:
       "Onboarding and upskilling for client teams was time-heavy and costly, and the only evidence anyone collected was completion and satisfaction. L&D read as a cost line.",
     solution:
