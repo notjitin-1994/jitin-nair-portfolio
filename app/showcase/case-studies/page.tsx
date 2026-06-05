@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Four leadership case studies across business alignment, change management, team leadership, and impact measurement. Proven results: $140K+ in training cost removed, 70% faster delivery, and 54% retention held.",
   alternates: {
-    canonical: "https://jitinnair.com/case-studies",
+    canonical: "https://jitinnair.com/showcase/case-studies",
   },
 };
 

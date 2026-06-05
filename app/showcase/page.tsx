@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -237,6 +238,24 @@ function Contact() {
             >
               <Linkedin className="h-4 w-4" strokeWidth={1.75} /> LinkedIn
             </a>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+export default function ShowcasePage() {
+  return (
+    <main className="min-h-screen bg-[#0a0a0f] text-slate-100 selection:bg-emerald-500/30">
+      <Nav />
+      <Hero />
+      <ShowcaseGrid />
+      <Contact />
+      <LdFooter />
+    </main>
+  );
+}
           </div>
         </Reveal>
       </div>
