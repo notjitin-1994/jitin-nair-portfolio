@@ -16,7 +16,7 @@ import {
   Linkedin
 } from "lucide-react";
 import { EASE, useFontsReady, Reveal, MagneticButton } from "../components/ld/primitives";
-import { SceneMedia, Grain } from "../components/leading/visuals";
+import { Grain } from "../components/leading/visuals";
 import { FloatingNav } from "../components/FloatingNav";
 import { LdFooter } from "../components/ld/LdFooter";
 
@@ -25,52 +25,52 @@ const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 
 const SHOWCASE_ITEMS = [
   {
-    id: "scope",
-    title: "Project Scope & Discovery",
-    description: "Defining parameters, identifying constraints, and aligning with stakeholder goals.",
+    id: "discovery",
+    title: "Project Discovery & Planning",
+    description: "Automated stakeholder discovery and strategic curriculum mapping.",
     icon: Target,
-    href: "/LD-Systems-Portfolio#capabilities",
-    imageSeed: "discovery-business-strategy-1122",
-  },
-  {
-    id: "planning",
-    title: "Planning",
-    description: "Strategic curriculum mapping and tactical rollout roadmaps.",
-    icon: Rocket,
-    href: "/LD-Systems-Portfolio#journey",
-    imageSeed: "blueprint-architecture-plan-3344",
+    href: "/showcase/project-discovery-planning",
+    imageUrl: "https://images.unsplash.com/photo-1507537297325-592fe2381ef7?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: "management",
     title: "Project Management",
     description: "Driving complex learning initiatives from kick-off to delivery.",
     icon: UsersRound,
-    href: "/work",
-    imageSeed: "team-collaboration-office-5566",
+    href: "/showcase/project-management",
+    imageUrl: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: "instructional",
-    title: "Instructional Designing",
-    description: "Cognitive-first architectures built on ADDIE and learning science.",
+    title: "Instructional Design",
+    description: "Cognitive-first architectures built on learning science.",
     icon: GraduationCap,
-    href: "/capabilities",
-    imageSeed: "education-design-studio-7788",
+    href: "/showcase/instructional-design",
+    imageUrl: "https://images.unsplash.com/photo-1454165833767-027ffea9e77b?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: "content",
     title: "Content Development",
-    description: "High-fidelity video and automated content production pipelines.",
+    description: "High-fidelity video and automated production pipelines.",
     icon: Video,
-    href: "/LD-Systems-Portfolio#selected-work",
-    imageSeed: "video-production-studio-9900",
+    href: "/showcase/content-development",
+    imageUrl: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=800",
+  },
+  {
+    id: "insights",
+    title: "Insights",
+    description: "Data-driven analytics and performance measurement systems.",
+    icon: Rocket,
+    href: "/showcase/insights",
+    imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: "cases",
-    title: "Insights & Case Studies",
+    title: "Case Studies",
     description: "Proven leadership outcomes and measurable business impact.",
     icon: LineChart,
-    href: "/case-studies",
-    imageSeed: "data-analytics-dashboard-2211",
+    href: "/showcase/case-studies",
+    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
     featured: true,
   },
 ];
@@ -84,7 +84,7 @@ function Nav() {
       accent="emerald"
       links={[
         { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-        { label: "Case Studies", href: "/case-studies" },
+        { label: "Case Studies", href: "/showcase/case-studies" },
         { label: "Experience", href: "/work" },
         { label: "Contact", href: "#contact" },
       ]}
@@ -161,11 +161,11 @@ function ShowcaseGrid() {
                 >
                   {/* Visual Background */}
                   <div className="relative aspect-[16/10] w-full overflow-hidden">
-                    <SceneMedia
-                      seed={item.imageSeed}
+                    <Image
+                      src={item.imageUrl}
                       alt={item.title}
-                      className="h-full w-full"
-                      rounded="rounded-none"
+                      fill
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent opacity-60" />
                   </div>
@@ -215,7 +215,7 @@ function Contact() {
       <div className="mx-auto max-w-6xl text-left">
         <Reveal>
           <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
-            Let&apos;s build your <span className="text-emerald-400 italic font-serif">capability engine</span>.
+            Let&apos;s build your capability engine.
           </h2>
           <p className="mt-8 max-w-xl text-lg text-neutral-400">
             Currently advising on AI-in-learning strategy and scaling modern L&D functions.
@@ -238,24 +238,6 @@ function Contact() {
             >
               <Linkedin className="h-4 w-4" strokeWidth={1.75} /> LinkedIn
             </a>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-export default function ShowcasePage() {
-  return (
-    <main className="min-h-screen bg-[#0a0a0f] text-slate-100 selection:bg-emerald-500/30">
-      <Nav />
-      <Hero />
-      <ShowcaseGrid />
-      <Contact />
-      <LdFooter />
-    </main>
-  );
-}
           </div>
         </Reveal>
       </div>

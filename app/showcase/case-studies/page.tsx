@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LeadingLD } from "../components/leading/LeadingLD";
+import { LeadingLD } from "../../components/leading/LeadingLD";
 
 export const metadata: Metadata = {
   title: "L&D Leadership Case Studies — Jitin Nair",
