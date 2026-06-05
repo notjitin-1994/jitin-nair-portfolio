@@ -336,21 +336,19 @@ function Approach() {
           ))}
         </div>
 
-        {/* Leadership case-study teaser, deep version lives on /leading-ld */}
+        {/* Leadership case-study teaser, deep version lives on /case-studies */}
         <Reveal className="relative mt-20 overflow-hidden rounded-3xl border border-emerald-400/15 bg-[#0a0a0f] p-8 sm:p-12">
-          {/* Aesthetic animated background. Drop a licensed muted clip at
-              /public/leading/leadership.mp4 to upgrade this to real video. */}
+          {/* Aesthetic background with contextual image + drifting aurora */}
           <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              className="absolute inset-0 h-full w-full scale-105 object-cover opacity-30 blur-[10px]"
-            >
-              <source src="/leading/leadership.mp4" type="video/mp4" />
-            </video>
+            <div className="absolute inset-0 scale-105 opacity-30 blur-[2px]">
+              <Image
+                src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"
+                alt=""
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
             {/* Drifting emerald aurora (always-on, reliable motion layer) */}
             <motion.div
               className="absolute left-[-15%] top-[-35%] h-[110%] w-[60%] rounded-full bg-emerald-500/25 blur-[90px]"
