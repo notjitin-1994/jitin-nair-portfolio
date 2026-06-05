@@ -30,7 +30,7 @@ const SHOWCASE_ITEMS = [
     description: "Automated stakeholder discovery and strategic curriculum mapping.",
     icon: Target,
     href: "/showcase/project-discovery-planning",
-    imageUrl: "https://images.unsplash.com/photo-1507537297325-592fe2381ef7?auto=format&fit=crop&q=80&w=800",
+    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: "management",
@@ -46,7 +46,7 @@ const SHOWCASE_ITEMS = [
     description: "Cognitive-first architectures built on learning science.",
     icon: GraduationCap,
     href: "/showcase/instructional-design",
-    imageUrl: "https://images.unsplash.com/photo-1454165833767-027ffea9e77b?auto=format&fit=crop&q=80&w=800",
+    imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: "content",
