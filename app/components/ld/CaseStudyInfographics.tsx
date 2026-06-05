@@ -37,6 +37,15 @@ export function SmartslateInfographic() {
 
   return (
     <div className="space-y-6 py-2">
+      {/* Sequence Branding */}
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-xs font-bold text-emerald-400">01</span>
+        <span className="h-px w-4 bg-white/10" />
+        <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-neutral-500">
+          Smartslate
+        </span>
+      </div>
+
       {/* Label */}
       <div className="text-[9px] font-semibold uppercase tracking-[0.22em] text-neutral-600">
         7-Stage AI Discovery Pipeline
