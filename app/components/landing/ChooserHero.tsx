@@ -273,14 +273,27 @@ export function ChooserHero() {
       setReady(true);
       return;
     }
+    
+    // Immediate ready state if document is already loaded and fonts are ready
+    if (typeof document !== "undefined" && document.readyState === "complete") {
+      setReady(true);
+      return;
+    }
+
     let active = true;
-    const done = () => active && setReady(true);
-    const fallback = setTimeout(done, 1200);
+    const done = () => {
+      if (active) setReady(true);
+    };
+    
+    // Ensure we trigger even if fonts.ready doesn't fire as expected
+    const fallback = setTimeout(done, 800);
+    
     if (typeof document !== "undefined" && document.fonts?.ready) {
       document.fonts.ready.then(done).catch(done);
     } else {
       done();
     }
+    
     return () => {
       active = false;
       clearTimeout(fallback);

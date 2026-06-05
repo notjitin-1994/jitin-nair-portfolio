@@ -77,7 +77,8 @@ export function CountUp({
 }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  // Use a smaller margin for more reliable triggering on mobile devices.
+  const inView = useInView(ref, { once: true, margin: "-10px" });
   const [val, setVal] = useState(reduced ? to : 0);
 
   useEffect(() => {

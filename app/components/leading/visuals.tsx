@@ -9,6 +9,9 @@ import type { KirkRung } from "../../data/leadership";
 
 const picsum = (seed: string, w: number, h: number) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
 
+// Global margin for scroll triggers, safer for mobile.
+const VIEWPORT_MARGIN = "-10px";
+
 /* ---------- Grain overlay (data-uri SVG noise, CSP-safe) ---------- */
 export function Grain() {
   const noise =
@@ -43,7 +46,7 @@ export function SceneMedia({
 }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: VIEWPORT_MARGIN });
 
   return (
     <div ref={ref} className={`relative overflow-hidden ${rounded} ${className}`}>
@@ -86,7 +89,7 @@ export function SceneMedia({
 /* ---------- Reveal-once wrapper that returns whether it is in view (for charts) ---------- */
 function useReveal() {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: VIEWPORT_MARGIN });
   return { ref, inView };
 }
 
@@ -177,7 +180,7 @@ export function BeforeAfterBar({
             className="h-full w-full origin-left rounded-full bg-gradient-to-r from-emerald-400 to-teal-400"
             initial={reduced ? false : { transform: "scaleX(0)" }}
             whileInView={{ transform: `scaleX(${afterPct / 100})` }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: VIEWPORT_MARGIN }}
             transition={{ duration: 1.1, ease: EASE }}
           />
         </div>
@@ -210,7 +213,7 @@ export function SavingsStack({
             className={`h-full ${i === 0 ? "bg-emerald-400" : "bg-teal-400/80"}`}
             initial={reduced ? false : { width: 0 }}
             whileInView={{ width: `${(s.value / sum) * 100}%` }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: VIEWPORT_MARGIN }}
             transition={{ duration: 0.9, delay: i * 0.15, ease: EASE }}
           />
         ))}
@@ -241,7 +244,7 @@ export function KirkpatrickLadder({ rungs }: { rungs: KirkRung[] }) {
             key={r.level}
             initial={reduced ? false : { opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: VIEWPORT_MARGIN }}
             transition={{ duration: 0.6, delay: i * 0.08, ease: EASE }}
             className={`flex items-start gap-4 rounded-2xl border p-5 ${
               proven
@@ -297,7 +300,7 @@ export function ComparisonTable({
           key={r.dim}
           initial={reduced ? false : { opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
+          viewport={{ once: true, margin: VIEWPORT_MARGIN }}
           transition={{ duration: 0.5, delay: i * 0.06, ease: EASE }}
           className="grid grid-cols-[1.1fr_1fr_1.2fr] border-t border-white/[0.06] text-sm"
         >
@@ -336,7 +339,7 @@ export function RolloutTimeline({
             key={p.window}
             initial={reduced ? false : { opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: VIEWPORT_MARGIN }}
             transition={{ duration: 0.6, delay: i * 0.12, ease: EASE }}
             className="relative"
           >

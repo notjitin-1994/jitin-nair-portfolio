@@ -63,7 +63,7 @@ function Hero() {
     : { hidden: { y: "112%" }, show: { y: 0, transition: { duration: 1.0, ease: EASE } } };
 
   return (
-    <section className="relative overflow-hidden px-5 pt-24 pb-8">
+    <section className="relative overflow-hidden px-5 pt-16 pb-8">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute left-[-5%] top-[-15%] h-[55vh] w-[55vh] rounded-full bg-emerald-500/12 blur-[140px]" />
         <div className="absolute right-[-5%] bottom-[-20%] h-[45vh] w-[45vh] rounded-full bg-teal-500/10 blur-[140px]" />
@@ -147,12 +147,12 @@ function Hero() {
               key={s.label}
               initial={reduced ? false : { opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-20px" }}
               transition={{ duration: 0.6, delay: i * 0.06, ease: EASE }}
             >
               <CountUp
                 to={s.to}
-                format={(n) => fmt(n, s.prefix, s.suffix)}
+                format={(n) => fmt(n, s.prefix ?? "", s.suffix ?? "")}
                 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl"
               />
               <div className="mt-1.5 text-sm leading-snug text-neutral-500">{s.label}</div>
