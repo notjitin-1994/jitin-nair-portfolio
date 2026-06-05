@@ -232,7 +232,7 @@ function Impact() {
               <div className="h-full rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 transition-colors hover:border-emerald-400/20">
                 <CountUp
                   to={stat.to}
-                  format={(n) => `${stat.prefix}${Math.round(n).toLocaleString()}${stat.suffix}`}
+                  format={(n) => `${stat.prefix || ""}${Math.round(n).toLocaleString()}${stat.suffix || ""}`}
                   className="font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl"
                 />
                 <div className="mt-1 text-sm leading-snug text-neutral-500">{stat.label}</div>
@@ -268,7 +268,7 @@ function CaseStudy({ cs, index, flip }: { cs: LdCaseStudy; index: number; flip: 
       </div>
       <div className={`relative ${flip ? "lg:order-1" : ""}`}>
         <Reveal delay={0.1}>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]">
+          <div className="relative aspect-[4/3] overflow-hidden">
             <CaseStudyInfographic id={cs.id} />
           </div>
           <div className="mt-4 flex items-center justify-between px-2">
