@@ -249,44 +249,39 @@ function Impact() {
   );
 }
 
-/* ---------- Case studies ---------- */
+/* ---------- Case study (sticky infographic panel on desktop) ---------- */
 function CaseStudy({ cs, index, flip }: { cs: LdCaseStudy; index: number; flip: boolean }) {
   return (
-    <div className={`grid items-center gap-10 lg:grid-cols-2 lg:gap-20 ${flip ? "lg:direction-rtl" : ""}`}>
-      <div className={flip ? "lg:order-2 lg:direction-ltr" : ""}>
-        <Reveal y={20}>
-          <div className="mb-10 flex items-center gap-4">
-            <span className="font-serif text-5xl font-medium tracking-tighter text-emerald-400/20">
-              0{index + 1}
-            </span>
-            <div className="h-px w-8 bg-emerald-400/20" />
-            <span className="text-sm font-semibold uppercase tracking-widest text-emerald-400/60">
-              {cs.id}
-            </span>
+    <div className="grid gap-8 border-t border-white/[0.06] pt-12 lg:grid-cols-2 lg:gap-16">
+      {/* Infographic panel */}
+      <div className={`self-start lg:sticky lg:top-28 ${flip ? "lg:order-2" : ""}`}>
+        <Reveal>
+          <div className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-400">
+            {String(index + 1).padStart(2, "0")} / {cs.org}
           </div>
-          <h3 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
-            {cs.title}
-          </h3>
-          <p className="mt-6 text-lg leading-relaxed text-neutral-300">{cs.challenge}</p>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2">
-            {cs.outcomes.map((m) => (
-              <div key={m.label}>
-                <div className="font-serif text-2xl text-emerald-400">{m.value}</div>
-                <div className="mt-1 text-sm text-neutral-500">{m.label}</div>
-              </div>
-            ))}
+          <div className="mt-2 text-sm text-neutral-500">{cs.context}</div>
+          <div className="mt-8">
+            <CaseStudyInfographic id={cs.id} />
           </div>
         </Reveal>
       </div>
-      <div className={`relative ${flip ? "lg:order-1" : ""}`}>
-        <Reveal delay={0.1}>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]">
-            <CaseStudyInfographic id={cs.id} />
-          </div>
-          <div className="mt-4 px-2">
-            <p className="max-w-[80%] border-t border-white/[0.06] pt-6 text-sm leading-relaxed text-neutral-500">
-              {cs.note}
-            </p>
+
+      {/* Narrative */}
+      <div className={flip ? "lg:order-1" : ""}>
+        <Reveal delay={0.05}>
+          <h3 className="font-serif text-2xl font-medium leading-snug tracking-tight text-white sm:text-3xl">
+            {cs.title}
+          </h3>
+          <div className="mt-8 space-y-7">
+            <div>
+              <div className="text-xs font-medium uppercase tracking-[0.16em] text-emerald-400/70">The challenge</div>
+              <p className="mt-2 leading-relaxed text-neutral-300">{cs.challenge}</p>
+            </div>
+            <div>
+              <div className="text-xs font-medium uppercase tracking-[0.16em] text-emerald-400/70">The strategy</div>
+              <p className="mt-2 leading-relaxed text-neutral-300">{cs.strategy}</p>
+            </div>
+            <p className="border-t border-white/[0.06] pt-6 text-sm leading-relaxed text-neutral-500">{cs.note}</p>
           </div>
         </Reveal>
       </div>
