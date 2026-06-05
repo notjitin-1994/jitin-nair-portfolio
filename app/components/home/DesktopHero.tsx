@@ -37,13 +37,13 @@ export function DesktopHero({ onUnlock }: { onUnlock?: () => void }) {
         <AnimatedBackground />
       </div>
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto py-4">
+      <div className="relative z-10 w-full max-w-7xl mx-auto py-2">
         <h1 className="sr-only">Jitin Nair | AI Systems Architect & Agentic AI Expert</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           {/* Left Column - Terminal */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
+            animate={imageLoaded ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
             transition={{ duration: 1.0, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="order-2 md:order-1 h-[480px]"
           >

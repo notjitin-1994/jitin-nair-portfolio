@@ -331,7 +331,7 @@ export function ChooserHero() {
 
       <AuroraBackground />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-10 py-16 md:grid-cols-2 md:items-stretch md:gap-14">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-10 py-12 md:grid-cols-2 md:items-stretch md:gap-14">
         {/* Left - portrait */}
         <Portrait ready={ready} />
 

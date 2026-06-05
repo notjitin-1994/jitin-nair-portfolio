@@ -99,7 +99,7 @@ function Hero() {
     : { hidden: { y: "112%" }, show: { y: 0, transition: { duration: 1.0, ease: EASE } } };
 
   return (
-    <section className="relative flex min-h-[100dvh] items-center overflow-hidden px-5 pt-24 pb-8">
+    <section className="relative flex min-h-[100dvh] items-center overflow-hidden px-5 pt-16 pb-8">
       {/* Desktop: particle vortex in emerald */}
       <div aria-hidden className="hidden md:block absolute inset-0 z-0 pointer-events-none">
         <LdVortexBackground />
