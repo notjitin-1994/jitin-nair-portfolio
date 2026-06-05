@@ -76,11 +76,11 @@ function Hero() {
           transition={{ duration: 0.5, ease: EASE }}
         >
           <Link
-            href="/LD-Systems-Portfolio"
+            href="/showcase"
             className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
           >
             <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2} />
-            Back to L&amp;D portfolio
+            Back to Showcase
           </Link>
         </motion.div>
 
@@ -170,7 +170,7 @@ function Philosophy() {
     <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
-          <Eyebrow>How I lead</Eyebrow>
+          <Eyebrow>Leadership Philosophy</Eyebrow>
           <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
             Four principles, and the proof behind each.
           </h2>

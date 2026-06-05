@@ -27,7 +27,7 @@ function Nav() {
       accent="emerald"
       links={[
         { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-        { label: "Leading L&D", href: "/leading-ld" },
+        { label: "Showcase", href: "/showcase" },
         { label: "Contact", href: "#contact" },
       ]}
       cta={{ label: "Get in touch", href: EMAIL }}

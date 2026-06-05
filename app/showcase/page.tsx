@@ -1,0 +1,260 @@
+"use client";
+
+import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
+import { 
+  ArrowLeft, 
+  ArrowRight, 
+  Target, 
+  Rocket, 
+  UsersRound, 
+  GraduationCap, 
+  Video, 
+  LineChart 
+} from "lucide-react";
+import { EASE, useFontsReady, Reveal, MagneticButton } from "../components/ld/primitives";
+import { SceneMedia, Grain } from "../components/leading/visuals";
+import { FloatingNav } from "../components/FloatingNav";
+
+const EMAIL = "mailto:not.jitin@gmail.com";
+
+const SHOWCASE_ITEMS = [
+  {
+    id: "scope",
+    title: "Project Scope & Discovery",
+    description: "Defining parameters, identifying constraints, and aligning with stakeholder goals.",
+    icon: Target,
+    href: "/LD-Systems-Portfolio#capabilities",
+    imageSeed: "discovery-business-strategy-1122",
+  },
+  {
+    id: "planning",
+    title: "Planning",
+    description: "Strategic curriculum mapping and tactical rollout roadmaps.",
+    icon: Rocket,
+    href: "/LD-Systems-Portfolio#journey",
+    imageSeed: "blueprint-architecture-plan-3344",
+  },
+  {
+    id: "management",
+    title: "Project Management",
+    description: "Driving complex learning initiatives from kick-off to delivery.",
+    icon: UsersRound,
+    href: "/work",
+    imageSeed: "team-collaboration-office-5566",
+  },
+  {
+    id: "instructional",
+    title: "Instructional Designing",
+    description: "Cognitive-first architectures built on ADDIE and learning science.",
+    icon: GraduationCap,
+    href: "/capabilities",
+    imageSeed: "education-design-studio-7788",
+  },
+  {
+    id: "content",
+    title: "Content Development",
+    description: "High-fidelity video and automated content production pipelines.",
+    icon: Video,
+    href: "/LD-Systems-Portfolio#selected-work",
+    imageSeed: "video-production-studio-9900",
+  },
+  {
+    id: "cases",
+    title: "Insights & Case Studies",
+    description: "Proven leadership outcomes and measurable business impact.",
+    icon: LineChart,
+    href: "/case-studies",
+    imageSeed: "data-analytics-dashboard-2211",
+    featured: true,
+  },
+];
+
+/* ---------- Nav ---------- */
+function Nav() {
+  return (
+    <FloatingNav
+      brandHref="/LD-Systems-Portfolio"
+      suffix="Showcase"
+      accent="emerald"
+      links={[
+        { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
+        { label: "Case Studies", href: "/case-studies" },
+        { label: "Experience", href: "/work" },
+        { label: "Contact", href: "#contact" },
+      ]}
+      cta={{ label: "Get in touch", href: EMAIL }}
+    />
+  );
+}
+
+/* ---------- Hero ---------- */
+function Hero() {
+  const ready = useFontsReady();
+  const reduced = useReducedMotion();
+
+  return (
+    <section className="relative overflow-hidden px-5 pt-32 pb-16">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-[-10%] top-[-20%] h-[70vh] w-[70vh] rounded-full bg-emerald-500/10 blur-[120px]" />
+        <div className="absolute right-[-10%] bottom-[-20%] h-[60vh] w-[60vh] rounded-full bg-teal-500/10 blur-[120px]" />
+      </div>
+
+      <div className="mx-auto max-w-6xl">
+        <Reveal>
+          <Link
+            href="/LD-Systems-Portfolio"
+            className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
+          >
+            <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2} />
+            Back to Portfolio
+          </Link>
+        </Reveal>
+
+        <div className="mt-10 max-w-3xl">
+          <motion.h1
+            initial={reduced ? false : { opacity: 0, y: 24 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+            transition={{ duration: 0.8, ease: EASE }}
+            className="font-serif text-[2.5rem] font-medium leading-[1.1] tracking-tight text-white sm:text-[3.5rem] lg:text-[4rem]"
+          >
+            The <span className="text-emerald-400 font-serif italic">L&D</span> Showcase.
+          </motion.h1>
+          <motion.p
+            initial={reduced ? false : { opacity: 0, y: 16 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
+            className="mt-6 text-lg leading-relaxed text-neutral-400 sm:text-xl"
+          >
+            A curated deep-dive into the methodology, orchestration, and results of a decade in learning leadership.
+          </motion.p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Showcase Grid ---------- */
+function ShowcaseGrid() {
+  return (
+    <section className="px-5 py-12 md:py-20">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {SHOWCASE_ITEMS.map((item, i) => {
+            const Icon = item.icon;
+            const featured = item.featured;
+
+            return (
+              <Reveal key={item.id} delay={i * 0.05} y={30}>
+                <Link
+                  href={item.href}
+                  className={`group relative flex h-full flex-col overflow-hidden rounded-[2rem] border transition-all duration-300 hover:-translate-y-1 ${
+                    featured
+                      ? "border-emerald-400/30 bg-emerald-500/10 hover:border-emerald-400/50"
+                      : "border-white/10 bg-white/[0.03] hover:border-emerald-400/30 hover:bg-white/[0.05]"
+                  }`}
+                >
+                  {/* Visual Background */}
+                  <div className="relative aspect-[16/10] w-full overflow-hidden">
+                    <SceneMedia
+                      seed={item.imageSeed}
+                      alt={item.title}
+                      className="h-full w-full"
+                      rounded="rounded-none"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent opacity-60" />
+                  </div>
+
+                  <div className="relative z-10 flex flex-1 flex-col p-8">
+                    <div className="flex items-center justify-between">
+                      <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
+                        featured ? "bg-emerald-400/20 text-emerald-300" : "bg-white/10 text-emerald-400"
+                      }`}>
+                        <Icon className="h-6 w-6" strokeWidth={1.5} />
+                      </div>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
+                        <ArrowRight className="h-4 w-4 text-emerald-400" />
+                      </div>
+                    </div>
+
+                    <h3 className="mt-8 font-serif text-2xl font-medium tracking-tight text-white group-hover:text-emerald-300 transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-neutral-400">
+                      {item.description}
+                    </p>
+
+                    {featured && (
+                      <div className="mt-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-emerald-400">
+                        <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+                        Strategic Core
+                      </div>
+                    )}
+                  </div>
+                  
+                  <Grain />
+                </Link>
+              </Reveal>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Final CTA ---------- */
+function FinalCTA() {
+  return (
+    <section id="contact" className="px-5 py-24 md:py-32">
+      <div className="mx-auto max-w-4xl text-center">
+        <Reveal>
+          <h2 className="font-serif text-4xl font-medium tracking-tight text-white sm:text-5xl">
+            Let&apos;s build your <span className="text-emerald-400 italic font-serif">capability engine</span>.
+          </h2>
+          <p className="mx-auto mt-8 max-w-xl text-lg text-neutral-400">
+            Currently advising on AI-in-learning strategy and scaling modern L&D functions.
+          </p>
+          <div className="mt-12">
+            <MagneticButton href={EMAIL} variant="primary" className="px-10 py-4 text-base">
+              Get in touch
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </MagneticButton>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Footer ---------- */
+function ShowcaseFooter() {
+  return (
+    <footer className="border-t border-white/5 bg-[#0a0a0f] py-12">
+      <div className="mx-auto max-w-6xl px-5 text-center">
+        <p className="font-serif text-lg font-medium text-white">Jitin Nair</p>
+        <p className="mt-2 text-sm text-neutral-500">L&D Leader · AI Systems Architect</p>
+        <div className="mt-8 flex justify-center gap-6">
+          <Link href="/LD-Systems-Portfolio" className="text-xs uppercase tracking-widest text-neutral-500 hover:text-emerald-400 transition-colors">Portfolio</Link>
+          <Link href="/case-studies" className="text-xs uppercase tracking-widest text-neutral-500 hover:text-emerald-400 transition-colors">Case Studies</Link>
+          <Link href="/work" className="text-xs uppercase tracking-widest text-neutral-500 hover:text-emerald-400 transition-colors">Experience</Link>
+        </div>
+        <p className="mt-12 text-[10px] uppercase tracking-[0.2em] text-neutral-700">
+          © {new Date().getFullYear()} All Rights Reserved
+        </p>
+      </div>
+    </footer>
+  );
+}
+
+export default function ShowcasePage() {
+  return (
+    <main className="min-h-screen bg-[#0a0a0f] text-slate-100 selection:bg-emerald-500/30">
+      <Nav />
+      <Hero />
+      <ShowcaseGrid />
+      <FinalCTA />
+      <ShowcaseFooter />
+    </main>
+  );
+}

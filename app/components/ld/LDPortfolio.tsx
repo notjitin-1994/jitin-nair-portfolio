@@ -375,10 +375,10 @@ function Approach() {
                 program and a real result.
               </p>
               <Link
-                href="/leading-ld"
+                href="/showcase"
                 className="group mt-7 inline-flex items-center gap-2 rounded-full bg-emerald-400 px-6 py-3 text-sm font-semibold text-[#062a1d] transition-[transform,background-color] duration-200 ease-out hover:bg-emerald-300 active:scale-[0.97]"
               >
-                Explore the case studies
+                Explore the Showcase
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2} />
               </Link>
             </div>
