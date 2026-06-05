@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight, Mail, Linkedin, Plus } from "lucide-react";
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "../ld/primitives";
+import { LdFooter } from "../ld/LdFooter";
 import { SceneMedia, Eyebrow } from "../leading/visuals";
 import { FloatingNav } from "../FloatingNav";
 import {
@@ -109,8 +110,8 @@ function Hero() {
                 Explore the domains
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2} />
               </MagneticButton>
-              <MagneticButton href="/leading-ld" variant="ghost">
-                How I lead
+              <MagneticButton href="/showcase" variant="ghost">
+                Explore the Showcase
               </MagneticButton>
             </motion.div>
           </div>
@@ -368,7 +369,7 @@ function SkillMatrix() {
 function Contact() {
   return (
     <section id="contact" className="scroll-mt-24 px-5 py-6 md:py-8">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-6xl text-left">
         <Reveal>
           <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
             Let&apos;s build your capability engine.
@@ -402,77 +403,6 @@ function Contact() {
   );
 }
 
-/* ---------- Footer ---------- */
-function CapabilitiesFooter() {
-  return (
-    <footer className="border-t border-white/[0.08] bg-[#0a0a0f]">
-      <div className="mx-auto max-w-6xl px-5 py-16">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
-          <div className="space-y-4">
-            <span className="text-xl font-bold text-white">Jitin Nair</span>
-            <p className="max-w-xs text-sm leading-relaxed text-slate-400">
-              L&amp;D leader and AI systems architect. A decade turning learning into measurable performance.
-            </p>
-            <div className="flex items-center gap-3 pt-2">
-              <a
-                href={LINKEDIN}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-slate-400 transition-all hover:border-emerald-500/30 hover:text-emerald-400"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-4 w-4" />
-              </a>
-              <a
-                href={EMAIL}
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-slate-400 transition-all hover:border-emerald-500/30 hover:text-emerald-400"
-                aria-label="Email"
-              >
-                <Mail className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-          <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white">Portfolio</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/LD-Systems-Portfolio" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
-                  L&amp;D Portfolio
-                </Link>
-              </li>
-              <li>
-                <Link href="/leading-ld" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
-                  Leading L&amp;D
-                </Link>
-              </li>
-              <li>
-                <Link href="/work" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
-                  Experience
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white">Get in touch</h3>
-            <ul className="space-y-3">
-              <li>
-                <a href={EMAIL} className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
-                  not.jitin@gmail.com
-                </a>
-              </li>
-              <li className="text-sm text-slate-500">Bangalore, India</li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.08] pt-8 sm:flex-row">
-          <p className="text-sm text-slate-500">© {new Date().getFullYear()} Jitin Nair. All rights reserved.</p>
-          <p className="text-xs text-slate-600">Built with Next.js, TypeScript &amp; Tailwind CSS</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 /* ---------- Page ---------- */
 export function CapabilitiesPage() {
   return (
@@ -483,7 +413,7 @@ export function CapabilitiesPage() {
       <Domains />
       <SkillMatrix />
       <Contact />
-      <CapabilitiesFooter />
+      <LdFooter />
     </main>
   );
 }

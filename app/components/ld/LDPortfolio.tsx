@@ -26,6 +26,7 @@ import {
   type LdCaseStudy,
 } from "../../data/ldPortfolio";
 import { CaseStudyInfographic } from "./CaseStudyInfographics";
+import { LdFooter } from "./LdFooter";
 import { leadershipCases } from "../../data/leadership";
 import { capabilityDomains, type CapabilityDomain } from "../../data/capabilities";
 
@@ -175,7 +176,7 @@ function Hero() {
           </motion.div>
         </div>
 
-        {/* Portrait - desktop only; hidden on mobile (photo is the full-bleed background instead) */}
+        {/* Portrait - desktop only */}
         <motion.div
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -184,7 +185,7 @@ function Hero() {
         >
           <div
             ref={pRef}
-            onPointerMove={onMove}
+            onMove={onMove}
             onPointerLeave={reset}
             className="relative aspect-[4/5] w-full max-w-[300px] sm:max-w-[360px] md:max-w-[420px]"
             style={{ perspective: 900 }}
@@ -198,21 +199,18 @@ function Hero() {
                   : { clipPath: "inset(100% 0% 0% 0% round 28px)", scale: 1.1 }
               }
               transition={{ duration: 1.15, ease: EASE }}
-              className="relative h-full w-full overflow-hidden rounded-[28px] border border-white/10 shadow-2xl will-change-transform"
+              style={{ rotateX, rotateY }}
+              className="group relative h-full w-full overflow-hidden rounded-[28px] border border-white/10 bg-[#12121a] shadow-2xl"
             >
-              <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="relative h-full w-full">
-                <Image
-                  src="/hero-photo.jpg"
-                  alt="Jitin Nair"
-                  fill
-                  className="object-cover"
-                  style={{ objectPosition: "center 20%" }}
-                  sizes="(max-width: 768px) 360px, 420px"
-                  priority
-                  fetchPriority="high"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/55 via-transparent to-transparent" />
-              </motion.div>
+              <Image
+                src="/hero-photo.jpg"
+                alt="Jitin Nair"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                style={{ objectPosition: "center 15%" }}
+                sizes="(max-width: 768px) 100vw, 420px"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/40 via-transparent to-transparent" />
             </motion.div>
           </div>
         </motion.div>
@@ -223,57 +221,58 @@ function Hero() {
 
 /* ---------- Impact strip ---------- */
 function Impact() {
+  const ready = useFontsReady();
+  const reduced = useReducedMotion();
   return (
     <section className="px-5 py-6 md:py-8">
-      <Reveal className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 border-y border-white/[0.08] py-8 md:grid-cols-4">
-        {ldImpact.map((s) => (
-          <div key={s.label}>
-            <CountUp
-              to={s.to}
-              format={(n) => `${s.prefix ?? ""}${Math.round(n)}${s.suffix ?? ""}`}
-              className="font-serif text-4xl font-medium tracking-tight text-white sm:text-5xl"
-            />
-            <div className="mt-2 text-sm text-neutral-500">{s.label}</div>
-          </div>
-        ))}
-      </Reveal>
+      <div className="mx-auto max-w-6xl">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {ldImpact.map((stat, i) => (
+            <Reveal key={stat.label} delay={i * 0.05}>
+              <div className="h-full rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 transition-colors hover:border-emerald-400/20">
+                <CountUp
+                  to={stat.to}
+                  format={(n) => `${stat.prefix}${Math.round(n).toLocaleString()}${stat.suffix}`}
+                  className="font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl"
+                />
+                <div className="mt-1 text-sm leading-snug text-neutral-500">{stat.label}</div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
 
-/* ---------- Case study (sticky infographic panel on desktop) ---------- */
+/* ---------- Case studies ---------- */
 function CaseStudy({ cs, index, flip }: { cs: LdCaseStudy; index: number; flip: boolean }) {
   return (
-    <div className="grid gap-8 border-t border-white/[0.06] pt-12 lg:grid-cols-2 lg:gap-16">
-      {/* Infographic panel */}
-      <div className={`self-start lg:sticky lg:top-28 ${flip ? "lg:order-2" : ""}`}>
-        <Reveal>
-          <div className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-400">
-            {String(index + 1).padStart(2, "0")} / {cs.org}
+    <div className={`grid items-center gap-10 lg:grid-cols-2 lg:gap-20 ${flip ? "lg:direction-rtl" : ""}`}>
+      <div className={flip ? "lg:order-2 lg:direction-ltr" : ""}>
+        <Reveal y={20}>
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+            {cs.tags[0]}
           </div>
-          <div className="mt-2 text-sm text-neutral-500">{cs.context}</div>
-          <div className="mt-8">
-            <CaseStudyInfographic id={cs.id} />
+          <h3 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">{cs.title}</h3>
+          <p className="mt-6 text-lg leading-relaxed text-neutral-300">{cs.description}</p>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {cs.metrics.map((m) => (
+              <div key={m.label}>
+                <div className="font-serif text-2xl text-emerald-400">{m.value}</div>
+                <div className="mt-1 text-sm text-neutral-500">{m.label}</div>
+              </div>
+            ))}
           </div>
         </Reveal>
       </div>
-
-      {/* Narrative */}
-      <div className={flip ? "lg:order-1" : ""}>
-        <Reveal delay={0.05}>
-          <h3 className="font-serif text-2xl font-medium leading-snug tracking-tight text-white sm:text-3xl">
-            {cs.title}
-          </h3>
-          <div className="mt-8 space-y-7">
-            <div>
-              <div className="text-xs font-medium uppercase tracking-[0.16em] text-emerald-400/70">The challenge</div>
-              <p className="mt-2 leading-relaxed text-neutral-300">{cs.challenge}</p>
-            </div>
-            <div>
-              <div className="text-xs font-medium uppercase tracking-[0.16em] text-emerald-400/70">The strategy</div>
-              <p className="mt-2 leading-relaxed text-neutral-300">{cs.strategy}</p>
-            </div>
-            <p className="border-t border-white/[0.06] pt-6 text-sm leading-relaxed text-neutral-500">{cs.note}</p>
+      <div className={`relative ${flip ? "lg:order-1" : ""}`}>
+        <Reveal delay={0.1}>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]">
+            <CaseStudyInfographic id={cs.id} />
+          </div>
+          <div className="mt-4 flex items-center justify-between px-2">
+            <p className="max-w-[80%] border-t border-white/[0.06] pt-6 text-sm leading-relaxed text-neutral-500">{cs.note}</p>
           </div>
         </Reveal>
       </div>
@@ -319,7 +318,7 @@ function Approach() {
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14 max-w-2xl">
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
-            How I lead L&amp;D.
+            My L&amp;D Leadership Philosophy.
           </h2>
           <p className="mt-3 leading-relaxed text-neutral-400">
             Four principles I run every program by, each proven across a leadership case study.
@@ -366,11 +365,10 @@ function Approach() {
           <div className="relative z-10 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
             <div>
               <h3 className="font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl">
-                Leadership, proven in the numbers.
+                The Showcase: methodology, orchestration, and results.
               </h3>
               <p className="mt-4 max-w-md leading-relaxed text-neutral-300">
-                Four case studies across the competencies a leadership panel scores you on, each backed by a real
-                program and a real result.
+                A detailed deep-dive into the tools and systems built for every phase of the L&amp;D lifecycle—from automated discovery to scalable content production.
               </p>
               <Link
                 href="/showcase"
@@ -538,8 +536,8 @@ function TileViz({ c }: { c: CapabilityDomain }) {
             />
             <defs>
               <linearGradient id="capDonut" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#34d399" />
-                <stop offset="100%" stopColor="#2dd4bf" />
+                <stop offset="0%" stopColor="#34d399" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#2dd4bf" stopOpacity="0.35" />
               </linearGradient>
             </defs>
           </svg>
@@ -866,7 +864,7 @@ function Contact() {
       <div className="mx-auto max-w-6xl">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-start">
           {/* Left - headline + availability */}
-          <div>
+          <div className="text-left">
             <Reveal>
               <Label>Get in touch</Label>
               <h2 className="mt-4 font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
@@ -1030,113 +1028,6 @@ function Contact() {
         </div>
       </div>
     </section>
-  );
-}
-
-/* ---------- Footer ---------- */
-function LdFooter() {
-  const LD_SECTIONS = [
-    { label: "Work", href: "/work", isLink: true },
-    { label: "Approach", href: "#approach", isLink: false },
-    { label: "Capabilities", href: "/capabilities", isLink: true },
-  ];
-
-  const PORTFOLIO_LINKS = [
-    { label: "Home", href: "/" },
-    { label: "AI Systems Portfolio", href: "/AI-Systems-Architecture-Portfolio" },
-    { label: "Insights", href: "/insights" },
-  ];
-
-  return (
-    <footer className="border-t border-white/[0.08] bg-[#0a0a0f]">
-      <div className="mx-auto max-w-6xl px-5 py-16">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
-          {/* Brand */}
-          <div className="space-y-4">
-            <Link href="/" className="inline-block">
-              <span className="font-serif text-xl font-bold text-white">Jitin Nair</span>
-            </Link>
-            <p className="text-sm leading-relaxed text-slate-400">
-              L&amp;D leader and AI systems architect. A decade turning learning into measurable performance.
-            </p>
-            <div className="flex items-center gap-3 pt-2">
-              <a
-                href={LINKEDIN}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-slate-400 transition-all hover:border-emerald-500/30 hover:text-emerald-400"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-4 w-4" />
-              </a>
-              <a
-                href="https://instagram.com/not_jitin"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-slate-400 transition-all hover:border-emerald-500/30 hover:text-emerald-400"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-4 w-4" />
-              </a>
-              <a
-                href="mailto:not.jitin@gmail.com"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-slate-400 transition-all hover:border-emerald-500/30 hover:text-emerald-400"
-                aria-label="Email"
-              >
-                <Mail className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-
-          {/* This page */}
-          <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white">This page</h3>
-            <ul className="space-y-3">
-              {LD_SECTIONS.map((item) => (
-                <li key={item.href}>
-                  {item.isLink ? (
-                    <Link href={item.href} className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
-                      {item.label}
-                    </Link>
-                  ) : (
-                    <a href={item.href} className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
-                      {item.label}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Portfolio */}
-          <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white">Portfolio</h3>
-            <ul className="space-y-3">
-              {PORTFOLIO_LINKS.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-sm text-slate-400 transition-colors hover:text-emerald-400"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.08] pt-8 sm:flex-row">
-          <p className="text-sm text-slate-500">
-            © {new Date().getFullYear()} Jitin Nair. All rights reserved.
-          </p>
-          <p className="text-xs text-slate-600">
-            Built with Next.js, TypeScript &amp; Tailwind CSS
-          </p>
-        </div>
-      </div>
-    </footer>
   );
 }
 

@@ -10,13 +10,17 @@ import {
   UsersRound, 
   GraduationCap, 
   Video, 
-  LineChart 
+  LineChart,
+  Mail,
+  Linkedin
 } from "lucide-react";
 import { EASE, useFontsReady, Reveal, MagneticButton } from "../components/ld/primitives";
 import { SceneMedia, Grain } from "../components/leading/visuals";
 import { FloatingNav } from "../components/FloatingNav";
+import { LdFooter } from "../components/ld/LdFooter";
 
 const EMAIL = "mailto:not.jitin@gmail.com";
+const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 
 const SHOWCASE_ITEMS = [
   {
@@ -204,46 +208,39 @@ function ShowcaseGrid() {
 }
 
 /* ---------- Final CTA ---------- */
-function FinalCTA() {
+function Contact() {
   return (
-    <section id="contact" className="px-5 py-24 md:py-32">
-      <div className="mx-auto max-w-4xl text-center">
+    <section id="contact" className="scroll-mt-24 px-5 py-24 md:py-32">
+      <div className="mx-auto max-w-6xl text-left">
         <Reveal>
-          <h2 className="font-serif text-4xl font-medium tracking-tight text-white sm:text-5xl">
+          <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
             Let&apos;s build your <span className="text-emerald-400 italic font-serif">capability engine</span>.
           </h2>
-          <p className="mx-auto mt-8 max-w-xl text-lg text-neutral-400">
+          <p className="mt-8 max-w-xl text-lg text-neutral-400">
             Currently advising on AI-in-learning strategy and scaling modern L&D functions.
           </p>
-          <div className="mt-12">
+          <div className="mt-12 flex">
             <MagneticButton href={EMAIL} variant="primary" className="px-10 py-4 text-base">
               Get in touch
               <ArrowRight className="ml-2 h-5 w-5" />
             </MagneticButton>
           </div>
+          <div className="mt-8 flex items-center gap-6 text-sm text-neutral-500">
+            <a href={EMAIL} className="inline-flex items-center gap-2 transition-colors hover:text-white">
+              <Mail className="h-4 w-4" strokeWidth={1.75} /> not.jitin@gmail.com
+            </a>
+            <a
+              href={LINKEDIN}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 transition-colors hover:text-white"
+            >
+              <Linkedin className="h-4 w-4" strokeWidth={1.75} /> LinkedIn
+            </a>
+          </div>
         </Reveal>
       </div>
     </section>
-  );
-}
-
-/* ---------- Footer ---------- */
-function ShowcaseFooter() {
-  return (
-    <footer className="border-t border-white/5 bg-[#0a0a0f] py-12">
-      <div className="mx-auto max-w-6xl px-5 text-center">
-        <p className="font-serif text-lg font-medium text-white">Jitin Nair</p>
-        <p className="mt-2 text-sm text-neutral-500">L&D Leader · AI Systems Architect</p>
-        <div className="mt-8 flex justify-center gap-6">
-          <Link href="/LD-Systems-Portfolio" className="text-xs uppercase tracking-widest text-neutral-500 hover:text-emerald-400 transition-colors">Portfolio</Link>
-          <Link href="/case-studies" className="text-xs uppercase tracking-widest text-neutral-500 hover:text-emerald-400 transition-colors">Case Studies</Link>
-          <Link href="/work" className="text-xs uppercase tracking-widest text-neutral-500 hover:text-emerald-400 transition-colors">Experience</Link>
-        </div>
-        <p className="mt-12 text-[10px] uppercase tracking-[0.2em] text-neutral-700">
-          © {new Date().getFullYear()} All Rights Reserved
-        </p>
-      </div>
-    </footer>
   );
 }
 
@@ -253,8 +250,8 @@ export default function ShowcasePage() {
       <Nav />
       <Hero />
       <ShowcaseGrid />
-      <FinalCTA />
-      <ShowcaseFooter />
+      <Contact />
+      <LdFooter />
     </main>
   );
 }
