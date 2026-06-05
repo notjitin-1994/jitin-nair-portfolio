@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { Footer } from "./Footer";
 import LazySection from "./LazySection";
 import { projectsData } from "../data/projects";
@@ -64,30 +65,104 @@ function ProjectsDropdown() {
   );
 }
 
+const AI_MOBILE_LINKS = [
+  { label: "Projects", href: "#projects" },
+  { label: "Tech Stack", href: "#techstack" },
+  { label: "Insights", href: "/insights" },
+];
+
 function NavAI() {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-5">
-      <nav className="mx-auto mt-4 flex h-14 max-w-6xl items-center justify-between rounded-full border border-cyan-400/25 bg-[#0a0a0f]/70 pl-5 pr-3 shadow-[0_0_28px_-8px_rgba(34,211,238,0.5)] backdrop-blur-xl">
-        <Link href="/" className="flex items-center gap-2 text-sm font-semibold text-white">
-          Jitin Nair
-          <span className="hidden text-cyan-400/70 sm:inline">· AI Systems</span>
-        </Link>
-        <div className="hidden items-center gap-7 md:flex">
-          <ProjectsDropdown />
-          <a href="#techstack" className="text-sm text-neutral-400 transition-colors hover:text-white">
-            Tech Stack
-          </a>
-          <Link href="/insights" className="text-sm text-neutral-400 transition-colors hover:text-white">
-            Insights
+      <div className="mx-auto max-w-6xl">
+        <nav className="relative z-10 mt-4 flex h-14 items-center justify-between rounded-full border border-cyan-400/25 bg-[#0a0a0f]/70 pl-5 pr-3 shadow-[0_0_28px_-8px_rgba(34,211,238,0.5)] backdrop-blur-xl">
+          <Link href="/" className="flex items-center gap-2 text-sm font-semibold text-white">
+            Jitin Nair
+            <span className="hidden text-cyan-400/70 sm:inline">· AI Systems</span>
           </Link>
-        </div>
-        <a
-          href="#contact"
-          className="rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-[#061828] transition-[transform,background-color] duration-200 ease-out hover:bg-cyan-300 active:scale-[0.97]"
-        >
-          Get in touch
-        </a>
-      </nav>
+          <div className="hidden items-center gap-7 md:flex">
+            <ProjectsDropdown />
+            <a href="#techstack" className="text-sm text-neutral-400 transition-colors hover:text-white">
+              Tech Stack
+            </a>
+            <Link href="/insights" className="text-sm text-neutral-400 transition-colors hover:text-white">
+              Insights
+            </Link>
+          </div>
+
+          {/* Desktop CTA */}
+          <a
+            href="#contact"
+            className="hidden items-center rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-[#061828] transition-[transform,background-color] duration-200 ease-out hover:bg-cyan-300 active:scale-[0.97] md:inline-flex"
+          >
+            Get in touch
+          </a>
+
+          {/* Mobile toggle */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-cyan-400/30 text-cyan-300 transition-colors hover:bg-cyan-400/10 md:hidden"
+          >
+            {menuOpen ? <X className="h-5 w-5" strokeWidth={2} /> : <Menu className="h-5 w-5" strokeWidth={2} />}
+          </button>
+        </nav>
+
+        {/* Mobile expansion panel */}
+        <AnimatePresence>
+          {menuOpen && (
+            <>
+              <motion.div
+                aria-hidden
+                onClick={() => setMenuOpen(false)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-0 md:hidden"
+              />
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                className="relative z-10 mt-2 overflow-hidden rounded-3xl border border-cyan-400/20 bg-[#0a0a0f]/90 p-2 shadow-[0_0_28px_-8px_rgba(34,211,238,0.5)] backdrop-blur-xl md:hidden"
+              >
+                {AI_MOBILE_LINKS.map((n) =>
+                  n.href.startsWith("/") ? (
+                    <Link
+                      key={n.href}
+                      href={n.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block rounded-2xl px-4 py-3 text-base text-neutral-300 transition-colors hover:bg-white/[0.05] hover:text-white"
+                    >
+                      {n.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={n.href}
+                      href={n.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block rounded-2xl px-4 py-3 text-base text-neutral-300 transition-colors hover:bg-white/[0.05] hover:text-white"
+                    >
+                      {n.label}
+                    </a>
+                  )
+                )}
+                <a
+                  href="#contact"
+                  onClick={() => setMenuOpen(false)}
+                  className="mt-1 block rounded-2xl bg-cyan-400 px-4 py-3 text-center text-base font-semibold text-[#061828] active:scale-[0.98]"
+                >
+                  Get in touch
+                </a>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      </div>
     </header>
   );
 }

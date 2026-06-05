@@ -126,7 +126,7 @@ export function MobileJourney() {
                     className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-white to-neutral-300 transition-all ${
                       isActive
                         ? 'ring-2 ring-cyan-400 shadow-lg shadow-cyan-500/30'
-                        : 'ring-1 ring-black/10 opacity-80'
+                        : 'ring-1 ring-black/10'
                     }`}
                   >
                     <Icon className="h-[18px] w-[18px] text-neutral-800" />

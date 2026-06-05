@@ -5,6 +5,7 @@ import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight, Mail, Linkedin, Plus } from "lucide-react";
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "../ld/primitives";
 import { SceneMedia, Eyebrow } from "../leading/visuals";
+import { FloatingNav } from "../FloatingNav";
 import {
   capHero,
   dualFluency,
@@ -19,39 +20,18 @@ const fmt = (n: number, prefix = "", suffix = "") => `${prefix}${Math.round(n).t
 
 /* ---------- Nav ---------- */
 function Nav() {
-  const links = [
-    { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-    { label: "Leading L&D", href: "/leading-ld" },
-    { label: "Contact", href: "#contact" },
-  ];
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-5">
-      <nav className="mx-auto mt-4 flex h-14 max-w-6xl items-center justify-between rounded-full border border-emerald-400/25 bg-[#0a0a0f]/70 pl-5 pr-3 shadow-[0_0_28px_-8px_rgba(52,211,153,0.5)] backdrop-blur-xl">
-        <Link href="/LD-Systems-Portfolio" className="flex items-center gap-2 text-sm font-semibold text-white">
-          Jitin Nair
-          <span className="hidden text-emerald-400/70 sm:inline">· Capabilities</span>
-        </Link>
-        <div className="hidden items-center gap-7 md:flex">
-          {links.map((n) =>
-            n.href.startsWith("/") ? (
-              <Link key={n.href} href={n.href} className="text-sm text-neutral-400 transition-colors hover:text-white">
-                {n.label}
-              </Link>
-            ) : (
-              <a key={n.href} href={n.href} className="text-sm text-neutral-400 transition-colors hover:text-white">
-                {n.label}
-              </a>
-            )
-          )}
-        </div>
-        <a
-          href={EMAIL}
-          className="rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-[#062a1d] transition-[transform,background-color] duration-200 ease-out hover:bg-emerald-300 active:scale-[0.97]"
-        >
-          Get in touch
-        </a>
-      </nav>
-    </header>
+    <FloatingNav
+      brandHref="/LD-Systems-Portfolio"
+      suffix="Capabilities"
+      accent="emerald"
+      links={[
+        { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
+        { label: "Leading L&D", href: "/leading-ld" },
+        { label: "Contact", href: "#contact" },
+      ]}
+      cta={{ label: "Get in touch", href: EMAIL }}
+    />
   );
 }
 

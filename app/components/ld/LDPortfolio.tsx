@@ -15,6 +15,7 @@ import { ArrowRight, ArrowUpRight, Mail, Linkedin, Check, Phone, MessageCircle, 
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "./primitives";
 import { DownloadResumeButton } from "./DownloadResumeButton";
 import { LdVortexBackground } from "./LdVortexBackground";
+import { FloatingNav } from "../FloatingNav";
 import {
   ldImpact,
   ldCaseStudies,
@@ -56,33 +57,13 @@ function Label({ children }: { children: ReactNode }) {
 /* ---------- Nav ---------- */
 function Nav() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-5">
-      <nav className="mx-auto mt-4 flex h-14 max-w-6xl items-center justify-between rounded-full border border-emerald-400/25 bg-[#0a0a0f]/70 pl-5 pr-3 shadow-[0_0_28px_-8px_rgba(52,211,153,0.5)] backdrop-blur-xl">
-        <Link href="/" className="flex items-center gap-2 text-sm font-semibold text-white">
-          Jitin Nair
-          <span className="hidden text-emerald-400/70 sm:inline">· L&amp;D</span>
-        </Link>
-        <div className="hidden items-center gap-7 md:flex">
-          {NAV.map((n) =>
-            n.href.startsWith("/") ? (
-              <Link key={n.href} href={n.href} className="text-sm text-neutral-400 transition-colors hover:text-white">
-                {n.label}
-              </Link>
-            ) : (
-              <a key={n.href} href={n.href} className="text-sm text-neutral-400 transition-colors hover:text-white">
-                {n.label}
-              </a>
-            )
-          )}
-        </div>
-        <a
-          href="#contact"
-          className="rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-[#062a1d] transition-[transform,background-color] duration-200 ease-out hover:bg-emerald-300 active:scale-[0.97]"
-        >
-          Get in touch
-        </a>
-      </nav>
-    </header>
+    <FloatingNav
+      brandHref="/"
+      suffix="L&D"
+      accent="emerald"
+      links={NAV}
+      cta={{ label: "Get in touch", href: "#contact" }}
+    />
   );
 }
 
@@ -470,7 +451,14 @@ function TileViz({ c }: { c: CapabilityDomain }) {
   // 1. Semicircle speed gauge
   if (viz.kind === "gauge") {
     const len = 148;
-    const needle = -90 + viz.fill * 180;
+    // Needle pivots from the hub (55,56); animate the tip coordinates so the base
+    // always sits exactly on the hub dot (avoids SVG transform-origin pitfalls).
+    const hubX = 55;
+    const hubY = 56;
+    const needleLen = 34;
+    const phi = Math.PI * (1 - viz.fill); // 0% -> pointing left, 100% -> pointing right
+    const tipX = hubX + needleLen * Math.cos(phi);
+    const tipY = hubY - needleLen * Math.sin(phi);
     return (
       <div>
         <div className="mx-auto w-full max-w-[150px]">
@@ -489,15 +477,19 @@ function TileViz({ c }: { c: CapabilityDomain }) {
               transition={{ duration: 1.2, ease: EASE }}
             />
             <motion.line
-              x1="55" y1="56" x2="55" y2="20"
-              stroke="#e5e7eb" strokeWidth="2.5" strokeLinecap="round"
-              style={{ transformOrigin: "55px 56px", transformBox: "view-box" }}
-              initial={reduced ? false : { rotate: -90 }}
-              whileInView={{ rotate: needle }}
+              x1={hubX}
+              y1={hubY}
+              x2={tipX}
+              y2={tipY}
+              stroke="#e5e7eb"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              initial={reduced ? false : { x2: hubX - needleLen, y2: hubY }}
+              whileInView={{ x2: tipX, y2: tipY }}
               viewport={inView}
               transition={{ duration: 1.2, ease: EASE }}
             />
-            <circle cx="55" cy="56" r="4" fill="#34d399" />
+            <circle cx={hubX} cy={hubY} r="4" fill="#34d399" />
             <defs>
               <linearGradient id="capGauge" x1="0" x2="1">
                 <stop offset="0%" stopColor="#34d399" />
