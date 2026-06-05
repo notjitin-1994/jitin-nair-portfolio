@@ -175,7 +175,7 @@ function Hero() {
           </motion.div>
         </div>
 
-        {/* Portrait — desktop only; hidden on mobile (photo is the full-bleed background instead) */}
+        {/* Portrait - desktop only; hidden on mobile (photo is the full-bleed background instead) */}
         <motion.div
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -313,6 +313,7 @@ function Work() {
 
 /* ---------- Approach ---------- */
 function Approach() {
+  const reduced = useReducedMotion();
   return (
     <section id="approach" className="scroll-mt-24 px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
@@ -337,18 +338,31 @@ function Approach() {
 
         {/* Leadership case-study teaser, deep version lives on /leading-ld */}
         <Reveal className="relative mt-20 overflow-hidden rounded-3xl border border-emerald-400/15 bg-[#0a0a0f] p-8 sm:p-12">
-          {/* Blurred aesthetic background video */}
-          <div className="absolute inset-0 z-0 overflow-hidden">
+          {/* Aesthetic animated background. Drop a licensed muted clip at
+              /public/leading/leadership.mp4 to upgrade this to real video. */}
+          <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
             <video
               autoPlay
               muted
               loop
               playsInline
-              className="h-full w-full object-cover opacity-30 blur-[10px] scale-105"
+              preload="auto"
+              className="absolute inset-0 h-full w-full scale-105 object-cover opacity-30 blur-[10px]"
             >
-              <source src="https://player.vimeo.com/external/494252666.sd.mp4?s=727e3354bb0cf76dca3376722247b9ad981a82f8&profile_id=165&oauth2_token_id=57447761" type="video/mp4" />
+              <source src="/leading/leadership.mp4" type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f]/90 via-[#0a0a0f]/60 to-emerald-950/40" />
+            {/* Drifting emerald aurora (always-on, reliable motion layer) */}
+            <motion.div
+              className="absolute left-[-15%] top-[-35%] h-[110%] w-[60%] rounded-full bg-emerald-500/25 blur-[90px]"
+              animate={reduced ? undefined : { x: [0, 50, 0], y: [0, 36, 0], scale: [1, 1.1, 1] }}
+              transition={reduced ? undefined : { duration: 20, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute right-[-15%] bottom-[-35%] h-[110%] w-[55%] rounded-full bg-teal-500/20 blur-[100px]"
+              animate={reduced ? undefined : { x: [0, -40, 0], y: [0, -30, 0], scale: [1, 1.12, 1] }}
+              transition={reduced ? undefined : { duration: 26, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f]/85 via-[#0a0a0f]/55 to-emerald-950/40" />
           </div>
 
           <div className="relative z-10 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
@@ -853,7 +867,7 @@ function Contact() {
     <section id="contact" className="scroll-mt-24 px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-start">
-          {/* Left — headline + availability */}
+          {/* Left - headline + availability */}
           <div>
             <Reveal>
               <Label>Get in touch</Label>
@@ -886,7 +900,7 @@ function Contact() {
             </Reveal>
           </div>
 
-          {/* Right — social + connect cards, one per line */}
+          {/* Right - social + connect cards, one per line */}
           <div className="grid grid-cols-1 gap-4">
             {/* Static social links */}
             {SOCIAL_LINKS.map((link, i) => {

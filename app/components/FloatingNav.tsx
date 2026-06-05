@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
@@ -10,7 +11,7 @@ type Accent = "emerald" | "cyan";
 
 const ACCENT: Record<
   Accent,
-  { border: string; glow: string; suffix: string; cta: string; toggle: string; panel: string }
+  { border: string; glow: string; suffix: string; cta: string; toggle: string; panel: string; ring: string; avatarGlow: string }
 > = {
   emerald: {
     border: "border-emerald-400/25",
@@ -19,6 +20,8 @@ const ACCENT: Record<
     cta: "bg-emerald-400 text-[#062a1d] hover:bg-emerald-300",
     toggle: "border-emerald-400/30 text-emerald-300 hover:bg-emerald-400/10",
     panel: "border-emerald-400/20",
+    ring: "ring-emerald-400/60",
+    avatarGlow: "shadow-[0_0_14px_rgba(52,211,153,0.55)]",
   },
   cyan: {
     border: "border-cyan-400/25",
@@ -27,6 +30,8 @@ const ACCENT: Record<
     cta: "bg-cyan-400 text-[#061828] hover:bg-cyan-300",
     toggle: "border-cyan-400/30 text-cyan-300 hover:bg-cyan-400/10",
     panel: "border-cyan-400/20",
+    ring: "ring-cyan-400/60",
+    avatarGlow: "shadow-[0_0_14px_rgba(34,211,238,0.55)]",
   },
 };
 
@@ -71,9 +76,19 @@ export function FloatingNav({
         <nav
           className={`relative z-10 mt-4 flex h-14 items-center justify-between rounded-full border ${a.border} bg-[#0a0a0f]/70 pl-5 pr-3 ${a.glow} backdrop-blur-xl`}
         >
-          <Link href={brandHref} className="flex items-center gap-2 text-sm font-semibold text-white">
-            {brand}
-            {suffix && <span className={`hidden sm:inline ${a.suffix}`}>· {suffix}</span>}
+          <Link href={brandHref} className="flex items-center gap-2.5 text-white">
+            <span className={`relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full ring-2 ${a.ring} ${a.avatarGlow}`}>
+              <Image
+                src="/hero-photo.jpg"
+                alt="Jitin Nair"
+                fill
+                sizes="32px"
+                className="object-cover"
+                style={{ objectPosition: "center 20%" }}
+              />
+            </span>
+            <span className="font-serif text-base font-medium tracking-tight">{brand}</span>
+            {suffix && <span className={`hidden text-sm sm:inline ${a.suffix}`}>· {suffix}</span>}
           </Link>
 
           {/* Desktop links */}

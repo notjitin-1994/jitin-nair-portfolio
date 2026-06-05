@@ -93,7 +93,7 @@ export const leadershipCases: LeadershipCase[] = [
     org: "Moody's Ratings · Accenture",
     context: "Regulated financial environments",
     imageSeed: "regulated-finance-compliance-9021",
-    bgImage: "https://images.unsplash.com/photo-1454165833767-027ff33027ef?auto=format&fit=crop&q=80&w=800",
+    bgImage: "https://picsum.photos/seed/ld-compliance-finance-9021/800/600",
     problem:
       "In a regulated environment, a compliance gap is a balance-sheet risk. At Moody's the work sat inside the regulatory framework governing the ratings business; at Accenture it ran against HIPAA. The default reflex was long, disruptive classroom training that pulled analysts off the floor for hours.",
     solution:
@@ -156,7 +156,7 @@ export const leadershipCases: LeadershipCase[] = [
     org: "Accenture",
     context: "Proving L&D as an efficiency driver, not a cost center",
     imageSeed: "business-analytics-strategy-2890",
-    bgImage: "https://images.unsplash.com/photo-1551288049-bbbda536ad37?auto=format&fit=crop&q=80&w=800",
+    bgImage: "https://picsum.photos/seed/ld-analytics-strategy-2890/800/600",
     problem:
       "Onboarding and upskilling for client teams was time-heavy and costly, and the only evidence anyone collected was completion and satisfaction. L&D read as a cost line.",
     solution:

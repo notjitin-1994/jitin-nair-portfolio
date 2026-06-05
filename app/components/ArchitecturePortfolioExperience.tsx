@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { Footer } from "./Footer";
@@ -77,9 +78,19 @@ function NavAI() {
     <header className="fixed inset-x-0 top-0 z-50 px-5">
       <div className="mx-auto max-w-6xl">
         <nav className="relative z-10 mt-4 flex h-14 items-center justify-between rounded-full border border-cyan-400/25 bg-[#0a0a0f]/70 pl-5 pr-3 shadow-[0_0_28px_-8px_rgba(34,211,238,0.5)] backdrop-blur-xl">
-          <Link href="/" className="flex items-center gap-2 text-sm font-semibold text-white">
-            Jitin Nair
-            <span className="hidden text-cyan-400/70 sm:inline">· AI Systems</span>
+          <Link href="/" className="flex items-center gap-2.5 text-white">
+            <span className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full ring-2 ring-cyan-400/60 shadow-[0_0_14px_rgba(34,211,238,0.55)]">
+              <Image
+                src="/hero-photo.jpg"
+                alt="Jitin Nair"
+                fill
+                sizes="32px"
+                className="object-cover"
+                style={{ objectPosition: "center 20%" }}
+              />
+            </span>
+            <span className="font-serif text-base font-medium tracking-tight">Jitin Nair</span>
+            <span className="hidden text-sm text-cyan-400/70 sm:inline">· AI Systems</span>
           </Link>
           <div className="hidden items-center gap-7 md:flex">
             <ProjectsDropdown />
