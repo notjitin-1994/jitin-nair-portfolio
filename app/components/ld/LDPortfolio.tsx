@@ -185,7 +185,7 @@ function Hero() {
         >
           <div
             ref={pRef}
-            onMove={onMove}
+            onPointerMove={onMove}
             onPointerLeave={reset}
             className="relative aspect-[4/5] w-full max-w-[300px] sm:max-w-[360px] md:max-w-[420px]"
             style={{ perspective: 900 }}
