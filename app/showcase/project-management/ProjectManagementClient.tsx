@@ -1326,70 +1326,48 @@ export function ProjectManagementClient() {
 
         {/* Filter bar */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-5 pb-4 border-b border-white/[0.06]">
-          {/* Project filter */}
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-600 hidden sm:block">Project</span>
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <button
-                onClick={() => setKanbanProjectFilter(null)}
-                className={cn(
-                  "px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200",
-                  kanbanProjectFilter === null
-                    ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/40"
-                    : "text-neutral-500 border border-white/[0.07] hover:border-white/20 hover:text-neutral-300"
-                )}
+          <div className="flex items-center gap-3 bg-zinc-900/30 border border-white/5 p-2 rounded-2xl backdrop-blur-md">
+            <span className="text-[10px] font-mono font-bold text-neutral-600 uppercase tracking-widest pl-2 flex items-center gap-2">
+              <Filter className="h-3 w-3" /> Filter
+            </span>
+            
+            {/* Project Filter Dropdown */}
+            <div className="relative group">
+              <select 
+                value={kanbanProjectFilter || ""}
+                onChange={(e) => setKanbanProjectFilter(e.target.value || null)}
+                className="bg-black/40 border border-white/10 text-neutral-300 text-[11px] font-bold rounded-xl pl-3 pr-8 py-1.5 focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer uppercase tracking-tight"
               >
-                All
-              </button>
-              {projects.map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => setKanbanProjectFilter(kanbanProjectFilter === p.id ? null : p.id)}
-                  className={cn(
-                    "px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200 max-w-[180px] truncate",
-                    kanbanProjectFilter === p.id
-                      ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/40"
-                      : "text-neutral-500 border border-white/[0.07] hover:border-white/20 hover:text-neutral-300"
-                  )}
-                >
-                  {p.name}
-                </button>
-              ))}
+                <option value="">All Projects</option>
+                {projects.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-neutral-600 pointer-events-none group-hover:text-emerald-400 transition-colors" />
+            </div>
+
+            {/* Assignee Filter Dropdown */}
+            <div className="relative group">
+              <select 
+                value={kanbanAssigneeFilter || ""}
+                onChange={(e) => setKanbanAssigneeFilter(e.target.value || null)}
+                className="bg-black/40 border border-white/10 text-neutral-300 text-[11px] font-bold rounded-xl pl-3 pr-8 py-1.5 focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer uppercase tracking-tight"
+              >
+                <option value="">All Assignees</option>
+                {USERS.map(u => (
+                  <option key={u.id} value={u.id}>{u.name}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-neutral-600 pointer-events-none group-hover:text-emerald-400 transition-colors" />
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="hidden sm:block h-5 w-px bg-white/[0.08]" />
-
-          {/* Assignee filter */}
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-600 hidden sm:block">Assignee</span>
-            <div className="flex items-center gap-1.5">
-              {USERS.map(u => (
-                <button
-                  key={u.id}
-                  onClick={() => setKanbanAssigneeFilter(kanbanAssigneeFilter === u.id ? null : u.id)}
-                  title={u.name}
-                  className={cn(
-                    "relative rounded-full transition-all duration-200",
-                    kanbanAssigneeFilter === u.id
-                      ? "ring-2 ring-emerald-500 ring-offset-2 ring-offset-[#0a0a0f]"
-                      : "opacity-60 hover:opacity-100"
-                  )}
-                >
-                  <UserAvatar user={u} size="sm" />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Clear filters */}
           {hasActiveFilter && (
-            <button
+            <button 
               onClick={() => { setKanbanProjectFilter(null); setKanbanAssigneeFilter(null); }}
-              className="ml-auto flex items-center gap-1.5 text-[11px] text-neutral-500 hover:text-white transition-colors"
+              className="text-[10px] font-bold text-rose-500/80 hover:text-rose-400 uppercase tracking-widest px-3 py-1.5 rounded-lg hover:bg-rose-500/10 transition-colors"
             >
-              <span className="font-mono">✕</span> Clear filters
+              Clear All
             </button>
           )}
         </div>
@@ -1573,8 +1551,19 @@ export function ProjectManagementClient() {
     const completedSubtasks = projectTasks.reduce((acc, t) => acc + t.subtasks.filter(s => s.completed).length, 0);
     const completionRate = totalSubtasks === 0 ? 0 : (completedSubtasks / totalSubtasks) * 100;
   
-    const allActivity = projectTasks.flatMap(t => t.activity.map(a => ({ ...a, taskTitle: t.title }))).sort((a, b) => b.id.localeCompare(a.id));
-    const allComments = projectTasks.flatMap(t => t.comments.map(c => ({ ...c, taskTitle: t.title }))).sort((a, b) => b.id.localeCompare(a.id));
+    const allActivity = projectTasks.flatMap(t => t.activity.map(a => ({ ...a, taskTitle: t.title }))).sort((a, b) => {
+      // Activity IDs are in format 'a-1780753461882'
+      const timeA = parseInt(a.id.split('-')[1]) || 0;
+      const timeB = parseInt(b.id.split('-')[1]) || 0;
+      return timeB - timeA;
+    });
+    
+    const allComments = projectTasks.flatMap(t => t.comments.map(c => ({ ...c, taskTitle: t.title }))).sort((a, b) => {
+      // Comment IDs are in format 'c-1780753461882'
+      const timeA = parseInt(a.id.split('-')[1]) || 0;
+      const timeB = parseInt(b.id.split('-')[1]) || 0;
+      return timeB - timeA;
+    });
 
     return (
       <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-10">
