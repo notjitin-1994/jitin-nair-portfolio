@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Search, Filter, Plus, Calendar, Clock, Paperclip,
   MessageSquare, Activity, CheckCircle2, Circle, MoreHorizontal,
@@ -529,8 +529,6 @@ function TaskCard({
       className="h-full"
     >
     <motion.div
-      layoutId={`task-card-${task.id}`}
-      layout="position"
       onClick={onClick}
       whileHover={isDragging ? undefined : { y: -3 }}
       whileTap={isDragging ? undefined : { scale: 0.98 }}
@@ -732,7 +730,10 @@ function TaskDetailOverlay({ taskId, user, users, onClose, actions }: { taskId: 
         onClick={onClose} className="absolute inset-0 bg-[#0a0a0f]/80 backdrop-blur-md"
       />
       <motion.div
-        layoutId={`task-card-${task.id}`}
+        initial={{ opacity: 0, scale: 0.96, y: 24 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.98, y: 24 }}
+        transition={{ duration: 0.3, ease: EASE }}
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-3xl bg-zinc-950 border-t sm:border border-emerald-500/20 rounded-t-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_-8px_40px_-8px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] sm:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] flex flex-col max-h-[92vh] sm:max-h-[90vh]"
       >
