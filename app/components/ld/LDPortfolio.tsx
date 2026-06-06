@@ -11,7 +11,7 @@ import {
   useMotionValue,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, ArrowUpRight, ArrowDown, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink, ChevronDown } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ArrowDown, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink, ChevronDown, Network, Video, Zap, Workflow, Cpu } from "lucide-react";
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton, useMounted } from "./primitives";
 import { DownloadResumeButton } from "./DownloadResumeButton";
 import { LdVortexBackground } from "./LdVortexBackground";
@@ -595,239 +595,156 @@ function AiLever() {
 }
 
 /* ---------- Capability tile infographic ---------- */
-const capPicsum = (seed: string) => `https://picsum.photos/seed/${seed}/700/500`;
 
-function TileViz({ c }: { c: CapabilityDomain }) {
+function CapabilityViz({ id }: { id: string }) {
   const reduced = useReducedMotion();
-  const viz = c.viz;
-  const inView = { once: true, margin: "-40px" } as const;
-  const headline = (
-    <span className="font-serif text-[2rem] font-medium leading-none tracking-tight text-white">{c.proofValue}</span>
-  );
 
-  // 1. Semicircle speed gauge
-  if (viz.kind === "gauge") {
-    const len = 148;
-    // Needle pivots from the hub (55,56); animate the tip coordinates so the base
-    // always sits exactly on the hub dot (avoids SVG transform-origin pitfalls).
-    const hubX = 55;
-    const hubY = 56;
-    const needleLen = 34;
-    const phi = Math.PI * (1 - viz.fill); // 0% -> pointing left, 100% -> pointing right
-    const tipX = hubX + needleLen * Math.cos(phi);
-    const tipY = hubY - needleLen * Math.sin(phi);
+  // 1. Leadership: Strategic Network
+  if (id === "leadership") {
     return (
-      <div>
-        <div className="mx-auto w-full max-w-[150px]">
-          <svg viewBox="0 0 110 64" className="w-full">
-            <path d="M8 56 A47 47 0 0 1 102 56" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="7" strokeLinecap="round" />
-            <motion.path
-              d="M8 56 A47 47 0 0 1 102 56"
-              fill="none"
-              stroke="url(#capGauge)"
-              strokeWidth="7"
-              strokeLinecap="round"
-              strokeDasharray={len}
-              initial={reduced ? false : { strokeDashoffset: len }}
-              whileInView={{ strokeDashoffset: len * (1 - viz.fill) }}
-              viewport={inView}
-              transition={{ duration: 1.2, ease: EASE }}
-            />
-            <motion.line
-              x1={hubX}
-              y1={hubY}
-              x2={tipX}
-              y2={tipY}
-              stroke="#e5e7eb"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              initial={reduced ? false : { x2: hubX - needleLen, y2: hubY }}
-              whileInView={{ x2: tipX, y2: tipY }}
-              viewport={inView}
-              transition={{ duration: 1.2, ease: EASE }}
-            />
-            <circle cx={hubX} cy={hubY} r="4" fill="#34d399" />
-            <defs>
-              <linearGradient id="capGauge" x1="0" x2="1">
-                <stop offset="0%" stopColor="#34d399" />
-                <stop offset="100%" stopColor="#2dd4bf" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <div className="mt-1 flex items-baseline gap-2">
-          {headline}
-          <span className="text-xs text-neutral-400">{viz.label}</span>
-        </div>
-      </div>
-    );
-  }
-
-  // 2. Donut ring
-  if (viz.kind === "donut") {
-    const r = 26;
-    const circ = 2 * Math.PI * r;
-    return (
-      <div className="flex items-center gap-4">
-        <div className="relative h-[68px] w-[68px] flex-shrink-0">
-          <svg viewBox="0 0 68 68" className="h-full w-full -rotate-90">
-            <circle cx="34" cy="34" r={r} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="7" />
-            <motion.circle
-              cx="34" cy="34" r={r}
-              fill="none" stroke="url(#capDonut)" strokeWidth="7" strokeLinecap="round"
-              strokeDasharray={circ}
-              initial={reduced ? false : { strokeDashoffset: circ }}
-              whileInView={{ strokeDashoffset: circ * (1 - viz.value / 100) }}
-              viewport={inView}
-              transition={{ duration: 1.2, ease: EASE }}
-            />
-            <defs>
-              <linearGradient id="capDonut" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#34d399" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="#2dd4bf" stopOpacity="0.35" />
-              </linearGradient>
-            </defs>
-          </svg>
-          <div className="absolute inset-0 grid place-items-center">
-            <span className="font-serif text-lg font-medium text-white">{c.proofValue}</span>
-          </div>
-        </div>
-        <span className="text-sm leading-snug text-neutral-400">{viz.label}</span>
-      </div>
-    );
-  }
-
-  // 3. Horizontal bar
-  if (viz.kind === "bar") {
-    return (
-      <div>
-        <div className="flex items-baseline gap-2">
-          {headline}
-          <span className="text-xs text-neutral-400">{viz.label}</span>
-        </div>
-        <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
-          <motion.div
-            className="h-full w-full origin-left rounded-full bg-gradient-to-r from-emerald-400 to-teal-400"
-            initial={reduced ? false : { transform: "scaleX(0)" }}
-            whileInView={{ transform: `scaleX(${viz.value / 100})` }}
-            viewport={inView}
-            transition={{ duration: 1, ease: EASE }}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  // 4. Vertical column chart
-  if (viz.kind === "columns") {
-    const max = Math.max(...viz.segments.map((s) => s.v));
-    return (
-      <div>
-        <div className="flex items-baseline gap-2">
-          {headline}
-          <span className="text-xs text-neutral-400">removed</span>
-        </div>
-        <div className="mt-3 flex items-end gap-3" style={{ height: 58 }}>
-          {viz.segments.map((s, i) => (
-            <div key={s.label} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
-              <motion.div
-                className="w-full origin-bottom rounded-t-md bg-gradient-to-t from-emerald-500/40 to-emerald-400"
-                style={{ height: `${(s.v / max) * 100}%` }}
-                initial={reduced ? false : { transform: "scaleY(0)" }}
-                whileInView={{ transform: "scaleY(1)" }}
-                viewport={inView}
-                transition={{ duration: 0.8, delay: i * 0.12, ease: EASE }}
-              />
-              <span className="text-[10px] text-neutral-400">{s.label}</span>
+      <div className="relative h-16 w-full overflow-hidden rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-center">
+         <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 to-transparent" />
+         <div className="relative flex items-center gap-6">
+            <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+            <div className="flex gap-2">
+               {[...Array(3)].map((_, i) => (
+                 <motion.div 
+                   key={i}
+                   animate={reduced ? {} : { opacity: [0.2, 1, 0.2] }}
+                   transition={{ duration: 2, delay: i * 0.4, repeat: Infinity }}
+                   className="h-1 w-4 rounded-full bg-white/10" 
+                 />
+               ))}
             </div>
-          ))}
-        </div>
+            <Network className="h-4 w-4 text-emerald-500/40" />
+         </div>
       </div>
     );
   }
 
-  // 5. Checklist
-  if (viz.kind === "checks") {
+  // 2. Science: Pedagogical Structure
+  if (id === "science") {
     return (
-      <div>
-        {headline}
-        <div className="mt-3 space-y-1.5">
-          {viz.items.map((it, i) => (
-            <motion.div
-              key={it}
-              className="flex items-center gap-2 text-xs text-neutral-300"
-              initial={reduced ? false : { opacity: 0, x: -8 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={inView}
-              transition={{ duration: 0.4, delay: i * 0.1, ease: EASE }}
-            >
-              <span className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-emerald-400/15">
-                <Check className="h-2.5 w-2.5 text-emerald-400" strokeWidth={3} />
-              </span>
-              {it}
-            </motion.div>
-          ))}
-        </div>
+      <div className="relative h-16 w-full overflow-hidden rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-end justify-center pb-3 px-6">
+         <div className="flex items-end gap-1.5 w-full">
+            {[0.4, 0.7, 1.0, 0.8, 0.5].map((h, i) => (
+              <motion.div 
+                key={i}
+                initial={{ height: 0 }}
+                whileInView={{ height: `${h * 100}%` }}
+                transition={{ duration: 1, delay: i * 0.1, ease: EASE }}
+                className="flex-1 bg-gradient-to-t from-emerald-500/20 to-emerald-400/40 rounded-t-sm"
+              />
+            ))}
+         </div>
+         <div className="absolute top-2 right-3">
+            <span className="text-[8px] font-mono text-neutral-600 uppercase tracking-widest font-bold">Bloom&apos;s</span>
+         </div>
       </div>
     );
   }
 
-  // 6. Area sparkline with count-up
-  const linePath = "M2,38 L13,30 L24,33 L35,20 L46,24 L57,12 L68,16 L79,6";
-  const areaPath = `${linePath} L79,44 L2,44 Z`;
-  return (
-    <div>
-      <div className="flex items-baseline gap-2">
-        <CountUp
-          to={viz.to}
-          format={(n) => Math.round(n).toLocaleString()}
-          className="font-serif text-[2rem] font-medium leading-none tracking-tight text-white"
-        />
-        <span className="text-xs text-neutral-400">{viz.label}</span>
+  // 3. Ecosystems: Production Pipeline
+  if (id === "ecosystems") {
+    return (
+      <div className="relative h-16 w-full overflow-hidden rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-center">
+         <motion.div 
+           animate={reduced ? {} : { x: ["-100%", "100%"] }}
+           transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+           className="flex gap-4"
+         >
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-8 w-12 shrink-0 rounded border border-white/10 bg-white/[0.03] flex items-center justify-center">
+                 <Video className="h-3 w-3 text-neutral-700" />
+              </div>
+            ))}
+         </motion.div>
+         <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f] via-transparent to-[#0a0a0f] pointer-events-none" />
       </div>
-      <svg viewBox="0 0 81 46" preserveAspectRatio="none" className="mt-3 h-12 w-full">
-        <motion.path
-          d={areaPath}
-          fill="url(#capSpark)"
-          initial={reduced ? false : { opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={inView}
-          transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
-        />
-        <motion.path
-          d={linePath}
-          fill="none"
-          stroke="#34d399"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          initial={reduced ? false : { pathLength: 0 }}
-          whileInView={{ pathLength: 1 }}
-          viewport={inView}
-          transition={{ duration: 1.1, ease: EASE }}
-        />
-        <defs>
-          <linearGradient id="capSpark" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#34d399" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#34d399" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
-  );
+    );
+  }
+
+  // 4. ROI: Financial Impact
+  if (id === "roi") {
+    return (
+      <div className="relative h-16 w-full overflow-hidden rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-between px-5">
+         <div className="flex flex-col">
+            <span className="text-[14px] font-serif font-bold text-white leading-none">$140K+</span>
+            <span className="text-[8px] font-mono text-neutral-600 uppercase tracking-widest mt-1">Saved</span>
+         </div>
+         <div className="flex items-end gap-1 h-8">
+            {[40, 70, 50, 90, 60].map((h, i) => (
+              <motion.div 
+                key={i}
+                initial={{ height: 2 }}
+                whileInView={{ height: `${h}%` }}
+                className="w-1.5 bg-emerald-500/30 rounded-t-full"
+              />
+            ))}
+         </div>
+      </div>
+    );
+  }
+
+  // 5. Support: In-Flow Delivery
+  if (id === "support") {
+    return (
+      <div className="relative h-16 w-full overflow-hidden rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-center">
+         <div className="w-24 h-10 border border-white/10 rounded bg-white/[0.01] relative flex items-center px-2 gap-2">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500/40" />
+            <div className="flex-1 space-y-1">
+               <div className="h-1 w-full bg-white/5 rounded-full" />
+               <div className="h-1 w-2/3 bg-white/5 rounded-full" />
+            </div>
+            <motion.div 
+              animate={reduced ? {} : { scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.3)] flex items-center justify-center border border-black"
+            >
+               <Zap className="h-2.5 w-2.5 text-black" />
+            </motion.div>
+         </div>
+      </div>
+    );
+  }
+
+  // 6. Ops: Technical Automation
+  if (id === "ops") {
+    return (
+      <div className="relative h-16 w-full overflow-hidden rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-center gap-4">
+         <div className="flex items-center gap-2">
+            <Workflow className="h-4 w-4 text-emerald-500/30" />
+            <div className="h-px w-8 bg-gradient-to-r from-emerald-500/40 to-transparent" />
+         </div>
+         <motion.div 
+           animate={reduced ? {} : { rotate: 360 }}
+           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+           className="h-10 w-10 rounded-full border border-dashed border-emerald-500/20 flex items-center justify-center"
+         >
+            <Cpu className="h-4 w-4 text-emerald-400/50" />
+         </motion.div>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 function CapabilityTile({ c }: { c: (typeof ldCapabilities)[0] }) {
   const Icon = c.icon;
   return (
-    <div className="group relative flex h-full min-h-[220px] flex-col overflow-hidden rounded-[2.5rem] border border-white/[0.08] bg-zinc-900/40 p-7 backdrop-blur-md transition-all duration-300 hover:border-emerald-400/40 hover:bg-zinc-900/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+    <div className="group relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-[2.5rem] border border-white/[0.08] bg-zinc-900/40 p-7 backdrop-blur-md transition-all duration-300 hover:border-emerald-400/40 hover:bg-zinc-900/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.05] to-transparent pointer-events-none opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       <div className="relative z-10 flex h-full flex-col">
         <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-400/15 bg-emerald-400/10 text-emerald-400 transition-colors group-hover:border-emerald-400/30">
           <Icon className="h-5 w-5" strokeWidth={1.75} />
         </span>
         <h3 className="mt-5 font-serif text-xl font-medium tracking-tight text-white group-hover:text-emerald-300 transition-colors">{c.title}</h3>
-        <p className="mt-3 text-sm leading-relaxed text-neutral-400 group-hover:text-neutral-300 transition-colors">{c.body}</p>
+        <p className="mt-3 text-sm leading-relaxed text-neutral-400 group-hover:text-neutral-300 transition-colors mb-6">{c.body}</p>
+        
+        <div className="mt-auto">
+          <CapabilityViz id={c.id} />
+        </div>
       </div>
     </div>
   );
@@ -849,7 +766,7 @@ function Capabilities() {
         </Reveal>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ldCapabilities.map((c, i) => (
-            <Reveal key={c.title} delay={(i % 3) * 0.05}>
+            <Reveal key={c.id} delay={(i % 3) * 0.05}>
               <CapabilityTile c={c} />
             </Reveal>
           ))}

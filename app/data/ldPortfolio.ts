@@ -121,32 +121,38 @@ export const ldAiLever = {
 
 export const ldCapabilities = [
   {
+    id: "leadership",
     title: "Programme leadership & strategy",
     body: "Orchestrating high-impact learning architectures for global scale.",
     featured: true,
     icon: Sparkles,
   },
   {
+    id: "science",
     title: "Instructional science & design",
     body: "Outcome-first design anchored in adult-learning principles (ADDIE, Bloom's).",
     icon: GraduationCap,
   },
   {
+    id: "ecosystems",
     title: "Scalable content ecosystems",
     body: "Standardizing production via automated technical pipelines and templates.",
     icon: Video,
   },
   {
+    id: "roi",
     title: "Learning analytics & ROI",
     body: "Measuring the P&L impact of learning using Kirkpatrick Level 4 standards.",
     icon: BarChart3,
   },
   {
+    id: "support",
     title: "In-flow performance support",
     body: "Right-sized microlearning delivered at the point of need for 90%+ completion.",
     icon: Layers,
   },
   {
+    id: "ops",
     title: "Learning operations & AI",
     body: "Automating the busywork (TNA, auditing) to keep the instructional craft human.",
     icon: Workflow,
