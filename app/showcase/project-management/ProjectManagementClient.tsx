@@ -530,6 +530,7 @@ function TaskCard({
     >
     <motion.div
       layoutId={`task-card-${task.id}`}
+      layout="position"
       onClick={onClick}
       whileHover={isDragging ? undefined : { y: -3 }}
       whileTap={isDragging ? undefined : { scale: 0.98 }}
