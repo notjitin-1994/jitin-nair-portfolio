@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import { ShowcasePlaceholder } from "../components/ShowcasePlaceholder";
+import { ContentDevelopmentClient } from "./ContentDevelopmentClient";
 
 export const metadata: Metadata = {
-  title: "Content Development Showcase — Jitin Nair",
-  description: "High-fidelity video production and automated content pipelines engineered for scale.",
+  title: "Content Development — Jitin Nair",
+  description:
+    "Engineering the production line: from high-fidelity video-based learning to automated AI pipelines that cut production time by 60%.",
 };
 
 export default function ContentDevelopmentPage() {
-  return (
-    <ShowcasePlaceholder 
-      title="Content Development" 
-      description="Engineering the production line: from high-fidelity video-based learning to automated AI pipelines that cut production time by 60%."
-    />
-  );
+  return <ContentDevelopmentClient />;
 }
