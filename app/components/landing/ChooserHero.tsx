@@ -193,18 +193,18 @@ function MobileTrackCard({
     >
       <Link
         href={track.href}
-        className={`group flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/[0.07] px-3.5 py-3 transition-[border-color,transform] duration-150 active:scale-[0.97] ${track.ring}`}
+        className={`group flex w-full overflow-hidden items-center gap-3 rounded-xl border border-white/10 bg-white/[0.07] px-3.5 py-3 transition-[border-color,transform] duration-150 active:scale-[0.97] ${track.ring}`}
       >
         <span
           className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.08] ${track.accent}`}
         >
           <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
         </span>
-        <span className="min-w-0 flex-1">
+        <span className="min-w-0 flex-1 overflow-hidden">
           <span className="block text-[13px] font-semibold leading-snug text-white">
             {track.title}
           </span>
-          <span className="block overflow-hidden text-ellipsis whitespace-nowrap text-[11px] text-neutral-400">
+          <span className="block line-clamp-1 text-[11px] text-neutral-400">
             {track.what}
           </span>
         </span>
@@ -407,38 +407,49 @@ export function ChooserHero() {
           className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#0a0a0f]/80 to-transparent"
         />
 
-        {/* Soft scrim — lightened; the glass card provides text contrast */}
+        {/* Soft scrim behind the glass panel */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#0a0a0f]/70 via-[#0a0a0f]/30 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#0a0a0f]/60 via-[#0a0a0f]/20 to-transparent"
         />
 
-        {/* ── Glass content panel ── */}
-        <div className="absolute inset-x-0 bottom-0 px-5 pb-8">
-          {/*
-            overflow-hidden hard-clips every child at the panel border —
-            prevents per-card blur from bleeding past viewport edge.
-          */}
+        {/* ── Glass content panel — full viewport width, no rounded corners ── */}
+        {/*
+          Architecture: backdrop-filter lives on its own absolute child so
+          the parent's overflow-hidden isn't sabotaged by WebKit's
+          backdrop-filter stacking context. This ensures all button text
+          is hard-clipped at the correct boundary.
+        */}
+        <div className="absolute inset-x-0 bottom-0">
+          {/* Layer 1: frosted blur + dark base (no overflow-hidden here) */}
           <div
-            className="relative w-full overflow-hidden rounded-3xl border border-emerald-500/[0.18] px-5 pt-6 pb-5 shadow-[0_-8px_40px_-12px_rgba(16,185,129,0.14),inset_0_1px_0_rgba(255,255,255,0.07)]"
+            aria-hidden
+            className="absolute inset-0"
             style={{
-              background: "rgba(10,10,15,0.62)",
-              backdropFilter: "blur(22px)",
-              WebkitBackdropFilter: "blur(22px)",
+              background: "rgba(10,10,15,0.64)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
             }}
-          >
-            {/* Subtle emerald tint layer */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-500/[0.06] via-transparent to-cyan-500/[0.03]"
-            />
+          />
+          {/* Layer 2: emerald tint */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-500/[0.07] via-transparent to-cyan-500/[0.03]"
+          />
+          {/* Layer 3: top accent hairline */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-emerald-500/30"
+          />
 
+          {/* Layer 4: content — overflow-hidden here works cleanly */}
+          <div className="relative overflow-hidden px-5 pt-6 pb-8">
             {/* ① Heading — first to reveal */}
             <motion.h2
               variants={mobileContainer}
               initial="hidden"
               animate={ready ? "show" : "hidden"}
-              className="relative font-serif text-[1.8rem] font-medium leading-[1.18] tracking-tight text-white"
+              className="font-serif text-[1.8rem] font-medium leading-[1.18] tracking-tight text-white"
             >
               {HEADLINE.map((line, i) => (
                 <span key={i} className="block overflow-hidden pb-[0.06em]">
@@ -455,14 +466,14 @@ export function ChooserHero() {
             {/* ② Body — after headings complete */}
             <motion.p
               {...mobileFade(M_BODY_DELAY)}
-              className="relative mt-3.5 text-sm leading-relaxed text-neutral-300"
+              className="mt-3.5 text-sm leading-relaxed text-neutral-300"
             >
               Learning &amp; Development Designer{" "}
               <span className="text-neutral-500">·</span> AI Systems Architect
             </motion.p>
 
             {/* ③ Links — last to appear */}
-            <div className="relative mt-4 grid gap-2.5">
+            <div className="mt-4 grid gap-2.5">
               {TRACKS.map((track, i) => (
                 <MobileTrackCard
                   key={track.href}
