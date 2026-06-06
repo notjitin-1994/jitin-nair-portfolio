@@ -30,7 +30,7 @@ const SHOWCASE_ITEMS = [
     description: "Proven leadership outcomes and measurable business impact.",
     icon: LineChart,
     href: "/showcase/case-studies",
-    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+    imageUrl: "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&q=80&w=800",
     featured: true,
   },
   {
