@@ -543,17 +543,18 @@ function AiLever() {
     <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="relative overflow-hidden rounded-3xl border border-emerald-400/15 bg-zinc-950 p-8 sm:p-12 lg:p-16">
-          {/* Background Video — Leveraging high-end abstract motion */}
-          <div className="absolute inset-0 z-0">
+          {/* Background Video — High-reliability source with robust attributes */}
+          <div className="absolute inset-0 z-0 overflow-hidden">
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="h-full w-full object-cover opacity-30 mix-blend-screen"
+              className="absolute inset-0 h-full w-full object-cover opacity-30"
+              style={{ filter: "brightness(0.8) contrast(1.2)" }}
             >
               <source
-                src="https://assets.mixkit.co/videos/preview/mixkit-circuit-board-blue-lighting-effect-background-4482-large.mp4"
+                src="https://cdn.pixabay.com/video/2023/10/20/185791-876251213_large.mp4"
                 type="video/mp4"
               />
             </video>
