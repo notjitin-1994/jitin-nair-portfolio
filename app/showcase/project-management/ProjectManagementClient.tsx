@@ -582,7 +582,7 @@ function TaskCard({
             <span className="text-emerald-400/70">{completedSubtasks}/{totalSubtasks}</span>
           </div>
           <ProgressBar value={progress} className="mb-2" />
-          <div className="space-y-0.5">
+          <div className="space-y-0.5 overflow-hidden">
             {task.subtasks.slice(0, 3).map(st => (
               <div
                 key={st.id}
@@ -597,8 +597,17 @@ function TaskCard({
                   ? <CheckCircle2 className="h-3 w-3 text-emerald-500 shrink-0" />
                   : <Circle className="h-3 w-3 text-neutral-600 shrink-0" />
                 }
-                <span className={cn("truncate", st.completed ? "line-through text-neutral-600" : "text-neutral-400")}>
-                  {st.title}
+                <span className={cn("truncate transition-all duration-300", st.completed ? "opacity-40 text-neutral-600" : "text-neutral-400")}>
+                  <span className="relative inline-block">
+                    {st.title}
+                    {st.completed && (
+                      <motion.div 
+                        initial={{ scaleX: 0 }} 
+                        animate={{ scaleX: 1 }} 
+                        className="absolute top-1/2 left-0 right-0 h-px bg-neutral-600 origin-left" 
+                      />
+                    )}
+                  </span>
                 </span>
               </div>
             ))}
@@ -841,18 +850,35 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
                 return (
                   <motion.div layout key={st.id} className="relative flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 group hover:border-emerald-500/20 transition-all">
                     <button 
-                      onClick={() => actions.toggleSubtask(task.id, st.id, user.name)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        actions.toggleSubtask(task.id, st.id, user.name);
+                      }}
                       className="flex items-center gap-3 text-left focus:outline-none flex-1 min-w-0"
                     >
                       {st.completed ? <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" /> : <Circle className="h-5 w-5 text-neutral-600 shrink-0 group-hover:text-neutral-400 transition-colors" />}
-                      <span className={cn("text-sm transition-colors truncate", st.completed ? "text-neutral-600 line-through" : "text-neutral-300")}>{st.title}</span>
+                      <span className={cn("text-sm transition-all duration-300 truncate", st.completed ? "opacity-40 text-neutral-600" : "text-neutral-300")}>
+                        <span className="relative inline-block">
+                          {st.title}
+                          {st.completed && (
+                            <motion.div 
+                              initial={{ scaleX: 0 }} 
+                              animate={{ scaleX: 1 }} 
+                              className="absolute top-1/2 left-0 right-0 h-px bg-neutral-600 origin-left" 
+                            />
+                          )}
+                        </span>
+                      </span>
                     </button>
                     
                     <div className="flex items-center gap-2 shrink-0">
                       {/* Subtask Assignee */}
-                      <div className="relative">
+                      <div className="relative" onClick={e => e.stopPropagation()}>
                         <button 
-                          onClick={() => setShowSubtaskAssigneePicker(isAssigneePickerOpen ? null : st.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowSubtaskAssigneePicker(isAssigneePickerOpen ? null : st.id);
+                          }}
                           className="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity"
                         >
                           <span className="text-[10px] text-neutral-500 hidden sm:inline">{stUser?.name.split(' ')[0] || 'Unassigned'}</span>
@@ -863,12 +889,13 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
                           {isAssigneePickerOpen && (
                             <motion.div 
                               initial={{ opacity: 0, scale: 0.9, x: 10 }} animate={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: 0.9, x: 10 }}
-                              className="absolute bottom-full right-0 mb-2 z-50 p-1.5 rounded-2xl bg-zinc-900 border border-white/10 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.5)] min-w-[200px]"
+                              className="absolute bottom-full right-0 mb-2 z-[90] p-1.5 rounded-2xl bg-zinc-900 border border-white/10 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.5)] min-w-[200px]"
                             >
                               {users.map(u => (
                                 <button
                                   key={u.id}
-                                  onClick={() => {
+                                  onClick={(e) => {
+                                    e.stopPropagation();
                                     actions.changeSubtaskAssignee(task.id, st.id, u.id, user.name);
                                     setShowSubtaskAssigneePicker(null);
                                   }}
@@ -888,7 +915,10 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
 
                       {/* Delete Subtask */}
                       <button 
-                        onClick={() => actions.removeSubtask(task.id, st.id, user.name)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          actions.removeSubtask(task.id, st.id, user.name);
+                        }}
                         className="p-1.5 rounded-lg bg-white/5 text-neutral-600 hover:text-rose-500 hover:bg-rose-500/10 transition-all opacity-0 group-hover:opacity-100"
                         title="Delete subtask"
                       >
