@@ -365,25 +365,63 @@ function SectionHeading({ title, subtitle, icon: Icon, badge }: { title: string,
 // TASK CARD
 // ----------------------------------------------------------------------
 
-function TaskCard({ task, users, project, onClick }: { task: Task, users: User[], project?: Project, onClick: () => void }) {
+const STATUS_STYLES: Record<Status, string> = {
+  "Backlog":     "text-neutral-400 bg-neutral-500/10 border-neutral-500/20",
+  "In Progress": "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  "In Review":   "text-amber-400 bg-amber-500/10 border-amber-500/20",
+  "Done":        "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+};
+
+interface TaskCardActions {
+  toggleSubtask: (taskId: string, subtaskId: string, userName: string) => void;
+  moveTask: (taskId: string, newStatus: Status) => void;
+  changeAssignee: (taskId: string, newAssigneeId: string, requesterName: string) => void;
+  addComment: (taskId: string, authorId: string, text: string, userName: string) => void;
+  addSubtask: (taskId: string, title: string, assigneeId: string, userName: string) => void;
+}
+
+function TaskCard({
+  task, users, project, onClick, actions, activeUser, isDragging, handleDragStart, handleDragEnd
+}: {
+  task: Task;
+  users: User[];
+  project?: Project;
+  onClick: () => void;
+  actions?: TaskCardActions;
+  activeUser?: User;
+  isDragging?: boolean;
+  handleDragStart?: (e: React.DragEvent<HTMLDivElement>) => void;
+  handleDragEnd?: () => void;
+}) {
+  const [showAssigneePicker, setShowAssigneePicker] = useState(false);
   const assignee = users.find(u => u.id === task.assigneeId);
   const totalSubtasks = task.subtasks.length;
   const completedSubtasks = task.subtasks.filter(s => s.completed).length;
   const progress = totalSubtasks === 0 ? (task.status === "Done" ? 100 : 0) : (completedSubtasks / totalSubtasks) * 100;
 
   return (
+    <div
+      draggable={!!handleDragStart}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      className="h-full"
+    >
     <motion.div
       layoutId={`task-card-${task.id}`}
       onClick={onClick}
-      whileHover={{ y: -3 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={isDragging ? undefined : { y: -3 }}
+      whileTap={isDragging ? undefined : { scale: 0.98 }}
       transition={SPRING}
-      className="group cursor-pointer rounded-2xl border border-white/[0.08] bg-zinc-900/40 p-5 hover:bg-zinc-900/80 hover:border-emerald-500/30 transition-colors duration-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_4px_20px_-10px_rgba(0,0,0,0.2)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_12px_32px_-12px_rgba(16,185,129,0.25)] backdrop-blur-sm flex flex-col h-full"
+      className={cn(
+        "group cursor-pointer rounded-2xl border bg-zinc-900/40 p-5 hover:bg-zinc-900/80 transition-colors duration-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_4px_20px_-10px_rgba(0,0,0,0.2)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_12px_32px_-12px_rgba(16,185,129,0.25)] backdrop-blur-sm flex flex-col h-full",
+        isDragging ? "border-emerald-500/50 opacity-50 cursor-grabbing" : "border-white/[0.08] hover:border-emerald-500/30"
+      )}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex gap-2 flex-wrap">
+      {/* Header: tags + status selector */}
+      <div className="flex items-start justify-between mb-3 gap-2">
+        <div className="flex gap-1.5 flex-wrap flex-1 min-w-0">
           {project && (
-            <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-bold text-emerald-400 uppercase tracking-widest truncate max-w-[120px]">
+            <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-bold text-emerald-400 uppercase tracking-widest truncate max-w-[100px]">
               {project.name}
             </span>
           )}
@@ -393,29 +431,119 @@ function TaskCard({ task, users, project, onClick }: { task: Task, users: User[]
             </span>
           ))}
         </div>
-        <div className={cn("h-2 w-2 rounded-full shrink-0 ml-2", task.status === 'Done' ? 'bg-emerald-500' : 'bg-neutral-600')} />
-      </div>
-      
-      <h4 className="text-sm font-medium text-neutral-200 mb-4 leading-snug group-hover:text-emerald-400 transition-colors flex-1">{task.title}</h4>
-      
-      {totalSubtasks > 0 && (
-        <div className="mb-4 mt-auto">
-          <div className="flex justify-between text-[10px] text-neutral-500 mb-1.5 font-mono uppercase tracking-widest">
-            <span>Progress</span>
-            <span>{completedSubtasks}/{totalSubtasks}</span>
+        {actions ? (
+          <div onClick={e => e.stopPropagation()} className="shrink-0">
+            <select
+              value={task.status}
+              onChange={e => actions.moveTask(task.id, e.target.value as Status)}
+              className={cn(
+                "text-[9px] font-bold uppercase tracking-wider border rounded-md px-1.5 py-0.5 bg-transparent cursor-pointer focus:outline-none appearance-none",
+                STATUS_STYLES[task.status]
+              )}
+            >
+              {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map(s => (
+                <option key={s} value={s} className="bg-zinc-900 text-white normal-case text-xs">{s}</option>
+              ))}
+            </select>
           </div>
-          <ProgressBar value={progress} />
+        ) : (
+          <div className={cn("h-2 w-2 rounded-full shrink-0 mt-1", task.status === 'Done' ? 'bg-emerald-500' : 'bg-neutral-600')} />
+        )}
+      </div>
+
+      <h4 className="text-sm font-medium text-neutral-200 mb-3 leading-snug group-hover:text-emerald-400 transition-colors">{task.title}</h4>
+
+      {/* Subtask checklist */}
+      {totalSubtasks > 0 && (
+        <div className="mb-3 flex-1">
+          <div className="flex justify-between text-[10px] text-neutral-500 mb-1.5 font-mono uppercase tracking-widest">
+            <span>Subtasks</span>
+            <span className="text-emerald-400/70">{completedSubtasks}/{totalSubtasks}</span>
+          </div>
+          <ProgressBar value={progress} className="mb-2" />
+          <div className="space-y-0.5">
+            {task.subtasks.slice(0, 3).map(st => (
+              <div
+                key={st.id}
+                role={actions ? "button" : undefined}
+                onClick={actions ? (e) => { e.stopPropagation(); actions.toggleSubtask(task.id, st.id, activeUser?.name || "Someone"); } : undefined}
+                className={cn(
+                  "flex items-center gap-2 rounded-lg px-2 py-1 text-[11px] transition-colors",
+                  actions ? "cursor-pointer hover:bg-white/5" : "cursor-default"
+                )}
+              >
+                {st.completed
+                  ? <CheckCircle2 className="h-3 w-3 text-emerald-500 shrink-0" />
+                  : <Circle className="h-3 w-3 text-neutral-600 shrink-0" />
+                }
+                <span className={cn("truncate", st.completed ? "line-through text-neutral-600" : "text-neutral-400")}>
+                  {st.title}
+                </span>
+              </div>
+            ))}
+            {task.subtasks.length > 3 && (
+              <span className="text-[9px] text-neutral-600 pl-2 font-mono">+{task.subtasks.length - 3} more</span>
+            )}
+          </div>
         </div>
       )}
 
-      <div className={cn("flex items-center justify-between pt-4 border-t border-white/[0.04]", totalSubtasks === 0 && "mt-auto")}>
-        {assignee ? (
-          <div className="flex items-center gap-2">
-            <UserAvatar user={assignee} size="sm" />
-            <span className="text-[10px] font-medium text-neutral-400">{assignee.name.split(' ')[0]}</span>
+      <div className={cn("flex items-center justify-between pt-3 border-t border-white/[0.04]", totalSubtasks === 0 && "mt-auto")}>
+        {/* Assignee section */}
+        {actions ? (
+          <div
+            className="relative"
+            onClick={e => e.stopPropagation()}
+            onMouseLeave={() => setShowAssigneePicker(false)}
+          >
+            <button
+              onClick={() => setShowAssigneePicker(v => !v)}
+              className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+            >
+              {assignee
+                ? <UserAvatar user={assignee} size="sm" />
+                : <div className="h-6 w-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center"><Plus className="h-3 w-3 text-neutral-600" /></div>
+              }
+              <span className="text-[10px] font-medium text-neutral-400">{assignee?.name.split(' ')[0] || 'Assign'}</span>
+            </button>
+            <AnimatePresence>
+              {showAssigneePicker && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 4 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 4 }}
+                  transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute bottom-full mb-2 left-0 z-30 p-2 rounded-xl bg-zinc-900 border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.5)] flex gap-1.5"
+                >
+                  {users.map(u => (
+                    <button
+                      key={u.id}
+                      onClick={() => {
+                        actions.changeAssignee(task.id, u.id, activeUser?.name || "Someone");
+                        setShowAssigneePicker(false);
+                      }}
+                      title={u.name}
+                      className={cn(
+                        "rounded-full transition-all",
+                        task.assigneeId === u.id ? "ring-2 ring-emerald-500 ring-offset-1 ring-offset-zinc-900" : "opacity-50 hover:opacity-100"
+                      )}
+                    >
+                      <UserAvatar user={u} size="sm" />
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         ) : (
-          <span className="text-[10px] text-neutral-600 italic">Unassigned</span>
+          assignee ? (
+            <div className="flex items-center gap-2">
+              <UserAvatar user={assignee} size="sm" />
+              <span className="text-[10px] font-medium text-neutral-400">{assignee.name.split(' ')[0]}</span>
+            </div>
+          ) : (
+            <span className="text-[10px] text-neutral-600 italic">Unassigned</span>
+          )
         )}
         <div className="flex items-center gap-3 text-neutral-600">
           {task.attachments.length > 0 && (
@@ -431,6 +559,7 @@ function TaskCard({ task, users, project, onClick }: { task: Task, users: User[]
         </div>
       </div>
     </motion.div>
+    </div>
   );
 }
 
@@ -644,6 +773,8 @@ export function ProjectManagementClient() {
   const [activeUserId, setActiveUserId] = useState<string>("u-1"); // Default: Jitin
   const [kanbanProjectFilter, setKanbanProjectFilter] = useState<string | null>(null);
   const [kanbanAssigneeFilter, setKanbanAssigneeFilter] = useState<string | null>(null);
+  const [draggingTaskId, setDraggingTaskId] = useState<string | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<Status | null>(null);
 
   const activeUser = USERS.find(u => u.id === activeUserId) || USERS[0];
   const [currentPage, setCurrentPage] = useState(1);
@@ -687,6 +818,27 @@ export function ProjectManagementClient() {
           ...t,
           subtasks: [...t.subtasks, { id: `st-new-${Date.now()}`, title, completed: false, assigneeId }],
           activity: [{ id: `a-${Date.now()}`, text: `${userName} added a subtask`, time: "Just now" }, ...t.activity]
+        };
+      }));
+    },
+    moveTask: (taskId: string, newStatus: Status) => {
+      setTasks(prev => prev.map(t => {
+        if (t.id !== taskId) return t;
+        return {
+          ...t,
+          status: newStatus,
+          activity: [{ id: `a-${Date.now()}`, text: `Status changed to "${newStatus}"`, time: "Just now" }, ...t.activity]
+        };
+      }));
+    },
+    changeAssignee: (taskId: string, newAssigneeId: string, requesterName: string) => {
+      const newAssignee = USERS.find(u => u.id === newAssigneeId);
+      setTasks(prev => prev.map(t => {
+        if (t.id !== taskId) return t;
+        return {
+          ...t,
+          assigneeId: newAssigneeId,
+          activity: [{ id: `a-${Date.now()}`, text: `${requesterName} reassigned to ${newAssignee?.name.split(' ')[0] || 'someone'}`, time: "Just now" }, ...t.activity]
         };
       }));
     }
@@ -945,7 +1097,22 @@ export function ProjectManagementClient() {
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: idx * 0.06, ease: EASE }}
-                  className="w-[340px] flex flex-col h-full bg-zinc-900/20 rounded-[2rem] border border-white/5 p-5 backdrop-blur-sm"
+                  onDragOver={e => { e.preventDefault(); setDragOverColumn(status); }}
+                  onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOverColumn(null); }}
+                  onDrop={() => {
+                    if (draggingTaskId) {
+                      const draggedTask = tasks.find(t => t.id === draggingTaskId);
+                      if (draggedTask && draggedTask.status !== status) actions.moveTask(draggingTaskId, status);
+                      setDraggingTaskId(null);
+                      setDragOverColumn(null);
+                    }
+                  }}
+                  className={cn(
+                    "w-[340px] flex flex-col h-full rounded-[2rem] border p-5 backdrop-blur-sm transition-colors duration-200",
+                    dragOverColumn === status
+                      ? "bg-emerald-500/5 border-emerald-500/30 shadow-[inset_0_0_0_1px_rgba(16,185,129,0.12)]"
+                      : "bg-zinc-900/20 border-white/5"
+                  )}
                 >
                   <div className="flex items-center justify-between mb-5 px-1">
                     <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-400 flex items-center gap-2">
@@ -956,13 +1123,28 @@ export function ProjectManagementClient() {
                   </div>
                   <div className="flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2 pb-2 h-full">
                     {colTasks.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center h-full text-neutral-700 text-xs text-center px-4 gap-2">
+                      <div className={cn("flex flex-col items-center justify-center h-full text-neutral-700 text-xs text-center px-4 gap-2 rounded-2xl border-2 border-dashed transition-colors duration-200",
+                        dragOverColumn === status ? "border-emerald-500/30 text-emerald-600" : "border-transparent"
+                      )}>
                         <Filter className="h-5 w-5 opacity-40" />
-                        <span>No tasks match filters</span>
+                        <span>{dragOverColumn === status ? "Drop here" : "No tasks match filters"}</span>
                       </div>
                     ) : colTasks.map(task => {
                       const proj = projects.find(p => p.id === task.projectId);
-                      return <TaskCard key={task.id} task={task} users={USERS} project={proj} onClick={() => setSelectedTask(task)} />;
+                      return (
+                        <TaskCard
+                          key={task.id}
+                          task={task}
+                          users={USERS}
+                          project={proj}
+                          onClick={() => setSelectedTask(task)}
+                          actions={actions}
+                          activeUser={activeUser}
+                          isDragging={draggingTaskId === task.id}
+                          handleDragStart={e => { e.stopPropagation(); setDraggingTaskId(task.id); }}
+                          handleDragEnd={() => { setDraggingTaskId(null); setDragOverColumn(null); }}
+                        />
+                      );
                     })}
                   </div>
                 </motion.div>
@@ -1017,7 +1199,7 @@ export function ProjectManagementClient() {
               <div className="grid sm:grid-cols-2 gap-4">
                 {userTasks.map(task => {
                   const proj = projects.find(p => p.id === task.projectId);
-                  return <TaskCard key={task.id} task={task} users={USERS} project={proj} onClick={() => setSelectedTask(task)} />;
+                  return <TaskCard key={task.id} task={task} users={USERS} project={proj} onClick={() => setSelectedTask(task)} actions={actions} activeUser={activeUser} />;
                 })}
               </div>
             )}
@@ -1207,7 +1389,7 @@ export function ProjectManagementClient() {
             {activeDetailTab === "tasks" && (
               <motion.div key="tasks" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {projectTasks.map(task => (
-                  <TaskCard key={task.id} task={task} users={USERS} onClick={() => setSelectedTask(task)} />
+                  <TaskCard key={task.id} task={task} users={USERS} onClick={() => setSelectedTask(task)} actions={actions} activeUser={activeUser} />
                 ))}
               </motion.div>
             )}
