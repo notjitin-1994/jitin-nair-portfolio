@@ -23,6 +23,7 @@ import { EASE, Reveal, useFontsReady, MagneticButton } from "../../components/ld
 import { Grain } from "../../components/leading/visuals";
 import { FloatingNav } from "../../components/FloatingNav";
 import { LdFooter } from "../../components/ld/LdFooter";
+import { PolarisShowcaseSection } from "./PolarisShowcase";
 
 const EMAIL = "mailto:not.jitin@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
@@ -340,6 +341,7 @@ export function DiscoveryPlanningClient() {
       <PipelineSection />
       <ArchitectureSection />
       <MetricsSection />
+      <PolarisShowcaseSection />
       <Contact />
       <LdFooter />
     </main>
