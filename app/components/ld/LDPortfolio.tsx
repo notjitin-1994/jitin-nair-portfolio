@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useRef, useState, useEffect, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -11,7 +11,7 @@ import {
   useMotionValue,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, ArrowUpRight, ArrowDown, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink, ChevronDown, Network, Video, Zap, Workflow, Cpu } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ArrowDown, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink, ChevronDown, Network, Video, Zap, Workflow, Cpu, Sparkles } from "lucide-react";
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton, useMounted } from "./primitives";
 import { DownloadResumeButton } from "./DownloadResumeButton";
 import { LdVortexBackground } from "./LdVortexBackground";
@@ -622,23 +622,37 @@ function CapabilityViz({ id }: { id: string }) {
     );
   }
 
-  // 2. Science: Pedagogical Structure
+  // 2. Science: Pedagogical Structure (Uplifted Aesthetic)
   if (id === "science") {
     return (
-      <div className="relative h-16 w-full overflow-hidden rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-end justify-center pb-3 px-6">
-         <div className="flex items-end gap-1.5 w-full">
-            {[0.4, 0.7, 1.0, 0.8, 0.5].map((h, i) => (
-              <motion.div 
-                key={i}
-                initial={{ height: 0 }}
-                whileInView={{ height: `${h * 100}%` }}
-                transition={{ duration: 1, delay: i * 0.1, ease: EASE }}
-                className="flex-1 bg-gradient-to-t from-emerald-500/20 to-emerald-400/40 rounded-t-sm"
-              />
+      <div className="relative h-16 w-full overflow-hidden rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-center">
+         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.03] to-transparent" />
+         <div className="relative flex items-center gap-1.5 h-8">
+            {[0.3, 0.5, 0.7, 0.9, 1.0].map((h, i) => (
+              <div key={i} className="relative flex items-end h-full w-6 sm:w-8">
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  whileInView={{ height: `${h * 100}%`, opacity: 1 }}
+                  transition={{ duration: 1, delay: i * 0.1, ease: EASE }}
+                  className="w-full bg-emerald-500/20 border border-emerald-500/30 rounded-t-[4px] relative group"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 to-transparent" />
+                </motion.div>
+                {i === 4 && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ delay: 1.2 }}
+                    className="absolute -top-3 left-1/2 -translate-x-1/2"
+                  >
+                    <Sparkles className="h-2.5 w-2.5 text-emerald-400 animate-pulse" />
+                  </motion.div>
+                )}
+              </div>
             ))}
          </div>
-         <div className="absolute top-2 right-3">
-            <span className="text-[8px] font-mono text-neutral-600 uppercase tracking-widest font-bold">Bloom&apos;s</span>
+         <div className="absolute bottom-1 right-2">
+            <span className="text-[7px] font-mono text-neutral-600 uppercase tracking-[0.2em]">Bloom&apos;s Taxonomy</span>
          </div>
       </div>
     );
@@ -1084,6 +1098,78 @@ function Contact() {
   );
 }
 
+/* ---------- Testimonials ---------- */
+
+const TESTIMONIALS = [
+  {
+    name: "Adrienne Landis",
+    role: "Global Learning Leader",
+    quote: "Jitin is always thinking about cutting-edge technology and innovation and how we can utilize it in relation to training content. He is incredibly thoughtful with design and eager to try out new methods of delivery to provide an exciting and beneficial experience for end-users. Jitin's willingness to step in and help his teammates was a huge asset and highly valued. He had a great ability to absorb what business stakeholders asked for and transform it into useful content. I highly recommend Jitin to anyone who needs an instructional designer. His enthusiasm is contagious."
+  },
+  {
+    name: "Kabir Aswani",
+    role: "Senior L&D Strategist",
+    quote: "Working with Jitin was a transformative experience for our L&D team. He doesn't just build content; he architects systems that think ahead of the problem. His ability to bridge the gap between instructional science and technical automation is something I haven't seen elsewhere in the industry. He is a strategic partner who truly understands how to drive performance through innovative design."
+  }
+];
+
+function Testimonials() {
+  const [index, setIndex] = useState(0);
+  const reduced = useReducedMotion();
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+    }, 8000);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <section className="px-5 py-12 md:py-20 overflow-hidden">
+      <div className="mx-auto max-w-4xl text-center">
+        <Reveal>
+          <div className="flex justify-center mb-8">
+            <div className="h-10 w-10 rounded-full border border-emerald-500/20 bg-emerald-500/10 flex items-center justify-center">
+              <MessageCircle className="h-5 w-5 text-emerald-400" />
+            </div>
+          </div>
+          <div className="relative min-h-[380px] sm:min-h-[280px]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={index}
+                initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.98, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 1.02, y: -10 }}
+                transition={{ duration: 0.8, ease: EASE }}
+                className="absolute inset-0 flex flex-col items-center"
+              >
+                <div className="text-lg sm:text-xl font-serif text-neutral-200 leading-relaxed italic max-w-3xl">
+                  &ldquo;{TESTIMONIALS[index].quote}&rdquo;
+                </div>
+                <div className="mt-8">
+                  <div className="text-white font-semibold tracking-tight">{TESTIMONIALS[index].name}</div>
+                  <div className="text-[10px] font-mono text-emerald-500/60 uppercase tracking-[0.2em] mt-1">{TESTIMONIALS[index].role}</div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          
+          <div className="mt-4 flex justify-center gap-2">
+            {TESTIMONIALS.map((_, i) => (
+              <button 
+                key={i} 
+                onClick={() => setIndex(i)}
+                className={`h-1 transition-all duration-500 rounded-full ${i === index ? "w-8 bg-emerald-500" : "w-2 bg-white/10"}`}
+                aria-label={`Go to testimonial ${i + 1}`}
+              />
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 /* ---------- Page ---------- */
 export function LDPortfolio() {
   return (
@@ -1097,8 +1183,31 @@ export function LDPortfolio() {
       <Capabilities />
       <Journey />
       <Recognition />
-      <Contact />
-      <LdFooter />
+      <Testimonials />
+
+      {/* Final CTA */}
+      <section className="px-5 py-20 md:py-32">
+        <div className="mx-auto max-w-6xl text-center">
+          <Reveal>
+            <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-5xl">
+              Ready to scale your learning engine?
+            </h2>
+            <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <MagneticButton href="/work" variant="primary" className="px-10 py-4 text-base">
+                Full Work Experience
+                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" strokeWidth={2} />
+              </MagneticButton>
+              <MagneticButton href="#contact" variant="ghost" className="px-10 py-4 text-base bg-white/[0.03] backdrop-blur-md">
+                Get in touch
+              </MagneticButton>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <div id="contact">
+        <LdFooter />
+      </div>
     </main>
   );
 }
