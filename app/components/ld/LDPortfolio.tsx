@@ -11,7 +11,7 @@ import {
   useMotionValue,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, ArrowUpRight, ArrowDown, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ArrowDown, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink, ChevronDown } from "lucide-react";
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "./primitives";
 import { DownloadResumeButton } from "./DownloadResumeButton";
 import { LdVortexBackground } from "./LdVortexBackground";
@@ -29,6 +29,13 @@ import { CaseStudyInfographic } from "./CaseStudyInfographics";
 import { LdFooter } from "./LdFooter";
 import { leadershipCases } from "../../data/leadership";
 import { capabilityDomains, type CapabilityDomain } from "../../data/capabilities";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+// Utility for cleaner classes
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 const EMAIL = "mailto:not.jitin@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
@@ -72,6 +79,7 @@ function Nav() {
 function Hero() {
   const reduced = useReducedMotion();
   const ready = useFontsReady();
+  const [resumeExpanded, setResumeExpanded] = useState(false);
 
   // Portrait pointer tilt + clip-path reveal (reuses the landing treatment).
   const mvX = useMotionValue(0);
@@ -115,6 +123,36 @@ function Hero() {
           animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 },
           transition: { duration: 0.7, delay, ease: EASE },
         };
+
+  const buttonsBlock = (isMobile: boolean) => (
+    <motion.div
+      {...(isMobile ? mobileFade(M_BUTTONS_DELAY) : {
+        initial: reduced ? false : { opacity: 0, y: 16 },
+        animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 },
+        transition: { duration: 0.7, delay: 0.68, ease: EASE }
+      })}
+      className={cn("mt-5 flex items-center gap-3", !isMobile && "mt-9")}
+    >
+      <AnimatePresence>
+        {!resumeExpanded && (
+          <motion.a
+            key="learn-more"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            href="#impact"
+            className="flex-1 flex items-center justify-center gap-2 rounded-full bg-emerald-400 px-4 py-3 text-xs font-semibold text-[#062a1d] transition-transform duration-150 active:scale-[0.97]"
+          >
+            Learn More
+            <ArrowDown className="h-3.5 w-3.5" strokeWidth={2} />
+          </motion.a>
+        )}
+      </AnimatePresence>
+      <div className={cn("transition-all duration-300", resumeExpanded ? "w-full" : "flex-1")}>
+        <DownloadResumeButton mobile onExpandChange={setResumeExpanded} />
+      </div>
+    </motion.div>
+  );
 
   return (
     <>
@@ -208,21 +246,7 @@ function Hero() {
               A decade designing how people learn, and building the AI that scales it.
             </motion.p>
 
-            <motion.div
-              {...mobileFade(M_BUTTONS_DELAY)}
-              className="mt-5 flex items-center gap-3"
-            >
-              <a
-                href="#impact"
-                className="flex-1 flex items-center justify-center gap-2 rounded-full bg-emerald-400 px-4 py-3 text-xs font-semibold text-[#062a1d] transition-transform duration-150 active:scale-[0.97]"
-              >
-                Learn More
-                <ArrowDown className="h-3.5 w-3.5" strokeWidth={2} />
-              </a>
-              <div className="flex-1">
-                <DownloadResumeButton mobile />
-              </div>
-            </motion.div>
+            {buttonsBlock(true)}
           </div>
         </div>
       </section>
@@ -263,17 +287,7 @@ function Hero() {
               A decade designing how people learn, and building the AI that scales it.
             </motion.p>
 
-            <motion.div
-              initial={reduced ? false : { opacity: 0, y: 16 }}
-              animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-              transition={{ duration: 0.7, delay: 0.68, ease: EASE }}
-              className="mt-9 flex flex-wrap items-center gap-3"
-            >
-              <DownloadResumeButton />
-              <MagneticButton href="#contact" variant="ghost" className="bg-white/[0.07] backdrop-blur-md">
-                Get in touch
-              </MagneticButton>
-            </motion.div>
+            {buttonsBlock(false)}
           </div>
 
           {/* Portrait */}

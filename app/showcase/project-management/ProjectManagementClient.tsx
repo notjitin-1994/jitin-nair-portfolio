@@ -553,19 +553,20 @@ function TaskCard({
           ))}
         </div>
         {actions ? (
-          <div onClick={e => e.stopPropagation()} className="shrink-0">
+          <div onClick={e => e.stopPropagation()} className="shrink-0 relative">
             <select
               value={task.status}
               onChange={e => actions.moveTask(task.id, e.target.value as Status)}
               className={cn(
-                "text-[9px] font-bold uppercase tracking-wider border rounded-md px-1.5 py-0.5 bg-transparent cursor-pointer focus:outline-none appearance-none",
-                STATUS_STYLES[task.status]
+                "text-[9px] font-bold uppercase tracking-wider border rounded-md px-1.5 py-0.5 bg-zinc-900 cursor-pointer focus:outline-none appearance-none pr-6",
+                STATUS_STYLES[task.status as Status]
               )}
             >
               {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map(s => (
                 <option key={s} value={s} className="bg-zinc-900 text-white normal-case text-xs">{s}</option>
               ))}
             </select>
+            <ChevronDown className="absolute right-1 top-1/2 -translate-y-1/2 h-3 w-3 text-white pointer-events-none stroke-[3]" />
           </div>
         ) : (
           <div className={cn("h-2 w-2 rounded-full shrink-0 mt-1", task.status === 'Done' ? 'bg-emerald-500' : 'bg-neutral-600')} />
@@ -751,7 +752,7 @@ function TaskDetailOverlay({ taskId, user, users, onClose, actions }: { taskId: 
                   value={task.status}
                   onChange={e => actions.moveTask(task.id, e.target.value as Status)}
                   className={cn(
-                    "text-[10px] font-bold uppercase tracking-wider border rounded-md px-2 py-0.5 bg-transparent cursor-pointer focus:outline-none appearance-none transition-colors",
+                    "text-[10px] font-bold uppercase tracking-wider border rounded-md px-2 py-0.5 bg-zinc-900 cursor-pointer focus:outline-none appearance-none transition-colors pr-7",
                     STATUS_STYLES[task.status as Status]
                   )}
                 >
@@ -759,7 +760,7 @@ function TaskDetailOverlay({ taskId, user, users, onClose, actions }: { taskId: 
                     <option key={s} value={s} className="bg-zinc-950 text-white normal-case text-xs">{s}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-1 top-1/2 -translate-y-1/2 h-2.5 w-2.5 opacity-40 pointer-events-none" />
+                <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white pointer-events-none group-hover:text-emerald-400 transition-colors stroke-[3]" />
               </div>
             </div>
             <h2 className="text-2xl sm:text-3xl font-serif text-white tracking-tight leading-tight">{task.title}</h2>
@@ -771,9 +772,10 @@ function TaskDetailOverlay({ taskId, user, users, onClose, actions }: { taskId: 
 
         {/* Scrollable Body */}
         <div className="p-5 sm:p-8 space-y-8 sm:space-y-10 overflow-y-auto custom-scrollbar">
-          {/* Description & Meta */}
+          {/* Description & Management Sidebar */}
           <div className="flex flex-col md:flex-row gap-8">
             <div className="flex-1 space-y-4">
+              <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block mb-2">Description</span>
               <p className="text-sm text-neutral-400 leading-relaxed">{task.description}</p>
               <div className="flex flex-wrap gap-2 pt-2">
                 {(task.tags || []).map((tag: string) => (
@@ -783,19 +785,42 @@ function TaskDetailOverlay({ taskId, user, users, onClose, actions }: { taskId: 
                 ))}
               </div>
             </div>
-            <div className="w-full md:w-56 shrink-0 space-y-6">
+
+            {/* Unified Management Sidebar */}
+            <div className="w-full md:w-64 shrink-0 p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-6">
+              {/* Status Section */}
+              <div className="space-y-2">
+                <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">Status</span>
+                <div className="relative group w-full">
+                  <select
+                    value={task.status}
+                    onChange={e => actions.moveTask(task.id, e.target.value as Status)}
+                    className={cn(
+                      "w-full text-xs font-bold uppercase tracking-wider border rounded-xl px-3 py-2.5 bg-zinc-900 cursor-pointer focus:outline-none appearance-none transition-all",
+                      STATUS_STYLES[task.status as Status]
+                    )}
+                  >
+                    {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map(s => (
+                      <option key={s} value={s} className="bg-zinc-950 text-white normal-case text-sm">{s}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white pointer-events-none group-hover:text-emerald-400 transition-colors stroke-[3]" />
+                </div>
+              </div>
+
+              {/* Assignee Section */}
               <div className="relative">
                 <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block mb-2">Assignee</span>
                 <button 
                   onClick={() => setShowAssigneePicker(!showAssigneePicker)}
-                  className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-emerald-500/30 transition-all text-left"
+                  className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-black/40 border border-white/10 hover:border-emerald-500/30 transition-all text-left"
                 >
                   {taskAssignee && <UserAvatar user={taskAssignee} size="md" />}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-white truncate">{taskAssignee?.name || 'Unassigned'}</p>
                     <p className="text-[9px] text-neutral-500 truncate">{taskAssignee?.role || 'Click to assign'}</p>
                   </div>
-                  <ChevronRight className={cn("h-3 w-3 text-neutral-600 transition-transform", showAssigneePicker && "rotate-90")} />
+                  <ChevronDown className={cn("h-4 w-4 text-white transition-transform stroke-[3]", showAssigneePicker && "rotate-180")} />
                 </button>
                 
                 <AnimatePresence>
@@ -829,6 +854,7 @@ function TaskDetailOverlay({ taskId, user, users, onClose, actions }: { taskId: 
                 </AnimatePresence>
               </div>
 
+              {/* Due Date Section */}
               <div>
                 <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block mb-2">Due Date</span>
                 <PremiumDatePicker 

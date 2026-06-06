@@ -39,7 +39,7 @@ function Shake({
 }
 
 /* ── Main component ────────────────────────────────────────────────────── */
-export function DownloadResumeButton({ mobile = false }: { mobile?: boolean }) {
+export function DownloadResumeButton({ mobile = false, onExpandChange }: { mobile?: boolean, onExpandChange?: (expanded: boolean) => void }) {
   const reduced = useReducedMotion();
   const [stage, setStage] = useState<Stage>("idle");
   const [email, setEmail] = useState("");
@@ -52,9 +52,16 @@ export function DownloadResumeButton({ mobile = false }: { mobile?: boolean }) {
 
   /* Auto-focus when stage changes to input states */
   useEffect(() => {
-    if (stage === "email") setTimeout(() => emailRef.current?.focus(), 120);
+    if (stage === "email") {
+      setTimeout(() => emailRef.current?.focus(), 120);
+      onExpandChange?.(true);
+    }
     if (stage === "phone") setTimeout(() => phoneRef.current?.focus(), 120);
-  }, [stage]);
+    if (stage === "idle" || stage === "done") {
+      // Small delay for exit animations
+      setTimeout(() => onExpandChange?.(false), 300);
+    }
+  }, [stage, onExpandChange]);
 
   /* Reset to idle after success */
   useEffect(() => {
