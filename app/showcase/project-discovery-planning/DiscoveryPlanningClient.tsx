@@ -2,22 +2,16 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { 
-  Target, 
-  Search, 
-  Map, 
-  FileText, 
-  Users, 
-  Zap, 
-  ChevronRight, 
+import {
   ArrowRight,
-  Database,
-  Workflow,
-  Layout,
-  Layers,
   ArrowLeft,
   Mail,
-  Linkedin
+  Linkedin,
+  ClipboardList,
+  Cpu,
+  ClipboardCheck,
+  Sparkles,
+  ChevronDown,
 } from "lucide-react";
 import { EASE, Reveal, useFontsReady, MagneticButton } from "../../components/ld/primitives";
 import { Grain } from "../../components/leading/visuals";
@@ -28,14 +22,86 @@ import { PolarisShowcaseSection } from "./PolarisShowcase";
 const EMAIL = "mailto:not.jitin@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 
-const STAGES = [
-  { id: "01", name: "Brief", icon: Target, description: "Automated extraction of business objectives and success metrics." },
-  { id: "02", name: "Audit", icon: Search, description: "Deep-scan of existing collateral and knowledge gaps." },
-  { id: "03", name: "Design", icon: Map, description: "Strategic mapping of cognitive paths and behavioral milestones." },
-  { id: "04", name: "Draft", icon: FileText, description: "AI-accelerated blueprint generation and structure validation." },
-  { id: "05", name: "Review", icon: Users, description: "Human-in-the-loop validation of pedagogical integrity." },
-  { id: "06", name: "Refine", icon: Zap, description: "Iterative optimization based on stakeholder feedback loops." },
-  { id: "07", name: "Ship", icon: Layout, description: "Deployment-ready architecture for production pipelines." },
+const PHASES = [
+  {
+    number: "01",
+    phase: "Phase I · Intake",
+    icon: ClipboardList,
+    name: "Structured Intake",
+    description:
+      "30+ fields map the full org context: industry, headcount, data policy, learning gap, audience profile, delivery mode, timeline, and budget — captured as structured JSONB for precise AI processing.",
+    stat: "30+",
+    statLabel: "structured fields",
+    accent: false,
+  },
+  {
+    number: "02",
+    phase: "AI Analysis",
+    icon: Cpu,
+    name: "Adaptive Question Generation",
+    description:
+      "The intelligence engine reads the intake signal and generates a bespoke discovery questionnaire — 10 thematic sections, 60+ precision questions — uniquely calibrated to the org, industry, and learning gap.",
+    stat: "60+",
+    statLabel: "AI-authored questions",
+    accent: true,
+  },
+  {
+    number: "03",
+    phase: "Phase II · Discovery",
+    icon: ClipboardCheck,
+    name: "Deep Discovery",
+    description:
+      "The L&D practitioner answers structured questions across cognitive levels, modality split, platform stack, KPIs, and budget allocation — using 13 purpose-built input types for maximum signal quality.",
+    stat: "13",
+    statLabel: "input types",
+    accent: false,
+  },
+  {
+    number: "04",
+    phase: "AI Synthesis",
+    icon: Sparkles,
+    name: "Learning Experience Design Documentation",
+    description:
+      "All discovery signals converge. The AI synthesizes a 10-section learning experience design documentation — objectives, modules, assessments, rollout, and budget — in under 45 seconds, export-ready in JSON and Markdown.",
+    stat: "< 45s",
+    statLabel: "to full LX documentation",
+    accent: true,
+  },
+];
+
+const PIPELINE_NODES = [
+  {
+    id: "intake",
+    label: "Phase I · Static Intake",
+    icon: ClipboardList,
+    name: "Structured Context Capture",
+    detail: "Acme Services · Financial Services · 26–50 learners · $70,000 · 8 weeks",
+    accent: false,
+  },
+  {
+    id: "ai-gen",
+    label: "AI Analysis · Intelligence Engine",
+    icon: Cpu,
+    name: "Adaptive Question Generation",
+    detail: "10 sections · 60 precision questions · uniquely calibrated to context",
+    accent: true,
+  },
+  {
+    id: "discovery",
+    label: "Phase II · Dynamic Questionnaire",
+    icon: ClipboardCheck,
+    name: "Deep Discovery",
+    detail: "Cognitivism + Experiential · 80% async / 20% live · LMS + Zoom · Bloom's L4–L5",
+    accent: false,
+  },
+  {
+    id: "blueprint",
+    label: "Synthesis · LX Documentation",
+    icon: Sparkles,
+    name: '"Data-Driven Leadership"',
+    detail: "8 weeks · 4 modules · Phillips ROI · JSON + Markdown · < 45s",
+    accent: true,
+  },
 ];
 
 /* ---------- Nav ---------- */
@@ -74,7 +140,10 @@ function Hero() {
             href="/showcase"
             className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
           >
-            <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2} />
+            <ArrowLeft
+              className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"
+              strokeWidth={2}
+            />
             Back to Showcase
           </Link>
         </Reveal>
@@ -86,7 +155,8 @@ function Hero() {
             transition={{ duration: 0.8, ease: EASE }}
             className="font-serif text-[2.5rem] font-medium leading-[1.1] tracking-tight text-white sm:text-[3.5rem] lg:text-[4rem]"
           >
-            Project <span className="text-emerald-400 font-serif italic">Discovery</span> & Planning.
+            Project <span className="text-emerald-400 font-serif italic">Discovery</span> &
+            Planning.
           </motion.h1>
           <motion.p
             initial={reduced ? false : { opacity: 0, y: 16 }}
@@ -94,7 +164,8 @@ function Hero() {
             transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
             className="mt-6 text-lg leading-relaxed text-neutral-400 sm:text-xl"
           >
-            Automated stakeholder discovery, strategic curriculum mapping, and the architectural blueprints that bridge business needs with learning solutions.
+            Automated stakeholder discovery, strategic curriculum mapping, and the architectural
+            documentation that bridges business needs with learning solutions.
           </motion.p>
         </div>
       </div>
@@ -104,44 +175,91 @@ function Hero() {
 
 /* ---------- Pipeline Section ---------- */
 function PipelineSection() {
-  const reduced = useReducedMotion();
-
   return (
     <section className="px-5 py-24 md:py-32 bg-[#0a0a0f] relative overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[50vh] w-[80vh] rounded-full bg-emerald-500/5 blur-[100px]" />
+      </div>
+
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <div className="inline-flex items-center gap-2 mb-6">
             <span className="h-px w-8 bg-emerald-500/30" />
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">The Methodology</span>
+            <span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">
+              The Methodology
+            </span>
           </div>
-          <h2 className="font-serif text-4xl font-medium tracking-tight text-white sm:text-5xl mb-8">
-            The 7-Stage <span className="text-emerald-400 italic">Discovery</span> Engine.
+          <h2 className="font-serif text-4xl font-medium tracking-tight text-white sm:text-5xl mb-6">
+            Intelligence in <span className="text-emerald-400 italic">Two Acts.</span>
           </h2>
           <p className="max-w-2xl text-lg text-neutral-400 leading-relaxed mb-16">
-            How I replace weeks of manual stakeholder interviews and curriculum drafting with a unified, AI-powered infrastructure that outputs production-ready blueprints in minutes.
+            Structured intake feeds an AI that generates precision discovery questions, and those
+            answers synthesize into a production-ready learning experience design documentation — without a single manual
+            reformatting step.
           </p>
         </Reveal>
 
-        <div className="grid gap-4 md:grid-cols-7 relative">
-          {/* Connector line for desktop */}
-          <div className="absolute top-[2.25rem] left-0 right-0 h-px bg-white/10 hidden md:block" />
-          
-          {STAGES.map((stage, i) => {
-            const Icon = stage.icon;
+        <div className="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Desktop thread */}
+          <div
+            aria-hidden
+            className="absolute top-[3.75rem] left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent hidden lg:block"
+          />
+
+          {PHASES.map((phase, i) => {
+            const Icon = phase.icon;
             return (
-              <Reveal key={stage.id} delay={i * 0.08} y={20}>
-                <div className="relative group">
-                  <div className="flex flex-col items-center text-center">
-                    <div className="relative z-10 flex h-18 w-18 items-center justify-center rounded-2xl border border-white/10 bg-[#0a0a0f] p-4 transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(52,211,153,0.1)] mb-6">
-                      <Icon className="h-8 w-8 text-emerald-400" strokeWidth={1.5} />
-                      <div className="absolute -top-2 -right-2 font-mono text-[10px] font-bold text-emerald-500/50">
-                        {stage.id}
-                      </div>
+              <Reveal key={phase.number} delay={i * 0.09} y={24}>
+                <div
+                  className={`relative group h-full flex flex-col rounded-2xl border p-6 transition-all duration-300 overflow-hidden ${
+                    phase.accent
+                      ? "border-emerald-500/20 bg-emerald-500/[0.04] hover:border-emerald-500/40 hover:bg-emerald-500/[0.07]"
+                      : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14] hover:bg-white/[0.04]"
+                  }`}
+                >
+                  {/* Large faded number */}
+                  <span
+                    aria-hidden
+                    className="absolute -top-2 -right-1 font-mono text-[5.5rem] font-extrabold leading-none text-white/[0.025] select-none pointer-events-none"
+                  >
+                    {phase.number}
+                  </span>
+
+                  {/* Icon + phase eyebrow */}
+                  <div className="flex items-start justify-between mb-5">
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300 ${
+                        phase.accent
+                          ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-400"
+                          : "border-white/10 bg-white/5 text-neutral-400 group-hover:border-emerald-400/20 group-hover:bg-emerald-400/5 group-hover:text-emerald-400"
+                      }`}
+                    >
+                      <Icon className="h-5 w-5" />
                     </div>
-                    <h3 className="text-white font-medium mb-2">{stage.name}</h3>
-                    <p className="text-[11px] text-neutral-500 leading-normal max-w-[120px] md:max-w-none">
-                      {stage.description}
-                    </p>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-neutral-600 pt-1">
+                      {phase.phase}
+                    </span>
+                  </div>
+
+                  <h3 className="text-white font-semibold text-[15px] mb-3 leading-tight">
+                    {phase.name}
+                  </h3>
+                  <p className="text-[13px] text-neutral-500 leading-relaxed flex-1">
+                    {phase.description}
+                  </p>
+
+                  {/* Bottom stat */}
+                  <div className="mt-6 pt-4 border-t border-white/[0.06]">
+                    <div
+                      className={`text-2xl font-mono font-bold tabular-nums ${
+                        phase.accent ? "text-emerald-400" : "text-white"
+                      }`}
+                    >
+                      {phase.stat}
+                    </div>
+                    <div className="text-[11px] text-neutral-600 mt-0.5 tracking-wide">
+                      {phase.statLabel}
+                    </div>
                   </div>
                 </div>
               </Reveal>
@@ -155,99 +273,139 @@ function PipelineSection() {
 
 /* ---------- Architecture Section ---------- */
 function ArchitectureSection() {
+  const reduced = useReducedMotion();
+
   return (
     <section className="px-5 py-24 md:py-32 bg-white/[0.02] border-y border-white/[0.05] relative overflow-hidden">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-16 lg:grid-cols-2 items-center">
+          {/* LEFT: Copy */}
           <Reveal>
             <div className="inline-flex items-center gap-2 mb-6">
               <span className="h-px w-8 bg-emerald-500/30" />
-              <span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">Architectural Core</span>
+              <span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">
+                Core Architecture
+              </span>
             </div>
             <h2 className="font-serif text-4xl font-medium tracking-tight text-white sm:text-5xl mb-8">
-              From <span className="text-emerald-400 italic">Chaos</span> to Blueprint.
+              Two phases,
+              <br />
+              <span className="text-emerald-400 italic">one coherent</span> signal.
             </h2>
-            <div className="space-y-6 text-neutral-400 text-lg leading-relaxed">
-              <p>
-                Organizations often rely on 7-15 disconnected tools for learning design, creating a massive bottleneck between a business need and the solution.
+            <div className="space-y-5 text-neutral-400 leading-relaxed">
+              <p className="text-lg">
+                Most L&D tools treat intake and design as separate workflows. Polaris binds them:
+                Phase I captures organizational context; Phase II extracts instructional
+                intelligence — and the AI layer translates both into a structured LX documentation without
+                manual reformatting.
               </p>
-              <p>
-                My architecture unifies fragmented data—emails, Slack threads, legacy docs, and interviews—into a <span className="text-white">Structured Learning Context</span>.
-              </p>
-              <ul className="space-y-4 pt-4">
+              <ul className="space-y-4 pt-2">
                 {[
-                  "Multi-agent synthesis of stakeholder needs",
-                  "Automated curriculum gap detection",
-                  "Behavioral milestone orchestration",
-                  "Export-ready Markdown/JSON blueprints"
-                ].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-sm">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    {item}
+                  {
+                    term: "Phase I → AI",
+                    def: "Static intake feeds the intelligence engine, which generates 60+ bespoke discovery questions",
+                  },
+                  {
+                    term: "Phase II → LX Documentation",
+                    def: "Dynamic answers synthesized into a 10-section LX documentation structure",
+                  },
+                  {
+                    term: "Dual-format export",
+                    def: "Structured JSON for systems integration, Markdown for stakeholder review",
+                  },
+                  {
+                    term: "< 45s synthesis",
+                    def: "From final answer to production-ready, validated LX documentation",
+                  },
+                ].map(({ term, def }) => (
+                  <li key={term} className="flex items-start gap-3 text-sm">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                    <span>
+                      <span className="text-white font-medium">{term}</span> — {def}
+                    </span>
                   </li>
                 ))}
               </ul>
             </div>
           </Reveal>
 
+          {/* RIGHT: Vertical pipeline visualization */}
           <Reveal delay={0.2}>
-            <div className="relative aspect-square rounded-[3rem] border border-white/10 bg-[#0a0a0f] p-8 overflow-hidden group">
+            <div className="relative rounded-[3rem] border border-white/10 bg-[#0a0a0f] p-8 overflow-hidden">
               <Grain />
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent opacity-50" />
-              
-              <div className="relative h-full flex flex-col justify-center gap-8">
-                {/* Visual Architecture Representation */}
-                <div className="flex items-center justify-between">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-neutral-400">
-                    <Database className="h-6 w-6" />
-                  </div>
-                  <motion.div 
-                    animate={{ x: [0, 20, 0] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    className="flex-1 h-px bg-gradient-to-r from-white/5 via-emerald-500/30 to-white/5 mx-4" 
-                  />
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-400/10 border border-emerald-400/20 text-emerald-400">
-                    <Zap className="h-6 w-6" />
-                  </div>
-                </div>
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.08] via-transparent to-transparent pointer-events-none"
+              />
 
-                <div className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Workflow className="h-4 w-4 text-emerald-400" />
-                    <span className="text-xs font-mono text-emerald-400/70 tracking-widest uppercase">Orchestration Layer</span>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: 0.85 }}
-                        transition={{ duration: 1.5, ease: EASE }}
-                        className="h-full w-full bg-emerald-400 origin-left" 
-                      />
-                    </div>
-                    <div className="h-2 w-[70%] bg-white/5 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: 0.6 }}
-                        transition={{ duration: 1.5, delay: 0.2, ease: EASE }}
-                        className="h-full w-full bg-teal-400 origin-left" 
-                      />
-                    </div>
-                  </div>
-                </div>
+              <div className="relative flex flex-col gap-0">
+                {PIPELINE_NODES.map((node, i) => {
+                  const Icon = node.icon;
+                  return (
+                    <div key={node.id}>
+                      <motion.div
+                        initial={reduced ? false : { opacity: 0, x: 16 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: i * 0.12, ease: EASE }}
+                        viewport={{ once: true }}
+                        className={`rounded-xl border p-4 ${
+                          node.accent
+                            ? "border-emerald-400/25 bg-emerald-400/[0.06]"
+                            : "border-white/[0.08] bg-white/[0.03]"
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                              node.accent
+                                ? "bg-emerald-400/[0.15] text-emerald-400"
+                                : "bg-white/5 text-neutral-500"
+                            }`}
+                          >
+                            <Icon className="h-4 w-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-[10px] font-mono uppercase tracking-[0.12em] text-neutral-600 mb-1">
+                              {node.label}
+                            </div>
+                            <div className="text-sm font-semibold text-white leading-tight mb-1">
+                              {node.name}
+                            </div>
+                            <div className="text-xs text-neutral-500 leading-relaxed">
+                              {node.detail}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
 
-                <div className="flex justify-center">
-                  <div className="relative">
-                    <div className="flex h-20 w-20 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/5 shadow-[0_0_30px_rgba(52,211,153,0.1)]">
-                      <Layers className="h-8 w-8 text-emerald-400" />
+                      {/* Connector */}
+                      {i < PIPELINE_NODES.length - 1 && (
+                        <div className="flex flex-col items-center py-0.5 ml-6">
+                          <motion.div
+                            className="w-px h-4 bg-gradient-to-b from-emerald-500/40 to-emerald-500/20"
+                            animate={reduced ? undefined : { opacity: [0.4, 1, 0.4] }}
+                            transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.7 }}
+                          />
+                          <motion.div
+                            animate={reduced ? undefined : { y: [0, 2, 0] }}
+                            transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.7 }}
+                          >
+                            <ChevronDown className="h-3 w-3 text-emerald-500/30" />
+                          </motion.div>
+                          <motion.div
+                            className="w-px h-4 bg-gradient-to-b from-emerald-500/20 to-emerald-500/5"
+                            animate={reduced ? undefined : { opacity: [0.4, 1, 0.4] }}
+                            transition={{
+                              duration: 2.5,
+                              repeat: Infinity,
+                              delay: i * 0.7 + 0.5,
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
-                    <motion.div 
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.1, 0.3] }}
-                      transition={{ duration: 4, repeat: Infinity }}
-                      className="absolute inset-0 rounded-full bg-emerald-400/20 -z-10" 
-                    />
-                  </div>
-                </div>
+                  );
+                })}
               </div>
             </div>
           </Reveal>
@@ -265,28 +423,37 @@ function MetricsSection() {
         <div className="grid gap-8 md:grid-cols-3">
           <Reveal>
             <div className="h-full rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-10">
-              <div className="font-serif text-5xl font-medium text-white mb-4">45<span className="text-2xl text-emerald-400">s</span></div>
-              <h3 className="text-lg font-medium text-white mb-2">Average Blueprint Time</h3>
+              <div className="font-serif text-5xl font-medium text-white mb-4">
+                45<span className="text-2xl text-emerald-400">s</span>
+              </div>
+              <h3 className="text-lg font-medium text-white mb-2">Average Documentation Time</h3>
               <p className="text-sm text-neutral-500 leading-relaxed">
-                From raw stakeholder brief to a validated 20-page curriculum blueprint, ready for production.
+                From raw stakeholder brief to a validated 20-section LX documentation, ready for
+                production.
               </p>
             </div>
           </Reveal>
           <Reveal delay={0.1}>
             <div className="h-full rounded-[2.5rem] border border-emerald-500/20 bg-emerald-500/5 p-10">
-              <div className="font-serif text-5xl font-medium text-white mb-4">500<span className="text-2xl text-emerald-400">+</span></div>
+              <div className="font-serif text-5xl font-medium text-white mb-4">
+                500<span className="text-2xl text-emerald-400">+</span>
+              </div>
               <h3 className="text-lg font-medium text-white mb-2">Automated Jobs / Day</h3>
               <p className="text-sm text-neutral-500 leading-relaxed">
-                Scaled discovery agents running concurrently across multiple enterprise domains and contexts.
+                Scaled discovery agents running concurrently across multiple enterprise domains and
+                contexts.
               </p>
             </div>
           </Reveal>
           <Reveal delay={0.2}>
             <div className="h-full rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-10">
-              <div className="font-serif text-5xl font-medium text-white mb-4">95<span className="text-2xl text-emerald-400">%</span></div>
+              <div className="font-serif text-5xl font-medium text-white mb-4">
+                95<span className="text-2xl text-emerald-400">%</span>
+              </div>
               <h3 className="text-lg font-medium text-white mb-2">Stakeholder Alignment</h3>
               <p className="text-sm text-neutral-500 leading-relaxed">
-                High-fidelity discovery accuracy verified through expert human-in-the-loop validation cycles.
+                High-fidelity discovery accuracy verified through expert human-in-the-loop
+                validation cycles.
               </p>
             </div>
           </Reveal>
@@ -315,7 +482,10 @@ function Contact() {
             </MagneticButton>
           </div>
           <div className="mt-8 flex items-center gap-6 text-sm text-neutral-500">
-            <a href={EMAIL} className="inline-flex items-center gap-2 transition-colors hover:text-white">
+            <a
+              href={EMAIL}
+              className="inline-flex items-center gap-2 transition-colors hover:text-white"
+            >
               <Mail className="h-4 w-4" strokeWidth={1.75} /> not.jitin@gmail.com
             </a>
             <a
