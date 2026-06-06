@@ -249,7 +249,7 @@ function Contact() {
 
 export default function ShowcasePage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-slate-100 selection:bg-emerald-500/30">
+    <main className="min-h-screen bg-[#0a0a0f] text-slate-100 selection:bg-emerald-500/30 overflow-x-hidden">
       <Nav />
       <Hero />
       <ShowcaseGrid />

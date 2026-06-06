@@ -1320,12 +1320,12 @@ export function ProjectManagementClient() {
 
           <div className="relative z-10 grid gap-12 lg:grid-cols-[1fr_320px]">
             <div>
-              <div className="flex items-center gap-4 mb-6">
-                <span className="px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400 uppercase tracking-widest shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
+              <div className="flex items-center gap-3 mb-6 flex-wrap">
+                <span className="px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400 uppercase tracking-widest shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] truncate max-w-[150px] sm:max-w-none">
                   {project.uuid}
                 </span>
-                <span className="h-1 w-1 rounded-full bg-emerald-500" />
-                <span className="text-xs text-neutral-400 uppercase tracking-widest font-bold">{project.modality}</span>
+                <span className="h-1 w-1 rounded-full bg-emerald-500 shrink-0" />
+                <span className="text-xs text-neutral-400 uppercase tracking-widest font-bold shrink-0">{project.modality}</span>
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-white tracking-tight mb-6 sm:mb-10 leading-tight">
                 {project.name}
@@ -1498,7 +1498,7 @@ export function ProjectManagementClient() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-slate-100 selection:bg-emerald-500/30 flex flex-col font-sans">
+    <main className="min-h-screen bg-[#0a0a0f] text-slate-100 selection:bg-emerald-500/30 flex flex-col font-sans overflow-x-hidden">
       <FloatingNav
         brandHref="/showcase"
         suffix="Enterprise Project Hub"
