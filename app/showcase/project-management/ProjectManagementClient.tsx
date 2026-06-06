@@ -2,13 +2,14 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { 
   ArrowLeft, Search, Filter, Plus, Calendar, Clock, Paperclip, 
   MessageSquare, Activity, CheckCircle2, Circle, MoreHorizontal,
   Workflow, Zap, Users, LayoutDashboard, ChevronDown, Link as LinkIcon,
   FileText, Target, Globe, ShieldCheck, Mail, Linkedin, Upload,
-  ListTodo, Info, UserCheck, Timer, ArrowRight, ChevronLeft, ChevronRight
+  ListTodo, Info, UserCheck, Timer, ArrowRight, ChevronLeft, ChevronRight,
+  FolderKanban, Briefcase, ChevronUp
 } from "lucide-react";
 import { FloatingNav } from "../../components/FloatingNav";
 import { LdFooter } from "../../components/ld/LdFooter";
@@ -27,7 +28,8 @@ function cn(...inputs: ClassValue[]) {
 type Role = "Project Manager" | "Lead Instructional Designer" | "Instructional Designer" | "Content Developer";
 type Status = "Backlog" | "In Progress" | "In Review" | "Done";
 type Modality = "Video" | "Interactive" | "Hybrid" | "ILT" | "VILT";
-type MainView = "Project List" | "Project Detail" | "Team Tasks" | "PM View" | "Team Member View";
+type MainTab = "PM Dashboard" | "Kanban Board" | "Team Member Dashboard";
+type PMViewMode = "Home" | "Project List" | "Project Detail";
 
 interface User {
   id: string;
@@ -210,6 +212,24 @@ const INITIAL_TASKS: Task[] = [
     activity: [{ id: "a-7", text: "Moved to In Progress", time: "1 day ago" }]
   },
   {
+    id: "TSK-005",
+    projectId: "p-1",
+    title: "Video Production & Editing",
+    description: "Record, edit, and animate motion graphics for the instructional videos.",
+    status: "In Progress",
+    assigneeId: "u-4",
+    dueDate: "Oct 30",
+    tags: ["Video", "Media"],
+    subtasks: [
+      { id: "st-13", title: "Record voiceovers", completed: true, assigneeId: "u-4" },
+      { id: "st-14", title: "Sync audio with motion graphics", completed: false, assigneeId: "u-4" },
+      { id: "st-15", title: "Render final MP4s", completed: false, assigneeId: "u-4" },
+    ],
+    attachments: [],
+    comments: [],
+    activity: []
+  },
+  {
     id: "TSK-008",
     projectId: "p-2",
     title: "Portfolio & Resume Optimization",
@@ -244,8 +264,44 @@ const INITIAL_TASKS: Task[] = [
     attachments: [],
     comments: [{ id: "c-p2-1", authorId: "u-3", text: "WhatsApp integration for daily puzzles is 50% done.", time: "1 day ago" }],
     activity: []
+  },
+  {
+    id: "TSK-010",
+    projectId: "p-2",
+    title: "Domain-Specific Technical Preparation",
+    description: "Phase 3: Stream-specific technical interview preparation with faculty co-facilitators.",
+    status: "Backlog",
+    assigneeId: "u-2",
+    dueDate: "Jul 10",
+    tags: ["Technical", "Faculty"],
+    subtasks: [
+      { id: "st-p2-7", title: "Core subject review bank", completed: false, assigneeId: "u-2" },
+      { id: "st-p2-8", title: "SME interview recordings", completed: false, assigneeId: "u-3" },
+    ],
+    attachments: [],
+    comments: [],
+    activity: []
+  },
+  {
+    id: "TSK-011",
+    projectId: "p-2",
+    title: "Behavioral & Mock Interview Simulations",
+    description: "Phase 4: Mastering the STAR method and high-pressure interpersonal conflict scenarios.",
+    status: "Backlog",
+    assigneeId: "u-4",
+    dueDate: "Jul 25",
+    tags: ["Behavioral", "Simulation"],
+    subtasks: [
+      { id: "st-p2-9", title: "External HR panel onboarding", completed: false, assigneeId: "u-1" },
+      { id: "st-p2-10", title: "STAR method workshop drafting", completed: false, assigneeId: "u-4" },
+    ],
+    attachments: [],
+    comments: [],
+    activity: []
   }
 ];
+
+const SPRING = { type: "spring", stiffness: 100, damping: 20 };
 
 // ----------------------------------------------------------------------
 // SHARED COMPONENTS
@@ -265,21 +321,19 @@ function ProgressBar({ value, color = "emerald" }: { value: number, color?: stri
   );
 }
 
-function UserAvatar({ user, size = "md", showRing = false }: { user: User, size?: "xs" | "sm" | "md" | "lg", showRing?: boolean }) {
+function UserAvatar({ user, size = "md", showRing = false, className }: { user: User, size?: "xs" | "sm" | "md" | "lg", showRing?: boolean, className?: string }) {
   const sizeClasses = {
     xs: "h-5 w-5 text-[8px]",
     sm: "h-6 w-6 text-[10px]",
     md: "h-8 w-8 text-xs",
-    lg: "h-10 w-10 text-sm"
+    lg: "h-12 w-12 text-sm"
   };
-  
   return (
     <div 
-      className={cn(
-        "relative rounded-full overflow-hidden bg-zinc-900 shrink-0", 
-        sizeClasses[size],
-        showRing ? "ring-2 ring-emerald-500/50 p-[1px]" : "border border-white/10"
-      )}
+      className={cn("relative rounded-full overflow-hidden shrink-0 bg-zinc-900", 
+        sizeClasses[size], 
+        showRing ? "ring-2 ring-emerald-500/50 p-[1px]" : "border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]",
+        className)}
       title={user.name}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -309,7 +363,7 @@ function SectionHeading({ title, subtitle, icon: Icon, badge }: { title: string,
 // TASK CARD
 // ----------------------------------------------------------------------
 
-function TaskCard({ task, users, onClick }: { task: Task, users: User[], onClick: () => void }) {
+function TaskCard({ task, users, project, onClick }: { task: Task, users: User[], project?: Project, onClick: () => void }) {
   const assignee = users.find(u => u.id === task.assigneeId);
   const totalSubtasks = task.subtasks.length;
   const completedSubtasks = task.subtasks.filter(s => s.completed).length;
@@ -317,27 +371,33 @@ function TaskCard({ task, users, onClick }: { task: Task, users: User[], onClick
 
   return (
     <motion.div
-      layoutId={`task-${task.id}`}
+      layoutId={`task-card-${task.id}`}
       onClick={onClick}
       whileHover={{ y: -2 }}
-      className="group cursor-pointer rounded-2xl border border-white/[0.08] bg-zinc-900/50 p-4 hover:bg-zinc-900/80 hover:border-emerald-500/30 transition-all shadow-sm backdrop-blur-sm"
+      transition={SPRING}
+      className="group cursor-pointer rounded-2xl border border-white/[0.08] bg-zinc-900/40 p-5 hover:bg-zinc-900/80 hover:border-emerald-500/30 transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_4px_20px_-10px_rgba(0,0,0,0.2)] backdrop-blur-sm flex flex-col h-full"
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex gap-2 flex-wrap">
-          {task.tags.map(tag => (
-            <span key={tag} className="px-2 py-0.5 rounded bg-white/5 text-[9px] font-medium text-neutral-400 uppercase tracking-wider">
+          {project && (
+            <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-bold text-emerald-400 uppercase tracking-widest truncate max-w-[120px]">
+              {project.name}
+            </span>
+          )}
+          {task.tags.slice(0, project ? 1 : 2).map(tag => (
+            <span key={tag} className="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[9px] font-medium text-neutral-400 uppercase tracking-wider">
               {tag}
             </span>
           ))}
         </div>
-        <div className={cn("h-2 w-2 rounded-full", task.status === 'Done' ? 'bg-emerald-500' : 'bg-neutral-700 animate-pulse')} />
+        <div className={cn("h-2 w-2 rounded-full shrink-0 ml-2", task.status === 'Done' ? 'bg-emerald-500' : 'bg-neutral-600')} />
       </div>
       
-      <h4 className="text-sm font-medium text-neutral-200 mb-3 leading-tight group-hover:text-emerald-400 transition-colors">{task.title}</h4>
+      <h4 className="text-sm font-medium text-neutral-200 mb-4 leading-snug group-hover:text-emerald-400 transition-colors flex-1">{task.title}</h4>
       
       {totalSubtasks > 0 && (
-        <div className="mb-4">
-          <div className="flex justify-between text-[10px] text-neutral-500 mb-1.5 font-mono">
+        <div className="mb-4 mt-auto">
+          <div className="flex justify-between text-[10px] text-neutral-500 mb-1.5 font-mono uppercase tracking-widest">
             <span>Progress</span>
             <span>{completedSubtasks}/{totalSubtasks}</span>
           </div>
@@ -345,12 +405,14 @@ function TaskCard({ task, users, onClick }: { task: Task, users: User[], onClick
         </div>
       )}
 
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/[0.04]">
-        {assignee && (
+      <div className={cn("flex items-center justify-between pt-4 border-t border-white/[0.04]", totalSubtasks === 0 && "mt-auto")}>
+        {assignee ? (
           <div className="flex items-center gap-2">
             <UserAvatar user={assignee} size="sm" />
-            <span className="text-[10px] text-neutral-500">{assignee.name.split(' ')[0]}</span>
+            <span className="text-[10px] font-medium text-neutral-400">{assignee.name.split(' ')[0]}</span>
           </div>
+        ) : (
+          <span className="text-[10px] text-neutral-600 italic">Unassigned</span>
         )}
         <div className="flex items-center gap-3 text-neutral-600">
           {task.attachments.length > 0 && (
@@ -369,325 +431,192 @@ function TaskCard({ task, users, onClick }: { task: Task, users: User[], onClick
   );
 }
 
-// ----------------------------------------------------------------------
-// PROJECT DETAIL COMPONENT (Project View)
-// ----------------------------------------------------------------------
-
-function ProjectDetail({ project, tasks, users, actions }: { project: Project, tasks: Task[], users: User[], actions: any }) {
-  const [activeTab, setActiveTab] = useState<"activity" | "comments">("activity");
-  
-  const pm = users.find(u => u.id === project.pmId);
-  const team = users.filter(u => project.teamIds.includes(u.id));
-  const projectTasks = tasks.filter(t => t.projectId === project.id);
-  
-  const totalSubtasks = projectTasks.reduce((acc, t) => acc + t.subtasks.length, 0);
-  const completedSubtasks = projectTasks.reduce((acc, t) => acc + t.subtasks.filter(s => s.completed).length, 0);
-  const completionRate = totalSubtasks === 0 ? 0 : (completedSubtasks / totalSubtasks) * 100;
-
-  const allActivity = projectTasks.flatMap(t => t.activity.map(a => ({ ...a, taskTitle: t.title }))).sort((a, b) => b.id.localeCompare(a.id));
-  const allComments = projectTasks.flatMap(t => t.comments.map(c => ({ ...c, taskTitle: t.title }))).sort((a, b) => b.id.localeCompare(a.id));
-
-  return (
-    <div className="space-y-12">
-      {/* Project Header Card */}
-      <div className="relative rounded-[2.5rem] border border-white/10 bg-zinc-900/40 p-8 md:p-12 overflow-hidden backdrop-blur-md">
-        <div className="absolute top-0 right-0 p-8 opacity-10">
-          <Workflow className="h-40 w-40 text-emerald-500" />
-        </div>
-
-        <div className="relative z-10 grid gap-12 lg:grid-cols-[1fr_300px]">
-          <div>
-            <div className="flex items-center gap-4 mb-6">
-              <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-400">
-                UUID: {project.uuid}
-              </span>
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <span className="text-sm text-neutral-400 italic">{project.modality} Delivery</span>
-            </div>
-
-            <h1 className="text-4xl md:text-5xl font-serif text-white tracking-tight mb-8">
-              {project.name}
-            </h1>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
-              <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-medium">Intake Received</span>
-                <div className="text-sm text-neutral-200 flex items-center gap-2">
-                  <Calendar className="h-3.5 w-3.5 text-emerald-400" />
-                  {project.intakeDate}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-medium">PM Assigned</span>
-                <div className="text-sm text-neutral-200 flex items-center gap-2">
-                  <UserCheck className="h-3.5 w-3.5 text-emerald-400" />
-                  {project.pmAssignmentDate}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-medium">Workstreams</span>
-                <div className="text-sm text-neutral-200 flex items-center gap-2">
-                  <ListTodo className="h-3.5 w-3.5 text-emerald-400" />
-                  {projectTasks.length} Active
-                </div>
-              </div>
-              <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-medium">Status</span>
-                <div className="text-sm text-emerald-400 flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  In Progress
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-end gap-6">
-            <div className="space-y-3">
-              <div className="flex justify-between items-end">
-                <span className="text-sm font-medium text-neutral-300">Completion</span>
-                <span className="text-2xl font-mono text-emerald-400">{Math.round(completionRate)}%</span>
-              </div>
-              <ProgressBar value={completionRate} />
-            </div>
-            
-            <div className="space-y-4">
-              <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-medium">Assigned Team</span>
-              <div className="flex flex-wrap gap-2">
-                {pm && <UserAvatar user={pm} showRing size="md" />}
-                {team.map(u => (
-                  <UserAvatar key={u.id} user={u} size="md" />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Task & Subtask Grid */}
-      <div className="grid gap-12 lg:grid-cols-2">
-        <section>
-          <SectionHeading 
-            title="Resource Allocation" 
-            subtitle="Task-level assignment matrix across the project lifecycle."
-            icon={Users}
-            badge="Unified View"
-          />
-          <div className="space-y-4">
-            {projectTasks.map(task => {
-              const taskAssignee = users.find(u => u.id === task.assigneeId);
-              return (
-                <div key={task.id} className="p-5 rounded-2xl border border-white/5 bg-zinc-900/20 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-medium text-white">{task.title}</h4>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-neutral-500 italic">{taskAssignee?.role}</span>
-                      {taskAssignee && <UserAvatar user={taskAssignee} size="xs" />}
-                    </div>
-                  </div>
-                  <div className="grid gap-2">
-                    {task.subtasks.map(st => {
-                      const stAssignee = users.find(u => u.id === st.assigneeId);
-                      return (
-                        <div key={st.id} className="flex items-center justify-between text-[11px] p-2 rounded-lg bg-white/[0.02]">
-                          <span className="text-neutral-400">{st.title}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-neutral-600">{stAssignee?.name}</span>
-                            {stAssignee && <UserAvatar user={stAssignee} size="xs" />}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Tabbed Activity/Comments */}
-        <section>
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex gap-4">
-              <button 
-                onClick={() => setActiveTab("activity")}
-                className={cn(
-                  "text-sm font-medium pb-2 border-b-2 transition-all",
-                  activeTab === "activity" ? "text-emerald-400 border-emerald-500" : "text-neutral-500 border-transparent hover:text-neutral-300"
-                )}
-              >
-                Activity Log
-              </button>
-              <button 
-                onClick={() => setActiveTab("comments")}
-                className={cn(
-                  "text-sm font-medium pb-2 border-b-2 transition-all",
-                  activeTab === "comments" ? "text-emerald-400 border-emerald-500" : "text-neutral-500 border-transparent hover:text-neutral-300"
-                )}
-              >
-                Global Comments
-              </button>
-            </div>
-            <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center text-neutral-500">
-              <Info className="h-4 w-4" />
-            </div>
-          </div>
-
-          <div className="max-h-[600px] overflow-y-auto custom-scrollbar pr-4">
-            <AnimatePresence mode="wait">
-              {activeTab === "activity" ? (
-                <motion.div 
-                  key="activity" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}
-                  className="space-y-6"
-                >
-                  {allActivity.map(act => (
-                    <div key={act.id} className="flex gap-4 p-4 rounded-xl border border-white/5 bg-zinc-900/30">
-                      <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                        <Zap className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <div className="text-xs text-neutral-200">{act.text}</div>
-                        <div className="text-[10px] text-neutral-600 mt-1 uppercase tracking-tighter">
-                          {act.taskTitle} • {act.time}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </motion.div>
-              ) : (
-                <motion.div 
-                  key="comments" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}
-                  className="space-y-6"
-                >
-                  {allComments.map(c => {
-                    const author = users.find(u => u.id === c.authorId);
-                    return (
-                      <div key={c.id} className="flex gap-4">
-                        {author && <UserAvatar user={author} size="md" />}
-                        <div className="flex-1">
-                          <div className="flex items-baseline justify-between mb-1">
-                            <span className="text-xs font-medium text-neutral-300">{author?.name}</span>
-                            <span className="text-[10px] text-neutral-600">{c.time}</span>
-                          </div>
-                          <div className="p-3 rounded-xl rounded-tl-none bg-zinc-900/50 border border-white/5 text-[13px] text-neutral-400 leading-relaxed">
-                            {c.text}
-                          </div>
-                          <div className="mt-2 text-[9px] text-emerald-500/50 font-mono uppercase">
-                            Thread: {c.taskTitle}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </section>
-      </div>
-    </div>
-  );
-}
 
 // ----------------------------------------------------------------------
 // TASK DETAIL OVERLAY
 // ----------------------------------------------------------------------
 
-function TaskDetailOverlay({ task, user, onClose, actions }: { task: Task, user: User, onClose: () => void, actions: any }) {
+function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task, user: User, users: User[], onClose: () => void, actions: any }) {
   const [commentText, setCommentText] = useState("");
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
   
   const totalSubtasks = task.subtasks.length;
   const completedSubtasks = task.subtasks.filter(s => s.completed).length;
   const progress = totalSubtasks === 0 ? (task.status === "Done" ? 100 : 0) : (completedSubtasks / totalSubtasks) * 100;
+  const taskAssignee = users.find(u => u.id === task.assigneeId);
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
       <motion.div 
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        onClick={onClose} className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+        onClick={onClose} className="absolute inset-0 bg-[#0a0a0f]/80 backdrop-blur-md"
       />
       <motion.div 
-        layoutId={`task-${task.id}`}
-        className="relative w-full max-w-2xl bg-zinc-950 border border-emerald-500/20 rounded-[2rem] overflow-hidden shadow-2xl"
+        layoutId={`task-card-${task.id}`}
+        className="relative w-full max-w-3xl bg-zinc-950 border border-emerald-500/20 rounded-[2.5rem] overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] flex flex-col max-h-[90vh]"
       >
-        <div className="p-8 space-y-8 max-h-[85vh] overflow-y-auto custom-scrollbar">
-          <div className="flex justify-between items-start">
-            <div>
-              <span className="text-[10px] font-mono text-neutral-500 mb-2 block">{task.id}</span>
-              <h2 className="text-2xl font-serif text-white">{task.title}</h2>
+        {/* Header */}
+        <div className="p-8 pb-6 border-b border-white/5 flex justify-between items-start shrink-0 bg-white/[0.01]">
+          <div>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 uppercase tracking-widest">{task.id}</span>
+              <span className="text-xs text-neutral-500 font-medium px-2 py-0.5 rounded bg-white/5">{task.status}</span>
             </div>
-            <button onClick={onClose} className="p-2 rounded-full bg-white/5 text-neutral-500 hover:text-white transition-colors">
-              <ChevronDown className="h-5 w-5" />
-            </button>
+            <h2 className="text-2xl sm:text-3xl font-serif text-white tracking-tight leading-tight">{task.title}</h2>
           </div>
+          <button onClick={onClose} className="p-2 rounded-full bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10 transition-colors">
+            <ChevronDown className="h-5 w-5" />
+          </button>
+        </div>
 
-          <div className="space-y-4">
-            <div className="flex justify-between items-end">
-              <span className="text-xs text-neutral-500 uppercase font-bold tracking-widest">Execution Progress</span>
-              <span className="text-xs text-emerald-400 font-mono">{Math.round(progress)}%</span>
+        {/* Scrollable Body */}
+        <div className="p-8 space-y-10 overflow-y-auto custom-scrollbar">
+          {/* Description & Meta */}
+          <div className="flex flex-col md:flex-row gap-8">
+            <div className="flex-1 space-y-4">
+              <p className="text-sm text-neutral-400 leading-relaxed">{task.description}</p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                {task.tags.map(tag => (
+                  <span key={tag} className="px-2 py-1 rounded bg-white/[0.03] border border-white/5 text-[10px] font-medium text-neutral-500 uppercase tracking-widest">
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
-            <ProgressBar value={progress} />
-          </div>
-
-          <div className="space-y-4">
-            <span className="text-xs text-neutral-500 uppercase font-bold tracking-widest block">Checklist</span>
-            <div className="grid gap-2">
-              {task.subtasks.map(st => (
-                <button 
-                  key={st.id}
-                  onClick={() => actions.toggleSubtask(task.id, st.id)}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-emerald-500/5 hover:border-emerald-500/20 transition-all text-left"
-                >
-                  {st.completed ? <CheckCircle2 className="h-5 w-5 text-emerald-500" /> : <Circle className="h-5 w-5 text-neutral-700" />}
-                  <span className={cn("text-sm", st.completed ? "text-neutral-600 line-through" : "text-neutral-300")}>{st.title}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Artifacts */}
-          <div className="space-y-4">
-            <span className="text-xs text-neutral-500 uppercase font-bold tracking-widest block">Artifacts</span>
-            <div className="grid grid-cols-2 gap-3">
-              {task.attachments.map(att => (
-                <div key={att.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                  <FileText className="h-4 w-4 text-emerald-400" />
-                  <span className="text-xs text-neutral-300 truncate">{att.name}</span>
+            <div className="w-full md:w-48 shrink-0 space-y-6">
+              <div>
+                <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block mb-2">Assignee</span>
+                <div className="flex items-center gap-3 p-2 rounded-xl bg-white/[0.02] border border-white/5">
+                  {taskAssignee && <UserAvatar user={taskAssignee} />}
+                  <span className="text-sm text-neutral-200">{taskAssignee?.name || 'Unassigned'}</span>
                 </div>
-              ))}
-              <div className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-white/10 text-neutral-600 hover:text-neutral-400 hover:border-white/20 transition-all cursor-pointer">
-                <Plus className="h-4 w-4" />
-                <span className="text-xs">Upload</span>
+              </div>
+              <div>
+                <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block mb-2">Due Date</span>
+                <div className="flex items-center gap-2 text-sm text-emerald-400 bg-emerald-500/5 border border-emerald-500/10 p-2 rounded-xl w-fit">
+                  <Calendar className="h-4 w-4" /> {task.dueDate}
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="space-y-4 pt-4 border-t border-white/5">
-            <span className="text-xs text-neutral-500 uppercase font-bold tracking-widest block">Collaboration</span>
-            <div className="space-y-4 mb-4">
-              {task.comments.map(c => (
-                <div key={c.id} className="text-xs text-neutral-400 leading-relaxed bg-white/[0.02] p-3 rounded-xl">
-                  {c.text}
+          {/* Checklist */}
+          <div>
+            <div className="flex justify-between items-end mb-4">
+              <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5" /> Checklist
+              </span>
+              <span className="text-xs text-emerald-400 font-mono">{Math.round(progress)}%</span>
+            </div>
+            <ProgressBar value={progress} className="mb-4" />
+            
+            <div className="space-y-2">
+              {task.subtasks.map(st => {
+                const stUser = users.find(u => u.id === st.assigneeId);
+                return (
+                  <motion.div layout key={st.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 group hover:border-emerald-500/20 transition-colors">
+                    <button 
+                      onClick={() => actions.toggleSubtask(task.id, st.id, user.name)}
+                      className="flex items-center gap-3 text-left focus:outline-none flex-1"
+                    >
+                      {st.completed ? <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" /> : <Circle className="h-5 w-5 text-neutral-600 shrink-0 group-hover:text-neutral-400 transition-colors" />}
+                      <span className={cn("text-sm transition-colors", st.completed ? "text-neutral-600 line-through" : "text-neutral-300")}>{st.title}</span>
+                    </button>
+                    {stUser && (
+                      <div className="flex items-center gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                        <span className="text-[10px] text-neutral-500 hidden sm:inline">{stUser.name.split(' ')[0]}</span>
+                        <UserAvatar user={stUser} size="sm" />
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })}
+              {/* Add Subtask Input */}
+              <div className="flex items-center gap-3 p-2 rounded-xl bg-white/[0.01] border border-dashed border-white/10 mt-2 focus-within:border-emerald-500/40 transition-colors">
+                <Plus className="h-4 w-4 text-neutral-600 shrink-0 ml-1" />
+                <input 
+                  type="text"
+                  value={newSubtaskTitle}
+                  onChange={e => setNewSubtaskTitle(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && newSubtaskTitle.trim()) {
+                      actions.addSubtask(task.id, newSubtaskTitle, user.id, user.name);
+                      setNewSubtaskTitle("");
+                    }
+                  }}
+                  placeholder="Add a new subtask..."
+                  className="flex-1 bg-transparent text-sm text-white placeholder:text-neutral-600 focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Artifacts */}
+          <div>
+            <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-4">
+              <Paperclip className="h-3.5 w-3.5" /> Artifacts
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {task.attachments.map(att => (
+                <div key={att.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors cursor-pointer group">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0 group-hover:bg-emerald-500/20 transition-colors">
+                    {att.type === 'pdf' || att.type === 'doc' ? <FileText className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
+                  </div>
+                  <span className="text-sm text-neutral-300 truncate group-hover:text-emerald-400 transition-colors">{att.name}</span>
                 </div>
               ))}
+              <div className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-white/10 text-neutral-500 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors cursor-pointer">
+                <div className="h-8 w-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                  <Upload className="h-4 w-4" />
+                </div>
+                <span className="text-sm font-medium">Upload File</span>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <UserAvatar user={user} size="sm" />
+          </div>
+
+          {/* Comments */}
+          <div>
+            <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-6">
+              <MessageSquare className="h-3.5 w-3.5" /> Discussion
+            </span>
+            <div className="space-y-6 mb-6">
+              {task.comments.length === 0 && <p className="text-sm text-neutral-600 italic">No comments yet.</p>}
+              {task.comments.map(c => {
+                const author = users.find(u => u.id === c.authorId);
+                return (
+                  <div key={c.id} className="flex gap-4">
+                    {author && <UserAvatar user={author} />}
+                    <div className="flex-1">
+                      <div className="flex items-baseline gap-2 mb-1.5">
+                        <span className="text-sm font-medium text-neutral-200">{author?.name}</span>
+                        <span className="text-[10px] text-neutral-600">{c.time}</span>
+                      </div>
+                      <div className="p-3.5 rounded-2xl rounded-tl-none bg-white/[0.02] border border-white/5 text-sm text-neutral-300 leading-relaxed shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                        {c.text}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex gap-4 items-start">
+              <UserAvatar user={user} />
               <div className="flex-1 relative">
-                <input 
+                <textarea 
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Share update..."
-                  className="w-full bg-zinc-900 border border-white/10 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500/50"
+                  placeholder="Ask a question or share an update..."
+                  className="w-full bg-white/[0.02] border border-white/10 rounded-2xl p-4 text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/40 transition-all resize-none min-h-[100px] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
                 />
                 <button 
                   onClick={() => {
-                    actions.addComment(task.id, user.id, commentText);
+                    actions.addComment(task.id, user.id, commentText, user.name);
                     setCommentText("");
                   }}
                   disabled={!commentText.trim()}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-emerald-500 text-black flex items-center justify-center disabled:opacity-30"
+                  className="absolute bottom-3 right-3 px-4 py-2 bg-emerald-500 text-black text-xs font-semibold rounded-xl disabled:opacity-30 hover:bg-emerald-400 transition-colors shadow-[0_4px_14px_rgba(16,185,129,0.3)]"
                 >
-                  <ArrowRight className="h-4 w-4" />
+                  Post Comment
                 </button>
               </div>
             </div>
@@ -703,11 +632,15 @@ function TaskDetailOverlay({ task, user, onClose, actions }: { task: Task, user:
 // ----------------------------------------------------------------------
 
 export function ProjectManagementClient() {
-  const [activeMainView, setActiveMainView] = useState<MainView>("Project List");
+  const [activeTab, setActiveTab] = useState<MainTab>("PM Dashboard");
+  const [pmViewMode, setPmViewMode] = useState<PMViewMode>("Home");
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
   const [projects] = useState<Project[]>(INITIAL_PROJECTS);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [activeUserId, setActiveUserId] = useState<string>("u-1"); // Default: Jitin
+
+  const activeUser = USERS.find(u => u.id === activeUserId) || USERS[0];
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
 
@@ -717,23 +650,33 @@ export function ProjectManagementClient() {
 
   // Collaborative Actions
   const actions = {
-    toggleSubtask: (taskId: string, subtaskId: string) => {
+    toggleSubtask: (taskId: string, subtaskId: string, userName: string) => {
       setTasks(prev => prev.map(t => {
         if (t.id !== taskId) return t;
         return {
           ...t,
           subtasks: t.subtasks.map(st => st.id === subtaskId ? { ...st, completed: !st.completed } : st),
-          activity: [{ id: `a-${Date.now()}`, text: `Subtask status updated`, time: "Just now" }, ...t.activity]
+          activity: [{ id: `a-${Date.now()}`, text: `${userName} updated a subtask`, time: "Just now" }, ...t.activity]
         };
       }));
     },
-    addComment: (taskId: string, authorId: string, text: string) => {
+    addComment: (taskId: string, authorId: string, text: string, userName: string) => {
       setTasks(prev => prev.map(t => {
         if (t.id !== taskId) return t;
         return {
           ...t,
           comments: [{ id: `c-${Date.now()}`, authorId, text, time: "Just now" }, ...t.comments],
-          activity: [{ id: `a-${Date.now()}`, text: `New comment added`, time: "Just now" }, ...t.activity]
+          activity: [{ id: `a-${Date.now()}`, text: `${userName} left a comment`, time: "Just now" }, ...t.activity]
+        };
+      }));
+    },
+    addSubtask: (taskId: string, title: string, assigneeId: string, userName: string) => {
+      setTasks(prev => prev.map(t => {
+        if (t.id !== taskId) return t;
+        return {
+          ...t,
+          subtasks: [...t.subtasks, { id: `st-new-${Date.now()}`, title, completed: false, assigneeId }],
+          activity: [{ id: `a-${Date.now()}`, text: `${userName} added a subtask`, time: "Just now" }, ...t.activity]
         };
       }));
     }
@@ -745,6 +688,478 @@ export function ProjectManagementClient() {
       if (updated) setSelectedTask(updated);
     }
   }, [tasks, selectedTask]);
+
+  // PM Dashboard Renderers
+  const renderPMDashboard = () => {
+    if (pmViewMode === "Home") {
+      return (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
+          <div className="mb-8">
+            <h2 className="text-3xl font-serif text-white tracking-tight">Oversight Dashboard</h2>
+            <p className="text-neutral-500 mt-2 text-sm">Global view of all active learning initiatives and resource allocations.</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            <div 
+              onClick={() => setPmViewMode("Project List")}
+              className="group cursor-pointer p-8 md:p-10 rounded-[2.5rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-all backdrop-blur-md relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                <FolderKanban className="h-48 w-48 text-emerald-500 translate-x-12 -translate-y-12" />
+              </div>
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 mb-8">
+                  <Briefcase className="h-6 w-6" />
+                </div>
+                <h3 className="text-3xl font-serif text-white mb-2 group-hover:text-emerald-400 transition-colors">All Projects</h3>
+                <p className="text-neutral-400 text-sm mb-12 max-w-sm">Manage and monitor high-level project health, team assignments, and delivery timelines.</p>
+                <div className="mt-auto flex items-center justify-between">
+                  <span className="text-2xl font-mono text-white">{projects.length} <span className="text-sm text-neutral-500 font-sans">Active</span></span>
+                  <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-black transition-colors">
+                    <ArrowRight className="h-5 w-5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div 
+              onClick={() => setActiveTab("Kanban Board")}
+              className="group cursor-pointer p-8 md:p-10 rounded-[2.5rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-all backdrop-blur-md relative overflow-hidden"
+            >
+               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                <ListTodo className="h-48 w-48 text-emerald-500 translate-x-12 -translate-y-12" />
+              </div>
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 mb-8">
+                  <LayoutDashboard className="h-6 w-6" />
+                </div>
+                <h3 className="text-3xl font-serif text-white mb-2 group-hover:text-emerald-400 transition-colors">All Tasks</h3>
+                <p className="text-neutral-400 text-sm mb-12 max-w-sm">Global Kanban board aggregating workstreams across all projects for granular tracking.</p>
+                <div className="mt-auto flex items-center justify-between">
+                  <span className="text-2xl font-mono text-white">{tasks.length} <span className="text-sm text-neutral-500 font-sans">Total Tasks</span></span>
+                  <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-black transition-colors">
+                    <ArrowRight className="h-5 w-5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      );
+    }
+
+    if (pmViewMode === "Project List") {
+      return (
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+          <div className="flex items-center gap-4 mb-8">
+            <button 
+              onClick={() => setPmViewMode("Home")}
+              className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <div>
+              <h2 className="text-2xl font-serif text-white">Active Projects</h2>
+              <span className="text-xs text-neutral-500 font-mono uppercase tracking-widest">Page {currentPage} of {totalPages}</span>
+            </div>
+          </div>
+
+          <div className="grid gap-6">
+            {currentProjects.map(project => {
+              const projectTasks = tasks.filter(t => t.projectId === project.id);
+              const totalSubtasks = projectTasks.reduce((acc, t) => acc + t.subtasks.length, 0);
+              const completedSubtasks = projectTasks.reduce((acc, t) => acc + t.subtasks.filter(s => s.completed).length, 0);
+              const progress = totalSubtasks === 0 ? 0 : (completedSubtasks / totalSubtasks) * 100;
+              const pm = USERS.find(u => u.id === project.pmId);
+
+              return (
+                <div 
+                  key={project.id} 
+                  onClick={() => { setSelectedProject(project); setPmViewMode("Project Detail"); }}
+                  className="group cursor-pointer p-6 sm:p-8 rounded-[2rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-all backdrop-blur-md"
+                >
+                  <div className="grid md:grid-cols-[1fr_200px_150px] gap-8 items-center">
+                    <div>
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">{project.uuid}</span>
+                        <span className="text-[10px] text-neutral-500 uppercase tracking-widest">{project.modality}</span>
+                      </div>
+                      <h3 className="text-xl font-serif text-white group-hover:text-emerald-400 transition-colors">{project.name}</h3>
+                    </div>
+
+                    <div className="space-y-2">
+                      <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">Project Manager</span>
+                      <div className="flex items-center gap-3">
+                        {pm ? (
+                          <><UserAvatar user={pm} size="sm" showRing /><span className="text-sm text-neutral-300">{pm.name}</span></>
+                        ) : (
+                          <span className="text-sm text-neutral-600 italic">Unassigned</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-end">
+                        <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Progress</span>
+                        <span className="text-sm text-emerald-400 font-mono">{Math.round(progress)}%</span>
+                      </div>
+                      <ProgressBar value={progress} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-8 pt-8 border-t border-white/5">
+              <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="p-2 rounded-full border border-white/10 text-neutral-400 hover:bg-white/5 disabled:opacity-20 transition-colors"><ChevronLeft className="h-5 w-5" /></button>
+              <span className="text-sm font-mono text-neutral-500">{currentPage} / {totalPages}</span>
+              <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="p-2 rounded-full border border-white/10 text-neutral-400 hover:bg-white/5 disabled:opacity-20 transition-colors"><ChevronRight className="h-5 w-5" /></button>
+            </div>
+          )}
+        </motion.div>
+      );
+    }
+
+    if (pmViewMode === "Project Detail" && selectedProject) {
+      return <ProjectDetailView project={selectedProject} />;
+    }
+
+    return null;
+  };
+
+  const renderKanbanBoard = () => {
+    return (
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="h-full flex flex-col">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div>
+            <h2 className="text-3xl font-serif text-white tracking-tight mb-2">Global Kanban</h2>
+            <p className="text-sm text-neutral-500">Cross-project task orchestration and status tracking.</p>
+          </div>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
+              <input type="text" placeholder="Search across all projects..." className="w-full pl-9 pr-4 py-2 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" />
+            </div>
+            <button className="p-2 bg-zinc-900/50 border border-white/10 rounded-xl text-neutral-400 hover:text-white transition-colors"><Filter className="h-5 w-5" /></button>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-x-auto custom-scrollbar pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex gap-6 min-w-max h-[calc(100vh-300px)] min-h-[500px]">
+            {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map(status => {
+              const colTasks = tasks.filter(t => t.status === status);
+              return (
+                <div key={status} className="w-[340px] flex flex-col h-full bg-zinc-900/20 rounded-[2rem] border border-white/5 p-5 backdrop-blur-sm">
+                  <div className="flex items-center justify-between mb-5 px-1">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-400 flex items-center gap-2">
+                      <div className={cn("h-2 w-2 rounded-full", status === 'Done' ? 'bg-emerald-500' : 'bg-neutral-600')} />
+                      {status}
+                    </h3>
+                    <span className="text-[10px] font-mono bg-white/5 px-2 py-0.5 rounded text-neutral-500">{colTasks.length}</span>
+                  </div>
+                  <div className="flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2 pb-2 h-full">
+                    {colTasks.map(task => {
+                      const proj = projects.find(p => p.id === task.projectId);
+                      return <TaskCard key={task.id} task={task} users={USERS} project={proj} onClick={() => setSelectedTask(task)} />;
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </motion.div>
+    );
+  };
+
+  const renderTeamMemberDashboard = () => {
+    const userTasks = tasks.filter(t => t.assigneeId === activeUser.id || t.subtasks.some(st => st.assigneeId === activeUser.id));
+
+    return (
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-zinc-900/30 border border-white/10 p-6 rounded-[2rem] backdrop-blur-md">
+          <div className="flex items-center gap-5">
+            <UserAvatar user={activeUser} size="lg" showRing />
+            <div>
+              <h2 className="text-2xl font-serif text-white">Welcome back, {activeUser.name.split(' ')[0]}</h2>
+              <p className="text-sm text-emerald-400/80 font-mono mt-1">{activeUser.role}</p>
+            </div>
+          </div>
+          
+          {/* Persona Switcher for Demo */}
+          <div className="flex items-center gap-3 bg-black/40 p-2 rounded-2xl border border-white/5 w-full sm:w-auto">
+            <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold pl-2 hidden sm:block">View As:</span>
+            <select 
+              value={activeUserId}
+              onChange={(e) => setActiveUserId(e.target.value)}
+              className="bg-zinc-900 border border-white/10 text-white text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer flex-1 sm:w-48"
+            >
+              {USERS.map(u => (
+                <option key={u.id} value={u.id}>{u.name} ({u.role})</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-[1fr_350px] gap-10">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3 mb-6">
+              <ListTodo className="h-5 w-5 text-emerald-400" />
+              <h3 className="text-xl font-serif text-white">Your Workstreams</h3>
+            </div>
+            {userTasks.length === 0 ? (
+              <div className="p-10 rounded-[2rem] border border-dashed border-white/10 text-center">
+                <p className="text-neutral-500">No active tasks assigned to you right now.</p>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 gap-4">
+                {userTasks.map(task => {
+                  const proj = projects.find(p => p.id === task.projectId);
+                  return <TaskCard key={task.id} task={task} users={USERS} project={proj} onClick={() => setSelectedTask(task)} />;
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-6">
+             <div className="flex items-center gap-3 mb-6">
+              <Activity className="h-5 w-5 text-emerald-400" />
+              <h3 className="text-xl font-serif text-white">Recent Mentions</h3>
+            </div>
+            <div className="p-6 rounded-[2rem] bg-zinc-900/30 border border-white/10 space-y-5">
+              {tasks.flatMap(t => t.comments).slice(0, 4).map(c => {
+                 const author = USERS.find(u => u.id === c.authorId);
+                 return (
+                  <div key={c.id} className="text-sm">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      {author && <UserAvatar user={author} size="xs" />}
+                      <span className="text-neutral-300 font-medium text-xs">{author?.name}</span>
+                      <span className="text-[10px] text-neutral-600">{c.time}</span>
+                    </div>
+                    <p className="text-neutral-400 bg-white/[0.02] p-3 rounded-xl border border-white/5">{c.text}</p>
+                  </div>
+                 )
+              })}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    );
+  };
+
+  const ProjectDetailView = ({ project }: { project: Project }) => {
+    const [activeDetailTab, setActiveDetailTab] = useState<"tasks" | "activity" | "comments">("tasks");
+    const [isResourcesOpen, setIsResourcesOpen] = useState(true);
+    
+    const pm = USERS.find(u => u.id === project.pmId);
+    const team = USERS.filter(u => project.teamIds.includes(u.id));
+    const projectTasks = tasks.filter(t => t.projectId === project.id);
+    
+    const totalSubtasks = projectTasks.reduce((acc, t) => acc + t.subtasks.length, 0);
+    const completedSubtasks = projectTasks.reduce((acc, t) => acc + t.subtasks.filter(s => s.completed).length, 0);
+    const completionRate = totalSubtasks === 0 ? 0 : (completedSubtasks / totalSubtasks) * 100;
+  
+    const allActivity = projectTasks.flatMap(t => t.activity.map(a => ({ ...a, taskTitle: t.title }))).sort((a, b) => b.id.localeCompare(a.id));
+    const allComments = projectTasks.flatMap(t => t.comments.map(c => ({ ...c, taskTitle: t.title }))).sort((a, b) => b.id.localeCompare(a.id));
+
+    return (
+      <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-10">
+        <button 
+          onClick={() => setPmViewMode("Project List")}
+          className="flex items-center gap-2 text-sm text-neutral-400 hover:text-emerald-400 transition-colors group w-fit"
+        >
+          <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-emerald-500/10 group-hover:border-emerald-500/30 transition-all">
+            <ArrowLeft className="h-4 w-4" />
+          </div>
+          Back to Projects
+        </button>
+
+        <div className="relative rounded-[3rem] border border-white/10 bg-zinc-900/40 p-8 md:p-12 overflow-hidden backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+          <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+            <Workflow className="h-64 w-64 text-emerald-500 translate-x-12 -translate-y-12" />
+          </div>
+
+          <div className="relative z-10 grid gap-12 lg:grid-cols-[1fr_320px]">
+            <div>
+              <div className="flex items-center gap-4 mb-6">
+                <span className="px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400 uppercase tracking-widest shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
+                  {project.uuid}
+                </span>
+                <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                <span className="text-xs text-neutral-400 uppercase tracking-widest font-bold">{project.modality}</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-serif text-white tracking-tight mb-10 leading-tight">
+                {project.name}
+              </h1>
+              <div className="flex flex-wrap gap-8">
+                <div>
+                  <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold block mb-2">Intake Received</span>
+                  <span className="text-sm text-neutral-200">{project.intakeDate}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold block mb-2">PM Assigned</span>
+                  <span className="text-sm text-neutral-200">{project.pmAssignmentDate}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold block mb-2">Workstreams</span>
+                  <span className="text-sm text-emerald-400 font-mono">{projectTasks.length} Active</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col justify-end gap-8 border-t lg:border-t-0 lg:border-l border-white/10 pt-8 lg:pt-0 lg:pl-12">
+              <div className="space-y-3">
+                <div className="flex justify-between items-end">
+                  <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold">Completion</span>
+                  <span className="text-3xl font-mono text-emerald-400 leading-none">{Math.round(completionRate)}%</span>
+                </div>
+                <ProgressBar value={completionRate} />
+              </div>
+              
+              <div className="space-y-4">
+                <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold">Assigned Team</span>
+                <div className="flex -space-x-3">
+                  {pm && <div className="relative z-40"><UserAvatar user={pm} showRing size="lg" /></div>}
+                  {team.map((u, i) => (
+                    <div key={u.id} className="relative transition-transform hover:-translate-y-2 hover:z-50" style={{ zIndex: 30 - i }}>
+                      <UserAvatar user={u} size="lg" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Collapsible Resource Allocation */}
+        <div className="rounded-[2rem] border border-white/10 bg-zinc-900/20 overflow-hidden">
+          <button 
+            onClick={() => setIsResourcesOpen(!isResourcesOpen)}
+            className="w-full p-6 flex items-center justify-between bg-white/[0.01] hover:bg-white/[0.03] transition-colors focus:outline-none"
+          >
+            <div className="flex items-center gap-3">
+              <Users className="h-5 w-5 text-emerald-400" />
+              <h3 className="text-lg font-serif text-white">Resource Allocation Matrix</h3>
+            </div>
+            <motion.div animate={{ rotate: isResourcesOpen ? 180 : 0 }} transition={SPRING}>
+              <ChevronDown className="h-5 w-5 text-neutral-500" />
+            </motion.div>
+          </button>
+          
+          <AnimatePresence>
+            {isResourcesOpen && (
+              <motion.div 
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="border-t border-white/5"
+              >
+                <div className="p-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                   {projectTasks.map(task => {
+                    const taskAssignee = USERS.find(u => u.id === task.assigneeId);
+                    return (
+                      <div key={task.id} className="p-4 rounded-xl border border-white/5 bg-black/20 space-y-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <h4 className="text-xs font-medium text-neutral-300 leading-tight">{task.title}</h4>
+                          {taskAssignee && <UserAvatar user={taskAssignee} size="sm" />}
+                        </div>
+                        <div className="space-y-1.5">
+                          {task.subtasks.slice(0, 3).map(st => {
+                            const stAssignee = USERS.find(u => u.id === st.assigneeId);
+                            return (
+                              <div key={st.id} className="flex items-center justify-between text-[10px] bg-white/[0.02] p-1.5 rounded">
+                                <span className="text-neutral-500 truncate pr-2">{st.title}</span>
+                                <span className="text-neutral-600 font-medium shrink-0">{stAssignee?.name.split(' ')[0]}</span>
+                              </div>
+                            );
+                          })}
+                          {task.subtasks.length > 3 && <div className="text-[9px] text-neutral-600 pl-1">+{task.subtasks.length - 3} more</div>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Tabbed Content */}
+        <div className="space-y-6">
+          <div className="flex gap-2 p-1.5 rounded-2xl border border-white/10 bg-zinc-900/40 backdrop-blur-md w-fit">
+            {(["tasks", "activity", "comments"] as const).map(t => (
+              <button
+                key={t}
+                onClick={() => setActiveDetailTab(t)}
+                className={cn(
+                  "px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
+                  activeDetailTab === t ? "bg-white/10 text-white shadow-sm" : "text-neutral-500 hover:text-neutral-300"
+                )}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          <AnimatePresence mode="wait">
+            {activeDetailTab === "tasks" && (
+              <motion.div key="tasks" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {projectTasks.map(task => (
+                  <TaskCard key={task.id} task={task} users={USERS} onClick={() => setSelectedTask(task)} />
+                ))}
+              </motion.div>
+            )}
+
+            {activeDetailTab === "activity" && (
+              <motion.div key="activity" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-3xl space-y-4">
+                {allActivity.map(act => (
+                  <div key={act.id} className="flex gap-4 p-4 rounded-2xl border border-white/5 bg-zinc-900/20">
+                    <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                      <Zap className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-neutral-300">{act.text}</div>
+                      <div className="text-[10px] font-mono text-neutral-600 mt-1.5 uppercase tracking-wider">
+                        {act.time} • {act.taskTitle}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            )}
+
+            {activeDetailTab === "comments" && (
+              <motion.div key="comments" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-3xl space-y-6">
+                {allComments.map(c => {
+                  const author = USERS.find(u => u.id === c.authorId);
+                  return (
+                    <div key={c.id} className="flex gap-4">
+                      {author && <UserAvatar user={author} size="md" />}
+                      <div className="flex-1">
+                        <div className="flex items-baseline justify-between mb-1.5">
+                          <span className="text-sm font-medium text-neutral-200">{author?.name}</span>
+                          <span className="text-[10px] font-mono text-neutral-600">{c.time}</span>
+                        </div>
+                        <div className="p-4 rounded-2xl rounded-tl-none bg-zinc-900/40 border border-white/10 text-sm text-neutral-300 leading-relaxed">
+                          {c.text}
+                        </div>
+                        <div className="mt-2 text-[10px] text-emerald-500/60 font-mono uppercase tracking-widest">
+                          Task: {c.taskTitle}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+    );
+  };
 
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-slate-100 selection:bg-emerald-500/30 flex flex-col font-sans">
@@ -777,139 +1192,54 @@ export function ProjectManagementClient() {
           </div>
         </motion.div>
 
-        {/* Global View Switcher */}
-        <div className="flex flex-wrap gap-2 p-1.5 rounded-2xl border border-white/10 bg-zinc-900/40 backdrop-blur-md mb-12 w-fit">
-          {(["Project List", "Project Detail", "Team Tasks", "PM View", "Team Member View"] as MainView[]).map(v => (
-            <button
-              key={v}
-              onClick={() => setActiveMainView(v)}
-              className={cn(
-                "px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200",
-                activeMainView === v ? "bg-emerald-500 text-black shadow-lg" : "text-neutral-500 hover:text-neutral-300 hover:bg-white/5"
-              )}
-            >
-              {v}
-            </button>
-          ))}
+        {/* Main 3-Tab Switcher */}
+        <div className="flex flex-col items-center mb-16">
+          <div className="flex bg-zinc-900/50 p-1.5 rounded-2xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] w-full max-w-2xl relative">
+            {(["PM Dashboard", "Kanban Board", "Team Member Dashboard"] as MainTab[]).map(tab => {
+              const isActive = activeTab === tab;
+              return (
+                <button
+                  key={tab}
+                  onClick={() => {
+                    setActiveTab(tab);
+                    if (tab === "PM Dashboard") setPmViewMode("Home");
+                  }}
+                  className={cn(
+                    "flex-1 py-3 text-sm font-medium transition-colors relative z-10 rounded-xl",
+                    isActive ? "text-black" : "text-neutral-400 hover:text-white"
+                  )}
+                >
+                  {isActive && (
+                    <motion.div 
+                      layoutId="activeMainTab"
+                      className="absolute inset-0 bg-emerald-500 rounded-xl -z-10 shadow-[0_4px_14px_rgba(16,185,129,0.3)]"
+                      transition={SPRING}
+                    />
+                  )}
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="min-h-[60vh]">
+        <div className="flex-1">
           <AnimatePresence mode="wait">
-            {activeMainView === "Project List" && (
-              <motion.div 
-                key="list" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                className="space-y-12"
-              >
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {currentProjects.map(p => {
-                    const pTasks = tasks.filter(t => t.projectId === p.id);
-                    const total = pTasks.reduce((acc, t) => acc + t.subtasks.length, 0);
-                    const done = pTasks.reduce((acc, t) => acc + t.subtasks.filter(s => s.completed).length, 0);
-                    const rate = total === 0 ? 0 : (done / total) * 100;
-                    
-                    return (
-                      <div 
-                        key={p.id}
-                        onClick={() => {
-                          setSelectedProject(p);
-                          setActiveMainView("Project Detail");
-                        }}
-                        className="group cursor-pointer p-8 rounded-[2.5rem] border border-white/10 bg-zinc-900/40 hover:border-emerald-500/40 transition-all backdrop-blur-md flex flex-col"
-                      >
-                        <div className="flex justify-between items-start mb-6">
-                          <div className="h-10 w-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
-                            <Target className="h-5 w-5" />
-                          </div>
-                          <span className="text-[10px] font-mono text-neutral-500">{p.uuid}</span>
-                        </div>
-                        <h3 className="text-xl font-serif text-white mb-8 group-hover:text-emerald-400 transition-colors flex-1">{p.name}</h3>
-                        <div className="space-y-4">
-                          <div className="flex justify-between text-xs font-medium">
-                            <span className="text-neutral-500">Progress</span>
-                            <span className="text-emerald-400">{Math.round(rate)}%</span>
-                          </div>
-                          <ProgressBar value={rate} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {/* Initialize Workstream Placeholder */}
-                  {currentProjects.length < 3 && (
-                    <div className="p-8 rounded-[2.5rem] border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-center group cursor-pointer hover:border-white/20 transition-all">
-                      <div className="h-10 w-10 rounded-full border border-neutral-700 flex items-center justify-center text-neutral-600 mb-4 group-hover:text-neutral-400 group-hover:border-neutral-500 transition-colors">
-                        <Plus className="h-5 w-5" />
-                      </div>
-                      <span className="text-sm text-neutral-600 font-medium">Initialize New Workstream</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="flex justify-center items-center gap-4">
-                    <button 
-                      disabled={currentPage === 1}
-                      onClick={() => setCurrentPage(p => p - 1)}
-                      className="p-2 rounded-full border border-white/10 text-neutral-500 disabled:opacity-20 hover:text-emerald-400 transition-colors"
-                    >
-                      <ChevronLeft className="h-5 w-5" />
-                    </button>
-                    <span className="text-xs font-mono text-neutral-500">Page {currentPage} of {totalPages}</span>
-                    <button 
-                      disabled={currentPage === totalPages}
-                      onClick={() => setCurrentPage(p => p + 1)}
-                      className="p-2 rounded-full border border-white/10 text-neutral-500 disabled:opacity-20 hover:text-emerald-400 transition-colors"
-                    >
-                      <ChevronRight className="h-5 w-5" />
-                    </button>
-                  </div>
-                )}
+            {activeTab === "PM Dashboard" && (
+              <motion.div key="pm-dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                {renderPMDashboard()}
+              </motion.div>
+            )}
+            
+            {activeTab === "Kanban Board" && (
+              <motion.div key="kanban-dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full">
+                {renderKanbanBoard()}
               </motion.div>
             )}
 
-            {activeMainView === "Project Detail" && (
-              <motion.div key="detail" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <ProjectDetail project={selectedProject || projects[0]} tasks={tasks} users={USERS} actions={actions} />
-              </motion.div>
-            )}
-
-            {activeMainView === "Team Tasks" && (
-              <motion.div key="kanban" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <SectionHeading 
-                  title="Unified Kanban Board" 
-                  subtitle="Global workstreams prioritized across all active delivery phases."
-                  icon={LayoutDashboard}
-                />
-                <div className="flex gap-6 overflow-x-auto pb-8 custom-scrollbar">
-                  {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map(status => (
-                    <div key={status} className="w-[320px] shrink-0 space-y-4">
-                      <div className="flex justify-between items-center px-2">
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-500 flex items-center gap-2">
-                          <div className={cn("h-1.5 w-1.5 rounded-full", status === 'Done' ? 'bg-emerald-500' : 'bg-neutral-700')} />
-                          {status}
-                        </h3>
-                        <span className="text-[10px] font-mono text-neutral-700">{tasks.filter(t => t.status === status).length}</span>
-                      </div>
-                      <div className="space-y-4">
-                        {tasks.filter(t => t.status === status).map(task => (
-                          <TaskCard key={task.id} task={task} users={USERS} onClick={() => setSelectedTask(task)} />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {activeMainView === "PM View" && (
-              <motion.div key="pm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <ProjectManagerView projects={projects} tasks={tasks} users={USERS} />
-              </motion.div>
-            )}
-
-            {activeMainView === "Team Member View" && (
-              <motion.div key="member" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <TeamMemberView user={USERS[0]} tasks={tasks} actions={actions} />
+            {activeTab === "Team Member Dashboard" && (
+              <motion.div key="team-dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                {renderTeamMemberDashboard()}
               </motion.div>
             )}
           </AnimatePresence>
@@ -920,118 +1250,22 @@ export function ProjectManagementClient() {
 
       <AnimatePresence>
         {selectedTask && (
-          <TaskDetailOverlay task={selectedTask} user={USERS[0]} onClose={() => setSelectedTask(null)} actions={actions} />
+          <TaskDetailOverlay 
+            task={selectedTask} 
+            activeUser={activeUser}
+            users={USERS}
+            onClose={() => setSelectedTask(null)} 
+            actions={actions}
+          />
         )}
       </AnimatePresence>
       
       <style dangerouslySetInnerHTML={{__html: `
         .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.1); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.3); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.2); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.4); }
       `}} />
     </main>
-  );
-}
-
-// PM View Logic Component (placed at end for organization)
-function ProjectManagerView({ projects, tasks, users }: { projects: Project[], tasks: Task[], users: User[] }) {
-  const [filterUnassigned, setFilterUnassigned] = useState(false);
-  const displayedProjects = filterUnassigned ? projects.filter(p => !p.pmId) : projects;
-
-  return (
-    <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <SectionHeading title="Executive Oversight" subtitle="Manager control plane for project assignment and tracking." icon={LayoutDashboard} />
-        <div className="flex gap-2">
-          <button onClick={() => setFilterUnassigned(!filterUnassigned)} className={cn("px-4 py-2 rounded-xl text-xs font-medium border transition-all", filterUnassigned ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" : "bg-white/5 border-white/10 text-neutral-400")}>
-            {filterUnassigned ? "Showing Unassigned" : "All Projects"}
-          </button>
-        </div>
-      </div>
-      <div className="grid gap-6">
-        {displayedProjects.map(project => {
-          const projectTasks = tasks.filter(t => t.projectId === project.id);
-          const pm = users.find(u => u.id === project.pmId);
-          return (
-            <div key={project.id} className="p-6 rounded-3xl border border-white/10 bg-zinc-900/40 hover:bg-zinc-900/60 transition-all backdrop-blur-md">
-              <div className="grid gap-8 md:grid-cols-[1fr_200px_100px] items-center">
-                <div>
-                  <h3 className="text-lg font-serif text-white">{project.name}</h3>
-                  <div className="flex items-center gap-2 text-xs text-neutral-500 mt-1"><Timer className="h-3 w-3" /> {projectTasks.length} Workstreams</div>
-                </div>
-                <div className="space-y-2">
-                  <span className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">Owner</span>
-                  <div className="flex items-center gap-2">{pm && <UserAvatar user={pm} size="sm" />}<span className="text-xs text-neutral-300">{pm?.name || "Unassigned"}</span></div>
-                </div>
-                <div className="flex justify-end"><button className="p-2 rounded-lg bg-white/5 border border-white/10 text-neutral-500"><MoreHorizontal className="h-4 w-4" /></button></div>
-              </div>
-              <div className="mt-8 pt-8 border-t border-white/5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {projectTasks.map(task => (
-                  <div key={task.id} className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                    <div className="flex justify-between items-start mb-2"><span className="text-[10px] font-medium text-neutral-300 truncate">{task.title}</span></div>
-                    <div className="flex items-center justify-between"><div className="flex items-center gap-1 text-[9px] text-neutral-500"><Calendar className="h-2.5 w-3.5" /> {task.dueDate}</div></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// Team Member View Logic Component
-function TeamMemberView({ user, tasks, actions }: { user: User, tasks: Task[], actions: any }) {
-  const userTasks = tasks.filter(t => t.assigneeId === user.id || t.subtasks.some(st => st.assigneeId === user.id));
-  const [selectedLocalTask, setSelectedLocalTask] = useState<Task | null>(null);
-
-  return (
-    <div className="space-y-12">
-      <header className="flex items-center gap-6">
-        <UserAvatar user={user} size="lg" showRing />
-        <div>
-          <h2 className="text-2xl font-serif text-white">Welcome back, {user.name.split(' ')[0]}</h2>
-          <p className="text-neutral-500 text-sm">{user.role}</p>
-        </div>
-      </header>
-      <div className="grid gap-12 lg:grid-cols-[1fr_350px]">
-        <section>
-          <SectionHeading title="Your Workstreams" subtitle="Assigned tasks requiring attention." icon={ListTodo} badge="My Focus" />
-          <div className="grid gap-4 sm:grid-cols-2">
-            {userTasks.map(task => (
-              <TaskCard key={task.id} task={task} users={[user]} onClick={() => setSelectedLocalTask(task)} />
-            ))}
-          </div>
-        </section>
-        <div className="space-y-8">
-          <section className="p-6 rounded-3xl border border-emerald-500/20 bg-emerald-500/5 backdrop-blur-md">
-            <h3 className="text-sm font-medium text-white flex items-center gap-2 mb-4"><Upload className="h-4 w-4" /> Quick Artifact Upload</h3>
-            <div className="border-2 border-dashed border-emerald-500/10 rounded-2xl p-8 flex flex-col items-center justify-center text-center group cursor-pointer hover:border-emerald-500/30 transition-all">
-              <Plus className="h-5 w-5 text-emerald-400 mb-2" /><span className="text-xs text-neutral-400">Drop files here</span>
-            </div>
-          </section>
-
-          <section className="p-6 rounded-3xl border border-white/10 bg-zinc-900/40">
-            <h3 className="text-sm font-medium text-white flex items-center gap-2 mb-6">
-              <MessageSquare className="h-4 w-4 text-emerald-400" />
-              Recent Comments
-            </h3>
-            <div className="space-y-4">
-              {userTasks.flatMap(t => t.comments).slice(0, 3).map(c => (
-                <div key={c.id} className="text-[11px] leading-relaxed">
-                  <div className="text-neutral-500 mb-1">{c.time}</div>
-                  <div className="text-neutral-300 bg-white/[0.03] p-2 rounded-lg border border-white/5">{c.text}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-      </div>
-      <AnimatePresence>
-        {selectedLocalTask && <TaskDetailOverlay task={selectedLocalTask} user={user} onClose={() => setSelectedLocalTask(null)} actions={actions} />}
-      </AnimatePresence>
-    </div>
   );
 }
