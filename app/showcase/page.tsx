@@ -25,6 +25,15 @@ const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 
 const SHOWCASE_ITEMS = [
   {
+    id: "cases",
+    title: "Leadership Case Studies",
+    description: "Proven leadership outcomes and measurable business impact.",
+    icon: LineChart,
+    href: "/showcase/case-studies",
+    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+    featured: true,
+  },
+  {
     id: "discovery",
     title: "Project Discovery & Planning",
     description: "Automated stakeholder discovery and strategic curriculum mapping.",
@@ -63,15 +72,6 @@ const SHOWCASE_ITEMS = [
     icon: Rocket,
     href: "/showcase/insights",
     imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "cases",
-    title: "Case Studies",
-    description: "Proven leadership outcomes and measurable business impact.",
-    icon: LineChart,
-    href: "/showcase/case-studies",
-    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
-    featured: true,
   },
 ];
 
