@@ -1012,6 +1012,21 @@ function TeamMemberView({ user, tasks, actions }: { user: User, tasks: Task[], a
               <Plus className="h-5 w-5 text-emerald-400 mb-2" /><span className="text-xs text-neutral-400">Drop files here</span>
             </div>
           </section>
+
+          <section className="p-6 rounded-3xl border border-white/10 bg-zinc-900/40">
+            <h3 className="text-sm font-medium text-white flex items-center gap-2 mb-6">
+              <MessageSquare className="h-4 w-4 text-emerald-400" />
+              Recent Comments
+            </h3>
+            <div className="space-y-4">
+              {userTasks.flatMap(t => t.comments).slice(0, 3).map(c => (
+                <div key={c.id} className="text-[11px] leading-relaxed">
+                  <div className="text-neutral-500 mb-1">{c.time}</div>
+                  <div className="text-neutral-300 bg-white/[0.03] p-2 rounded-lg border border-white/5">{c.text}</div>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
       <AnimatePresence>
