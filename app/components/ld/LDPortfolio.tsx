@@ -375,12 +375,27 @@ function CaseStudy({ cs, index, flip }: { cs: LdCaseStudy; index: number; flip: 
       {/* Infographic panel */}
       <div className={`self-start lg:sticky lg:top-28 ${flip ? "lg:order-2" : ""}`}>
         <Reveal>
-          <div className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-400">
-            {String(index + 1).padStart(2, "0")} / {cs.org}
-          </div>
-          <div className="mt-2 text-sm text-neutral-500">{cs.context}</div>
-          <div className="mt-8">
-            <CaseStudyInfographic id={cs.id} />
+          <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-zinc-950 p-6 sm:p-8">
+            {/* Background image for the case study card */}
+            <div className="absolute inset-0 z-0">
+              <Image 
+                src={cs.bgImage} 
+                alt="" 
+                fill 
+                className="object-cover opacity-20 transition-opacity duration-500 group-hover:opacity-30" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#0a0a0f]/80 to-emerald-950/30" />
+            </div>
+
+            <div className="relative z-10">
+              <div className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-400">
+                {String(index + 1).padStart(2, "0")} / {cs.org}
+              </div>
+              <div className="mt-2 text-sm text-neutral-500">{cs.context}</div>
+              <div className="mt-8">
+                <CaseStudyInfographic id={cs.id} />
+              </div>
+            </div>
           </div>
         </Reveal>
       </div>

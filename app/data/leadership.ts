@@ -92,8 +92,8 @@ export const leadershipCases: LeadershipCase[] = [
     title: "Compliance that protects the business without halting it",
     org: "Moody's Ratings · Accenture",
     context: "Regulated financial environments",
-    imageSeed: "regulated-finance-compliance-9021",
-    bgImage: "https://picsum.photos/seed/ld-compliance-finance-9021/800/600",
+    imageSeed: "compliance-governance",
+    bgImage: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200",
     problem:
       "In a regulated environment, a compliance gap is a balance-sheet risk. At Moody's the work sat inside the regulatory framework governing the ratings business; at Accenture it ran against HIPAA. The default reflex was long, disruptive classroom training that pulled analysts off the floor for hours.",
     solution:
@@ -113,8 +113,8 @@ export const leadershipCases: LeadershipCase[] = [
     title: "A 90-day playbook for landing a modern learning ecosystem",
     org: "Smartslate Solara · operating playbook",
     context: "From fragmented legacy tools to unified, AI-powered infrastructure",
-    imageSeed: "modern-learning-platform-4417",
-    bgImage: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800",
+    imageSeed: "digital-transformation",
+    bgImage: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=1200",
     problem:
       "Most organizations run a fragmented stack: clunky legacy LMS, siloed knowledge, low engagement. People cannot find the answer when the job actually demands it, relying on 7-15 disconnected tools.",
     solution:
@@ -134,8 +134,8 @@ export const leadershipCases: LeadershipCase[] = [
     title: "Turning instructional designers into learning experience engineers",
     org: "Moody's Ratings",
     context: "Leading designers and content developers through an automation shift",
-    imageSeed: "design-team-studio-7733",
-    bgImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800",
+    imageSeed: "creative-leadership",
+    bgImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1200",
     problem:
       "My team of instructional designers and content developers was trapped in slow, traditional production cycles while the business needed content faster than the cycles could ship it.",
     solution:
@@ -155,8 +155,8 @@ export const leadershipCases: LeadershipCase[] = [
     title: "From the smile sheet to the P&L",
     org: "Accenture",
     context: "Proving L&D as an efficiency driver, not a cost center",
-    imageSeed: "business-analytics-strategy-2890",
-    bgImage: "https://picsum.photos/seed/ld-analytics-strategy-2890/800/600",
+    imageSeed: "data-insights",
+    bgImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200",
     problem:
       "Onboarding and upskilling for client teams was time-heavy and costly, and the only evidence anyone collected was completion and satisfaction. L&D read as a cost line.",
     solution:

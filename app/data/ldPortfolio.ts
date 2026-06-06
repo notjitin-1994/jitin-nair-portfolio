@@ -32,6 +32,7 @@ export type LdCaseStudy = {
   strategy: string;
   note: string;
   outcomes: { value: string; label: string }[];
+  bgImage: string;
 };
 
 export const ldCaseStudies: LdCaseStudy[] = [
@@ -50,6 +51,7 @@ export const ldCaseStudies: LdCaseStudy[] = [
       { value: "7 / 7", label: "integrated ecosystem products" },
       { value: "Auto", label: "artifact review & gap analysis" },
     ],
+    bgImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1200",
   },
   {
     id: "moodys",
@@ -66,6 +68,7 @@ export const ldCaseStudies: LdCaseStudy[] = [
       { value: "90%+", label: "module completion rate" },
       { value: "Global", label: "teams and curricula served" },
     ],
+    bgImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200",
   },
   {
     id: "accenture",
@@ -82,6 +85,7 @@ export const ldCaseStudies: LdCaseStudy[] = [
       { value: "54%", label: "knowledge retention maintained" },
       { value: "$140K+", label: "training cost saved" },
     ],
+    bgImage: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=1200",
   },
 ];
 
