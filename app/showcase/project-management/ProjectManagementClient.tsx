@@ -585,6 +585,7 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
       />
       <motion.div
         layoutId={`task-card-${task.id}`}
+        onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-3xl bg-zinc-950 border-t sm:border border-emerald-500/20 rounded-t-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_-8px_40px_-8px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] sm:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] flex flex-col max-h-[92vh] sm:max-h-[90vh]"
       >
         {/* Drag handle — mobile only */}
