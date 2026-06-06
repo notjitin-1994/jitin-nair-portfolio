@@ -173,7 +173,7 @@ function MagneticCard({
   );
 }
 
-/* ---------- Mobile track card: glassmorphism over image ---------- */
+/* ---------- Mobile track card: flat rows inside the glass panel ---------- */
 function MobileTrackCard({
   track,
   delay,
@@ -187,27 +187,29 @@ function MobileTrackCard({
   const Icon = track.icon;
   return (
     <motion.div
-      initial={reduced ? false : { opacity: 0, y: 16 }}
-      animate={reduced || ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-      transition={{ duration: 0.6, delay, ease: EASE }}
+      initial={reduced ? false : { opacity: 0, y: 12 }}
+      animate={reduced || ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+      transition={{ duration: 0.55, delay, ease: EASE }}
     >
       <Link
         href={track.href}
-        className={`group flex items-center gap-3.5 overflow-hidden rounded-2xl border border-white/20 bg-black/50 px-4 py-3.5 backdrop-blur-md transition-[transform,border-color] duration-150 active:scale-[0.97] ${track.ring}`}
+        className={`group flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/[0.07] px-3.5 py-3 transition-[border-color,transform] duration-150 active:scale-[0.97] ${track.ring}`}
       >
         <span
-          className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.08] ${track.accent}`}
+          className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.08] ${track.accent}`}
         >
-          <Icon className="h-5 w-5" strokeWidth={1.75} />
+          <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[14px] font-semibold leading-snug text-white">
+          <span className="block text-[13px] font-semibold leading-snug text-white">
             {track.title}
           </span>
-          <span className="block truncate text-xs text-neutral-400">{track.what}</span>
+          <span className="block overflow-hidden text-ellipsis whitespace-nowrap text-[11px] text-neutral-400">
+            {track.what}
+          </span>
         </span>
         <ArrowRight
-          className={`flex-shrink-0 ${track.accent} h-4 w-4 transition-transform duration-200 group-hover:translate-x-1`}
+          className={`flex-shrink-0 ${track.accent} h-4 w-4`}
           strokeWidth={2}
         />
       </Link>
@@ -405,52 +407,71 @@ export function ChooserHero() {
           className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#0a0a0f]/80 to-transparent"
         />
 
-        {/* Bottom text-zone gradient — darkens lower 60% of image */}
+        {/* Soft scrim — lightened; the glass card provides text contrast */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/80 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#0a0a0f]/70 via-[#0a0a0f]/30 to-transparent"
         />
 
-        {/* Text content — anchored to bottom half */}
-        <div className="absolute inset-x-0 bottom-0 px-6 pb-10">
-          {/* ① Heading — first to reveal */}
-          <motion.h2
-            variants={mobileContainer}
-            initial="hidden"
-            animate={ready ? "show" : "hidden"}
-            className="font-serif text-[1.8rem] font-medium leading-[1.18] tracking-tight text-white"
+        {/* ── Glass content panel ── */}
+        <div className="absolute inset-x-0 bottom-0 px-5 pb-8">
+          {/*
+            overflow-hidden hard-clips every child at the panel border —
+            prevents per-card blur from bleeding past viewport edge.
+          */}
+          <div
+            className="relative w-full overflow-hidden rounded-3xl border border-emerald-500/[0.18] px-5 pt-6 pb-5 shadow-[0_-8px_40px_-12px_rgba(16,185,129,0.14),inset_0_1px_0_rgba(255,255,255,0.07)]"
+            style={{
+              background: "rgba(10,10,15,0.62)",
+              backdropFilter: "blur(22px)",
+              WebkitBackdropFilter: "blur(22px)",
+            }}
           >
-            {HEADLINE.map((line, i) => (
-              <span key={i} className="block overflow-hidden pb-[0.06em]">
-                <motion.span
-                  variants={lineVariant}
-                  className="block transform-gpu will-change-transform"
-                >
-                  {line}
-                </motion.span>
-              </span>
-            ))}
-          </motion.h2>
+            {/* Subtle emerald tint layer */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-500/[0.06] via-transparent to-cyan-500/[0.03]"
+            />
 
-          {/* ② Body — after headings complete */}
-          <motion.p
-            {...mobileFade(M_BODY_DELAY)}
-            className="mt-4 text-sm leading-relaxed text-neutral-300"
-          >
-            Learning &amp; Development Designer{" "}
-            <span className="text-neutral-500">·</span> AI Systems Architect
-          </motion.p>
+            {/* ① Heading — first to reveal */}
+            <motion.h2
+              variants={mobileContainer}
+              initial="hidden"
+              animate={ready ? "show" : "hidden"}
+              className="relative font-serif text-[1.8rem] font-medium leading-[1.18] tracking-tight text-white"
+            >
+              {HEADLINE.map((line, i) => (
+                <span key={i} className="block overflow-hidden pb-[0.06em]">
+                  <motion.span
+                    variants={lineVariant}
+                    className="block transform-gpu will-change-transform"
+                  >
+                    {line}
+                  </motion.span>
+                </span>
+              ))}
+            </motion.h2>
 
-          {/* ③ Links — last to appear */}
-          <div className="mt-5 grid gap-3">
-            {TRACKS.map((track, i) => (
-              <MobileTrackCard
-                key={track.href}
-                track={track}
-                delay={M_LINKS_DELAY + i * 0.14}
-                ready={ready}
-              />
-            ))}
+            {/* ② Body — after headings complete */}
+            <motion.p
+              {...mobileFade(M_BODY_DELAY)}
+              className="relative mt-3.5 text-sm leading-relaxed text-neutral-300"
+            >
+              Learning &amp; Development Designer{" "}
+              <span className="text-neutral-500">·</span> AI Systems Architect
+            </motion.p>
+
+            {/* ③ Links — last to appear */}
+            <div className="relative mt-4 grid gap-2.5">
+              {TRACKS.map((track, i) => (
+                <MobileTrackCard
+                  key={track.href}
+                  track={track}
+                  delay={M_LINKS_DELAY + i * 0.14}
+                  ready={ready}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
