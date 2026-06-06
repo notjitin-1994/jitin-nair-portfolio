@@ -640,6 +640,8 @@ export function ProjectManagementClient() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [activeUserId, setActiveUserId] = useState<string>("u-1"); // Default: Jitin
+  const [kanbanProjectFilter, setKanbanProjectFilter] = useState<string | null>(null);
+  const [kanbanAssigneeFilter, setKanbanAssigneeFilter] = useState<string | null>(null);
 
   const activeUser = USERS.find(u => u.id === activeUserId) || USERS[0];
   const [currentPage, setCurrentPage] = useState(1);
@@ -832,9 +834,18 @@ export function ProjectManagementClient() {
   };
 
   const renderKanbanBoard = () => {
+    const hasActiveFilter = kanbanProjectFilter !== null || kanbanAssigneeFilter !== null;
+
+    const filteredTasks = tasks.filter(t => {
+      const projectMatch = !kanbanProjectFilter || t.projectId === kanbanProjectFilter;
+      const assigneeMatch = !kanbanAssigneeFilter || t.assigneeId === kanbanAssigneeFilter;
+      return projectMatch && assigneeMatch;
+    });
+
     return (
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="h-full flex flex-col">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        {/* Header row */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
           <div>
             <h2 className="text-3xl font-serif text-white tracking-tight mb-2">Global Kanban</h2>
             <p className="text-sm text-neutral-500">Cross-project task orchestration and status tracking.</p>
@@ -844,14 +855,83 @@ export function ProjectManagementClient() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
               <input type="text" placeholder="Search across all projects..." className="w-full pl-9 pr-4 py-2 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" />
             </div>
-            <button className="p-2 bg-zinc-900/50 border border-white/10 rounded-xl text-neutral-400 hover:text-white transition-colors"><Filter className="h-5 w-5" /></button>
           </div>
         </div>
 
+        {/* Filter bar */}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-6 pb-5 border-b border-white/[0.06]">
+          {/* Project filter */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-600 hidden sm:block">Project</span>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                onClick={() => setKanbanProjectFilter(null)}
+                className={cn(
+                  "px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200",
+                  kanbanProjectFilter === null
+                    ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/40"
+                    : "text-neutral-500 border border-white/[0.07] hover:border-white/20 hover:text-neutral-300"
+                )}
+              >
+                All
+              </button>
+              {projects.map(p => (
+                <button
+                  key={p.id}
+                  onClick={() => setKanbanProjectFilter(kanbanProjectFilter === p.id ? null : p.id)}
+                  className={cn(
+                    "px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200 max-w-[180px] truncate",
+                    kanbanProjectFilter === p.id
+                      ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/40"
+                      : "text-neutral-500 border border-white/[0.07] hover:border-white/20 hover:text-neutral-300"
+                  )}
+                >
+                  {p.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="hidden sm:block h-5 w-px bg-white/[0.08]" />
+
+          {/* Assignee filter */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-600 hidden sm:block">Assignee</span>
+            <div className="flex items-center gap-1.5">
+              {USERS.map(u => (
+                <button
+                  key={u.id}
+                  onClick={() => setKanbanAssigneeFilter(kanbanAssigneeFilter === u.id ? null : u.id)}
+                  title={u.name}
+                  className={cn(
+                    "relative rounded-full transition-all duration-200",
+                    kanbanAssigneeFilter === u.id
+                      ? "ring-2 ring-emerald-500 ring-offset-2 ring-offset-[#0a0a0f]"
+                      : "opacity-60 hover:opacity-100"
+                  )}
+                >
+                  <UserAvatar user={u} size="sm" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Clear filters */}
+          {hasActiveFilter && (
+            <button
+              onClick={() => { setKanbanProjectFilter(null); setKanbanAssigneeFilter(null); }}
+              className="ml-auto flex items-center gap-1.5 text-[11px] text-neutral-500 hover:text-white transition-colors"
+            >
+              <span className="font-mono">✕</span> Clear filters
+            </button>
+          )}
+        </div>
+
         <div className="flex-1 overflow-x-auto custom-scrollbar pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="flex gap-6 min-w-max h-[calc(100vh-300px)] min-h-[500px]">
+          <div className="flex gap-6 min-w-max h-[calc(100vh-360px)] min-h-[500px]">
             {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map(status => {
-              const colTasks = tasks.filter(t => t.status === status);
+              const colTasks = filteredTasks.filter(t => t.status === status);
               return (
                 <div key={status} className="w-[340px] flex flex-col h-full bg-zinc-900/20 rounded-[2rem] border border-white/5 p-5 backdrop-blur-sm">
                   <div className="flex items-center justify-between mb-5 px-1">
@@ -862,7 +942,12 @@ export function ProjectManagementClient() {
                     <span className="text-[10px] font-mono bg-white/5 px-2 py-0.5 rounded text-neutral-500">{colTasks.length}</span>
                   </div>
                   <div className="flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2 pb-2 h-full">
-                    {colTasks.map(task => {
+                    {colTasks.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center h-full text-neutral-700 text-xs text-center px-4 gap-2">
+                        <Filter className="h-5 w-5 opacity-40" />
+                        <span>No tasks match filters</span>
+                      </div>
+                    ) : colTasks.map(task => {
                       const proj = projects.find(p => p.id === task.projectId);
                       return <TaskCard key={task.id} task={task} users={USERS} project={proj} onClick={() => setSelectedTask(task)} />;
                     })}
