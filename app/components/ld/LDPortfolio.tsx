@@ -510,20 +510,20 @@ function Approach() {
                 const Icon = cs.icon;
                 return (
                   <Reveal key={cs.id} delay={i * 0.06}>
-                    <div className="group/card relative h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors duration-200 hover:border-emerald-400/30">
+                    <div className="group/card relative h-full overflow-hidden rounded-2xl border border-white/[0.12] bg-zinc-900/60 p-5 backdrop-blur-md transition-colors duration-200 hover:border-emerald-400/40">
                       {/* Contextual background stock image */}
                       <Image
                         src={cs.bgImage}
                         alt=""
                         fill
-                        className="absolute inset-0 z-0 object-cover opacity-[0.08] transition-opacity duration-300 group-hover/card:opacity-[0.15]"
+                        className="absolute inset-0 z-0 object-cover opacity-[0.12] transition-opacity duration-300 group-hover/card:opacity-[0.18]"
                       />
                       <div className="relative z-10">
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/[0.1] text-emerald-400">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/[0.1] text-emerald-400 border border-emerald-400/20">
                           <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
                         </span>
                         <div className="mt-4 font-medium text-white">{cs.competency}</div>
-                        <div className="mt-1 text-sm leading-snug text-neutral-500">{cs.context}</div>
+                        <div className="mt-1 text-sm leading-snug text-neutral-400">{cs.context}</div>
                       </div>
                     </div>
                   </Reveal>
@@ -542,8 +542,26 @@ function AiLever() {
   return (
     <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
-        <Reveal className="relative overflow-hidden rounded-3xl border border-emerald-400/15 bg-gradient-to-br from-emerald-500/[0.07] to-transparent p-8 sm:p-12 lg:p-16">
-          <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+        <Reveal className="relative overflow-hidden rounded-3xl border border-emerald-400/15 bg-zinc-950 p-8 sm:p-12 lg:p-16">
+          {/* Background Video — Leveraging high-end abstract motion */}
+          <div className="absolute inset-0 z-0">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="h-full w-full object-cover opacity-30 mix-blend-screen"
+            >
+              <source
+                src="https://assets.mixkit.co/videos/preview/mixkit-circuit-board-blue-lighting-effect-background-4482-large.mp4"
+                type="video/mp4"
+              />
+            </video>
+            {/* Scrim for readability */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#0a0a0f]/80 to-emerald-950/40" />
+          </div>
+
+          <div className="relative z-10 grid gap-10 lg:grid-cols-2 lg:gap-16">
             <div>
               <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
                 {ldAiLever.heading}
