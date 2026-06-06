@@ -12,7 +12,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { ArrowRight, ArrowUpRight, ArrowDown, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink, ChevronDown } from "lucide-react";
-import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "./primitives";
+import { EASE, useFontsReady, Reveal, CountUp, MagneticButton, useMounted } from "./primitives";
 import { DownloadResumeButton } from "./DownloadResumeButton";
 import { LdVortexBackground } from "./LdVortexBackground";
 import { FloatingNav } from "../FloatingNav";
@@ -77,9 +77,12 @@ function Nav() {
 
 /* ---------- Hero ---------- */
 function Hero() {
-  const reduced = useReducedMotion();
+  const mounted = useMounted();
+  const reducedMotion = useReducedMotion();
   const ready = useFontsReady();
   const [resumeExpanded, setResumeExpanded] = useState(false);
+  
+  const reduced = mounted ? reducedMotion : false;
 
   // Portrait pointer tilt + clip-path reveal (reuses the landing treatment).
   const mvX = useMotionValue(0);

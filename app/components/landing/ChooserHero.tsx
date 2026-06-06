@@ -10,6 +10,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { ArrowRight, Cpu, GraduationCap } from "lucide-react";
+import { useMounted } from "../ld/primitives";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -299,9 +300,12 @@ function Portrait({ ready }: { ready: boolean }) {
 
 /* ---------- Hero ---------- */
 export function ChooserHero() {
-  const reduced = useReducedMotion();
+  const mounted = useMounted();
+  const reducedMotion = useReducedMotion();
   const [ready, setReady] = useState(false);
   const [countRun, setCountRun] = useState(false);
+  
+  const reduced = mounted ? reducedMotion : false;
 
   useEffect(() => {
     if (reduced) {

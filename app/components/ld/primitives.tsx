@@ -13,12 +13,23 @@ import {
 // Smooth expo-out curve. Same vocabulary as the landing hero for cohesion.
 export const EASE = [0.16, 1, 0.3, 1] as const;
 
+export function useMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted;
+}
+
 // Gate display-font reveals until the serif has loaded, so it never swaps
 // mid-animation (the cause of janky reveals).
 export function useFontsReady() {
-  const reduced = useReducedMotion();
+  const mounted = useMounted();
+  const reducedMotion = useReducedMotion();
   const [ready, setReady] = useState(false);
+  
+  const reduced = mounted ? reducedMotion : false;
+
   useEffect(() => {
+    if (!mounted) return;
     if (reduced) {
       setReady(true);
       return;
@@ -35,7 +46,7 @@ export function useFontsReady() {
       active = false;
       clearTimeout(fallback);
     };
-  }, [reduced]);
+  }, [reduced, mounted]);
   return ready;
 }
 
@@ -51,7 +62,10 @@ export function Reveal({
   delay?: number;
   y?: number;
 }) {
-  const reduced = useReducedMotion();
+  const mounted = useMounted();
+  const reducedMotion = useReducedMotion();
+  const reduced = mounted ? reducedMotion : false;
+
   return (
     <motion.div
       className={className}
@@ -75,13 +89,17 @@ export function CountUp({
   format: (n: number) => string;
   className?: string;
 }) {
-  const reduced = useReducedMotion();
+  const mounted = useMounted();
+  const reducedMotion = useReducedMotion();
+  const reduced = mounted ? reducedMotion : false;
+
   const ref = useRef<HTMLSpanElement>(null);
   // Use a smaller margin for more reliable triggering on mobile devices.
   const inView = useInView(ref, { once: true, margin: "-10px" });
-  const [val, setVal] = useState(reduced ? to : 0);
+  const [val, setVal] = useState(0);
 
   useEffect(() => {
+    if (!mounted) return;
     if (reduced) {
       setVal(to);
       return;
@@ -98,11 +116,11 @@ export function CountUp({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [inView, reduced, to]);
+  }, [inView, reduced, to, mounted]);
 
   return (
     <span ref={ref} className={className}>
-      {format(val)}
+      {format(mounted ? val : 0)}
     </span>
   );
 }
@@ -121,7 +139,10 @@ export function MagneticButton({
   className?: string;
   download?: boolean;
 }) {
-  const reduced = useReducedMotion();
+  const mounted = useMounted();
+  const reducedMotion = useReducedMotion();
+  const reduced = mounted ? reducedMotion : false;
+
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -129,7 +150,7 @@ export function MagneticButton({
   const sy = useSpring(y, { stiffness: 200, damping: 18, mass: 0.3 });
 
   const onMove = (e: React.PointerEvent) => {
-    if (reduced || !ref.current) return;
+    if (!mounted || reduced || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
     x.set((e.clientX - (r.left + r.width / 2)) * 0.25);
     y.set((e.clientY - (r.top + r.height / 2)) * 0.4);
