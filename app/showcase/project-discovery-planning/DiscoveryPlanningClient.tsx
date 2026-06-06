@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -33,6 +34,7 @@ const PHASES = [
     stat: "30+",
     statLabel: "structured fields",
     accent: false,
+    image: "https://images.unsplash.com/photo-1454165833767-027ff33026b4?auto=format&fit=crop&q=80&w=800",
   },
   {
     number: "02",
@@ -44,6 +46,7 @@ const PHASES = [
     stat: "60+",
     statLabel: "AI-authored questions",
     accent: true,
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
   },
   {
     number: "03",
@@ -55,6 +58,7 @@ const PHASES = [
     stat: "13",
     statLabel: "input types",
     accent: false,
+    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800",
   },
   {
     number: "04",
@@ -66,6 +70,7 @@ const PHASES = [
     stat: "< 45s",
     statLabel: "to full LX documentation",
     accent: true,
+    image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800",
   },
 ];
 
@@ -204,12 +209,6 @@ function PipelineSection() {
         </Reveal>
 
         <div className="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Desktop thread */}
-          <div
-            aria-hidden
-            className="absolute top-[3.75rem] left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent hidden lg:block"
-          />
-
           {PHASES.map((phase, i) => {
             const Icon = phase.icon;
             return (
@@ -217,20 +216,31 @@ function PipelineSection() {
                 <div
                   className={`relative group h-full flex flex-col rounded-2xl border p-6 transition-all duration-300 overflow-hidden ${
                     phase.accent
-                      ? "border-emerald-500/20 bg-emerald-500/[0.04] hover:border-emerald-500/40 hover:bg-emerald-500/[0.07]"
-                      : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14] hover:bg-white/[0.04]"
+                      ? "border-emerald-500/20 bg-emerald-500/[0.04] hover:border-emerald-500/40"
+                      : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
                   }`}
                 >
+                  {/* Contextual Background Image */}
+                  <div className="absolute inset-0 z-0">
+                    <Image
+                      src={phase.image}
+                      alt=""
+                      fill
+                      className="object-cover opacity-[0.03] transition-opacity duration-500 group-hover:opacity-[0.07]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-transparent to-transparent opacity-60" />
+                  </div>
+
                   {/* Large faded number */}
                   <span
                     aria-hidden
-                    className="absolute -top-2 -right-1 font-mono text-[5.5rem] font-extrabold leading-none text-white/[0.025] select-none pointer-events-none"
+                    className="relative z-10 absolute -top-2 -right-1 font-mono text-[5.5rem] font-extrabold leading-none text-white/[0.025] select-none pointer-events-none"
                   >
                     {phase.number}
                   </span>
 
                   {/* Icon + phase eyebrow */}
-                  <div className="flex items-start justify-between mb-5">
+                  <div className="relative z-10 flex items-start justify-between mb-5">
                     <div
                       className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300 ${
                         phase.accent
@@ -245,15 +255,15 @@ function PipelineSection() {
                     </span>
                   </div>
 
-                  <h3 className="text-white font-semibold text-[15px] mb-3 leading-tight">
+                  <h3 className="relative z-10 text-white font-semibold text-[15px] mb-3 leading-tight">
                     {phase.name}
                   </h3>
-                  <p className="text-[13px] text-neutral-500 leading-relaxed flex-1">
+                  <p className="relative z-10 text-[13px] text-neutral-500 leading-relaxed flex-1">
                     {phase.description}
                   </p>
 
                   {/* Bottom stat */}
-                  <div className="mt-6 pt-4 border-t border-white/[0.06]">
+                  <div className="relative z-10 mt-6 pt-4 border-t border-white/[0.06]">
                     <div
                       className={`text-2xl font-mono font-bold tabular-nums ${
                         phase.accent ? "text-emerald-400" : "text-white"
