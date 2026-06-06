@@ -95,9 +95,9 @@ interface Project {
 
 const USERS: User[] = [
   { id: "u-1", name: "Jitin Nair", role: "Project Manager", avatar: "/hero-photo.jpg" },
-  { id: "u-2", name: "Katrina Kaif", role: "Lead Instructional Designer", avatar: "https://i.pravatar.cc/150?u=katrina" },
-  { id: "u-3", name: "Shah Rukh Khan", role: "Instructional Designer", avatar: "https://i.pravatar.cc/150?u=srk" },
-  { id: "u-4", name: "John Abraham", role: "Content Developer", avatar: "https://i.pravatar.cc/150?u=john" },
+  { id: "u-2", name: "Katrina Kaif", role: "Lead Instructional Designer", avatar: "https://upload.wikimedia.org/wikipedia/commons/1/15/Katrina_Kaif_at_the_launch_of_the_song_%27Pashmina%27.jpg" },
+  { id: "u-3", name: "Shah Rukh Khan", role: "Instructional Designer", avatar: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Shah_Rukh_Khan_at_Pathaan.jpg" },
+  { id: "u-4", name: "John Abraham", role: "Content Developer", avatar: "https://upload.wikimedia.org/wikipedia/commons/b/b1/John_Abraham_Launch_Pepsi_My_Can.jpg" },
 ];
 
 const INITIAL_PROJECTS: Project[] = [
