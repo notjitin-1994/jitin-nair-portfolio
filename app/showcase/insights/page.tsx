@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import { ShowcasePlaceholder } from "../components/ShowcasePlaceholder";
+import { InsightsShowcaseClient } from "./InsightsShowcaseClient";
 
 export const metadata: Metadata = {
-  title: "L&D Insights Showcase — Jitin Nair",
-  description: "Data-driven analytics, impact measurement, and performance reporting systems.",
+  title: "L&D Insights — Jitin Nair",
+  description:
+    "Data-driven essays on learning analytics, AI-native instruction, skills strategy, and the operating model rewiring the modern L&D function.",
 };
 
 export default function InsightsPage() {
-  return (
-    <ShowcasePlaceholder 
-      title="Insights" 
-      description="Measuring what matters: instrumentation of learning analytics, retention tracking, and the automated reporting suites that prove business impact."
-    />
-  );
+  return <InsightsShowcaseClient />;
 }
