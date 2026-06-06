@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 export type NavItem = { label: string; href: string };
-type Accent = "emerald" | "cyan";
+type Accent = "emerald" | "cyan" | "indigo";
 
 const ACCENT: Record<
   Accent,
@@ -32,6 +32,16 @@ const ACCENT: Record<
     panel: "border-cyan-400/20",
     ring: "ring-cyan-400/60",
     avatarGlow: "shadow-[0_0_14px_rgba(34,211,238,0.55)]",
+  },
+  indigo: {
+    border: "border-indigo-400/25",
+    glow: "shadow-[0_0_28px_-8px_rgba(99,102,241,0.5)]",
+    suffix: "text-indigo-400/70",
+    cta: "bg-indigo-400 text-[#12121a] hover:bg-indigo-300",
+    toggle: "border-indigo-400/30 text-indigo-300 hover:bg-indigo-400/10",
+    panel: "border-indigo-400/20",
+    ring: "ring-indigo-400/60",
+    avatarGlow: "shadow-[0_0_14px_rgba(99,102,241,0.55)]",
   },
 };
 

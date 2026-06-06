@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ShowcasePlaceholder } from "../components/ShowcasePlaceholder";
+import { ProjectManagementClient } from "./ProjectManagementClient";
 
 export const metadata: Metadata = {
   title: "Project Management Showcase — Jitin Nair",
@@ -7,10 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function ProjectManagementPage() {
-  return (
-    <ShowcasePlaceholder 
-      title="Project Management" 
-      description="The orchestration of complex learning initiatives: managing stakeholders, timelines, and technical dependencies across global L&D functions."
-    />
-  );
+  return <ProjectManagementClient />;
 }
