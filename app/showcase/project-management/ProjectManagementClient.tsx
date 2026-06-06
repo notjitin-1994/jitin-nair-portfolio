@@ -92,6 +92,127 @@ interface Project {
 }
 
 // ----------------------------------------------------------------------
+// DATE PICKER COMPONENT
+// ----------------------------------------------------------------------
+
+function PremiumDatePicker({ 
+  value, 
+  onChange 
+}: { 
+  value: string; 
+  onChange: (newDate: string) => void 
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  
+  const parseDate = (d: string) => {
+    const parts = d.split('-');
+    if (parts.length === 3) {
+      return { day: parts[0], month: parts[1], year: parts[2] };
+    }
+    // Fallback for legacy data (e.g., "Oct 12")
+    const month = d.split(' ')[0].toUpperCase();
+    const dayNum = d.split(' ')[1] || "01";
+    return { day: dayNum.padStart(2, '0'), month: months.includes(month) ? month : "OCT", year: "2025" };
+  };
+
+  const { day, month, year } = parseDate(value);
+
+  const years = Array.from({ length: 50 }, (_, i) => (2020 + i).toString());
+  const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
+
+  const update = (newDay: string, newMonth: string, newYear: string) => {
+    onChange(`${newDay}-${newMonth}-${newYear}`);
+  };
+
+  return (
+    <div className="relative">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-emerald-500/30 transition-all text-left w-full group"
+      >
+        <Calendar className="h-4 w-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+        <span className="text-xs font-mono font-bold text-white tracking-wider">
+          {day}-{month}-{year}
+        </span>
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <div className="fixed inset-0 z-[70]" onClick={() => setIsOpen(false)} />
+            <motion.div 
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+              className="absolute top-full left-0 right-0 z-[80] mt-2 p-3 rounded-2xl bg-zinc-900 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-xl"
+            >
+              <div className="grid grid-cols-3 gap-2">
+                {/* Days */}
+                <div className="space-y-1">
+                  <p className="text-[8px] font-mono text-neutral-500 uppercase text-center mb-1">Day</p>
+                  <div className="h-40 overflow-y-auto custom-scrollbar space-y-1 pr-1">
+                    {days.map(d => (
+                      <button 
+                        key={d} 
+                        onClick={() => update(d, month, year)}
+                        className={cn(
+                          "w-full py-1 rounded text-[10px] font-mono transition-colors",
+                          day === d ? "bg-emerald-500 text-black font-bold" : "text-neutral-400 hover:bg-white/5"
+                        )}
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {/* Months */}
+                <div className="space-y-1">
+                  <p className="text-[8px] font-mono text-neutral-500 uppercase text-center mb-1">Month</p>
+                  <div className="h-40 overflow-y-auto custom-scrollbar space-y-1 pr-1">
+                    {months.map(m => (
+                      <button 
+                        key={m} 
+                        onClick={() => update(day, m, year)}
+                        className={cn(
+                          "w-full py-1 rounded text-[10px] font-mono transition-colors",
+                          month === m ? "bg-emerald-500 text-black font-bold" : "text-neutral-400 hover:bg-white/5"
+                        )}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {/* Years */}
+                <div className="space-y-1">
+                  <p className="text-[8px] font-mono text-neutral-500 uppercase text-center mb-1">Year</p>
+                  <div className="h-40 overflow-y-auto custom-scrollbar space-y-1 pr-1">
+                    {years.map(y => (
+                      <button 
+                        key={y} 
+                        onClick={() => update(day, month, y)}
+                        className={cn(
+                          "w-full py-1 rounded text-[10px] font-mono transition-colors",
+                          year === y ? "bg-emerald-500 text-black font-bold" : "text-neutral-400 hover:bg-white/5"
+                        )}
+                      >
+                        {y}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
 // INITIAL DATA
 // ----------------------------------------------------------------------
 
@@ -694,18 +815,10 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
 
               <div>
                 <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block mb-2">Due Date</span>
-                <div className="relative group">
-                  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-emerald-500/30 transition-all cursor-pointer">
-                    <Calendar className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <input 
-                      type="text"
-                      value={task.dueDate}
-                      onChange={(e) => actions.updateDueDate(task.id, e.target.value, user.name)}
-                      className="bg-transparent text-xs font-semibold text-white focus:outline-none w-full"
-                      placeholder="Set date..."
-                    />
-                  </div>
-                </div>
+                <PremiumDatePicker 
+                  value={task.dueDate}
+                  onChange={(newDate) => actions.updateDueDate(task.id, newDate, user.name)}
+                />
               </div>
             </div>
           </div>
@@ -1167,7 +1280,11 @@ export function ProjectManagementClient() {
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <div className="relative flex-1 sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
-              <input type="text" placeholder="Search across all projects..." className="w-full pl-9 pr-4 py-2 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" />
+              <input 
+                type="text" 
+                placeholder="Search across all projects..." 
+                className="w-full pl-9 pr-4 py-2 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" 
+              />
             </div>
           </div>
         </div>
