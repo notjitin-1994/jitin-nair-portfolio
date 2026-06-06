@@ -3,13 +3,13 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import { 
-  ArrowLeft, Search, Filter, Plus, Calendar, Clock, Paperclip, 
+import {
+  ArrowLeft, Search, Filter, Plus, Calendar, Clock, Paperclip,
   MessageSquare, Activity, CheckCircle2, Circle, MoreHorizontal,
   Workflow, Zap, Users, LayoutDashboard, ChevronDown, Link as LinkIcon,
   FileText, Target, Globe, ShieldCheck, Mail, Linkedin, Upload,
   ListTodo, Info, UserCheck, Timer, ArrowRight, ChevronLeft, ChevronRight,
-  FolderKanban, Briefcase, ChevronUp
+  FolderKanban, Briefcase, ChevronUp, Sparkles, TrendingUp
 } from "lucide-react";
 import { FloatingNav } from "../../components/FloatingNav";
 import { LdFooter } from "../../components/ld/LdFooter";
@@ -303,6 +303,7 @@ const INITIAL_TASKS: Task[] = [
 ];
 
 const SPRING = { type: "spring", stiffness: 100, damping: 20 };
+const EASE = [0.16, 1, 0.3, 1] as const; // expo-out — strong, intentional
 
 // ----------------------------------------------------------------------
 // SHARED COMPONENTS
@@ -374,9 +375,10 @@ function TaskCard({ task, users, project, onClick }: { task: Task, users: User[]
     <motion.div
       layoutId={`task-card-${task.id}`}
       onClick={onClick}
-      whileHover={{ y: -2 }}
+      whileHover={{ y: -3 }}
+      whileTap={{ scale: 0.98 }}
       transition={SPRING}
-      className="group cursor-pointer rounded-2xl border border-white/[0.08] bg-zinc-900/40 p-5 hover:bg-zinc-900/80 hover:border-emerald-500/30 transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_4px_20px_-10px_rgba(0,0,0,0.2)] backdrop-blur-sm flex flex-col h-full"
+      className="group cursor-pointer rounded-2xl border border-white/[0.08] bg-zinc-900/40 p-5 hover:bg-zinc-900/80 hover:border-emerald-500/30 transition-colors duration-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_4px_20px_-10px_rgba(0,0,0,0.2)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_12px_32px_-12px_rgba(16,185,129,0.25)] backdrop-blur-sm flex flex-col h-full"
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex gap-2 flex-wrap">
@@ -651,6 +653,11 @@ export function ProjectManagementClient() {
   const totalPages = Math.ceil(projects.length / itemsPerPage);
   const currentProjects = projects.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  // Live aggregate for the hero stat bar
+  const allSubtasks = tasks.flatMap(t => t.subtasks);
+  const doneSubtasks = allSubtasks.filter(s => s.completed).length;
+  const avgCompletion = allSubtasks.length ? Math.round((doneSubtasks / allSubtasks.length) * 100) : 0;
+
   // Collaborative Actions
   const actions = {
     toggleSubtask: (taskId: string, subtaskId: string, userName: string) => {
@@ -705,7 +712,7 @@ export function ProjectManagementClient() {
           <div className="grid md:grid-cols-2 gap-6">
             <div 
               onClick={() => setPmViewMode("Project List")}
-              className="group cursor-pointer p-8 md:p-10 rounded-[2.5rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-all backdrop-blur-md relative overflow-hidden"
+              className="group cursor-pointer p-8 md:p-10 rounded-[2.5rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-colors duration-300 active:scale-[0.99] backdrop-blur-md relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                 <FolderKanban className="h-48 w-48 text-emerald-500 translate-x-12 -translate-y-12" />
@@ -727,7 +734,7 @@ export function ProjectManagementClient() {
 
             <div 
               onClick={() => setActiveTab("Kanban Board")}
-              className="group cursor-pointer p-8 md:p-10 rounded-[2.5rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-all backdrop-blur-md relative overflow-hidden"
+              className="group cursor-pointer p-8 md:p-10 rounded-[2.5rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-colors duration-300 active:scale-[0.99] backdrop-blur-md relative overflow-hidden"
             >
                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                 <ListTodo className="h-48 w-48 text-emerald-500 translate-x-12 -translate-y-12" />
@@ -779,7 +786,7 @@ export function ProjectManagementClient() {
                 <div 
                   key={project.id} 
                   onClick={() => { setSelectedProject(project); setPmViewMode("Project Detail"); }}
-                  className="group cursor-pointer p-6 sm:p-8 rounded-[2rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-all backdrop-blur-md"
+                  className="group cursor-pointer p-6 sm:p-8 rounded-[2rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-colors duration-300 active:scale-[0.99] backdrop-blur-md"
                 >
                   <div className="grid md:grid-cols-[1fr_200px_150px] gap-8 items-center">
                     <div>
@@ -930,10 +937,16 @@ export function ProjectManagementClient() {
 
         <div className="flex-1 overflow-x-auto custom-scrollbar pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="flex gap-6 min-w-max h-[calc(100vh-360px)] min-h-[500px]">
-            {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map(status => {
+            {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map((status, idx) => {
               const colTasks = filteredTasks.filter(t => t.status === status);
               return (
-                <div key={status} className="w-[340px] flex flex-col h-full bg-zinc-900/20 rounded-[2rem] border border-white/5 p-5 backdrop-blur-sm">
+                <motion.div
+                  key={status}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: idx * 0.06, ease: EASE }}
+                  className="w-[340px] flex flex-col h-full bg-zinc-900/20 rounded-[2rem] border border-white/5 p-5 backdrop-blur-sm"
+                >
                   <div className="flex items-center justify-between mb-5 px-1">
                     <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-400 flex items-center gap-2">
                       <div className={cn("h-2 w-2 rounded-full", status === 'Done' ? 'bg-emerald-500' : 'bg-neutral-600')} />
@@ -952,7 +965,7 @@ export function ProjectManagementClient() {
                       return <TaskCard key={task.id} task={task} users={USERS} project={proj} onClick={() => setSelectedTask(task)} />;
                     })}
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -1270,50 +1283,105 @@ export function ProjectManagementClient() {
           </Link>
         </motion.div>
 
-        {/* Automated Workflow Callout */}
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-          className="mb-12 rounded-[2rem] border border-emerald-500/20 bg-emerald-500/5 p-6 flex items-start gap-4 backdrop-blur-xl"
+        {/* Hero — frame the working system */}
+        <motion.header
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="relative mb-14"
         >
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400">
-            <Zap className="h-6 w-6" />
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <h4 className="text-md font-serif text-emerald-100">Intake Pipeline Synchronized</h4>
-              <span className="text-[10px] font-mono text-emerald-400/60 uppercase tracking-widest">Active Connectivity: discovery-blueprint-v2</span>
-            </div>
-            <p className="mt-2 text-sm text-neutral-400 leading-relaxed max-w-3xl">
-              Project management automation is fully integrated with the <Link href="/showcase/project-discovery-planning" className="text-emerald-400 hover:underline">Discovery intake pipeline</Link>.
-            </p>
-          </div>
-        </motion.div>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-32 left-1/3 -z-10 h-[44vh] w-[80vh] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-[150px]"
+          />
 
-        {/* Main 3-Tab Switcher */}
-        <div className="flex flex-col items-center mb-16">
-          <div className="flex bg-zinc-900/50 p-1.5 rounded-2xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] w-full max-w-2xl relative">
-            {(["PM Dashboard", "Kanban Board", "Team Member Dashboard"] as MainTab[]).map(tab => {
-              const isActive = activeTab === tab;
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/[0.07] px-3 py-1">
+            <Sparkles className="h-3.5 w-3.5 text-emerald-400" strokeWidth={2} />
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-emerald-400/90">
+              Self-built · Live system
+            </span>
+          </div>
+
+          <h1 className="max-w-4xl font-serif text-[2.5rem] font-medium leading-[1.05] tracking-tight text-white sm:text-[3.25rem] lg:text-[3.75rem]">
+            The Project <span className="italic text-emerald-400">Operating System.</span>
+          </h1>
+
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-400">
+            A working command center I built to run L&amp;D delivery end-to-end — projects auto-spawn from
+            the discovery intake pipeline, work routes to the right specialists, and progress tracks itself.
+            Switch personas and open any task; it&apos;s fully interactive.
+          </p>
+
+          {/* Live stat bar — hairline-divided */}
+          <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.07] sm:grid-cols-4">
+            {[
+              { label: "Active Projects", value: projects.length, icon: Briefcase },
+              { label: "Live Tasks", value: tasks.length, icon: ListTodo },
+              { label: "Team Members", value: USERS.length, icon: Users },
+              { label: "Avg Completion", value: `${avgCompletion}%`, icon: TrendingUp },
+            ].map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.25 + i * 0.07, ease: EASE }}
+                className="flex flex-col gap-2.5 bg-[#0a0a0f] p-5 sm:p-6"
+              >
+                <s.icon className="h-4 w-4 text-emerald-400/70" strokeWidth={2} />
+                <span className="font-mono text-2xl font-medium tabular-nums text-white sm:text-3xl">{s.value}</span>
+                <span className="text-[11px] font-medium uppercase tracking-wider text-neutral-500">{s.label}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Integration status line */}
+          <div className="mt-6 flex items-center gap-2.5 text-xs text-neutral-500">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+            </span>
+            <span>
+              Synced with the{" "}
+              <Link
+                href="/showcase/project-discovery-planning"
+                className="font-medium text-emerald-400 underline-offset-4 transition-colors hover:underline"
+              >
+                discovery intake pipeline
+              </Link>
+            </span>
+          </div>
+        </motion.header>
+
+        {/* Segmented control — app-like, left-aligned */}
+        <div className="mb-10 flex border-b border-white/[0.06] pb-5">
+          <div className="flex gap-1 rounded-2xl border border-white/10 bg-zinc-900/50 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+            {([
+              { id: "PM Dashboard", icon: Briefcase },
+              { id: "Kanban Board", icon: ListTodo },
+              { id: "Team Member Dashboard", icon: UserCheck },
+            ] as { id: MainTab; icon: typeof Briefcase }[]).map(({ id, icon: Icon }) => {
+              const isActive = activeTab === id;
               return (
                 <button
-                  key={tab}
+                  key={id}
                   onClick={() => {
-                    setActiveTab(tab);
-                    if (tab === "PM Dashboard") setPmViewMode("Home");
+                    setActiveTab(id);
+                    if (id === "PM Dashboard") setPmViewMode("Home");
                   }}
                   className={cn(
-                    "flex-1 py-3 text-sm font-medium transition-colors relative z-10 rounded-xl",
+                    "relative z-10 flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors duration-200 active:scale-[0.97]",
                     isActive ? "text-black" : "text-neutral-400 hover:text-white"
                   )}
                 >
                   {isActive && (
-                    <motion.div 
+                    <motion.div
                       layoutId="activeMainTab"
-                      className="absolute inset-0 bg-emerald-500 rounded-xl -z-10 shadow-[0_4px_14px_rgba(16,185,129,0.3)]"
+                      className="absolute inset-0 -z-10 rounded-xl bg-emerald-500 shadow-[0_4px_14px_rgba(16,185,129,0.3)]"
                       transition={SPRING}
                     />
                   )}
-                  {tab}
+                  <Icon className="h-4 w-4" strokeWidth={2} />
+                  <span className="hidden sm:inline">{id}</span>
                 </button>
               );
             })}
