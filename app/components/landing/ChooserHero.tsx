@@ -11,12 +11,8 @@ import {
 } from "framer-motion";
 import { ArrowRight, Cpu, GraduationCap } from "lucide-react";
 
-// Smooth expo-out curve for reveals. Used for the mask-reveal and image wipe.
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-// The story arc: a decade of L&D, then AI systems architecture. The two
-// emphasized words are colour-linked to the two track buttons below
-// (emerald = Learning & Development, cyan = AI Systems Architecture).
 const HEADLINE: ReactNode[] = [
   <>
     Ten years designing how humans <span className="text-emerald-400">learn</span>.
@@ -26,8 +22,6 @@ const HEADLINE: ReactNode[] = [
   </>,
 ];
 
-// Proof points, all from the CV and the AI architecture portfolio. Count-up
-// animates the numeric part. One AI stat, one L&D stat, one ROI stat.
 const PROOF = [
   { to: 200, format: (n: number) => `${Math.round(n)}+`, label: "AI agents in production" },
   { to: 5, format: (n: number) => `${Math.round(n)}K+`, label: "learners trained" },
@@ -119,7 +113,7 @@ function StatTile({
   );
 }
 
-/* ---------- Magnetic track card ---------- */
+/* ---------- Magnetic track card (desktop) ---------- */
 function MagneticCard({
   track,
   delay,
@@ -159,11 +153,9 @@ function MagneticCard({
           href={track.href}
           className={`group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 transition-[transform,border-color,box-shadow] duration-200 ease-out active:scale-[0.98] ${track.ring} ${track.glow}`}
         >
-          {/* Sheen sweep on hover */}
           <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
             <span className="absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[320%]" />
           </span>
-
           <span className={`relative flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.05] ${track.accent}`}>
             <Icon className="h-5 w-5" strokeWidth={1.75} />
           </span>
@@ -177,6 +169,48 @@ function MagneticCard({
           />
         </Link>
       </motion.div>
+    </motion.div>
+  );
+}
+
+/* ---------- Mobile track card: glassmorphism over image ---------- */
+function MobileTrackCard({
+  track,
+  delay,
+  ready,
+}: {
+  track: (typeof TRACKS)[number];
+  delay: number;
+  ready: boolean;
+}) {
+  const reduced = useReducedMotion();
+  const Icon = track.icon;
+  return (
+    <motion.div
+      initial={reduced ? false : { opacity: 0, y: 16 }}
+      animate={reduced || ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+      transition={{ duration: 0.6, delay, ease: EASE }}
+    >
+      <Link
+        href={track.href}
+        className={`group flex items-center gap-3.5 overflow-hidden rounded-2xl border border-white/20 bg-black/50 px-4 py-3.5 backdrop-blur-md transition-[transform,border-color] duration-150 active:scale-[0.97] ${track.ring}`}
+      >
+        <span
+          className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.08] ${track.accent}`}
+        >
+          <Icon className="h-5 w-5" strokeWidth={1.75} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[14px] font-semibold leading-snug text-white">
+            {track.title}
+          </span>
+          <span className="block truncate text-xs text-neutral-400">{track.what}</span>
+        </span>
+        <ArrowRight
+          className={`flex-shrink-0 ${track.accent} h-4 w-4 transition-transform duration-200 group-hover:translate-x-1`}
+          strokeWidth={2}
+        />
+      </Link>
     </motion.div>
   );
 }
@@ -215,10 +249,7 @@ function Portrait({ ready }: { ready: boolean }) {
         className="relative h-full w-full"
         style={{ perspective: 900 }}
       >
-        {/* Dual-tone glow */}
         <div className="absolute inset-0 scale-110 rounded-[28px] bg-gradient-to-tr from-emerald-500/25 to-cyan-500/25 blur-3xl" />
-
-        {/* Clip-path wipe-up reveal + subtle scale settle */}
         <motion.div
           initial={reduced ? false : { clipPath: "inset(100% 0% 0% 0% round 28px)", scale: 1.12 }}
           animate={
@@ -229,7 +260,6 @@ function Portrait({ ready }: { ready: boolean }) {
           transition={{ duration: 1.15, ease: EASE }}
           className="relative h-full w-full overflow-hidden rounded-[28px] border border-white/10 shadow-2xl will-change-transform"
         >
-          {/* Pointer tilt layer */}
           <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="relative h-full w-full">
             <Image
               src="/hero-photo.jpg"
@@ -242,8 +272,6 @@ function Portrait({ ready }: { ready: boolean }) {
               fetchPriority="high"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/55 via-transparent to-transparent" />
-
-            {/* One-time sheen sweep as the image reveals */}
             {!reduced && (
               <motion.div
                 aria-hidden
@@ -266,52 +294,43 @@ export function ChooserHero() {
   const [ready, setReady] = useState(false);
   const [countRun, setCountRun] = useState(false);
 
-  // Butter-smooth reveal: wait for the display font to load before animating,
-  // so the serif never swaps mid-reveal (the cause of the previous jank).
   useEffect(() => {
     if (reduced) {
       setReady(true);
       return;
     }
-    
-    // Immediate ready state if document is already loaded and fonts are ready
     if (typeof document !== "undefined" && document.readyState === "complete") {
       setReady(true);
       return;
     }
-
     let active = true;
-    const done = () => {
-      if (active) setReady(true);
-    };
-    
-    // Ensure we trigger even if fonts.ready doesn't fire as expected
+    const done = () => { if (active) setReady(true); };
     const fallback = setTimeout(done, 800);
-    
     if (typeof document !== "undefined" && document.fonts?.ready) {
       document.fonts.ready.then(done).catch(done);
     } else {
       done();
     }
-    
-    return () => {
-      active = false;
-      clearTimeout(fallback);
-    };
+    return () => { active = false; clearTimeout(fallback); };
   }, [reduced]);
 
-  // Sequenced reveal timeline (seconds), all gated on the same `ready` trigger:
-  //   image reveals first (t=0), heading 1s later, the rest 1s after that.
+  // Desktop timing
   const HEADING_DELAY = 1.0;
   const REST_DELAY = 2.0;
+
+  // Mobile timing — image is immediately visible, start sooner
+  const M_HEAD_DELAY = 0.35;
+  const M_BODY_DELAY = 1.1;
+  const M_LINKS_DELAY = 1.5;
 
   useEffect(() => {
     if (!ready || reduced) return;
     const t = setTimeout(() => setCountRun(true), REST_DELAY * 1000 + 150);
     return () => clearTimeout(t);
-  }, [ready, reduced]);
+  }, [ready, reduced, REST_DELAY]);
 
-  const container = {
+  // Desktop stagger container
+  const desktopContainer = {
     hidden: {},
     show: {
       transition: {
@@ -320,11 +339,23 @@ export function ChooserHero() {
       },
     },
   };
+
+  // Mobile stagger container
+  const mobileContainer = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: reduced ? 0 : 0.2,
+        delayChildren: reduced ? 0 : M_HEAD_DELAY,
+      },
+    },
+  };
+
   const lineVariant = reduced
     ? { hidden: { y: 0 }, show: { y: 0 } }
     : {
         hidden: { y: "112%" },
-        show: { y: 0, transition: { duration: 1.1, ease: EASE } },
+        show: { y: 0, transition: { duration: 1.05, ease: EASE } },
       };
 
   const fade = (delay: number) =>
@@ -336,55 +367,147 @@ export function ChooserHero() {
           transition: { duration: 0.8, delay, ease: EASE },
         };
 
+  const mobileFade = (delay: number) =>
+    reduced
+      ? { initial: false as const, animate: { opacity: 1, y: 0 } }
+      : {
+          initial: { opacity: 0, y: 14 },
+          animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 },
+          transition: { duration: 0.7, delay, ease: EASE },
+        };
+
   return (
-    <main className="relative flex min-h-[100dvh] items-center overflow-hidden bg-[#0a0a0f] px-5 text-[#f8fafc] selection:bg-cyan-500/30">
-      <h1 className="sr-only">
-        Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
-      </h1>
+    <>
+      {/* ═══════════════════════════════════════════════════
+          MOBILE: full-bleed portrait + text pinned to bottom
+          Hidden at md+ breakpoint
+      ═══════════════════════════════════════════════════ */}
+      <section className="relative h-[100dvh] overflow-hidden bg-[#0a0a0f] md:hidden">
+        <h1 className="sr-only">
+          Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
+        </h1>
 
-      <AuroraBackground />
+        {/* Full-bleed background portrait */}
+        <Image
+          src="/hero-photo.jpg"
+          alt=""
+          fill
+          className="object-cover"
+          style={{ objectPosition: "center 12%" }}
+          priority
+          fetchPriority="high"
+          sizes="100vw"
+        />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-10 py-12 md:grid-cols-2 md:items-stretch md:gap-14">
-        {/* Left - portrait */}
-        <Portrait ready={ready} />
+        {/* Top vignette — keeps nav readable */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#0a0a0f]/80 to-transparent"
+        />
 
-        {/* Right - content */}
-        <div className="max-w-2xl">
+        {/* Bottom text-zone gradient — darkens lower 60% of image */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/80 to-transparent"
+        />
+
+        {/* Text content — anchored to bottom half */}
+        <div className="absolute inset-x-0 bottom-0 px-6 pb-10">
+          {/* ① Heading — first to reveal */}
           <motion.h2
-            variants={container}
+            variants={mobileContainer}
             initial="hidden"
             animate={ready ? "show" : "hidden"}
-            className="font-serif text-[2rem] font-medium leading-[1.18] tracking-tight text-white sm:text-[2.6rem] lg:text-[3rem]"
+            className="font-serif text-[1.8rem] font-medium leading-[1.18] tracking-tight text-white"
           >
             {HEADLINE.map((line, i) => (
-              <span key={i} className="block overflow-hidden pb-[0.08em]">
-                <motion.span variants={lineVariant} className="block transform-gpu will-change-transform">
+              <span key={i} className="block overflow-hidden pb-[0.06em]">
+                <motion.span
+                  variants={lineVariant}
+                  className="block transform-gpu will-change-transform"
+                >
                   {line}
                 </motion.span>
               </span>
             ))}
           </motion.h2>
 
-          <motion.p {...fade(REST_DELAY)} className="mt-6 text-base text-neutral-400 sm:text-lg">
-            Learning &amp; Development Designer <span className="text-neutral-600">and</span> AI Systems Architect
+          {/* ② Body — after headings complete */}
+          <motion.p
+            {...mobileFade(M_BODY_DELAY)}
+            className="mt-4 text-sm leading-relaxed text-neutral-300"
+          >
+            Learning &amp; Development Designer{" "}
+            <span className="text-neutral-500">·</span> AI Systems Architect
           </motion.p>
 
-          <motion.div
-            {...fade(REST_DELAY + 0.12)}
-            className="mt-8 grid max-w-md grid-cols-3 gap-5 border-t border-white/10 pt-6"
-          >
-            {PROOF.map((stat) => (
-              <StatTile key={stat.label} {...stat} run={countRun} />
-            ))}
-          </motion.div>
-
-          <div className="mt-9 grid gap-3.5">
+          {/* ③ Links — last to appear */}
+          <div className="mt-5 grid gap-3">
             {TRACKS.map((track, i) => (
-              <MagneticCard key={track.href} track={track} delay={REST_DELAY + 0.24 + i * 0.1} ready={ready} />
+              <MobileTrackCard
+                key={track.href}
+                track={track}
+                delay={M_LINKS_DELAY + i * 0.14}
+                ready={ready}
+              />
             ))}
           </div>
         </div>
-      </div>
-    </main>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════
+          DESKTOP: two-column portrait + content
+          Hidden below md breakpoint
+      ═══════════════════════════════════════════════════ */}
+      <main className="relative hidden min-h-[100dvh] items-center overflow-hidden bg-[#0a0a0f] px-5 text-[#f8fafc] selection:bg-cyan-500/30 md:flex">
+        <h1 className="sr-only">
+          Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
+        </h1>
+
+        <AuroraBackground />
+
+        <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-10 py-12 md:grid-cols-2 md:items-stretch md:gap-14">
+          {/* Left - portrait */}
+          <Portrait ready={ready} />
+
+          {/* Right - content */}
+          <div className="max-w-2xl">
+            <motion.h2
+              variants={desktopContainer}
+              initial="hidden"
+              animate={ready ? "show" : "hidden"}
+              className="font-serif text-[2rem] font-medium leading-[1.18] tracking-tight text-white sm:text-[2.6rem] lg:text-[3rem]"
+            >
+              {HEADLINE.map((line, i) => (
+                <span key={i} className="block overflow-hidden pb-[0.08em]">
+                  <motion.span variants={lineVariant} className="block transform-gpu will-change-transform">
+                    {line}
+                  </motion.span>
+                </span>
+              ))}
+            </motion.h2>
+
+            <motion.p {...fade(REST_DELAY)} className="mt-6 text-base text-neutral-400 sm:text-lg">
+              Learning &amp; Development Designer <span className="text-neutral-600">and</span> AI Systems Architect
+            </motion.p>
+
+            <motion.div
+              {...fade(REST_DELAY + 0.12)}
+              className="mt-8 grid max-w-md grid-cols-3 gap-5 border-t border-white/10 pt-6"
+            >
+              {PROOF.map((stat) => (
+                <StatTile key={stat.label} {...stat} run={countRun} />
+              ))}
+            </motion.div>
+
+            <div className="mt-9 grid gap-3.5">
+              {TRACKS.map((track, i) => (
+                <MagneticCard key={track.href} track={track} delay={REST_DELAY + 0.24 + i * 0.1} ready={ready} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </main>
+    </>
   );
 }
