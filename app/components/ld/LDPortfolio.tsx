@@ -439,6 +439,8 @@ function Work() {
           ))}
         </div>
 
+        <Journey />
+
         <Reveal className="mt-12 flex">
           <Link
             href="/work"
@@ -1196,7 +1198,6 @@ export function LDPortfolio() {
       <Approach />
       <AiLever />
       <Capabilities />
-      <Journey />
       <Recognition />
       <Testimonials />
 
