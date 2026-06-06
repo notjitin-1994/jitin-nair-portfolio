@@ -15,7 +15,9 @@ import {
   ArrowRight,
   FileSearch,
   Scan,
-  FileText
+  FileText,
+  ClipboardList,
+  AlertTriangle
 } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -72,7 +74,7 @@ export function SmartslateInfographic() {
 
   return (
     <div className="grid grid-cols-2 gap-3 py-2">
-      {/* Solara Hub - Full Width */}
+      {/* Solara Ecosystem Core - Top Hero Card */}
       <BentoCard accent className="col-span-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -80,58 +82,69 @@ export function SmartslateInfographic() {
               <Network className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-500/80">Ecosystem Hub</div>
-              <div className="text-sm font-semibold text-white">Solara Core Architecture</div>
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-500/80">Solara Suite</div>
+              <div className="text-sm font-semibold text-white">AI-Native Learning Infrastructure</div>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            {[...Array(7)].map((_, i) => (
-              <div 
-                key={i} 
-                className={`h-1 w-3 rounded-full ${i < 2 ? "bg-emerald-400" : "bg-white/10"}`} 
-              />
-            ))}
+          <div className="px-2 py-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 flex items-center gap-1.5">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[9px] font-mono font-bold text-emerald-400">7 PRODUCTS</span>
           </div>
         </div>
         
-        {/* Animated Connective Tissue */}
-        <div className="mt-4 relative h-12 flex items-center justify-center overflow-hidden rounded-lg bg-white/[0.02]">
-           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-500/5 to-transparent animate-pulse" />
-           <div className="flex items-center gap-8 z-10">
-              <div className="flex flex-col items-center">
-                 <div className="text-[8px] font-mono text-emerald-400/60 uppercase">Inputs</div>
-                 <Scan className="h-3 w-3 text-emerald-400/40" />
+        {/* Core Integration Visualization - Replacing the abstract inputs/logic/scale */}
+        <div className="mt-5 grid grid-cols-3 gap-2 relative">
+           {/* Connecting Line Backdrop */}
+           <div className="absolute top-1/2 left-[15%] right-[15%] h-px bg-gradient-to-r from-emerald-500/0 via-emerald-500/20 to-emerald-500/0 -translate-y-1/2" />
+           
+           <div className="flex flex-col items-center gap-2 z-10">
+              <div className="h-10 w-10 rounded-full border border-white/10 bg-[#0a0a0f] flex items-center justify-center group-hover:border-emerald-500/40 transition-colors">
+                 <ClipboardList className="h-4 w-4 text-neutral-500" />
               </div>
+              <div className="text-[8px] font-mono text-neutral-500 uppercase">Intake</div>
+           </div>
+
+           <div className="flex flex-col items-center gap-2 z-10">
               <motion.div 
-                animate={reduced ? {} : { scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5"
+                animate={reduced ? {} : { 
+                  boxShadow: ["0 0 0px rgba(52,211,153,0)", "0 0 15px rgba(52,211,153,0.2)", "0 0 0px rgba(52,211,153,0)"]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="h-12 w-12 rounded-xl border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-center"
               >
-                <Cpu className="h-3 w-3 text-emerald-400" />
-                <span className="text-[9px] font-mono font-bold text-emerald-400 tracking-tight">AI LOGIC LAYER</span>
+                 <Cpu className="h-5 w-5 text-emerald-400" />
               </motion.div>
-              <div className="flex flex-col items-center">
-                 <div className="text-[8px] font-mono text-emerald-400/60 uppercase">Scale</div>
-                 <Zap className="h-3 w-3 text-emerald-400/40" />
+              <div className="text-[9px] font-mono font-bold text-emerald-400 uppercase tracking-tighter">Central Engine</div>
+           </div>
+
+           <div className="flex flex-col items-center gap-2 z-10">
+              <div className="h-10 w-10 rounded-full border border-white/10 bg-[#0a0a0f] flex items-center justify-center">
+                 <Zap className="h-4 w-4 text-neutral-500" />
               </div>
+              <div className="text-[8px] font-mono text-neutral-500 uppercase">Outcome</div>
            </div>
         </div>
       </BentoCard>
 
-      {/* Polaris - 45s Blueprinting */}
+      {/* Polaris - Contextual Design */}
       <BentoCard className="col-span-1">
         <div className="flex items-start justify-between mb-3">
           <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-400">
             <LayoutGrid className="h-4 w-4" />
           </div>
-          <div className="text-right">
-            <div className="text-[14px] font-mono font-bold text-white">45s</div>
-            <div className="text-[8px] font-mono text-neutral-500 uppercase tracking-tighter">Blueprint</div>
+          <div className="flex flex-col items-end">
+            <span className="text-[14px] font-mono font-bold text-white">45s</span>
+            <span className="text-[7px] font-mono text-emerald-500/60 uppercase font-bold tracking-tighter">Discovery</span>
           </div>
         </div>
         <div className="text-[11px] font-semibold text-white mb-1">Polaris LXD</div>
-        <div className="text-[9px] text-neutral-500 leading-relaxed">Discovery to design documentation automation.</div>
-        <div className="mt-3 space-y-1">
+        <p className="text-[9px] text-neutral-500 leading-relaxed mb-3">Automating static/dynamic intakes into production blueprints.</p>
+        
+        <div className="space-y-1.5">
+           <div className="flex items-center gap-2 px-2 py-1 rounded bg-white/[0.03] border border-white/[0.05]">
+              <div className="h-1 w-1 rounded-full bg-emerald-400" />
+              <div className="text-[7px] font-mono text-neutral-400 uppercase">Generating Blueprint...</div>
+           </div>
            <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
               <motion.div 
                 className="h-full bg-emerald-400" 
@@ -140,60 +153,65 @@ export function SmartslateInfographic() {
                 transition={{ duration: 1.5, ease: EASE }}
               />
            </div>
-           <div className="flex justify-between text-[7px] font-mono text-neutral-600 uppercase">
-              <span>Intake</span>
-              <span>Synthesis</span>
-           </div>
         </div>
       </BentoCard>
 
-      {/* Constellation - Artifacts */}
+      {/* Constellation - Contextual Analysis */}
       <BentoCard className="col-span-1">
         <div className="flex items-start justify-between mb-3">
           <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-teal-400/10 text-teal-400">
             <Database className="h-4 w-4" />
           </div>
-          <div className="text-right">
-             <Activity className="h-3 w-3 text-teal-400 animate-pulse ml-auto" />
-             <div className="text-[8px] font-mono text-neutral-500 uppercase tracking-tighter">Live Audit</div>
+          <div className="flex flex-col items-end">
+             <Activity className="h-3 w-3 text-teal-400 animate-pulse" />
+             <span className="text-[7px] font-mono text-teal-500/60 uppercase font-bold tracking-tighter">Repo Audit</span>
           </div>
         </div>
         <div className="text-[11px] font-semibold text-white mb-1">Constellation</div>
-        <div className="text-[9px] text-neutral-500 leading-relaxed">Cross-artifact analysis & instructional design gaps.</div>
-        <div className="mt-3 flex gap-1">
-           {[...Array(3)].map((_, i) => (
-             <div key={i} className="flex-1 h-4 rounded bg-white/[0.04] border border-white/[0.05] flex items-center justify-center">
-                <FileText className="h-2 w-2 text-neutral-600" />
-             </div>
-           ))}
-           <div className="flex-1 h-4 rounded border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-center">
-              <Sparkles className="h-2 w-2 text-emerald-400" />
+        <p className="text-[9px] text-neutral-500 leading-relaxed mb-3">Cross-artifact design analysis & gap identification.</p>
+        
+        <div className="grid grid-cols-2 gap-1.5">
+           <div className="p-1.5 rounded border border-white/[0.05] bg-white/[0.02] flex flex-col items-center">
+              <FileSearch className="h-2.5 w-2.5 text-neutral-500 mb-1" />
+              <span className="text-[6px] font-mono text-neutral-600 uppercase">Reviewing Artifacts</span>
+           </div>
+           <div className="p-1.5 rounded border border-emerald-500/20 bg-emerald-500/5 flex flex-col items-center">
+              <AlertTriangle className="h-2.5 w-2.5 text-emerald-400 mb-1" />
+              <span className="text-[6px] font-mono text-emerald-600 uppercase font-bold">Flagging Gaps</span>
            </div>
         </div>
       </BentoCard>
 
-      {/* Integration Roadmap */}
+      {/* Ecosystem Breadth - Showing it's a coherent suite */}
       <BentoCard className="col-span-2">
-        <div className="flex items-center gap-4">
-           <div className="text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-[0.2em] rotate-180 [writing-mode:vertical-lr]">Roadmap</div>
-           <div className="flex-1 grid grid-cols-4 gap-2">
-              <div className="col-span-1 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex flex-col items-center">
-                 <div className="text-[8px] font-bold text-emerald-400">P</div>
-                 <div className="text-[6px] text-emerald-600 font-mono">ACTIVE</div>
+        <div className="flex items-center justify-between">
+           <div className="text-[9px] font-mono font-bold text-neutral-600 uppercase tracking-widest">Cross-Integration Roadmap</div>
+           <div className="flex gap-2">
+              <div className="flex items-center gap-1">
+                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                 <span className="text-[7px] font-mono text-neutral-500 uppercase">Active</span>
               </div>
-              <div className="col-span-1 p-2 rounded-lg bg-teal-500/10 border border-teal-500/20 flex flex-col items-center">
-                 <div className="text-[8px] font-bold text-teal-400">C</div>
-                 <div className="text-[6px] text-teal-600 font-mono">ACTIVE</div>
-              </div>
-              <div className="col-span-2 p-2 rounded-lg bg-white/[0.03] border border-white/[0.08] flex items-center justify-center gap-2">
-                 <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
-                 <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
-                 <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
-                 <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
-                 <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
-                 <div className="text-[7px] font-mono text-neutral-600">PENDING</div>
+              <div className="flex items-center gap-1">
+                 <div className="h-1.5 w-1.5 rounded-full bg-white/10" />
+                 <span className="text-[7px] font-mono text-neutral-500 uppercase">Development</span>
               </div>
            </div>
+        </div>
+        
+        <div className="mt-4 flex justify-between px-2">
+           {['P', 'C', 'S', 'O', 'L', 'A', 'R'].map((letter, i) => (
+             <div key={i} className="flex flex-col items-center gap-1">
+                <div className={`h-7 w-7 rounded-lg border flex items-center justify-center font-bold text-[10px] ${
+                  i < 2 
+                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" 
+                    : "border-white/5 bg-white/[0.02] text-neutral-700"
+                }`}>
+                   {letter}
+                </div>
+                {i === 0 && <span className="text-[6px] font-mono text-emerald-600 font-bold uppercase">Polaris</span>}
+                {i === 1 && <span className="text-[6px] font-mono text-teal-600 font-bold uppercase">Const</span>}
+             </div>
+           ))}
         </div>
       </BentoCard>
     </div>
