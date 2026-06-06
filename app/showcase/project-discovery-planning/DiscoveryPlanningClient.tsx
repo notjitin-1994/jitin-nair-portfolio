@@ -40,7 +40,7 @@ const PHASES = [
     icon: Cpu,
     name: "Adaptive Question Generation",
     description:
-      "Claude Sonnet reads the intake signal and generates a bespoke discovery questionnaire — 10 thematic sections, 60+ precision questions — uniquely calibrated to the org, industry, and learning gap.",
+      "The intelligence engine reads the intake signal and generates a bespoke discovery questionnaire — 10 thematic sections, 60+ precision questions — uniquely calibrated to the org, industry, and learning gap.",
     stat: "60+",
     statLabel: "AI-authored questions",
     accent: true,
@@ -60,11 +60,11 @@ const PHASES = [
     number: "04",
     phase: "AI Synthesis",
     icon: Sparkles,
-    name: "Blueprint Generation",
+    name: "Learning Experience Design Documentation",
     description:
-      "All discovery signals converge. The AI synthesizes a 10-section curriculum blueprint — objectives, modules, assessments, rollout, and budget — in under 45 seconds, export-ready in JSON and Markdown.",
+      "All discovery signals converge. The AI synthesizes a 10-section learning experience design documentation — objectives, modules, assessments, rollout, and budget — in under 45 seconds, export-ready in JSON and Markdown.",
     stat: "< 45s",
-    statLabel: "to full blueprint",
+    statLabel: "to full LX documentation",
     accent: true,
   },
 ];
@@ -75,12 +75,12 @@ const PIPELINE_NODES = [
     label: "Phase I · Static Intake",
     icon: ClipboardList,
     name: "Structured Context Capture",
-    detail: "Moody's Ratings · Financial Services · 26–50 learners · $70,000 · 8 weeks",
+    detail: "Acme Services · Financial Services · 26–50 learners · $70,000 · 8 weeks",
     accent: false,
   },
   {
     id: "ai-gen",
-    label: "AI Analysis · Claude Sonnet 4.5",
+    label: "AI Analysis · Intelligence Engine",
     icon: Cpu,
     name: "Adaptive Question Generation",
     detail: "10 sections · 60 precision questions · uniquely calibrated to context",
@@ -96,7 +96,7 @@ const PIPELINE_NODES = [
   },
   {
     id: "blueprint",
-    label: "Synthesis · Blueprint Output",
+    label: "Synthesis · LX Documentation",
     icon: Sparkles,
     name: '"Data-Driven Leadership"',
     detail: "8 weeks · 4 modules · Phillips ROI · JSON + Markdown · < 45s",
@@ -165,7 +165,7 @@ function Hero() {
             className="mt-6 text-lg leading-relaxed text-neutral-400 sm:text-xl"
           >
             Automated stakeholder discovery, strategic curriculum mapping, and the architectural
-            blueprints that bridge business needs with learning solutions.
+            documentation that bridges business needs with learning solutions.
           </motion.p>
         </div>
       </div>
@@ -194,7 +194,7 @@ function PipelineSection() {
           </h2>
           <p className="max-w-2xl text-lg text-neutral-400 leading-relaxed mb-16">
             Structured intake feeds an AI that generates precision discovery questions, and those
-            answers synthesize into a production-ready blueprint — without a single manual
+            answers synthesize into a production-ready learning experience design documentation — without a single manual
             reformatting step.
           </p>
         </Reveal>
@@ -296,18 +296,18 @@ function ArchitectureSection() {
               <p className="text-lg">
                 Most L&D tools treat intake and design as separate workflows. Polaris binds them:
                 Phase I captures organizational context; Phase II extracts instructional
-                intelligence — and the AI layer translates both into a structured blueprint without
+                intelligence — and the AI layer translates both into a structured LX documentation without
                 manual reformatting.
               </p>
               <ul className="space-y-4 pt-2">
                 {[
                   {
                     term: "Phase I → AI",
-                    def: "Static intake feeds Claude, which generates 60+ bespoke discovery questions",
+                    def: "Static intake feeds the intelligence engine, which generates 60+ bespoke discovery questions",
                   },
                   {
-                    term: "Phase II → Blueprint",
-                    def: "Dynamic answers synthesized into a 10-section curriculum structure",
+                    term: "Phase II → LX Documentation",
+                    def: "Dynamic answers synthesized into a 10-section LX documentation structure",
                   },
                   {
                     term: "Dual-format export",
@@ -315,7 +315,7 @@ function ArchitectureSection() {
                   },
                   {
                     term: "< 45s synthesis",
-                    def: "From final answer to a production-ready, validated blueprint",
+                    def: "From final answer to production-ready, validated LX documentation",
                   },
                 ].map(({ term, def }) => (
                   <li key={term} className="flex items-start gap-3 text-sm">
@@ -426,9 +426,9 @@ function MetricsSection() {
               <div className="font-serif text-5xl font-medium text-white mb-4">
                 45<span className="text-2xl text-emerald-400">s</span>
               </div>
-              <h3 className="text-lg font-medium text-white mb-2">Average Blueprint Time</h3>
+              <h3 className="text-lg font-medium text-white mb-2">Average Documentation Time</h3>
               <p className="text-sm text-neutral-500 leading-relaxed">
-                From raw stakeholder brief to a validated 20-page curriculum blueprint, ready for
+                From raw stakeholder brief to a validated 20-section LX documentation, ready for
                 production.
               </p>
             </div>

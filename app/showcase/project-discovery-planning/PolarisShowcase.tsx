@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   ChevronDown,
@@ -30,6 +30,8 @@ import {
   Minimize2,
   Activity,
   Accessibility,
+  X,
+  ArrowUpRight,
 } from "lucide-react";
 import { EASE } from "../../components/ld/primitives";
 
@@ -44,7 +46,7 @@ const ACCENT: Record<Accent, { text: string; iconBg: string; soft: string; borde
   rose: { text: "text-rose-400", iconBg: "bg-rose-500/15", soft: "bg-rose-500/10", border: "border-rose-500/30", bar: "bg-rose-400" },
 };
 
-// ─── Static Questionnaire (Phase 1) — Moody's Ratings ─────────────────────────
+// ─── Static Questionnaire (Phase 1) — Acme Services ──────────────────────────
 
 interface RadioPillsData { type: "radio"; options: string[]; selected: string }
 interface CheckPillsData { type: "check"; options: string[]; selected: string[] }
@@ -77,7 +79,7 @@ const STATIC_SECTIONS: StaticSection[] = [
     title: "Organisation Context",
     subtitle: "Structure, scale, and compliance landscape",
     fields: [
-      { id: "org_name", label: "Organisation name", field: { type: "text", value: "Moody’s Ratings" } },
+      { id: "org_name", label: "Organisation name", field: { type: "text", value: "Acme Services" } },
       { id: "sector", label: "Primary industry sector", field: { type: "radio", options: ["Technology", "Financial Services", "Healthcare", "Retail", "Government"], selected: "Financial Services" } },
       { id: "org_size", label: "Organisation size", field: { type: "radio", options: ["1-50", "51-200", "201-1000", "1001-5000", "5001-10000", "10000+"], selected: "5001-10000" } },
       { id: "regions", label: "Operating regions", field: { type: "check", options: ["North America", "EMEA", "APAC", "LATAM", "Global"], selected: ["Global"] } },
@@ -249,7 +251,7 @@ const DYNAMIC_ANSWERS: Record<string, string | string[] | number> = {
   s7_q4: "Lack of content on translating business problems into data science use cases, evaluating model outputs and limitations, data governance and ethics for leaders, and structured decision-making frameworks. Missing guidance on stakeholder alignment, ROI measurement of data initiatives, and practical case studies.",
   s7_q5: "1-2y", s7_q6: "Articulate 360 (Storyline/Rise)",
   s8_q1: ["comms"], s8_q2: "read-only", s8_q3: "yes",
-  s8_q4: "Must adhere to Moody’s Ratings brand guidelines—use approved blue/grey palette, clean typography, and minimalistic layouts. Ensure WCAG-compliant contrast, clear navigation, and professional, data-centric visuals suitable for senior leadership.",
+  s8_q4: "Must adhere to Acme Services brand guidelines—use approved blue/grey palette, clean typography, and minimalistic layouts. Ensure WCAG-compliant contrast, clear navigation, and professional, data-centric visuals suitable for senior leadership.",
   s8_q5: ["chrome", "safari"], s8_q6: "none",
   s9_q1: "manager-nom", s9_q2: ["email", "intranet", "town-halls", "manager-1on1"], s9_q3: "2026-06-30",
   s9_q4: "Resistance from senior leaders due to time constraints or perceived low relevance; low data literacy causing disengagement; misalignment with business priorities; limited leadership sponsorship; difficulty integrating learning into workflows.",
@@ -259,18 +261,18 @@ const DYNAMIC_ANSWERS: Record<string, string | string[] | number> = {
   s10_q5: 4, s10_q6: "ongoing",
 };
 
-// ─── Blueprint data — Moody's Ratings ─────────────────────────────────────────
+// ─── Blueprint data — Acme Services ──────────────────────────────────────────
 
 const BLUEPRINT = {
   title: "Data-Driven Leadership: Strategic Data Science for Executives",
-  organization: "Moody’s Ratings",
+  organization: "Acme Services",
   role: "Instructional Designer",
   generated: "Polaris · Apr 2026",
   version: "1.0",
   executive_summary:
-    "The 'Data-Driven Leadership' program is an 8-week, highly targeted learning initiative designed to bridge the data literacy gap among senior leaders at Moody’s Ratings. While executives possess deep financial services expertise, translating data science capabilities into actionable business strategies remains a critical performance gap. This program empowers 26-50 senior leaders to interpret analytical outputs, evaluate model limitations, and align data initiatives with overarching organizational goals, directly driving revenue growth and innovation.\n\nUtilizing a blended instructional strategy rooted in cognitivism and experiential learning, the 6-hour curriculum combines asynchronous microlearning (developed in Articulate 360) with synchronous live workshops and group case analyses. The program culminates in a practical capstone project where leaders propose a data-driven strategic initiative.",
+    "The ‘Data-Driven Leadership’ program is an 8-week, highly targeted learning initiative designed to bridge the data literacy gap among senior leaders at Acme Services. While executives possess deep financial services expertise, translating data science capabilities into actionable business strategies remains a critical performance gap. This program empowers 26-50 senior leaders to interpret analytical outputs, evaluate model limitations, and align data initiatives with overarching organizational goals, directly driving revenue growth and innovation.\n\nUtilizing a blended instructional strategy rooted in cognitivism and experiential learning, the 6-hour curriculum combines asynchronous microlearning (developed in Articulate 360) with synchronous live workshops and group case analyses. The program culminates in a practical capstone project where leaders propose a data-driven strategic initiative.",
   objectives: [
-    { id: "obj1", title: "Identify Strategic Use Cases", description: "Identify at least 3 high-impact data science use cases aligned with Moody's business priorities.", metric: "Capstone Proposal Rubric", baseline: 1, target: 4, due: "Jun 15, 2026" },
+    { id: "obj1", title: "Identify Strategic Use Cases", description: "Identify at least 3 high-impact data science use cases aligned with Acme Services' business priorities.", metric: "Capstone Proposal Rubric", baseline: 1, target: 4, due: "Jun 15, 2026" },
     { id: "obj2", title: "Interpret Analytical Outputs", description: "Accurately interpret key data science model outputs, basic statistics, and report generations.", metric: "Case-Based Assessment Score", baseline: 2, target: 4, due: "Jun 1, 2026" },
     { id: "obj3", title: "Formulate Data-Driven Decisions", description: "Apply structured frameworks to make informed decisions and allocate resources efficiently.", metric: "Manager Evaluation (Post-30 Days)", baseline: 2, target: 5, due: "Jun 30, 2026" },
   ],
@@ -308,18 +310,18 @@ const BLUEPRINT = {
     { id: "m4", num: 4, title: "Capstone: Strategic Data Initiative", description: "Synthesizing learning into a practical, actionable business proposal.", duration: "Week 7-8 (1.5 hrs)", delivery: "Live Workshop & Presentations", topics: ["Stakeholder Alignment", "Implementation Roadmapping"], activities: [{ type: "Project", activity: "Capstone Project Development", duration: "60 minutes" }], assessment: { type: "Presentation", description: "Presenting a data-driven strategic initiative to peers and SMEs." } },
   ],
   strategy: {
-    overview: "The strategy leverages a blended, linear approach tailored for time-constrained executives. It combines cognitivism (mental models for data interpretation) with experiential learning (real-world Moody's case studies). Content is delivered via 80% asynchronous microlearning (video-heavy, Articulate Rise) and 20% synchronous live workshops. Spaced repetition and job aids reinforce learning to combat tech anxiety and change fatigue.",
+    overview: "The strategy leverages a blended, linear approach tailored for time-constrained executives. It combines cognitivism (mental models for data interpretation) with experiential learning (real-world Acme Services case studies). Content is delivered via 80% asynchronous microlearning (video-heavy, Articulate Rise) and 20% synchronous live workshops. Spaced repetition and job aids reinforce learning to combat tech anxiety and change fatigue.",
     modalities: [
       { type: "Asynchronous Microlearning", percentage: 80, rationale: "Accommodates 20+ hour work weeks and flexible locations.", tools: ["Articulate 360 (Rise/Storyline)", "Video Snippets"] },
       { type: "Synchronous Workshops", percentage: 20, rationale: "Facilitates group projects, social learning, and SME Q&A.", tools: ["MS Teams/Zoom", "Miro (Concept Mapping)"] },
     ],
     cohort: "Manager-nominated cohorts of 10-15 leaders to ensure high-touch facilitation and cross-functional peer networking.",
-    accessibility: ["WCAG-compliant contrast using Moody's blue/grey palette", "Closed captioning and transcripts for all video content", "Mobile-responsive design for Chrome/Safari access", "Screen-reader compatible Articulate modules"],
+    accessibility: ["WCAG-compliant contrast using the approved design palette", "Closed captioning and transcripts for all video content", "Mobile-responsive design for Chrome/Safari access", "Screen-reader compatible Articulate modules"],
   },
   resources: {
     budget: { currency: "USD", total: 70000, items: [{ item: "ID & Content Development (Internal/Contract)", amount: 45000 }, { item: "SME Compensation/Backfill", amount: 15000 }, { item: "Specialized Tooling & Media Assets", amount: 3000 }, { item: "Rewards (Badges, Bonus Points)", amount: 7000 }] },
     human: [{ role: "Instructional Designer", fte: 1, duration: "8 weeks" }, { role: "Data Science SME", fte: 0.2, duration: "6 weeks" }, { role: "Program Manager", fte: 0.25, duration: "10 weeks" }],
-    tools: [{ name: "Articulate 360", category: "Content Authoring", cost: "Existing License" }, { name: "Moody's Internal LMS (SCORM)", category: "LMS", cost: "Existing Infrastructure" }, { name: "Data Viz Simulators", category: "Specialized Tools", cost: "New Subscription" }],
+    tools: [{ name: "Articulate 360", category: "Content Authoring", cost: "Existing License" }, { name: "Internal LMS (SCORM)", category: "LMS", cost: "Existing Infrastructure" }, { name: "Data Viz Simulators", category: "Specialized Tools", cost: "New Subscription" }],
   },
   timeline: {
     critical_path: ["Design & Prototyping", "Development & QA", "Launch & Delivery"],
@@ -340,13 +342,13 @@ const BLUEPRINT = {
   risks: [
     { risk: "Executive Time Constraints", probability: "High", impact: "High", mitigation: "Strict adherence to microlearning (max 15-min chunks); integrate into existing workflows." },
     { risk: "Low Data Literacy / Tech Anxiety", probability: "High", impact: "Medium", mitigation: "Provide foundational pre-work glossary; use intuitive, read-only dashboard simulations." },
-    { risk: "Limited Leadership Sponsorship", probability: "Medium", impact: "High", mitigation: "Leverage manager nominations; align capstone directly to current Moody's strategic OKRs." },
+    { risk: "Limited Leadership Sponsorship", probability: "Medium", impact: "High", mitigation: "Leverage manager nominations; align capstone directly to current strategic OKRs." },
   ],
   contingency: ["If live workshop attendance is low, record sessions and require asynchronous peer review of capstones.", "If completion lags, trigger automated LMS reminders and escalate to nominating managers."],
   sustainability: {
     content: "To ensure the program remains relevant within the fast-paced financial services sector, ownership will be jointly held by Central L&D and the Data Strategy team. The curriculum is designed with a 1-2 year shelf life, utilizing modular Articulate 360 files to allow for rapid updates without overhauling the entire program.",
     review_frequency: "Biannually",
-    triggers: ["Changes in Moody's Data Strategy", "New Financial Data Regulations", "Introduction of new internal analytics tools"],
+    triggers: ["Changes in Data Strategy", "New Financial Data Regulations", "Introduction of new internal analytics tools"],
     scaling: ["Convert live workshops to asynchronous peer-review formats for global rollout.", "Translate core modules for non-English speaking regional offices.", "Develop a 'Train-the-Trainer' model for regional Data SMEs."],
   },
 };
@@ -575,7 +577,7 @@ function DynamicFieldRenderer({ question }: { question: DQuestion }) {
 
 const STATIC_ICONS = [Briefcase, MapPin, Users];
 
-function StaticQuestionnaireCard() {
+function StaticQuestionnaireCard({ fullscreen = false }: { fullscreen?: boolean }) {
   const [active, setActive] = useState(0);
   const reduced = useReducedMotion();
   const section = STATIC_SECTIONS[active];
@@ -603,7 +605,7 @@ function StaticQuestionnaireCard() {
         })}
       </div>
 
-      <div className="flex-1 overflow-y-auto px-5 py-5" style={{ maxHeight: "460px" }}>
+      <div className="flex-1 overflow-y-auto px-5 py-5" style={fullscreen ? undefined : { maxHeight: "460px" }}>
         <AnimatePresence mode="wait">
           <motion.div key={active} initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }} className="space-y-5">
             <div>
@@ -630,7 +632,7 @@ function StaticQuestionnaireCard() {
 
 // ─── Dynamic Questionnaire Card ───────────────────────────────────────────────
 
-function DynamicQuestionnaireCard() {
+function DynamicQuestionnaireCard({ fullscreen = false }: { fullscreen?: boolean }) {
   const [active, setActive] = useState(0);
   const reduced = useReducedMotion();
   const section = DYNAMIC_SECTIONS[active];
@@ -653,7 +655,7 @@ function DynamicQuestionnaireCard() {
         <div className="ml-auto shrink-0 text-[10px] text-neutral-600 pl-3">{active + 1} / {total}</div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-5 py-5" style={{ maxHeight: "460px" }}>
+      <div className="flex-1 overflow-y-auto px-5 py-5" style={fullscreen ? undefined : { maxHeight: "460px" }}>
         <AnimatePresence mode="wait">
           <motion.div key={active} initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }} className="space-y-5">
             <div className="flex items-center gap-2">
@@ -1137,12 +1139,12 @@ function BlueprintViewer() {
           <div className="flex items-start gap-3">
             <div className="shrink-0 rounded-xl bg-emerald-500/15 p-3"><FileText className="h-6 w-6 text-emerald-400" strokeWidth={1.75} /></div>
             <div>
-              <div className="mb-1.5 flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-emerald-400" /><span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-500">Generated Blueprint</span></div>
+              <div className="mb-1.5 flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-emerald-400" /><span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-500">LX Documentation</span></div>
               <h3 className="font-serif text-lg font-medium text-white leading-snug">{BLUEPRINT.title}</h3>
               <p className="mt-1 text-[12px] text-neutral-500">{BLUEPRINT.organization} · {BLUEPRINT.role} · {BLUEPRINT.generated}</p>
             </div>
           </div>
-          <div className="hidden shrink-0 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] px-3 py-1.5 text-center sm:block"><p className="text-[12px] font-bold text-emerald-400 tabular-nums">v{BLUEPRINT.version}</p><p className="text-[9px] text-emerald-600">blueprint</p></div>
+          <div className="hidden shrink-0 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] px-3 py-1.5 text-center sm:block"><p className="text-[12px] font-bold text-emerald-400 tabular-nums">v{BLUEPRINT.version}</p><p className="text-[9px] text-emerald-600">lxd</p></div>
         </div>
         <p className="mt-4 text-[13px] leading-relaxed text-neutral-400 whitespace-pre-line">{BLUEPRINT.executive_summary}</p>
       </div>
@@ -1178,67 +1180,320 @@ function BlueprintViewer() {
   );
 }
 
-// ─── Expand Panel Wrapper ─────────────────────────────────────────────────────
+// ─── Modal type ───────────────────────────────────────────────────────────────
 
-function ExpandPanel({ step, title, subtitle, children }: { step: string; title: string; subtitle: string; children: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
+type ModalId = "static" | "dynamic" | "lxd";
+
+// ─── Preview thumbnails (decorative, no hooks) ────────────────────────────────
+
+function StaticPreview() {
+  return (
+    <div className="w-full" style={{ transform: "scale(0.82)", transformOrigin: "top left", width: "122%" }}>
+      <div className="flex items-center gap-1.5 mb-3">
+        <div className="h-1 w-1 rounded-full bg-emerald-400" />
+        <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-emerald-500">Phase 1 · Static Questionnaire</span>
+      </div>
+      <div className="flex gap-1 mb-3">
+        {["Role & Exp.", "Organisation", "Learning Gap"].map((t, i) => (
+          <div key={t} className={["rounded-md px-2 py-1 text-[9px] font-medium border", i === 0 ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-white/[0.04] text-neutral-600 border-white/10"].join(" ")}>{t}</div>
+        ))}
+      </div>
+      <div className="space-y-2.5">
+        <div>
+          <div className="text-[9px] font-medium text-neutral-400 mb-1.5">Your primary role</div>
+          <div className="flex flex-wrap gap-1">
+            {["L&D Lead", "Instructional Designer", "CLO / VP"].map((opt, i) => (
+              <span key={opt} className={["rounded px-1.5 py-0.5 text-[8px] font-medium border", i === 1 ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400" : "border-white/10 text-neutral-600"].join(" ")}>{opt}</span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div className="text-[9px] font-medium text-neutral-400 mb-1.5">Technical skills</div>
+          <div className="flex flex-wrap gap-1">
+            {["LMS Admin", "SCORM/xAPI", "Video Production", "HTML/CSS"].map((opt) => (
+              <span key={opt} className="rounded px-1.5 py-0.5 text-[8px] font-medium border border-emerald-500/50 bg-emerald-500/10 text-emerald-400">{opt}</span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div className="text-[9px] font-medium text-neutral-400 mb-1">Industry experience</div>
+          <div className="flex flex-wrap gap-1">
+            <span className="rounded px-1.5 py-0.5 text-[8px] font-medium border border-emerald-500/50 bg-emerald-500/10 text-emerald-400">Financial Services</span>
+            <span className="rounded px-1.5 py-0.5 text-[8px] font-medium border border-white/10 text-neutral-600">Technology</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DynamicPreview() {
+  return (
+    <div className="w-full">
+      <div className="flex items-center gap-1.5 mb-3">
+        <div className="h-1 w-1 rounded-full bg-teal-400" />
+        <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-teal-400">Phase 2 · AI-Generated Questions</span>
+      </div>
+      <div className="flex gap-1 mb-3 flex-wrap">
+        {Array.from({ length: 10 }, (_, i) => (
+          <div key={i} className={["flex h-6 w-6 items-center justify-center rounded-md text-[10px] font-bold", i === 0 ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/40" : "bg-white/[0.04] text-neutral-600"].join(" ")}>{i + 1}</div>
+        ))}
+      </div>
+      <div className="space-y-2">
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className="flex h-5 w-5 items-center justify-center rounded-md bg-emerald-500/15 text-[8px] font-bold text-emerald-400">1</span>
+          <span className="text-[9px] font-semibold text-white">Learning Objectives & Outcomes</span>
+        </div>
+        {[
+          { label: "Primary business impact areas", chips: ["Revenue Growth", "Innovation"] },
+          { label: "Highest Bloom's Taxonomy level", chips: ["Apply"] },
+          { label: "Success criteria", chips: ["Completion Rate", "Skill Application"] },
+        ].map((q) => (
+          <div key={q.label} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2">
+            <div className="text-[8px] text-neutral-500 mb-1.5">{q.label}</div>
+            <div className="flex flex-wrap gap-1">
+              {q.chips.map((c) => (
+                <span key={c} className="rounded px-1.5 py-0.5 text-[8px] border border-emerald-500/50 bg-emerald-500/10 text-emerald-400">{c}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LXDocPreview() {
+  const preview = BP_SECTIONS.slice(0, 5);
+  return (
+    <div className="w-full">
+      <div className="flex items-center gap-1.5 mb-3">
+        <div className="h-1 w-1 rounded-full bg-emerald-400" />
+        <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-emerald-500">LX Documentation · 10 sections</span>
+      </div>
+      <div className="space-y-1.5">
+        {preview.map((s, i) => {
+          const Icon = s.icon;
+          const a = ACCENT[s.accent];
+          return (
+            <div key={s.id} className={["flex items-center gap-2 rounded-lg border px-2.5 py-2", i === 0 ? "border-emerald-500/25 bg-emerald-500/[0.04]" : "border-white/[0.06] bg-white/[0.02]"].join(" ")}>
+              <div className={["flex h-5 w-5 shrink-0 items-center justify-center rounded-md", a.iconBg].join(" ")}>
+                <Icon className={["h-3 w-3", a.text].join(" ")} strokeWidth={1.75} />
+              </div>
+              <span className="text-[9px] font-medium text-neutral-300 truncate">{s.title}</span>
+              {i === 0 && <ChevronDown className="ml-auto h-3 w-3 shrink-0 text-emerald-500 rotate-180" />}
+            </div>
+          );
+        })}
+        <div className="flex items-center gap-2 rounded-lg border border-white/[0.04] bg-white/[0.01] px-2.5 py-2 opacity-40">
+          <span className="text-[9px] text-neutral-600">5 more sections…</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Showcase card config ─────────────────────────────────────────────────────
+
+interface ShowcaseCardData {
+  id: ModalId;
+  step: string;
+  title: string;
+  description: string;
+  chips: string[];
+  preview: React.ReactNode;
+}
+
+const CARDS: ShowcaseCardData[] = [
+  {
+    id: "static",
+    step: "01",
+    title: "Context Intake Questionnaire",
+    description: "Baseline context capture across role, organisation, and learning gap",
+    chips: ["3 sections", "30+ fields", "Phase I"],
+    preview: <StaticPreview />,
+  },
+  {
+    id: "dynamic",
+    step: "02",
+    title: "Adaptive Discovery Questionnaire",
+    description: "AI-generated deep-dive questions across 10 thematic domains",
+    chips: ["10 sections", "60 questions", "Phase II"],
+    preview: <DynamicPreview />,
+  },
+  {
+    id: "lxd",
+    step: "03",
+    title: "Learning Experience Design Documentation",
+    description: "AI-synthesised curriculum architecture — the full Polaris LX dashboard",
+    chips: ["10 sections", "Full documentation", "Acme Services"],
+    preview: <LXDocPreview />,
+  },
+];
+
+const MODAL_META: Record<ModalId, { title: string; subtitle: string; icon: React.ElementType; maxW: string }> = {
+  static: { title: "Context Intake Questionnaire", subtitle: "Phase I · 3 sections · 30+ fields", icon: FileText, maxW: "max-w-2xl" },
+  dynamic: { title: "Adaptive Discovery Questionnaire", subtitle: "Phase II · 10 sections · 60 questions", icon: BarChart3, maxW: "max-w-3xl" },
+  lxd: { title: "Learning Experience Design Documentation", subtitle: "Acme Services · 10 sections", icon: BookOpen, maxW: "max-w-6xl" },
+};
+
+// ─── Showcase Card ─────────────────────────────────────────────────────────────
+
+function ShowcaseCard({ card, onClick, index }: { card: ShowcaseCardData; onClick: () => void; index: number }) {
   const reduced = useReducedMotion();
+  return (
+    <motion.button
+      onClick={onClick}
+      initial={reduced ? false : { opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay: index * 0.08, ease: EASE }}
+      className="group relative flex flex-col w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] text-left transition-all duration-300 hover:border-emerald-500/25 hover:bg-white/[0.04] active:scale-[0.98]"
+    >
+      {/* Preview area */}
+      <div className="relative overflow-hidden bg-[#0d0d14] border-b border-white/[0.06]" style={{ height: "220px" }}>
+        <div className="absolute inset-0 flex items-start p-5 overflow-hidden pointer-events-none select-none">
+          {card.preview}
+        </div>
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0a0a0f] to-transparent" />
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-1 flex-col gap-2.5 p-5">
+        <span className="font-mono text-[11px] font-bold text-neutral-700 transition-colors group-hover:text-emerald-500/60">{card.step}</span>
+        <h3 className="text-[15px] font-semibold text-white leading-snug">{card.title}</h3>
+        <p className="text-[12px] text-neutral-500 leading-relaxed">{card.description}</p>
+        <div className="flex flex-wrap gap-1.5 mt-1">
+          {card.chips.map((chip) => (
+            <span key={chip} className="inline-flex items-center rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] text-neutral-500">{chip}</span>
+          ))}
+        </div>
+        <div className="mt-auto flex items-center gap-1.5 pt-2 text-[12px] font-medium text-emerald-400 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <span>Explore full view</span>
+          <ArrowUpRight className="h-3.5 w-3.5" />
+        </div>
+      </div>
+    </motion.button>
+  );
+}
+
+// ─── Lightbox Modal ───────────────────────────────────────────────────────────
+
+function LightboxModal({ id, onClose }: { id: ModalId; onClose: () => void }) {
+  const reduced = useReducedMotion();
+  const meta = MODAL_META[id];
+  const Icon = meta.icon;
+
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
 
   return (
-    <div className={["rounded-2xl border transition-colors duration-200", open ? "border-emerald-500/25 bg-emerald-500/[0.02]" : "border-white/[0.08] bg-white/[0.02] hover:border-white/15"].join(" ")}>
-      <button onClick={() => setOpen((p) => !p)} className="group w-full flex items-center gap-4 px-6 py-5 text-left" aria-expanded={open}>
-        <span className="shrink-0 font-mono text-[11px] font-bold text-neutral-700 group-hover:text-emerald-500/60 transition-colors">{step}</span>
-        <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-semibold text-white">{title}</p>
-          <p className="text-[12px] text-neutral-600 mt-0.5">{subtitle}</p>
-        </div>
-        <div className={["shrink-0 flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-200", open ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400" : "border-white/10 text-neutral-600 group-hover:border-white/20 group-hover:text-white"].join(" ")}>
-          <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}><ChevronDown className="h-4 w-4" strokeWidth={2} /></motion.div>
-        </div>
-      </button>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center sm:px-6"
+      onClick={onClose}
+    >
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" />
 
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ height: { duration: reduced ? 0 : 0.35, ease: [0.16, 1, 0.3, 1] }, opacity: { duration: reduced ? 0 : 0.2 } }} style={{ overflow: "hidden" }}>
-            <div className="border-t border-white/[0.06] px-4 py-6 sm:px-6">{children}</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      <motion.div
+        initial={reduced ? false : { opacity: 0, y: 32, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={reduced ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.97 }}
+        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        className={[
+          "relative z-10 flex flex-col w-full bg-[#0f0f17] border border-white/[0.08] shadow-2xl",
+          "h-[95dvh] rounded-t-[2rem]",
+          "sm:h-auto sm:max-h-[92dvh] sm:rounded-[2rem]",
+          meta.maxW,
+        ].join(" ")}
+      >
+        {/* Drag handle — mobile only */}
+        <div className="flex shrink-0 justify-center pt-3 pb-1 sm:hidden">
+          <div className="h-1 w-10 rounded-full bg-white/20" />
+        </div>
+
+        {/* Header */}
+        <div className="flex shrink-0 items-center gap-3 border-b border-white/[0.07] px-5 py-4 sm:px-6">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15">
+            <Icon className="h-[18px] w-[18px] text-emerald-400" strokeWidth={1.75} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="truncate text-[14px] font-semibold text-white sm:text-[15px]">{meta.title}</h2>
+            <p className="text-[11px] text-neutral-500">{meta.subtitle}</p>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-neutral-400 transition-colors hover:border-white/20 hover:text-white active:scale-95"
+          >
+            <X className="h-4 w-4" strokeWidth={2} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          {id === "static" && <StaticQuestionnaireCard fullscreen />}
+          {id === "dynamic" && <DynamicQuestionnaireCard fullscreen />}
+          {id === "lxd" && <BlueprintViewer />}
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
 // ─── Main Export ──────────────────────────────────────────────────────────────
 
 export function PolarisShowcaseSection() {
+  const [modal, setModal] = useState<ModalId | null>(null);
   const reduced = useReducedMotion();
 
   return (
-    <section className="px-5 py-20 md:py-28 bg-[#0a0a0f] relative">
+    <section className="relative bg-[#0a0a0f] px-5 py-20 md:py-28">
       <div className="mx-auto max-w-6xl">
-        <motion.div initial={reduced ? false : { opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, ease: EASE }} className="mb-10">
-          <div className="inline-flex items-center gap-2 mb-5"><span className="h-px w-8 bg-emerald-500/30" /><span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">Live System Demo</span></div>
-          <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl mb-3">See the <span className="text-emerald-400 italic">system</span> in motion.</h2>
-          <p className="max-w-xl text-base text-neutral-500 leading-relaxed">Expand either panel to explore a real two-phase questionnaire run and the blueprint it generated — same stack, same logic, same dashboard UX as the Polaris production app.</p>
+        {/* Section header */}
+        <motion.div
+          initial={reduced ? false : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="mb-12"
+        >
+          <div className="inline-flex items-center gap-2 mb-5">
+            <span className="h-px w-8 bg-emerald-500/30" />
+            <span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">Live System Demo</span>
+          </div>
+          <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl mb-3">
+            See the <span className="italic text-emerald-400">system</span> in motion.
+          </h2>
+          <p className="max-w-xl text-base text-neutral-500 leading-relaxed">
+            Explore the two-phase questionnaire and the LX documentation it produces — same stack, same logic, same dashboard experience as the Polaris production platform.
+          </p>
         </motion.div>
 
-        <div className="space-y-3">
-          <motion.div initial={reduced ? false : { opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.6, delay: 0.08, ease: EASE }}>
-            <ExpandPanel step="01" title="Project Planning Questionnaire" subtitle="Two-phase intake: static baseline capture + AI-generated deep-dive questions">
-              <div className="grid gap-5 lg:grid-cols-2">
-                <StaticQuestionnaireCard />
-                <DynamicQuestionnaireCard />
-              </div>
-            </ExpandPanel>
-          </motion.div>
-
-          <motion.div initial={reduced ? false : { opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.6, delay: 0.14, ease: EASE }}>
-            <ExpandPanel step="02" title="Generated Learning Blueprint" subtitle="AI-synthesised curriculum architecture — the interactive Polaris blueprint dashboard">
-              <BlueprintViewer />
-            </ExpandPanel>
-          </motion.div>
+        {/* 3-card grid */}
+        <div className="grid gap-5 md:grid-cols-3">
+          {CARDS.map((card, i) => (
+            <ShowcaseCard key={card.id} card={card} onClick={() => setModal(card.id)} index={i} />
+          ))}
         </div>
       </div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {modal && <LightboxModal key={modal} id={modal} onClose={() => setModal(null)} />}
+      </AnimatePresence>
     </section>
   );
 }
