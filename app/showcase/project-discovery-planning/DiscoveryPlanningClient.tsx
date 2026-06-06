@@ -190,7 +190,7 @@ function Hero() {
 /* ---------- Pipeline Section ---------- */
 function PipelineSection() {
   return (
-    <section className="px-5 py-16 md:py-24 bg-[#0a0a0f] relative overflow-hidden">
+    <section className="px-5 py-24 md:py-32 bg-[#0a0a0f] relative overflow-hidden">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[50vh] w-[80vh] rounded-full bg-emerald-500/5 blur-[100px]" />
       </div>
@@ -290,7 +290,7 @@ function ArchitectureSection() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="px-5 py-16 md:py-24 bg-white/[0.02] border-y border-white/[0.05] relative overflow-hidden">
+    <section className="px-5 py-24 md:py-32 bg-white/[0.02] border-y border-white/[0.05] relative overflow-hidden">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-16 lg:grid-cols-2 items-center">
           {/* LEFT: Copy */}
@@ -427,7 +427,7 @@ function ArchitectureSection() {
 /* ---------- Metrics Section ---------- */
 function MetricsSection() {
   return (
-    <section className="px-5 py-16 md:py-24 bg-[#0a0a0f]">
+    <section className="px-5 py-24 md:py-32 bg-[#0a0a0f]">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-8 md:grid-cols-3">
           <Reveal>
@@ -475,7 +475,7 @@ function MetricsSection() {
 /* ---------- Final CTA ---------- */
 function Contact() {
   return (
-    <section id="contact" className="scroll-mt-24 px-5 py-16 md:py-24">
+    <section id="contact" className="scroll-mt-24 px-5 py-24 md:py-32">
       <div className="mx-auto max-w-6xl text-left">
         <Reveal>
           <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">

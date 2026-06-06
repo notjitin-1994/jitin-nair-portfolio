@@ -1258,7 +1258,18 @@ export function ProjectManagementClient() {
       />
 
       <div className="flex-1 pt-24 pb-24 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto w-full">
-        
+
+        {/* Back to Showcase */}
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-8">
+          <Link
+            href="/showcase"
+            className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
+          >
+            <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2} />
+            Back to Showcase
+          </Link>
+        </motion.div>
+
         {/* Automated Workflow Callout */}
         <motion.div 
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}

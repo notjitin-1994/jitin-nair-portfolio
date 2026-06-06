@@ -121,7 +121,7 @@ function BlueprintSection() {
   ];
 
   return (
-    <section className="px-5 py-16 md:py-24 bg-[#0a0a0f] relative overflow-hidden">
+    <section className="px-5 py-24 md:py-32 bg-[#0a0a0f] relative overflow-hidden">
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <Label>System Architecture</Label>
@@ -216,7 +216,7 @@ function OperationsSection() {
   ];
 
   return (
-    <section className="px-5 py-16 md:py-24 bg-white/[0.02] border-y border-white/[0.05]">
+    <section className="px-5 py-24 md:py-32 bg-white/[0.02] border-y border-white/[0.05]">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-16 lg:grid-cols-2 items-center">
           <Reveal>
@@ -279,7 +279,7 @@ function TechStackSection() {
   ];
 
   return (
-    <section className="px-5 py-16 md:py-24">
+    <section className="px-5 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
         <Reveal className="text-center mb-16">
           <Label>Technology Leverage</Label>
@@ -312,7 +312,7 @@ function TechStackSection() {
 /* ---------- 4. SME Enablement ---------- */
 function SmeSection() {
   return (
-    <section className="px-5 py-16 md:py-24 bg-[#0d0d14] relative overflow-hidden">
+    <section className="px-5 py-24 md:py-32 bg-[#0d0d14] relative overflow-hidden">
       <div className="mx-auto max-w-6xl">
         <div className="relative rounded-[3rem] border border-emerald-500/15 bg-emerald-500/[0.03] p-8 md:p-16 overflow-hidden">
           <div aria-hidden className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 h-96 w-96 rounded-full bg-emerald-500/10 blur-[120px]" />
@@ -372,7 +372,7 @@ function WorkflowSection() {
   ];
 
   return (
-    <section className="px-5 py-16 md:py-24 bg-[#0a0a0f]">
+    <section className="px-5 py-24 md:py-32 bg-[#0a0a0f]">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-14">
           <Label>Team & Lifecycle</Label>
@@ -411,7 +411,7 @@ function WorkflowSection() {
 /* ---------- Final CTA ---------- */
 function Contact() {
   return (
-    <section id="contact" className="scroll-mt-24 px-5 py-16 md:py-24 bg-[#0a0a0f]">
+    <section id="contact" className="scroll-mt-24 px-5 py-24 md:py-32 bg-[#0a0a0f]">
       <div className="mx-auto max-w-6xl text-left">
         <Reveal>
           <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">

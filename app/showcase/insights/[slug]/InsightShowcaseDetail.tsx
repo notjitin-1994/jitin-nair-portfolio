@@ -244,7 +244,7 @@ export function InsightShowcaseDetail({ slug }: { slug: string }) {
       />
 
       {/* Header */}
-      <section className="relative overflow-hidden px-5 pt-32 pb-8">
+      <section className="relative overflow-hidden px-5 pt-32 pb-16">
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute left-[-10%] top-[-20%] h-[60vh] w-[60vh] rounded-full bg-emerald-500/10 blur-[120px]" />
         </div>
@@ -291,7 +291,7 @@ export function InsightShowcaseDetail({ slug }: { slug: string }) {
       </section>
 
       {/* Body */}
-      <section className="px-5 pb-8">
+      <section className="px-5 pt-8 pb-8">
         <motion.article
           initial={reduced ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -303,7 +303,7 @@ export function InsightShowcaseDetail({ slug }: { slug: string }) {
       </section>
 
       {/* Author + related */}
-      <section className="px-5 py-16 border-t border-white/[0.06]">
+      <section className="px-5 py-24 md:py-32 border-t border-white/[0.06]">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] p-8">
             <div className="flex items-start gap-4">
