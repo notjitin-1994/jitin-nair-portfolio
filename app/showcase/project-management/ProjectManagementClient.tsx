@@ -28,7 +28,8 @@ function cn(...inputs: ClassValue[]) {
 type Role = "Project Manager" | "Lead Instructional Designer" | "Instructional Designer" | "Content Developer" | "eLearning Developer";
 type Status = "Backlog" | "In Progress" | "In Review" | "Done";
 type Modality = "Video" | "Interactive" | "Hybrid" | "ILT" | "VILT";
-type MainTab = "PM Dashboard" | "Kanban Board" | "Team Member Dashboard";
+type MainTab = "Dashboard" | "Kanban Board";
+type DashboardType = "PM Dashboard" | "Team Member Dashboard";
 type PMViewMode = "Home" | "Project List" | "Project Detail";
 
 interface User {
@@ -702,22 +703,26 @@ function TaskCard({
 // TASK DETAIL OVERLAY
 // ----------------------------------------------------------------------
 
-function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task, user: User, users: User[], onClose: () => void, actions: any }) {
+function TaskDetailOverlay({ taskId, user, users, onClose, actions }: { taskId: string, user: User, users: User[], onClose: () => void, actions: any }) {
   const [commentText, setCommentText] = useState("");
   const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
   const [showAssigneePicker, setShowAssigneePicker] = useState(false);
   const [showSubtaskAssigneePicker, setShowSubtaskAssigneePicker] = useState<string | null>(null);
   
-  const totalSubtasks = task.subtasks.length;
-  const completedSubtasks = task.subtasks.filter(s => s.completed).length;
-  const progress = totalSubtasks === 0 ? (task.status === "Done" ? 100 : 0) : (completedSubtasks / totalSubtasks) * 100;
-  const taskAssignee = users.find(u => u.id === task.assigneeId);
-
   // Background Scroll Lock
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = 'unset'; };
   }, []);
+
+  // Directly subscribe to the live task state from actions/state
+  const task = actions.getTaskById(taskId);
+  if (!task) return null;
+
+  const totalSubtasks = (task.subtasks || []).length;
+  const completedSubtasks = (task.subtasks || []).filter((s: Subtask) => s.completed).length;
+  const progress = totalSubtasks === 0 ? (task.status === "Done" ? 100 : 0) : (completedSubtasks / totalSubtasks) * 100;
+  const taskAssignee = users.find(u => u.id === task.assigneeId);
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-6">
@@ -745,7 +750,7 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
                   onChange={e => actions.moveTask(task.id, e.target.value as Status)}
                   className={cn(
                     "text-[10px] font-bold uppercase tracking-wider border rounded-md px-2 py-0.5 bg-transparent cursor-pointer focus:outline-none appearance-none transition-colors",
-                    STATUS_STYLES[task.status]
+                    STATUS_STYLES[task.status as Status]
                   )}
                 >
                   {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map(s => (
@@ -769,7 +774,7 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
             <div className="flex-1 space-y-4">
               <p className="text-sm text-neutral-400 leading-relaxed">{task.description}</p>
               <div className="flex flex-wrap gap-2 pt-2">
-                {task.tags.map(tag => (
+                {(task.tags || []).map((tag: string) => (
                   <span key={tag} className="px-2 py-1 rounded bg-white/[0.03] border border-white/5 text-[10px] font-medium text-neutral-500 uppercase tracking-widest">
                     {tag}
                   </span>
@@ -843,7 +848,7 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
             <ProgressBar value={progress} className="mb-4" />
             
             <div className="space-y-2">
-              {task.subtasks.map(st => {
+              {(task.subtasks || []).map((st: Subtask) => {
                 const stUser = users.find(u => u.id === st.assigneeId);
                 const isAssigneePickerOpen = showSubtaskAssigneePicker === st.id;
                 
@@ -954,7 +959,7 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
               <Paperclip className="h-3.5 w-3.5" /> Artifacts
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {task.attachments.map(att => (
+              {(task.attachments || []).map((att: Attachment) => (
                 <div key={att.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors cursor-pointer group">
                   <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0 group-hover:bg-emerald-500/20 transition-colors">
                     {att.type === 'pdf' || att.type === 'doc' ? <FileText className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
@@ -977,8 +982,8 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
               <MessageSquare className="h-3.5 w-3.5" /> Discussion
             </span>
             <div className="space-y-6 mb-8">
-              {task.comments.length === 0 && <p className="text-sm text-neutral-600 italic">No comments yet.</p>}
-              {task.comments.map(c => {
+              {(task.comments || []).length === 0 && <p className="text-sm text-neutral-600 italic">No comments yet.</p>}
+              {(task.comments || []).map((c: Comment) => {
                 const author = users.find(u => u.id === c.authorId);
                 return (
                   <div key={c.id} className="flex gap-4">
@@ -1029,11 +1034,12 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
 // ----------------------------------------------------------------------
 
 export function ProjectManagementClient() {
-  const [activeTab, setActiveTab] = useState<MainTab>("PM Dashboard");
+  const [activeTab, setActiveTab] = useState<MainTab>("Dashboard");
+  const [dashboardType, setDashboardType] = useState<DashboardType>("PM Dashboard");
   const [pmViewMode, setPmViewMode] = useState<PMViewMode>("Home");
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
   const [projects] = useState<Project[]>(INITIAL_PROJECTS);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [activeUserId, setActiveUserId] = useState<string>("u-1"); // Default: Jitin
   const [kanbanProjectFilter, setKanbanProjectFilter] = useState<string | null>(null);
@@ -1046,6 +1052,8 @@ export function ProjectManagementClient() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
 
+  const selectedTask = useMemo(() => tasks.find(t => t.id === selectedTaskId) || null, [tasks, selectedTaskId]);
+
   // Pagination logic
   const totalPages = Math.ceil(projects.length / itemsPerPage);
   const currentProjects = projects.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -1057,6 +1065,7 @@ export function ProjectManagementClient() {
 
   // Collaborative Actions
   const actions = {
+    getTaskById: (id: string) => tasks.find(t => t.id === id),
     toggleSubtask: (taskId: string, subtaskId: string, userName: string) => {
       setTasks(prev => prev.map(t => {
         if (t.id !== taskId) return t;
@@ -1142,23 +1151,11 @@ export function ProjectManagementClient() {
     }
   };
 
-  useEffect(() => {
-    if (selectedTask) {
-      const updated = tasks.find(t => t.id === selectedTask.id);
-      if (updated) setSelectedTask(updated);
-    }
-  }, [tasks, selectedTask]);
-
   // PM Dashboard Renderers
   const renderPMDashboard = () => {
     if (pmViewMode === "Home") {
       return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
-          <div className="mb-8">
-            <h2 className="text-3xl font-serif text-white tracking-tight">Oversight Dashboard</h2>
-            <p className="text-neutral-500 mt-2 text-sm">Global view of all active learning initiatives and resource allocations.</p>
-          </div>
-          
           <div className="grid md:grid-cols-2 gap-6">
             <div 
               onClick={() => setPmViewMode("Project List")}
@@ -1173,7 +1170,7 @@ export function ProjectManagementClient() {
                 </div>
                 <h3 className="text-3xl font-serif text-white mb-2 group-hover:text-emerald-400 transition-colors">All Projects</h3>
                 <p className="text-neutral-400 text-sm mb-8 sm:mb-12 max-w-sm">Manage and monitor high-level project health, team assignments, and delivery timelines.</p>
-                <div className="mt-auto flex items-center justify-between">
+                <div className="mt-8 flex items-center justify-between">
                   <span className="text-2xl font-mono text-white">{projects.length} <span className="text-sm text-neutral-500 font-sans">Active</span></span>
                   <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-black transition-colors">
                     <ArrowRight className="h-5 w-5" />
@@ -1195,7 +1192,7 @@ export function ProjectManagementClient() {
                 </div>
                 <h3 className="text-3xl font-serif text-white mb-2 group-hover:text-emerald-400 transition-colors">All Tasks</h3>
                 <p className="text-neutral-400 text-sm mb-8 sm:mb-12 max-w-sm">Global Kanban board aggregating workstreams across all projects for granular tracking.</p>
-                <div className="mt-auto flex items-center justify-between">
+                <div className="mt-8 flex items-center justify-between">
                   <span className="text-2xl font-mono text-white">{tasks.length} <span className="text-sm text-neutral-500 font-sans">Total Tasks</span></span>
                   <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-black transition-colors">
                     <ArrowRight className="h-5 w-5" />
@@ -1429,7 +1426,7 @@ export function ProjectManagementClient() {
                   task={task}
                   users={USERS}
                   project={proj}
-                  onClick={() => setSelectedTask(task)}
+                  onClick={() => setSelectedTaskId(task.id)}
                   actions={actions}
                   activeUser={activeUser}
                 />
@@ -1489,7 +1486,7 @@ export function ProjectManagementClient() {
                           task={task}
                           users={USERS}
                           project={proj}
-                          onClick={() => setSelectedTask(task)}
+                          onClick={() => setSelectedTaskId(task.id)}
                           actions={actions}
                           activeUser={activeUser}
                           isDragging={draggingTaskId === task.id}
@@ -1513,30 +1510,6 @@ export function ProjectManagementClient() {
 
     return (
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-10">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-zinc-900/30 border border-white/10 p-6 rounded-[2rem] backdrop-blur-md">
-          <div className="flex items-center gap-5">
-            <UserAvatar user={activeUser} size="lg" showRing />
-            <div>
-              <h2 className="text-2xl font-serif text-white">Welcome back, {activeUser.name.split(' ')[0]}</h2>
-              <p className="text-sm text-emerald-400/80 font-mono mt-1">{activeUser.role}</p>
-            </div>
-          </div>
-          
-          {/* Persona Switcher for Demo */}
-          <div className="flex items-center gap-3 bg-black/40 p-2 rounded-2xl border border-white/5 w-full sm:w-auto">
-            <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold pl-2 hidden sm:block">View As:</span>
-            <select 
-              value={activeUserId}
-              onChange={(e) => setActiveUserId(e.target.value)}
-              className="bg-zinc-900 border border-white/10 text-white text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer flex-1 sm:w-48"
-            >
-              {USERS.map(u => (
-                <option key={u.id} value={u.id}>{u.name} ({u.role})</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
         <div className="grid lg:grid-cols-[1fr_350px] gap-10">
           <div className="space-y-6">
             <div className="flex items-center gap-3 mb-6">
@@ -1551,7 +1524,7 @@ export function ProjectManagementClient() {
               <div className="grid sm:grid-cols-2 gap-4">
                 {userTasks.map(task => {
                   const proj = projects.find(p => p.id === task.projectId);
-                  return <TaskCard key={task.id} task={task} users={USERS} project={proj} onClick={() => setSelectedTask(task)} actions={actions} activeUser={activeUser} />;
+                  return <TaskCard key={task.id} task={task} users={USERS} project={proj} onClick={() => setSelectedTaskId(task.id)} actions={actions} activeUser={activeUser} />;
                 })}
               </div>
             )}
@@ -1770,7 +1743,7 @@ export function ProjectManagementClient() {
             {activeDetailTab === "tasks" && (
               <motion.div key="tasks" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {projectTasks.map(task => (
-                  <TaskCard key={task.id} task={task} users={USERS} onClick={() => setSelectedTask(task)} actions={actions} activeUser={activeUser} />
+                  <TaskCard key={task.id} task={task} users={USERS} onClick={() => setSelectedTaskId(task.id)} actions={actions} activeUser={activeUser} />
                 ))}
               </motion.div>
             )}
@@ -1915,13 +1888,12 @@ export function ProjectManagementClient() {
           </div>
         </motion.header>
 
-        {/* Segmented control — app-like, left-aligned */}
-        <div className="mb-10 flex border-b border-white/[0.06] pb-5">
+        {/* Segmented control + Persona Dropdown */}
+        <div className="mb-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-b border-white/[0.06] pb-8">
           <div className="flex gap-1 rounded-2xl border border-white/10 bg-zinc-900/50 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
             {([
-              { id: "PM Dashboard", icon: Briefcase },
+              { id: "Dashboard", icon: LayoutDashboard },
               { id: "Kanban Board", icon: ListTodo },
-              { id: "Team Member Dashboard", icon: UserCheck },
             ] as { id: MainTab; icon: typeof Briefcase }[]).map(({ id, icon: Icon }) => {
               const isActive = activeTab === id;
               return (
@@ -1929,10 +1901,10 @@ export function ProjectManagementClient() {
                   key={id}
                   onClick={() => {
                     setActiveTab(id);
-                    if (id === "PM Dashboard") setPmViewMode("Home");
+                    if (id === "Dashboard") setPmViewMode("Home");
                   }}
                   className={cn(
-                    "relative z-10 flex items-center gap-2 rounded-xl px-3 py-3 sm:px-4 sm:py-2.5 text-sm font-medium transition-colors duration-200 active:scale-[0.97]",
+                    "relative z-10 flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold uppercase tracking-widest transition-colors duration-200 active:scale-[0.97]",
                     isActive ? "text-black" : "text-neutral-400 hover:text-white"
                   )}
                 >
@@ -1943,31 +1915,51 @@ export function ProjectManagementClient() {
                       transition={SPRING}
                     />
                   )}
-                  <Icon className="h-4 w-4" strokeWidth={2} />
-                  <span className="hidden sm:inline">{id}</span>
+                  <Icon className="h-4 w-4" strokeWidth={2.5} />
+                  <span>{id}</span>
                 </button>
               );
             })}
           </div>
+
+          {activeTab === "Dashboard" && (
+            <div className="flex items-center gap-4 w-full sm:w-auto">
+              <div className="h-8 w-px bg-white/[0.06] hidden sm:block" />
+              <div className="flex items-center gap-3 bg-zinc-900/50 p-1.5 rounded-2xl border border-white/10 w-full sm:w-64 relative group">
+                <div className="pl-3 py-1 flex items-center gap-2 text-neutral-500 uppercase font-mono text-[10px] font-bold tracking-widest">
+                  <Users className="h-3.5 w-3.5 text-emerald-500/60" />
+                  <span>VIEW:</span>
+                </div>
+                <select 
+                  value={dashboardType}
+                  onChange={(e) => setDashboardType(e.target.value as DashboardType)}
+                  className="bg-transparent text-white text-xs font-bold rounded-xl pl-1 pr-8 py-1.5 focus:outline-none appearance-none cursor-pointer flex-1 uppercase tracking-tight"
+                >
+                  <option value="PM Dashboard" className="bg-zinc-950 text-white">PM Dashboard</option>
+                  <option value="Team Member Dashboard" className="bg-zinc-950 text-white">Team Member Dashboard</option>
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500 pointer-events-none group-hover:text-emerald-400 transition-colors" />
+              </div>
+              
+              <div className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                <UserAvatar user={activeUser} size="xs" />
+                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">{activeUser.name.split(' ')[0]}</span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex-1">
           <AnimatePresence mode="wait">
-            {activeTab === "PM Dashboard" && (
-              <motion.div key="pm-dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                {renderPMDashboard()}
+            {activeTab === "Dashboard" && (
+              <motion.div key="dash-view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                {dashboardType === "PM Dashboard" ? renderPMDashboard() : renderTeamMemberDashboard()}
               </motion.div>
             )}
             
             {activeTab === "Kanban Board" && (
               <motion.div key="kanban-dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full">
                 {renderKanbanBoard()}
-              </motion.div>
-            )}
-
-            {activeTab === "Team Member Dashboard" && (
-              <motion.div key="team-dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                {renderTeamMemberDashboard()}
               </motion.div>
             )}
           </AnimatePresence>
@@ -1977,12 +1969,12 @@ export function ProjectManagementClient() {
       <LdFooter />
 
       <AnimatePresence>
-        {selectedTask && (
+        {selectedTaskId && (
           <TaskDetailOverlay 
-            task={selectedTask} 
+            taskId={selectedTaskId} 
             user={activeUser}
             users={USERS}
-            onClose={() => setSelectedTask(null)} 
+            onClose={() => setSelectedTaskId(null)} 
             actions={actions}
           />
         )}
