@@ -1054,6 +1054,12 @@ export function ProjectManagementClient() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
 
+  // Project Detail view local state — hoisted to the parent so the detail view
+  // can be rendered as an inlined function (not a nested component type) and
+  // therefore never remounts on a tasks state change.
+  const [activeDetailTab, setActiveDetailTab] = useState<"tasks" | "activity" | "comments">("tasks");
+  const [isResourcesOpen, setIsResourcesOpen] = useState(true);
+
   const selectedTask = useMemo(() => tasks.find(t => t.id === selectedTaskId) || null, [tasks, selectedTaskId]);
 
   // Pagination logic
@@ -1283,7 +1289,7 @@ export function ProjectManagementClient() {
     }
 
     if (pmViewMode === "Project Detail" && selectedProject) {
-      return <ProjectDetailView project={selectedProject} />;
+      return renderProjectDetailView(selectedProject);
     }
 
     return null;
@@ -1558,10 +1564,7 @@ export function ProjectManagementClient() {
     );
   };
 
-  const ProjectDetailView = ({ project }: { project: Project }) => {
-    const [activeDetailTab, setActiveDetailTab] = useState<"tasks" | "activity" | "comments">("tasks");
-    const [isResourcesOpen, setIsResourcesOpen] = useState(true);
-    
+  const renderProjectDetailView = (project: Project) => {
     const pm = USERS.find(u => u.id === project.pmId);
     const team = USERS.filter(u => project.teamIds.includes(u.id));
     const projectTasks = tasks.filter(t => t.projectId === project.id);
