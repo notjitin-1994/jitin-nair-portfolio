@@ -150,10 +150,11 @@ function ShowcaseGrid() {
             const featured = item.featured;
 
             return (
-              <Reveal key={item.id} delay={i * 0.05} y={30}>
+              <div key={item.id} className={featured ? "sm:col-span-2 lg:col-span-1" : ""}>
+              <Reveal delay={i * 0.05} y={30}>
                 <Link
                   href={item.href}
-                  className={`group relative flex h-full flex-col overflow-hidden rounded-[2rem] border transition-all duration-300 hover:-translate-y-1 ${
+                  className={`group relative flex h-full flex-col overflow-hidden rounded-[2rem] border transition-all duration-300 sm:hover:-translate-y-1 ${
                     featured
                       ? "border-emerald-400/30 bg-emerald-500/10 hover:border-emerald-400/50"
                       : "border-white/10 bg-white/[0.03] hover:border-emerald-400/30 hover:bg-white/[0.05]"
@@ -170,7 +171,7 @@ function ShowcaseGrid() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent opacity-60" />
                   </div>
 
-                  <div className="relative z-10 flex flex-1 flex-col p-8">
+                  <div className="relative z-10 flex flex-1 flex-col p-5 sm:p-8">
                     <div className="flex items-center justify-between">
                       <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
                         featured ? "bg-emerald-400/20 text-emerald-300" : "bg-white/10 text-emerald-400"
@@ -182,7 +183,7 @@ function ShowcaseGrid() {
                       </div>
                     </div>
 
-                    <h3 className="mt-8 font-serif text-2xl font-medium tracking-tight text-white group-hover:text-emerald-300 transition-colors">
+                    <h3 className="mt-4 sm:mt-6 font-serif text-xl sm:text-2xl font-medium tracking-tight text-white group-hover:text-emerald-300 transition-colors">
                       {item.title}
                     </h3>
                     <p className="mt-3 text-sm leading-relaxed text-neutral-400">
@@ -200,6 +201,7 @@ function ShowcaseGrid() {
                   <Grain />
                 </Link>
               </Reveal>
+              </div>
             );
           })}
         </div>

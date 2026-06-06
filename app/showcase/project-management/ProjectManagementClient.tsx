@@ -468,7 +468,7 @@ function TaskCard({
                 role={actions ? "button" : undefined}
                 onClick={actions ? (e) => { e.stopPropagation(); actions.toggleSubtask(task.id, st.id, activeUser?.name || "Someone"); } : undefined}
                 className={cn(
-                  "flex items-center gap-2 rounded-lg px-2 py-1 text-[11px] transition-colors",
+                  "flex items-center gap-2 rounded-lg px-2 py-1.5 sm:py-1 text-[11px] transition-colors",
                   actions ? "cursor-pointer hover:bg-white/5" : "cursor-default"
                 )}
               >
@@ -578,17 +578,21 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
   const taskAssignee = users.find(u => u.id === task.assigneeId);
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
-      <motion.div 
+    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-6">
+      <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         onClick={onClose} className="absolute inset-0 bg-[#0a0a0f]/80 backdrop-blur-md"
       />
-      <motion.div 
+      <motion.div
         layoutId={`task-card-${task.id}`}
-        className="relative w-full max-w-3xl bg-zinc-950 border border-emerald-500/20 rounded-[2.5rem] overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-3xl bg-zinc-950 border-t sm:border border-emerald-500/20 rounded-t-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_-8px_40px_-8px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] sm:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] flex flex-col max-h-[92vh] sm:max-h-[90vh]"
       >
+        {/* Drag handle — mobile only */}
+        <div className="sm:hidden flex justify-center pt-3 pb-1 shrink-0">
+          <div className="h-1 w-10 rounded-full bg-white/20" />
+        </div>
         {/* Header */}
-        <div className="p-8 pb-6 border-b border-white/5 flex justify-between items-start shrink-0 bg-white/[0.01]">
+        <div className="p-5 pb-4 sm:p-8 sm:pb-6 border-b border-white/5 flex justify-between items-start shrink-0 bg-white/[0.01]">
           <div>
             <div className="flex items-center gap-3 mb-3">
               <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 uppercase tracking-widest">{task.id}</span>
@@ -602,7 +606,7 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
         </div>
 
         {/* Scrollable Body */}
-        <div className="p-8 space-y-10 overflow-y-auto custom-scrollbar">
+        <div className="p-5 sm:p-8 space-y-8 sm:space-y-10 overflow-y-auto custom-scrollbar">
           {/* Description & Meta */}
           <div className="flex flex-col md:flex-row gap-8">
             <div className="flex-1 space-y-4">
@@ -775,6 +779,7 @@ export function ProjectManagementClient() {
   const [kanbanAssigneeFilter, setKanbanAssigneeFilter] = useState<string | null>(null);
   const [draggingTaskId, setDraggingTaskId] = useState<string | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<Status | null>(null);
+  const [mobileKanbanStatus, setMobileKanbanStatus] = useState<Status>("In Progress");
 
   const activeUser = USERS.find(u => u.id === activeUserId) || USERS[0];
   const [currentPage, setCurrentPage] = useState(1);
@@ -864,17 +869,17 @@ export function ProjectManagementClient() {
           <div className="grid md:grid-cols-2 gap-6">
             <div 
               onClick={() => setPmViewMode("Project List")}
-              className="group cursor-pointer p-8 md:p-10 rounded-[2.5rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-colors duration-300 active:scale-[0.99] backdrop-blur-md relative overflow-hidden"
+              className="group cursor-pointer p-6 sm:p-8 md:p-10 rounded-[1.75rem] sm:rounded-[2.5rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-colors duration-300 active:scale-[0.99] backdrop-blur-md relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                 <FolderKanban className="h-48 w-48 text-emerald-500 translate-x-12 -translate-y-12" />
               </div>
               <div className="relative z-10 flex flex-col h-full">
-                <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 mb-8">
+                <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 mb-5 sm:mb-8">
                   <Briefcase className="h-6 w-6" />
                 </div>
                 <h3 className="text-3xl font-serif text-white mb-2 group-hover:text-emerald-400 transition-colors">All Projects</h3>
-                <p className="text-neutral-400 text-sm mb-12 max-w-sm">Manage and monitor high-level project health, team assignments, and delivery timelines.</p>
+                <p className="text-neutral-400 text-sm mb-8 sm:mb-12 max-w-sm">Manage and monitor high-level project health, team assignments, and delivery timelines.</p>
                 <div className="mt-auto flex items-center justify-between">
                   <span className="text-2xl font-mono text-white">{projects.length} <span className="text-sm text-neutral-500 font-sans">Active</span></span>
                   <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-black transition-colors">
@@ -886,17 +891,17 @@ export function ProjectManagementClient() {
 
             <div 
               onClick={() => setActiveTab("Kanban Board")}
-              className="group cursor-pointer p-8 md:p-10 rounded-[2.5rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-colors duration-300 active:scale-[0.99] backdrop-blur-md relative overflow-hidden"
+              className="group cursor-pointer p-6 sm:p-8 md:p-10 rounded-[1.75rem] sm:rounded-[2.5rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-colors duration-300 active:scale-[0.99] backdrop-blur-md relative overflow-hidden"
             >
                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                 <ListTodo className="h-48 w-48 text-emerald-500 translate-x-12 -translate-y-12" />
               </div>
               <div className="relative z-10 flex flex-col h-full">
-                <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 mb-8">
+                <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 mb-5 sm:mb-8">
                   <LayoutDashboard className="h-6 w-6" />
                 </div>
                 <h3 className="text-3xl font-serif text-white mb-2 group-hover:text-emerald-400 transition-colors">All Tasks</h3>
-                <p className="text-neutral-400 text-sm mb-12 max-w-sm">Global Kanban board aggregating workstreams across all projects for granular tracking.</p>
+                <p className="text-neutral-400 text-sm mb-8 sm:mb-12 max-w-sm">Global Kanban board aggregating workstreams across all projects for granular tracking.</p>
                 <div className="mt-auto flex items-center justify-between">
                   <span className="text-2xl font-mono text-white">{tasks.length} <span className="text-sm text-neutral-500 font-sans">Total Tasks</span></span>
                   <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-black transition-colors">
@@ -940,10 +945,10 @@ export function ProjectManagementClient() {
                   onClick={() => { setSelectedProject(project); setPmViewMode("Project Detail"); }}
                   className="group cursor-pointer p-6 sm:p-8 rounded-[2rem] border border-white/10 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/40 transition-colors duration-300 active:scale-[0.99] backdrop-blur-md"
                 >
-                  <div className="grid md:grid-cols-[1fr_200px_150px] gap-8 items-center">
+                  <div className="grid md:grid-cols-[1fr_200px_150px] gap-4 md:gap-8 items-center">
                     <div>
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">{project.uuid}</span>
+                        <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 truncate max-w-[140px] sm:max-w-none block sm:inline">{project.uuid}</span>
                         <span className="text-[10px] text-neutral-500 uppercase tracking-widest">{project.modality}</span>
                       </div>
                       <h3 className="text-xl font-serif text-white group-hover:text-emerald-400 transition-colors">{project.name}</h3>
@@ -1018,7 +1023,7 @@ export function ProjectManagementClient() {
         </div>
 
         {/* Filter bar */}
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-6 pb-5 border-b border-white/[0.06]">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-5 pb-4 border-b border-white/[0.06]">
           {/* Project filter */}
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-600 hidden sm:block">Project</span>
@@ -1087,7 +1092,57 @@ export function ProjectManagementClient() {
           )}
         </div>
 
-        <div className="flex-1 overflow-x-auto custom-scrollbar pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+        {/* Mobile: status-tab switcher + single-column list */}
+        <div className="sm:hidden mb-8">
+          <div className="flex gap-1 p-1.5 bg-zinc-900/50 border border-white/10 rounded-2xl mb-5">
+            {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map(s => {
+              const count = filteredTasks.filter(t => t.status === s).length;
+              const isActive = mobileKanbanStatus === s;
+              return (
+                <button
+                  key={s}
+                  onClick={() => setMobileKanbanStatus(s)}
+                  className={cn(
+                    "relative flex-1 py-2.5 text-[9px] font-bold uppercase tracking-wider rounded-xl transition-colors duration-200",
+                    isActive ? "text-black" : "text-neutral-500"
+                  )}
+                >
+                  {isActive && (
+                    <motion.div layoutId="mobileKanbanTab" className="absolute inset-0 rounded-xl bg-emerald-500" transition={SPRING} />
+                  )}
+                  <span className="relative z-10 flex flex-col items-center leading-tight gap-0.5">
+                    <span>{s}</span>
+                    <span className={cn("font-mono text-[9px]", isActive ? "text-black/60" : "text-neutral-700")}>{count}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="space-y-4 pb-4">
+            {filteredTasks.filter(t => t.status === mobileKanbanStatus).length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-neutral-700 text-xs text-center gap-3">
+                <Filter className="h-6 w-6 opacity-30" />
+                <span>No tasks in {mobileKanbanStatus}</span>
+              </div>
+            ) : filteredTasks.filter(t => t.status === mobileKanbanStatus).map(task => {
+              const proj = projects.find(p => p.id === task.projectId);
+              return (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  users={USERS}
+                  project={proj}
+                  onClick={() => setSelectedTask(task)}
+                  actions={actions}
+                  activeUser={activeUser}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop: 4-column horizontal Kanban */}
+        <div className="hidden sm:flex flex-1 overflow-x-auto custom-scrollbar pb-4">
           <div className="flex gap-6 min-w-max h-[calc(100vh-360px)] min-h-[500px]">
             {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map((status, idx) => {
               const colTasks = filteredTasks.filter(t => t.status === status);
@@ -1258,7 +1313,7 @@ export function ProjectManagementClient() {
           Back to Projects
         </button>
 
-        <div className="relative rounded-[3rem] border border-white/10 bg-zinc-900/40 p-8 md:p-12 overflow-hidden backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+        <div className="relative rounded-2xl sm:rounded-[3rem] border border-white/10 bg-zinc-900/40 p-5 sm:p-8 md:p-12 overflow-hidden backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
           <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
             <Workflow className="h-64 w-64 text-emerald-500 translate-x-12 -translate-y-12" />
           </div>
@@ -1272,7 +1327,7 @@ export function ProjectManagementClient() {
                 <span className="h-1 w-1 rounded-full bg-emerald-500" />
                 <span className="text-xs text-neutral-400 uppercase tracking-widest font-bold">{project.modality}</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-serif text-white tracking-tight mb-10 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-white tracking-tight mb-6 sm:mb-10 leading-tight">
                 {project.name}
               </h1>
               <div className="flex flex-wrap gap-8">
@@ -1551,7 +1606,7 @@ export function ProjectManagementClient() {
                     if (id === "PM Dashboard") setPmViewMode("Home");
                   }}
                   className={cn(
-                    "relative z-10 flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors duration-200 active:scale-[0.97]",
+                    "relative z-10 flex items-center gap-2 rounded-xl px-3 py-3 sm:px-4 sm:py-2.5 text-sm font-medium transition-colors duration-200 active:scale-[0.97]",
                     isActive ? "text-black" : "text-neutral-400 hover:text-white"
                   )}
                 >
