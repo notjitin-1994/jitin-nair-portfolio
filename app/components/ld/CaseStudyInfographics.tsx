@@ -74,58 +74,6 @@ export function SmartslateInfographic() {
 
   return (
     <div className="grid grid-cols-2 gap-3 py-2">
-      {/* Solara Ecosystem Core - Top Hero Card */}
-      <BentoCard accent className="col-span-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-400">
-              <Network className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-500/80">Solara Suite</div>
-              <div className="text-sm font-semibold text-white">AI-Native Learning Infrastructure</div>
-            </div>
-          </div>
-          <div className="px-2 py-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 flex items-center gap-1.5">
-            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[9px] font-mono font-bold text-emerald-400">7 PRODUCTS</span>
-          </div>
-        </div>
-        
-        {/* Core Integration Visualization - Replacing the abstract inputs/logic/scale */}
-        <div className="mt-5 grid grid-cols-3 gap-2 relative">
-           {/* Connecting Line Backdrop */}
-           <div className="absolute top-1/2 left-[15%] right-[15%] h-px bg-gradient-to-r from-emerald-500/0 via-emerald-500/20 to-emerald-500/0 -translate-y-1/2" />
-           
-           <div className="flex flex-col items-center gap-2 z-10">
-              <div className="h-10 w-10 rounded-full border border-white/10 bg-[#0a0a0f] flex items-center justify-center group-hover:border-emerald-500/40 transition-colors">
-                 <ClipboardList className="h-4 w-4 text-neutral-500" />
-              </div>
-              <div className="text-[8px] font-mono text-neutral-500 uppercase">Intake</div>
-           </div>
-
-           <div className="flex flex-col items-center gap-2 z-10">
-              <motion.div 
-                animate={reduced ? {} : { 
-                  boxShadow: ["0 0 0px rgba(52,211,153,0)", "0 0 15px rgba(52,211,153,0.2)", "0 0 0px rgba(52,211,153,0)"]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="h-12 w-12 rounded-xl border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-center"
-              >
-                 <Cpu className="h-5 w-5 text-emerald-400" />
-              </motion.div>
-              <div className="text-[9px] font-mono font-bold text-emerald-400 uppercase tracking-tighter">Central Engine</div>
-           </div>
-
-           <div className="flex flex-col items-center gap-2 z-10">
-              <div className="h-10 w-10 rounded-full border border-white/10 bg-[#0a0a0f] flex items-center justify-center">
-                 <Zap className="h-4 w-4 text-neutral-500" />
-              </div>
-              <div className="text-[8px] font-mono text-neutral-500 uppercase">Outcome</div>
-           </div>
-        </div>
-      </BentoCard>
-
       {/* Polaris - Contextual Design */}
       <BentoCard className="col-span-1">
         <div className="flex items-start justify-between mb-3">

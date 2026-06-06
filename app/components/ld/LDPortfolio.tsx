@@ -210,17 +210,17 @@ function Hero() {
 
             <motion.div
               {...mobileFade(M_BUTTONS_DELAY)}
-              className="mt-5 flex flex-col items-stretch gap-3"
+              className="mt-5 flex items-center gap-3"
             >
               <a
                 href="#impact"
-                className="flex items-center justify-center gap-2 rounded-full bg-emerald-400 px-6 py-3.5 text-sm font-semibold text-[#062a1d] transition-transform duration-150 active:scale-[0.97]"
+                className="flex-1 flex items-center justify-center gap-2 rounded-full bg-emerald-400 px-4 py-3 text-xs font-semibold text-[#062a1d] transition-transform duration-150 active:scale-[0.97]"
               >
                 Learn More
-                <ArrowDown className="h-4 w-4" strokeWidth={2} />
+                <ArrowDown className="h-3.5 w-3.5" strokeWidth={2} />
               </a>
-              <div>
-                <DownloadResumeButton />
+              <div className="flex-1">
+                <DownloadResumeButton mobile />
               </div>
             </motion.div>
           </div>

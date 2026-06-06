@@ -9,7 +9,8 @@ import {
   useSpring,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, Cpu, GraduationCap } from "lucide-react";
+import { ArrowRight, Cpu, GraduationCap, Download } from "lucide-react";
+import { DownloadResumeButton } from "../ld/DownloadResumeButton";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -473,6 +474,19 @@ export function ChooserHero() {
             </motion.p>
 
             {/* ③ Links — last to appear */}
+            <div className="mt-4 flex items-center gap-3">
+              <a
+                href="#impact"
+                className="flex-1 flex items-center justify-center gap-2 rounded-full bg-emerald-400 px-4 py-3 text-xs font-semibold text-[#062a1d] transition-transform duration-150 active:scale-[0.97]"
+              >
+                Learn More
+                <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
+              </a>
+              <div className="flex-1">
+                <DownloadResumeButton mobile />
+              </div>
+            </div>
+
             <div className="mt-4 grid gap-2.5">
               {TRACKS.map((track, i) => (
                 <MobileTrackCard

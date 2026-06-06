@@ -39,7 +39,7 @@ function Shake({
 }
 
 /* ── Main component ────────────────────────────────────────────────────── */
-export function DownloadResumeButton() {
+export function DownloadResumeButton({ mobile = false }: { mobile?: boolean }) {
   const reduced = useReducedMotion();
   const [stage, setStage] = useState<Stage>("idle");
   const [email, setEmail] = useState("");
@@ -116,7 +116,9 @@ export function DownloadResumeButton() {
       className={`relative inline-flex items-center overflow-hidden rounded-full
         ${isInput || stage === "done"
           ? "border border-emerald-400/40 bg-white/[0.06] backdrop-blur-md"
-          : "bg-emerald-400"
+          : mobile 
+            ? "border border-white/10 bg-white/[0.07] backdrop-blur-md"
+            : "bg-emerald-400"
         }`}
       style={{ minHeight: "44px" }}
     >
@@ -131,7 +133,9 @@ export function DownloadResumeButton() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
             onClick={() => setStage("email")}
-            className="group inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-[#062a1d] whitespace-nowrap"
+            className={`group inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold whitespace-nowrap ${
+              mobile ? "text-white" : "text-[#062a1d]"
+            }`}
           >
             Download Resume
             <Download
