@@ -5,13 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   motion,
-  AnimatePresence,
   useMotionValue,
   useSpring,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, Cpu, GraduationCap, Download } from "lucide-react";
-import { DownloadResumeButton } from "../ld/DownloadResumeButton";
+import { ArrowRight, Cpu, GraduationCap } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -304,7 +302,6 @@ export function ChooserHero() {
   const reduced = useReducedMotion();
   const [ready, setReady] = useState(false);
   const [countRun, setCountRun] = useState(false);
-  const [resumeExpanded, setResumeExpanded] = useState(false);
 
   useEffect(() => {
     if (reduced) {
@@ -387,32 +384,6 @@ export function ChooserHero() {
           animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 },
           transition: { duration: 0.7, delay, ease: EASE },
         };
-
-  const buttonsBlock = (isMobile: boolean) => (
-    <motion.div
-      {...(isMobile ? mobileFade(M_BODY_DELAY + 0.2) : fade(REST_DELAY + 0.1))}
-      className={cn("mt-6 flex items-center gap-3", !isMobile && "mt-8")}
-    >
-      <AnimatePresence>
-        {!resumeExpanded && (
-          <motion.a
-            key="learn-more"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            href="#impact"
-            className="flex-1 max-w-[200px] flex items-center justify-center gap-2 rounded-full bg-emerald-400 px-4 py-3 text-xs font-semibold text-[#062a1d] transition-transform duration-150 active:scale-[0.97]"
-          >
-            Learn More
-            <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
-          </motion.a>
-        )}
-      </AnimatePresence>
-      <div className={cn("transition-all duration-300", resumeExpanded ? "w-full" : "flex-1 max-w-[240px]")}>
-        <DownloadResumeButton mobile onExpandChange={setResumeExpanded} />
-      </div>
-    </motion.div>
-  );
 
   return (
     <>
@@ -508,8 +479,6 @@ export function ChooserHero() {
               <span className="text-neutral-500">·</span> AI Systems Architect
             </motion.p>
 
-            {buttonsBlock(true)}
-
             {/* ③ Links — last to appear */}
             <div className="mt-4 grid gap-2.5">
               {TRACKS.map((track, i) => (
@@ -569,8 +538,6 @@ export function ChooserHero() {
                 <StatTile key={stat.label} {...stat} run={countRun} />
               ))}
             </motion.div>
-
-            {buttonsBlock(false)}
 
             <div className="mt-9 grid gap-3.5">
               {TRACKS.map((track, i) => (
