@@ -427,8 +427,8 @@ export function ChooserHero() {
             className="absolute inset-0"
             style={{
               background: "rgba(10,10,15,0.64)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
             }}
           />
           {/* Layer 2: emerald tint */}
