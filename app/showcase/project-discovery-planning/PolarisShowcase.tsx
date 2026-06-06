@@ -9,45 +9,55 @@ import {
   CheckCircle2,
   Users,
   Target,
-  Brain,
-  BarChart3,
+  BookOpen,
   Calendar,
   TrendingUp,
   Shield,
-  BookOpen,
   Layers,
-  Award,
   Clock,
   FileText,
   Briefcase,
   MapPin,
   DollarSign,
+  BarChart3,
+  Leaf,
+  PlayCircle,
+  Wrench,
+  RefreshCw,
+  AlertTriangle,
+  AlertCircle,
+  Maximize2,
+  Minimize2,
+  Activity,
+  Accessibility,
 } from "lucide-react";
 import { EASE } from "../../components/ld/primitives";
 
-// ─── Design tokens ───────────────────────────────────────────────────────────
+// ─── Brand accent palette (maps Polaris semantic colours → portfolio brand) ───
 
-const em = "emerald";
+type Accent = "emerald" | "teal" | "amber" | "rose";
 
-// ─── Static Questionnaire Data ───────────────────────────────────────────────
+const ACCENT: Record<Accent, { text: string; iconBg: string; soft: string; border: string; bar: string }> = {
+  emerald: { text: "text-emerald-400", iconBg: "bg-emerald-500/15", soft: "bg-emerald-500/10", border: "border-emerald-500/30", bar: "bg-emerald-400" },
+  teal: { text: "text-teal-400", iconBg: "bg-teal-500/15", soft: "bg-teal-500/10", border: "border-teal-500/30", bar: "bg-teal-400" },
+  amber: { text: "text-amber-400", iconBg: "bg-amber-500/15", soft: "bg-amber-500/10", border: "border-amber-500/30", bar: "bg-amber-400" },
+  rose: { text: "text-rose-400", iconBg: "bg-rose-500/15", soft: "bg-rose-500/10", border: "border-rose-500/30", bar: "bg-rose-400" },
+};
+
+// ─── Static Questionnaire (Phase 1) — Moody's Ratings ─────────────────────────
 
 interface RadioPillsData { type: "radio"; options: string[]; selected: string }
 interface CheckPillsData { type: "check"; options: string[]; selected: string[] }
 interface TextareaData { type: "textarea"; value: string; rows?: number }
 interface TextField { type: "text"; value: string }
 interface ScaleData { type: "scale"; value: number; min: number; max: number; minLabel?: string; maxLabel?: string }
-interface SliderData { type: "slider"; value: number; min: number; max: number; unit: string }
 interface CurrencyData { type: "currency"; amount: number; symbol: string }
 interface NumberData { type: "number"; value: number }
-interface ToggleData { type: "toggle"; selected: string; offValue: string; offLabel: string; onValue: string; onLabel: string }
-interface RadioCardsData { type: "rcards"; options: { value: string; label: string; description: string }[]; selected: string }
 
-type FieldData = RadioPillsData | CheckPillsData | TextareaData | TextField | ScaleData | SliderData | CurrencyData | NumberData | ToggleData | RadioCardsData;
+type FieldData = RadioPillsData | CheckPillsData | TextareaData | TextField | ScaleData | CurrencyData | NumberData;
 
 interface StaticField { id: string; label: string; help?: string; field: FieldData }
 interface StaticSection { id: number; title: string; subtitle: string; fields: StaticField[] }
-interface DynQuestion { id: string; label: string; help?: string; field: FieldData }
-interface DynSection { id: number; title: string; questions: DynQuestion[] }
 
 const STATIC_SECTIONS: StaticSection[] = [
   {
@@ -55,88 +65,25 @@ const STATIC_SECTIONS: StaticSection[] = [
     title: "Role & Experience",
     subtitle: "Your professional context and L&D background",
     fields: [
-      {
-        id: "current_role",
-        label: "Your primary role",
-        field: {
-          type: "radio",
-          options: ["L&D Lead", "CLO / VP L&D", "Instructional Designer", "HR BP", "Consultant", "Other"],
-          selected: "L&D Lead",
-        },
-      },
-      {
-        id: "industry_exp",
-        label: "Industries you've worked in",
-        help: "Select all that apply",
-        field: {
-          type: "check",
-          options: ["Technology", "Financial Services", "Healthcare", "Manufacturing", "Retail", "Education"],
-          selected: ["Technology", "Financial Services"],
-        },
-      },
-      {
-        id: "team_size",
-        label: "L&D team size",
-        field: {
-          type: "radio",
-          options: ["Solo", "2–5", "6–10", "11–50", "50+"],
-          selected: "6–10",
-        },
-      },
-      {
-        id: "years",
-        label: "Years in current role",
-        field: { type: "number", value: 4 },
-      },
+      { id: "current_role", label: "Your primary role", field: { type: "radio", options: ["L&D Lead", "Instructional Designer", "CLO / VP L&D", "HR Business Partner", "Consultant"], selected: "Instructional Designer" } },
+      { id: "years", label: "Years in current role", field: { type: "number", value: 4 } },
+      { id: "team_size", label: "L&D team size", field: { type: "radio", options: ["Solo", "2-5", "6-10", "11-50", "50+"], selected: "2-5" } },
+      { id: "industry_exp", label: "Industries you've worked in", field: { type: "check", options: ["Technology", "Financial Services", "Healthcare", "Manufacturing", "Retail"], selected: ["Financial Services"] } },
+      { id: "skills", label: "Technical skills", help: "Select all that apply", field: { type: "check", options: ["LMS Admin", "SCORM/xAPI", "Video Production", "Graphic Design", "HTML/CSS", "Instructional Design Tools", "Data Analytics"], selected: ["LMS Admin", "SCORM/xAPI", "Video Production", "Graphic Design", "HTML/CSS", "Instructional Design Tools", "Data Analytics"] } },
     ],
   },
   {
     id: 2,
     title: "Organisation Context",
-    subtitle: "Your organisation's structure and compliance landscape",
+    subtitle: "Structure, scale, and compliance landscape",
     fields: [
-      {
-        id: "org_name",
-        label: "Organisation name",
-        field: { type: "text", value: "Acme Financial Services" },
-      },
-      {
-        id: "sector",
-        label: "Primary industry sector",
-        field: {
-          type: "radio",
-          options: ["Technology", "Financial Services", "Healthcare", "Retail", "Manufacturing", "Education", "Government"],
-          selected: "Financial Services",
-        },
-      },
-      {
-        id: "org_size",
-        label: "Organisation size",
-        field: {
-          type: "radio",
-          options: ["1–50", "51–200", "201–1,000", "1,001–5,000", "5,000+"],
-          selected: "1,001–5,000",
-        },
-      },
-      {
-        id: "regions",
-        label: "Operating regions",
-        field: {
-          type: "check",
-          options: ["North America", "LATAM", "EMEA", "APAC", "ANZ"],
-          selected: ["North America", "EMEA"],
-        },
-      },
-      {
-        id: "compliance",
-        label: "Compliance frameworks",
-        help: "Select all that apply to your learning content",
-        field: {
-          type: "check",
-          options: ["GDPR", "CCPA", "SOC 2", "HIPAA", "ISO 27001", "FCA", "None"],
-          selected: ["GDPR", "SOC 2", "FCA"],
-        },
-      },
+      { id: "org_name", label: "Organisation name", field: { type: "text", value: "Moody’s Ratings" } },
+      { id: "sector", label: "Primary industry sector", field: { type: "radio", options: ["Technology", "Financial Services", "Healthcare", "Retail", "Government"], selected: "Financial Services" } },
+      { id: "org_size", label: "Organisation size", field: { type: "radio", options: ["1-50", "51-200", "201-1000", "1001-5000", "5001-10000", "10000+"], selected: "5001-10000" } },
+      { id: "regions", label: "Operating regions", field: { type: "check", options: ["North America", "EMEA", "APAC", "LATAM", "Global"], selected: ["Global"] } },
+      { id: "clearance", label: "Security clearance", field: { type: "radio", options: ["None", "Internal", "Confidential", "Restricted"], selected: "Confidential" } },
+      { id: "data_policy", label: "Data sharing policies", field: { type: "radio", options: ["Open", "Internal Only", "Need to Know", "Air-gapped"], selected: "Internal Only" } },
+      { id: "compliance", label: "Compliance frameworks", field: { type: "check", options: ["GDPR", "SOC 2", "ISO 27001", "FCA", "None"], selected: ["None"] } },
     ],
   },
   {
@@ -144,342 +91,267 @@ const STATIC_SECTIONS: StaticSection[] = [
     title: "Learning Gap & Audience",
     subtitle: "The skill deficit and the learner population",
     fields: [
-      {
-        id: "gap",
-        label: "Describe the learning gap",
-        help: "What business problem does this programme need to solve?",
-        field: {
-          type: "textarea",
-          value:
-            "Our 450 sales professionals lack foundational AI literacy to leverage our newly deployed AI-assisted CRM. They're missing opportunities to use predictive lead scoring, AI proposal generation, and model-driven insights — costing an estimated 15% in pipeline efficiency.",
-          rows: 4,
-        },
-      },
-      {
-        id: "learners",
-        label: "Total number of learners",
-        field: {
-          type: "radio",
-          options: ["1–10", "11–50", "51–200", "201–1,000", "1,000+"],
-          selected: "201–1,000",
-        },
-      },
-      {
-        id: "knowledge_level",
-        label: "Current baseline knowledge level",
-        field: { type: "scale", value: 2, min: 1, max: 5, minLabel: "Novice", maxLabel: "Expert" },
-      },
-      {
-        id: "motivation",
-        label: "Primary motivation factors",
-        field: {
-          type: "check",
-          options: ["Mandatory compliance", "Performance improvement", "Career growth", "Certification", "Personal interest"],
-          selected: ["Mandatory compliance", "Performance improvement"],
-        },
-      },
-      {
-        id: "budget",
-        label: "Available budget",
-        field: { type: "currency", amount: 48000, symbol: "$" },
-      },
+      { id: "gap", label: "Describe the learning gap", help: "What business problem does this programme need to solve?", field: { type: "textarea", rows: 6, value: "Senior leadership often lacks a structured understanding of how data science can be strategically leveraged to drive business outcomes. While executives are experienced in decision-making, there is a gap in translating data-driven insights into actionable strategies, understanding the capabilities and limitations of data science models, and effectively collaborating with technical teams. This results in missed opportunities for innovation, inefficient resource allocation, and challenges in evaluating data initiatives. A focused learning program is needed to bridge this gap by equipping leaders with the ability to interpret data insights, ask the right questions, and align data science efforts with organizational goals." } },
+      { id: "learners", label: "Total number of learners", field: { type: "radio", options: ["1-10", "11-25", "26-50", "51-200", "201-1000", "1000+"], selected: "26-50" } },
+      { id: "knowledge_level", label: "Current baseline knowledge level", field: { type: "scale", value: 2, min: 1, max: 5, minLabel: "Novice", maxLabel: "Expert" } },
+      { id: "motivation", label: "Primary motivation factors", field: { type: "check", options: ["Mandatory compliance", "Career Advancement", "Performance Improvement", "Certification", "Personal Interest"], selected: ["Career Advancement", "Performance Improvement", "Personal Interest"] } },
+      { id: "location", label: "Learning location", field: { type: "check", options: ["Office/Workplace", "Home", "Flexible/Any Location", "Field/On-site"], selected: ["Office/Workplace", "Home", "Flexible/Any Location"] } },
+      { id: "devices", label: "Devices used", field: { type: "check", options: ["Desktop Computer", "Laptop", "Tablet", "Mobile Phone"], selected: ["Desktop Computer", "Laptop", "Mobile Phone"] } },
+      { id: "hours", label: "Hours available per week", field: { type: "radio", options: ["< 2 hours", "2-5 hours", "5-10 hours", "10-20 hours", "20+ hours"], selected: "20+ hours" } },
+      { id: "budget", label: "Available budget", field: { type: "currency", amount: 70000, symbol: "$" } },
     ],
   },
 ];
 
-const DYNAMIC_SECTIONS: DynSection[] = [
+// ─── Dynamic Questionnaire (Phase 2) — raw questions + answers ────────────────
+
+interface DQOption { label: string; value: string; description?: string }
+interface DQuestion {
+  id: string;
+  type: string;
+  label: string;
+  helpText?: string;
+  options?: DQOption[];
+  sliderConfig?: { min: number; max: number; step: number; unit: string };
+  scaleConfig?: { min: number; max: number; minLabel?: string; maxLabel?: string; labels?: string[] };
+  currencyConfig?: { symbol?: string };
+  rows?: number;
+}
+interface DQSection { id: string; title: string; description: string; questions: DQuestion[] }
+
+const DYNAMIC_SECTIONS: DQSection[] = [
   {
-    id: 1,
-    title: "Learning Objectives & Outcomes",
+    id: "s1", title: "Learning Objectives & Outcomes", description: "Define the specific, measurable outcomes and success criteria.",
     questions: [
-      {
-        id: "s1_q1",
-        label: "What are the 3 key behaviours learners must demonstrate 90 days post-training?",
-        help: "Be specific — these become the programme's north-star metrics",
-        field: {
-          type: "textarea",
-          value:
-            "1. Confidently use AI lead scoring to prioritise daily outreach\n2. Generate first-draft AI proposals in under 5 minutes\n3. Accurately interpret model confidence scores before acting",
-          rows: 4,
-        },
-      },
-      {
-        id: "s1_q2",
-        label: "How will success be measured at 90 days?",
-        field: {
-          type: "radio",
-          options: ["Manager assessment", "Knowledge test", "Pipeline metric", "Composite KPI"],
-          selected: "Pipeline metric",
-        },
-      },
-      {
-        id: "s1_q3",
-        label: "Is executive sponsorship secured?",
-        field: { type: "toggle", selected: "yes", offValue: "no", offLabel: "Not yet", onValue: "yes", onLabel: "Secured" },
-      },
+      { id: "s1_q1", type: "checkbox_cards", label: "Which primary business impact areas should this program target?", helpText: "Select the high-level organizational impacts.", options: [{ label: "Revenue Growth", value: "revenue-growth", description: "Directly impact top-line revenue through improved skills" }, { label: "Operational Efficiency", value: "operational-efficiency", description: "Reduce time, cost, or resources required for tasks" }, { label: "Risk Mitigation", value: "risk-mitigation", description: "Decrease compliance, security, or operational risks" }, { label: "Innovation & Transformation", value: "innovation", description: "Drive new processes, products, or strategic shifts" }] },
+      { id: "s1_q2", type: "radio_pills", label: "What is the highest Bloom's Taxonomy level required?", options: [{ label: "Remember", value: "remember" }, { label: "Understand", value: "understand" }, { label: "Apply", value: "apply" }, { label: "Analyze", value: "analyze" }, { label: "Evaluate", value: "evaluate" }, { label: "Create", value: "create" }] },
+      { id: "s1_q3", type: "textarea", rows: 4, label: "Define the primary SMART objective for this program.", helpText: "Specific, Measurable, Achievable, Relevant, Time-bound." },
+      { id: "s1_q4", type: "labeled_slider", label: "Expected time-to-competency post-training?", sliderConfig: { min: 1, max: 52, step: 1, unit: " weeks" } },
+      { id: "s1_q5", type: "checkbox_pills", label: "Which criteria will stakeholders use to evaluate success?", options: [{ label: "Completion Rate", value: "completion-rate" }, { label: "Learner NPS", value: "nps" }, { label: "Demonstrated Application", value: "skill-application" }, { label: "Error Reduction", value: "error-reduction" }, { label: "Process Acceleration", value: "process-speed" }] },
+      { id: "s1_q6", type: "radio_cards", label: "What is the primary organizational driver for this program?", options: [{ label: "Strategic Alignment", value: "strategic-alignment", description: "Aligning workforce capabilities with new business strategies" }, { label: "Performance Gap", value: "performance-gap", description: "Addressing current deficiencies in output or quality" }, { label: "Role Transition", value: "onboarding", description: "Preparing employees for new responsibilities" }] },
     ],
   },
   {
-    id: 2,
-    title: "Target Audience Deep Dive",
+    id: "s2", title: "Target Audience Analysis (Deep Dive)", description: "Persona behaviors, prerequisite gaps, and potential barriers.",
     questions: [
-      {
-        id: "s2_q1",
-        label: "Average tenure of learners in their current role?",
-        field: {
-          type: "radio",
-          options: ["< 1 year", "1–3 years", "3–5 years", "5+ years"],
-          selected: "3–5 years",
-        },
-      },
-      {
-        id: "s2_q2",
-        label: "Which prior knowledge areas already exist in this group?",
-        field: {
-          type: "check",
-          options: ["CRM proficiency", "Data literacy", "AI concepts", "Sales methodology", "Limited baseline"],
-          selected: ["CRM proficiency", "Sales methodology"],
-        },
-      },
-      {
-        id: "s2_q3",
-        label: "Rate the group's general technical comfort level",
-        field: { type: "scale", value: 5, min: 1, max: 10, minLabel: "Tech-averse", maxLabel: "Tech-native" },
-      },
+      { id: "s2_q1", type: "checkbox_cards", label: "What are the primary behavioral barriers to learning adoption?", options: [{ label: "Time Constraints", value: "time-constraints", description: "High workload preventing dedicated learning time" }, { label: "Lack of Perceived Value", value: "perceived-value", description: "Skepticism about relevance to daily tasks" }, { label: "Technology Anxiety", value: "tech-anxiety", description: "Discomfort with new platforms or digital tools" }, { label: "Change Fatigue", value: "change-fatigue", description: "Exhaustion from previous organizational shifts" }] },
+      { id: "s2_q2", type: "radio_pills", label: "Preferred learning format for this audience?", options: [{ label: "Microlearning (Bite-sized)", value: "microlearning" }, { label: "Long-form Modules", value: "long-form" }, { label: "Cohort-based Learning", value: "cohort-based" }, { label: "Self-paced Exploration", value: "self-paced" }] },
+      { id: "s2_q3", type: "toggle_switch", label: "Accessibility accommodations needed beyond standard WCAG?", options: [{ label: "Yes", value: "yes" }, { label: "No", value: "no" }] },
+      { id: "s2_q4", type: "text", label: "Identify the most critical prerequisite skill gap." },
+      { id: "s2_q5", type: "enhanced_scale", label: "Expected level of resistance to the concepts being taught?", scaleConfig: { min: 1, max: 5, labels: ["Very Low", "Low", "Moderate", "High", "Very High"] } },
+      { id: "s2_q6", type: "checkbox_pills", label: "Which technical proficiencies are required to engage?", options: [{ label: "Data Interpretation", value: "data-interpretation" }, { label: "Basic Statistics", value: "basic-stats" }, { label: "Complex Software Navigation", value: "software-nav" }, { label: "Report Generation", value: "report-gen" }] },
     ],
   },
   {
-    id: 3,
-    title: "Content Scope & Structure",
+    id: "s3", title: "Content Scope & Structure", description: "Topic hierarchy, sequencing logic, and case study requirements.",
     questions: [
-      {
-        id: "s3_q1",
-        label: "How many learning modules should the programme contain?",
-        field: { type: "number", value: 6 },
-      },
-      {
-        id: "s3_q2",
-        label: "Preferred primary delivery format",
-        field: {
-          type: "rcards",
-          selected: "blended",
-          options: [
-            { value: "async", label: "Self-paced eLearning", description: "Asynchronous, learner-controlled pace via LMS" },
-            { value: "live", label: "Live Virtual Sessions", description: "Cohort-based synchronous instructor delivery" },
-            { value: "blended", label: "Blended Programme", description: "Async modules + live practice sessions" },
-            { value: "on_job", label: "On-the-job Learning", description: "Embedded in workflow with performance support" },
-          ],
-        },
-      },
+      { id: "s3_q1", type: "radio_cards", label: "Preferred content sequencing logic?", options: [{ label: "Linear / Sequential", value: "linear", description: "Strict, predefined order" }, { label: "Modular / Non-linear", value: "modular", description: "Choose your own path through standalone topics" }, { label: "Adaptive / Personalized", value: "adaptive", description: "System adjusts path based on performance" }] },
+      { id: "s3_q2", type: "checkbox_pills", label: "What types of case studies are required?", options: [{ label: "Industry-Specific", value: "industry-specific" }, { label: "Cross-Industry Analogies", value: "cross-industry" }, { label: "Fictional/Abstracted", value: "fictional" }, { label: "Historical Internal Data", value: "historical" }] },
+      { id: "s3_q3", type: "number_spinner", label: "Estimated number of distinct modules or major topics?" },
+      { id: "s3_q4", type: "scale", label: "Balance between theoretical concepts and practical application?", scaleConfig: { min: 1, max: 10, minLabel: "Heavy Theory", maxLabel: "Heavy Practice" } },
+      { id: "s3_q5", type: "radio_pills", label: "Primary content sourcing strategy?", options: [{ label: "Build from Scratch", value: "build" }, { label: "Curate Existing", value: "curate" }, { label: "Hybrid Approach", value: "hybrid" }, { label: "Vendor Off-the-Shelf", value: "vendor" }] },
+      { id: "s3_q6", type: "radio_pills", label: "Primary content delivery format?", options: [{ label: "Video-Heavy", value: "video" }, { label: "Text/Reading-Heavy", value: "text" }, { label: "Interactive Multimedia", value: "interactive" }, { label: "Audio/Podcast", value: "audio" }] },
     ],
   },
   {
-    id: 4,
-    title: "Instructional Strategy & Methods",
+    id: "s4", title: "Instructional Strategy & Methods", description: "Pedagogical mix, social learning balance, and scaffolding.",
     questions: [
-      {
-        id: "s4_q1",
-        label: "Which instructional methods are most appropriate?",
-        field: {
-          type: "check",
-          options: ["Scenario-based", "Tool simulation", "Case studies", "Spaced practice", "Peer learning", "Manager coaching"],
-          selected: ["Scenario-based", "Tool simulation", "Spaced practice"],
-        },
-      },
-      {
-        id: "s4_q2",
-        label: "Desired cognitive scaffolding level",
-        field: { type: "scale", value: 3, min: 1, max: 5, minLabel: "Highly guided", maxLabel: "Discovery-led" },
-      },
+      { id: "s4_q1", type: "checkbox_cards", label: "Which pedagogical approaches will anchor the design?", options: [{ label: "Constructivism", value: "constructivism", description: "Build knowledge through experiences and reflection" }, { label: "Experiential Learning", value: "experiential", description: "Learning through doing, followed by analysis" }, { label: "Cognitivism", value: "cognitivism", description: "Focus on mental processes and problem-solving" }, { label: "Connectivism", value: "connectivism", description: "Learning through networks and digital connections" }] },
+      { id: "s4_q2", type: "labeled_slider", label: "What percentage should rely on social/collaborative learning?", sliderConfig: { min: 0, max: 100, step: 10, unit: "%" } },
+      { id: "s4_q3", type: "radio_pills", label: "Primary scaffolding technique for complex topics?", options: [{ label: "Guided Practice", value: "guided-practice" }, { label: "Worked Examples", value: "worked-examples" }, { label: "Concept Mapping", value: "concept-mapping" }, { label: "Peer Tutoring", value: "peer-tutoring" }] },
+      { id: "s4_q4", type: "toggle_switch", label: "Utilize a blended learning approach (sync + async)?", options: [{ label: "Yes", value: "yes" }, { label: "No", value: "no" }] },
+      { id: "s4_q5", type: "scale", label: "Required level of pacing flexibility?", scaleConfig: { min: 1, max: 5, minLabel: "Strictly Scheduled", maxLabel: "Completely Self-Paced" } },
+      { id: "s4_q6", type: "checkbox_pills", label: "Strategies for post-training reinforcement?", options: [{ label: "Spaced Repetition", value: "spaced-repetition" }, { label: "Job Aids / Checklists", value: "job-aids" }, { label: "Manager Coaching", value: "manager-coaching" }, { label: "Peer Discussions", value: "peer-discussions" }] },
     ],
   },
   {
-    id: 5,
-    title: "Learning Activities & Interactions",
+    id: "s5", title: "Learning Activities & Interactions", description: "Engagement activities, simulations, and hands-on practice.",
     questions: [
-      {
-        id: "s5_q1",
-        label: "Ideal session duration for live components",
-        field: {
-          type: "radio",
-          options: ["30 min", "60 min", "90 min", "Half-day"],
-          selected: "60 min",
-        },
-      },
-      {
-        id: "s5_q2",
-        label: "Hours per week learners can dedicate to formal learning",
-        field: { type: "slider", value: 2.5, min: 0.5, max: 10, unit: "hrs" },
-      },
+      { id: "s5_q1", type: "checkbox_cards", label: "Which types of hands-on practice are most appropriate?", options: [{ label: "Software Simulations", value: "software-sims", description: "Click-through environments mimicking real tools" }, { label: "Role-Play Exercises", value: "role-play", description: "Practicing interpersonal or decision-making scenarios" }, { label: "Case Analysis", value: "case-analysis", description: "Deep dives into complex business problems" }, { label: "Peer Review", value: "peer-review", description: "Evaluating and critiquing colleagues' work" }] },
+      { id: "s5_q2", type: "radio_pills", label: "Required fidelity level for scenario simulations?", options: [{ label: "Low (Text-based)", value: "low" }, { label: "Medium (Interactive 2D)", value: "medium" }, { label: "High (Immersive/3D)", value: "high" }] },
+      { id: "s5_q3", type: "checkbox_pills", label: "Which collaboration mechanisms will be integrated?", options: [{ label: "Discussion Boards", value: "discussion-boards" }, { label: "Live Workshops", value: "live-workshops" }, { label: "Group Projects", value: "group-projects" }, { label: "Structured Peer Feedback", value: "peer-feedback" }] },
+      { id: "s5_q4", type: "enhanced_scale", label: "Desired frequency of interactive elements in async modules?", scaleConfig: { min: 1, max: 4, labels: ["Every 5 mins", "Every 15 mins", "End of module", "None"] } },
+      { id: "s5_q5", type: "textarea", rows: 4, label: "Describe the requirements for the capstone activity.", helpText: "The final project learners must complete to prove mastery." },
+      { id: "s5_q6", type: "scale", label: "Required immediacy of feedback during practice?", scaleConfig: { min: 1, max: 5, minLabel: "Delayed/Manual", maxLabel: "Instant/Automated" } },
     ],
   },
   {
-    id: 6,
-    title: "Assessment & Evaluation",
+    id: "s6", title: "Assessment & Evaluation", description: "Measurement strategies, certification needs, data collection rigor.",
     questions: [
-      {
-        id: "s6_q1",
-        label: "Which assessment types should be included?",
-        field: {
-          type: "check",
-          options: ["Knowledge checks", "Scenario simulation", "Performance task", "Manager observation", "Peer review"],
-          selected: ["Knowledge checks", "Scenario simulation", "Performance task"],
-        },
-      },
-      {
-        id: "s6_q2",
-        label: "Minimum pass score for certification",
-        field: { type: "slider", value: 80, min: 60, max: 100, unit: "%" },
-      },
+      { id: "s6_q1", type: "radio_cards", label: "Primary assessment strategy for validating competency?", options: [{ label: "Objective Knowledge Checks", value: "knowledge-checks", description: "Multiple choice, matching, true/false quizzes" }, { label: "Scenario-Based Branching", value: "scenario-based", description: "Decision paths with natural consequences" }, { label: "Performance Tasks", value: "performance-tasks", description: "Real-world assignments evaluated via rubric" }, { label: "Portfolio Review", value: "portfolio", description: "Collection of work demonstrating growth" }] },
+      { id: "s6_q2", type: "labeled_slider", label: "Ratio of formative to summative assessments?", sliderConfig: { min: 0, max: 100, step: 10, unit: "% Formative" } },
+      { id: "s6_q3", type: "checkbox_pills", label: "Which data collection methods will be utilized?", options: [{ label: "SCORM Tracking", value: "scorm" }, { label: "xAPI Statements", value: "xapi" }, { label: "Self-Reported Surveys", value: "surveys" }, { label: "Manager Evaluations", value: "manager-evals" }] },
+      { id: "s6_q4", type: "toggle_switch", label: "Is formal certification required upon completion?", options: [{ label: "Yes", value: "yes" }, { label: "No", value: "no" }] },
+      { id: "s6_q5", type: "radio_pills", label: "Timing strategy for formal assessments?", options: [{ label: "Pre and Post-Training", value: "pre-post" }, { label: "Post-Training Only", value: "post-only" }, { label: "Continuous/Embedded", value: "continuous" }, { label: "No Formal Assessment", value: "none" }] },
+      { id: "s6_q6", type: "scale", label: "Target difficulty level for the final assessment?", scaleConfig: { min: 1, max: 5, minLabel: "Basic Recall", maxLabel: "Complex Synthesis" } },
     ],
   },
   {
-    id: 7,
-    title: "Resources & Existing Assets",
+    id: "s7", title: "Resources & Materials", description: "Existing asset quality, human resource availability, content gaps.",
     questions: [
-      {
-        id: "s7_q1",
-        label: "What existing assets can be repurposed?",
-        field: {
-          type: "check",
-          options: ["Product documentation", "Sales decks", "Existing video", "SOPs / job aids", "Starting from scratch"],
-          selected: ["Product documentation", "Sales decks"],
-        },
-      },
-      {
-        id: "s7_q2",
-        label: "Describe any content quality or currency concerns",
-        field: {
-          type: "textarea",
-          value:
-            "The CRM training deck is 18 months old — pre-dates the AI feature rollout. Product documentation is comprehensive but written for engineers, not end-users.",
-          rows: 3,
-        },
-      },
+      { id: "s7_q1", type: "radio_cards", label: "Quality and readiness of existing source materials?", options: [{ label: "Ready to Use", value: "ready", description: "Current, accurate, instructionally sound" }, { label: "Needs Minor Updates", value: "minor-updates", description: "Solid but requires formatting tweaks" }, { label: "Needs Major Overhaul", value: "major-overhaul", description: "Outdated, disorganized, or highly technical" }, { label: "Non-existent", value: "non-existent", description: "Must be generated from scratch via SME interviews" }] },
+      { id: "s7_q2", type: "checkbox_pills", label: "Expected availability of Subject Matter Experts?", options: [{ label: "Dedicated Weekly Hours", value: "dedicated" }, { label: "Ad-hoc Interviews", value: "ad-hoc" }, { label: "Review/Sign-off Only", value: "review-only" }, { label: "Largely Unavailable", value: "unavailable" }] },
+      { id: "s7_q3", type: "currency", label: "Target financial impact / ROI value per learner?", currencyConfig: { symbol: "$" } },
+      { id: "s7_q4", type: "textarea", rows: 3, label: "Identify the most significant content gaps." },
+      { id: "s7_q5", type: "radio_pills", label: "Expected shelf-life before major updates?", options: [{ label: "< 6 Months", value: "under-6m" }, { label: "6-12 Months", value: "6-12m" }, { label: "1-2 Years", value: "1-2y" }, { label: "> 2 Years", value: "over-2y" }] },
+      { id: "s7_q6", type: "text", label: "Primary internal tool used for existing asset creation." },
     ],
   },
   {
-    id: 8,
-    title: "Technology & Platform",
+    id: "s8", title: "Technology & Platform", description: "Integration details, API needs, and specific UX requirements.",
     questions: [
-      {
-        id: "s8_q1",
-        label: "Which LMS / learning platform is in use?",
-        field: {
-          type: "radio",
-          options: ["Workday Learning", "Cornerstone", "SAP SuccessFactors", "Docebo", "Custom / Other"],
-          selected: "Cornerstone",
-        },
-      },
-      {
-        id: "s8_q2",
-        label: "Is SCORM / xAPI compliance required?",
-        field: { type: "toggle", selected: "yes", offValue: "no", offLabel: "Not required", onValue: "yes", onLabel: "Required" },
-      },
+      { id: "s8_q1", type: "checkbox_cards", label: "Which enterprise systems require direct integration?", options: [{ label: "HRIS / HCM", value: "hris", description: "Automated user provisioning and role mapping" }, { label: "CRM", value: "crm", description: "Tie learning completion to sales metrics" }, { label: "Communication Tools", value: "comms", description: "Slack, Teams, or Zoom for notifications" }, { label: "BI Dashboards", value: "bi", description: "Tableau or PowerBI for advanced analytics" }] },
+      { id: "s8_q2", type: "radio_pills", label: "Primary API data flow requirements?", options: [{ label: "Read Only (Import)", value: "read-only" }, { label: "Write Only (Export)", value: "write-only" }, { label: "Bi-directional Sync", value: "bi-directional" }, { label: "No API Required", value: "none" }] },
+      { id: "s8_q3", type: "toggle_switch", label: "Is Single Sign-On (SSO) required?", options: [{ label: "Yes", value: "yes" }, { label: "No", value: "no" }] },
+      { id: "s8_q4", type: "textarea", rows: 3, label: "Describe any specific UX constraints or brand guidelines." },
+      { id: "s8_q5", type: "checkbox_pills", label: "Which web browsers must be fully supported?", options: [{ label: "Google Chrome", value: "chrome" }, { label: "Microsoft Edge", value: "edge" }, { label: "Apple Safari", value: "safari" }, { label: "Mozilla Firefox", value: "firefox" }, { label: "Legacy (IE11)", value: "legacy" }] },
+      { id: "s8_q6", type: "radio_cards", label: "Requirements for mobile offline synchronization?", options: [{ label: "Required (Full Course)", value: "full", description: "Entire modules downloadable and trackable offline" }, { label: "Required (Partial)", value: "partial", description: "Only specific assets need offline access" }, { label: "Not Required", value: "none", description: "Always-on internet connection assumed" }] },
     ],
   },
   {
-    id: 9,
-    title: "Implementation & Rollout",
+    id: "s9", title: "Implementation & Rollout", description: "Deployment strategy, pilot selection, and change management.",
     questions: [
-      {
-        id: "s9_q1",
-        label: "Target go-live date",
-        field: { type: "text", value: "September 2026" },
-      },
-      {
-        id: "s9_q2",
-        label: "Will a pilot cohort be used before full rollout?",
-        field: { type: "toggle", selected: "yes", offValue: "no", offLabel: "Full rollout", onValue: "yes", onLabel: "Pilot first" },
-      },
-      {
-        id: "s9_q3",
-        label: "Pilot cohort size",
-        field: { type: "number", value: 25 },
-      },
+      { id: "s9_q1", type: "radio_cards", label: "Strategy for selecting the pilot cohort?", options: [{ label: "Volunteer Basis", value: "volunteer", description: "Open call for early adopters" }, { label: "Manager Nominated", value: "manager-nom", description: "Leaders select high-potential individuals" }, { label: "Random Selection", value: "random", description: "Statistically representative sample" }, { label: "Specific Department", value: "specific-dept", description: "Roll out to one business unit first" }] },
+      { id: "s9_q2", type: "checkbox_pills", label: "Communication channels for the rollout campaign?", options: [{ label: "Email Campaigns", value: "email" }, { label: "Intranet Banners", value: "intranet" }, { label: "Town Hall Announcements", value: "town-halls" }, { label: "Manager 1:1s", value: "manager-1on1" }] },
+      { id: "s9_q3", type: "date", label: "Target date for the pilot launch?" },
+      { id: "s9_q4", type: "textarea", rows: 3, label: "Key change management risks associated with this rollout." },
+      { id: "s9_q5", type: "scale", label: "Expected level of active leadership sponsorship?", scaleConfig: { min: 1, max: 10, minLabel: "Passive Support", maxLabel: "Active Championing" } },
+      { id: "s9_q6", type: "text", label: "Primary incentive or recognition method for early completion." },
     ],
   },
   {
-    id: 10,
-    title: "Success Metrics & Improvement",
+    id: "s10", title: "Success Metrics & Continuous Improvement", description: "ROI formulas, reporting frequencies, and iteration cycles.",
     questions: [
-      {
-        id: "s10_q1",
-        label: "Which business KPIs will this programme be tracked against?",
-        field: {
-          type: "check",
-          options: ["Pipeline value", "Win rate", "Time to close", "AI tool adoption", "Learner satisfaction", "Knowledge retention"],
-          selected: ["Pipeline value", "Win rate", "AI tool adoption"],
-        },
-      },
-      {
-        id: "s10_q2",
-        label: "Reporting cadence for learning analytics",
-        field: {
-          type: "radio",
-          options: ["Weekly", "Bi-weekly", "Monthly", "Quarterly"],
-          selected: "Monthly",
-        },
-      },
+      { id: "s10_q1", type: "checkbox_cards", label: "Which ROI measurement models will be applied?", options: [{ label: "Phillips ROI Model", value: "phillips", description: "Converting business impact into monetary value" }, { label: "Kirkpatrick Level 4", value: "kirkpatrick-4", description: "Measuring specific business outcomes" }, { label: "Cost-Benefit Analysis", value: "cba", description: "Development costs vs operational savings" }, { label: "Time-to-Proficiency", value: "time-to-prof", description: "Reduction in time to reach full productivity" }] },
+      { id: "s10_q2", type: "radio_pills", label: "Required reporting frequency to executive stakeholders?", options: [{ label: "Weekly", value: "weekly" }, { label: "Monthly", value: "monthly" }, { label: "Quarterly", value: "quarterly" }, { label: "Annually", value: "annually" }] },
+      { id: "s10_q3", type: "number_spinner", label: "Planned iteration cycle frequency (in months)?" },
+      { id: "s10_q4", type: "textarea", rows: 4, label: "Describe the long-term maintenance strategy." },
+      { id: "s10_q5", type: "enhanced_scale", label: "Expected timeline to realize measurable business impact?", scaleConfig: { min: 1, max: 4, labels: ["Immediate", "30-90 Days", "6 Months", "1+ Years"] } },
+      { id: "s10_q6", type: "radio_pills", label: "Planned duration for formal post-training support?", options: [{ label: "30 Days", value: "30-days" }, { label: "60 Days", value: "60-days" }, { label: "90 Days", value: "90-days" }, { label: "Ongoing/Indefinite", value: "ongoing" }] },
     ],
   },
 ];
 
-// ─── Blueprint Data ───────────────────────────────────────────────────────────
-
-const BLUEPRINT = {
-  title: "AI Literacy for Sales Professionals",
-  org: "Acme Financial Services",
-  generated: "Polaris · June 2026",
-  executive_summary:
-    "This programme addresses a critical performance gap: 450 sales professionals lack the AI literacy needed to leverage Acme's newly deployed AI-assisted CRM, costing an estimated 15% in pipeline efficiency. The solution is a 6-module blended learning programme combining asynchronous skill-building with live facilitated practice sessions. Grounded in spaced retrieval, scenario-based simulation, and manager-led coaching, the programme targets three measurable behavioural outcomes at 90 days: AI lead scoring adoption, first-draft proposal velocity, and model recommendation interpretation. Success will be tracked against three business KPIs — pipeline value, win rate, and AI tool adoption — with monthly reporting through Cornerstone.",
-  objectives: [
-    { id: "O1", title: "AI Lead Scoring Adoption", metric: "≥75% of reps using AI scoring daily", baseline: "12%", target: "75%", due: "Oct 2026" },
-    { id: "O2", title: "Proposal Generation Velocity", metric: "First draft in < 5 min", baseline: "22 min avg", target: "< 5 min", due: "Oct 2026" },
-    { id: "O3", title: "Model Confidence Interpretation", metric: "≥80% on simulation assessment", baseline: "No baseline", target: "80% pass rate", due: "Sep 2026" },
-    { id: "O4", title: "Pipeline Uplift", metric: "+15% pipeline value", baseline: "$4.2M avg/quarter", target: "$4.83M avg/quarter", due: "Dec 2026" },
-    { id: "O5", title: "Win Rate Improvement", metric: "+8pp win rate", baseline: "22%", target: "30%", due: "Dec 2026" },
-  ],
-  modules: [
-    { num: "01", title: "AI Foundations for Sales", duration: "45 min", format: "Async eLearning", topics: ["What is generative AI", "How your CRM's AI model works", "Understanding confidence scores"], tag: "Awareness" },
-    { num: "02", title: "Lead Scoring in Practice", duration: "60 min", format: "Async + Simulation", topics: ["Reading the scoring dashboard", "Prioritisation workflow", "Override criteria and when to use them"], tag: "Application" },
-    { num: "03", title: "AI-Assisted Proposal Writing", duration: "90 min", format: "Blended", topics: ["Prompt engineering for sales context", "First-draft generation workflow", "Quality review checklist"], tag: "Application" },
-    { num: "04", title: "Live Practice Lab 1", duration: "60 min", format: "Live Virtual", topics: ["Guided scenario: lead prioritisation", "Peer review of AI proposals", "Manager Q&A"], tag: "Practice" },
-    { num: "05", title: "Data Literacy & Model Limits", duration: "45 min", format: "Async eLearning", topics: ["How models fail and why", "Bias in training data", "Escalation criteria"], tag: "Analysis" },
-    { num: "06", title: "Live Practice Lab 2 + Certification", duration: "90 min", format: "Live Virtual", topics: ["Full deal scenario simulation", "360° peer feedback", "Certification assessment"], tag: "Evaluation" },
-  ],
-  assessment: {
-    kpis: [
-      { metric: "Module completion rate", target: "95%", method: "LMS tracking", freq: "Weekly" },
-      { metric: "Knowledge check score", target: "≥80%", method: "Embedded quizzes", freq: "Per module" },
-      { metric: "Simulation pass rate", target: "≥80%", method: "Scenario assessment", freq: "Module 6" },
-      { metric: "Manager observation score", target: "≥4/5", method: "30-day check-in", freq: "Monthly" },
-      { metric: "AI tool adoption", target: "≥75% DAU", method: "CRM analytics", freq: "Monthly" },
-    ],
-  },
-  timeline: [
-    { phase: "Discovery & Design", dates: "Jun – Jul 2026", milestones: ["SME workshops completed", "Storyboards approved", "Pilot cohort confirmed"], status: "active" },
-    { phase: "Development", dates: "Jul – Aug 2026", milestones: ["eLearning modules built", "Simulation scenarios scripted", "Cornerstone configuration complete"], status: "upcoming" },
-    { phase: "Pilot", dates: "Aug – Sep 2026", milestones: ["25-person pilot cohort", "Feedback collected and iterated", "Go / no-go decision"], status: "upcoming" },
-    { phase: "Full Rollout", dates: "Sep – Oct 2026", milestones: ["450 learners enrolled", "Live labs scheduled", "90-day KPI baseline set"], status: "upcoming" },
-  ],
-  budget: [
-    { item: "Instructional design (2 IDs × 8 weeks)", cost: 18400 },
-    { item: "eLearning development (Articulate 360)", cost: 3200 },
-    { item: "Simulation scenario development", cost: 6800 },
-    { item: "Live facilitation (6 sessions × cohort)", cost: 9600 },
-    { item: "LMS configuration & SCORM packaging", cost: 4200 },
-    { item: "Evaluation & reporting setup", cost: 3800 },
-    { item: "Contingency (5%)", cost: 2400 },
-  ],
-  risks: [
-    { risk: "Low manager engagement in coaching", prob: "Medium", impact: "High", mitigation: "Executive briefing and manager readiness pack pre-launch" },
-    { risk: "CRM AI feature updates mid-programme", prob: "Low", impact: "Medium", mitigation: "Modular content architecture enables targeted updates" },
-    { risk: "Learner time availability", prob: "High", impact: "Medium", mitigation: "Micro-learning sessions ≤90 min, calendar holds booked in advance" },
-  ],
+const DYNAMIC_ANSWERS: Record<string, string | string[] | number> = {
+  s1_q1: ["revenue-growth", "innovation"], s1_q2: "apply",
+  s1_q3: "Within 8 weeks, senior leaders will be able to identify at least 3 high-impact data science use cases, interpret key analytical outputs, and make data-informed decisions by applying structured frameworks in business scenarios, as measured through case-based assessments and a final strategic data initiative proposal.",
+  s1_q4: 4, s1_q5: ["completion-rate", "skill-application", "process-speed"], s1_q6: "performance-gap",
+  s2_q1: ["change-fatigue", "tech-anxiety", "perceived-value"], s2_q2: "microlearning", s2_q3: "no",
+  s2_q4: "Limited understanding of data fundamentals, analytics concepts, and how data translates into business insights and decision-making.",
+  s2_q5: 3, s2_q6: ["data-interpretation", "basic-stats", "report-gen"],
+  s3_q1: "linear", s3_q2: ["industry-specific", "historical"], s3_q3: 10, s3_q4: 6, s3_q5: "build", s3_q6: "video",
+  s4_q1: ["cognitivism", "experiential"], s4_q2: 20, s4_q3: "concept-mapping", s4_q4: "yes", s4_q5: 4, s4_q6: ["spaced-repetition", "job-aids"],
+  s5_q1: ["software-sims", "case-analysis"], s5_q2: "medium", s5_q3: ["group-projects", "live-workshops"], s5_q4: 2,
+  s5_q5: "Learners will complete a capstone by developing a data-driven strategic initiative for their organization. This includes identifying a high-impact use case, defining success metrics, interpreting sample analytics outputs, and outlining an implementation roadmap. Participants must present their proposal, justify decisions using data insights, and demonstrate alignment with business objectives.",
+  s5_q6: 3,
+  s6_q1: "knowledge-checks", s6_q2: 40, s6_q3: ["scorm", "manager-evals"], s6_q4: "yes", s6_q5: "continuous", s6_q6: 4,
+  s7_q1: "non-existent", s7_q2: ["dedicated"], s7_q3: 3000,
+  s7_q4: "Lack of content on translating business problems into data science use cases, evaluating model outputs and limitations, data governance and ethics for leaders, and structured decision-making frameworks. Missing guidance on stakeholder alignment, ROI measurement of data initiatives, and practical case studies.",
+  s7_q5: "1-2y", s7_q6: "Articulate 360 (Storyline/Rise)",
+  s8_q1: ["comms"], s8_q2: "read-only", s8_q3: "yes",
+  s8_q4: "Must adhere to Moody’s Ratings brand guidelines—use approved blue/grey palette, clean typography, and minimalistic layouts. Ensure WCAG-compliant contrast, clear navigation, and professional, data-centric visuals suitable for senior leadership.",
+  s8_q5: ["chrome", "safari"], s8_q6: "none",
+  s9_q1: "manager-nom", s9_q2: ["email", "intranet", "town-halls", "manager-1on1"], s9_q3: "2026-06-30",
+  s9_q4: "Resistance from senior leaders due to time constraints or perceived low relevance; low data literacy causing disengagement; misalignment with business priorities; limited leadership sponsorship; difficulty integrating learning into workflows.",
+  s9_q5: 7, s9_q6: "Digital Badges & Bonus Rewards & Recognition Points",
+  s10_q1: ["phillips", "time-to-prof"], s10_q2: "monthly", s10_q3: 6,
+  s10_q4: "The program will be owned by the central L&D or Data Strategy team, with a designated program manager responsible for governance. Content will be reviewed biannually or triggered by changes in business strategy, tools, or data regulations. SMEs will update modules, while feedback and business impact metrics inform continuous improvements.",
+  s10_q5: 4, s10_q6: "ongoing",
 };
 
-// ─── Field Display Renderers ──────────────────────────────────────────────────
+// ─── Blueprint data — Moody's Ratings ─────────────────────────────────────────
+
+const BLUEPRINT = {
+  title: "Data-Driven Leadership: Strategic Data Science for Executives",
+  organization: "Moody’s Ratings",
+  role: "Instructional Designer",
+  generated: "Polaris · Apr 2026",
+  version: "1.0",
+  executive_summary:
+    "The 'Data-Driven Leadership' program is an 8-week, highly targeted learning initiative designed to bridge the data literacy gap among senior leaders at Moody’s Ratings. While executives possess deep financial services expertise, translating data science capabilities into actionable business strategies remains a critical performance gap. This program empowers 26-50 senior leaders to interpret analytical outputs, evaluate model limitations, and align data initiatives with overarching organizational goals, directly driving revenue growth and innovation.\n\nUtilizing a blended instructional strategy rooted in cognitivism and experiential learning, the 6-hour curriculum combines asynchronous microlearning (developed in Articulate 360) with synchronous live workshops and group case analyses. The program culminates in a practical capstone project where leaders propose a data-driven strategic initiative.",
+  objectives: [
+    { id: "obj1", title: "Identify Strategic Use Cases", description: "Identify at least 3 high-impact data science use cases aligned with Moody's business priorities.", metric: "Capstone Proposal Rubric", baseline: 1, target: 4, due: "Jun 15, 2026" },
+    { id: "obj2", title: "Interpret Analytical Outputs", description: "Accurately interpret key data science model outputs, basic statistics, and report generations.", metric: "Case-Based Assessment Score", baseline: 2, target: 4, due: "Jun 1, 2026" },
+    { id: "obj3", title: "Formulate Data-Driven Decisions", description: "Apply structured frameworks to make informed decisions and allocate resources efficiently.", metric: "Manager Evaluation (Post-30 Days)", baseline: 2, target: 5, due: "Jun 30, 2026" },
+  ],
+  audience: {
+    roles: ["Senior Director", "Managing Director", "VP of Strategy"],
+    experience: ["Senior", "Executive"],
+    departments: [
+      { department: "Ratings & Research", percentage: 40 },
+      { department: "Strategy & Innovation", percentage: 35 },
+      { department: "Operations", percentage: 25 },
+    ],
+    modalities: [
+      { type: "Asynchronous Microlearning", percentage: 60 },
+      { type: "Live Case Workshops", percentage: 20 },
+      { type: "Peer Social Learning", percentage: 20 },
+    ],
+  },
+  assessment: {
+    overview: "A continuous assessment model utilizing pre/post evaluations to measure knowledge gain, embedded SCORM knowledge checks for formative feedback, and a heavily weighted capstone project to evaluate real-world skill application.",
+    kpis: [
+      { metric: "Program Completion Rate", target: "90%", method: "LMS Analytics", frequency: "Weekly" },
+      { metric: "Skill Application (Capstone)", target: "85%", method: "Rubric Scoring", frequency: "End of Program" },
+      { metric: "Time-to-Proficiency", target: "30 Days", method: "Manager Evaluations", frequency: "Post-Program (30 Days)" },
+    ],
+    methods: [
+      { method: "Pre/Post Knowledge Assessment", timing: "Week 1 & Week 8", weight: "20%" },
+      { method: "Module Knowledge Checks", timing: "End of Modules 1-3", weight: "40%" },
+      { method: "Capstone Strategic Proposal", timing: "Week 8", weight: "40%" },
+    ],
+  },
+  modules: [
+    { id: "m1", num: 1, title: "Data Fundamentals for Financial Leaders", description: "Establishing a baseline understanding of data science concepts and terminology.", duration: "Week 1-2 (1.5 hrs)", delivery: "Asynchronous Microlearning", topics: ["Data Science vs. Traditional Analytics", "Basic Statistical Concepts for Executives"], activities: [{ type: "Exercise", activity: "Interactive Glossary & Concept Mapping", duration: "30 minutes" }], assessment: { type: "Knowledge Check", description: "Scenario-based quiz on identifying correct analytical approaches." } },
+    { id: "m2", num: 2, title: "Translating Business Problems to Data Use Cases", description: "Frameworks for identifying and scoping high-impact data initiatives.", duration: "Week 3-4 (1.5 hrs)", delivery: "Blended (Async + Live Workshop)", topics: ["The Data-to-Value Framework", "Historical Data Analysis in Credit Ratings"], activities: [{ type: "Discussion", activity: "Group Case Analysis", duration: "45 minutes" }], assessment: { type: "Formative Assessment", description: "Drafting a preliminary use case statement." } },
+    { id: "m3", num: 3, title: "Evaluating Models, Governance & Ethics", description: "Understanding model limitations, ROI measurement, and data governance.", duration: "Week 5-6 (1.5 hrs)", delivery: "Asynchronous Microlearning", topics: ["Interpreting Model Outputs & Limitations", "Data Ethics and Internal Compliance"], activities: [{ type: "Simulation", activity: "Software Simulation (Read-Only Dashboards)", duration: "40 minutes" }], assessment: { type: "Knowledge Check", description: "Identifying bias and limitations in sample model outputs." } },
+    { id: "m4", num: 4, title: "Capstone: Strategic Data Initiative", description: "Synthesizing learning into a practical, actionable business proposal.", duration: "Week 7-8 (1.5 hrs)", delivery: "Live Workshop & Presentations", topics: ["Stakeholder Alignment", "Implementation Roadmapping"], activities: [{ type: "Project", activity: "Capstone Project Development", duration: "60 minutes" }], assessment: { type: "Presentation", description: "Presenting a data-driven strategic initiative to peers and SMEs." } },
+  ],
+  strategy: {
+    overview: "The strategy leverages a blended, linear approach tailored for time-constrained executives. It combines cognitivism (mental models for data interpretation) with experiential learning (real-world Moody's case studies). Content is delivered via 80% asynchronous microlearning (video-heavy, Articulate Rise) and 20% synchronous live workshops. Spaced repetition and job aids reinforce learning to combat tech anxiety and change fatigue.",
+    modalities: [
+      { type: "Asynchronous Microlearning", percentage: 80, rationale: "Accommodates 20+ hour work weeks and flexible locations.", tools: ["Articulate 360 (Rise/Storyline)", "Video Snippets"] },
+      { type: "Synchronous Workshops", percentage: 20, rationale: "Facilitates group projects, social learning, and SME Q&A.", tools: ["MS Teams/Zoom", "Miro (Concept Mapping)"] },
+    ],
+    cohort: "Manager-nominated cohorts of 10-15 leaders to ensure high-touch facilitation and cross-functional peer networking.",
+    accessibility: ["WCAG-compliant contrast using Moody's blue/grey palette", "Closed captioning and transcripts for all video content", "Mobile-responsive design for Chrome/Safari access", "Screen-reader compatible Articulate modules"],
+  },
+  resources: {
+    budget: { currency: "USD", total: 70000, items: [{ item: "ID & Content Development (Internal/Contract)", amount: 45000 }, { item: "SME Compensation/Backfill", amount: 15000 }, { item: "Specialized Tooling & Media Assets", amount: 3000 }, { item: "Rewards (Badges, Bonus Points)", amount: 7000 }] },
+    human: [{ role: "Instructional Designer", fte: 1, duration: "8 weeks" }, { role: "Data Science SME", fte: 0.2, duration: "6 weeks" }, { role: "Program Manager", fte: 0.25, duration: "10 weeks" }],
+    tools: [{ name: "Articulate 360", category: "Content Authoring", cost: "Existing License" }, { name: "Moody's Internal LMS (SCORM)", category: "LMS", cost: "Existing Infrastructure" }, { name: "Data Viz Simulators", category: "Specialized Tools", cost: "New Subscription" }],
+  },
+  timeline: {
+    critical_path: ["Design & Prototyping", "Development & QA", "Launch & Delivery"],
+    phases: [
+      { phase: "Design & Prototyping", start: "Apr 26, 2026", end: "May 10, 2026", milestones: ["SME Alignment", "Storyboard Approval", "UI/UX Brand Check"], dependencies: ["SME Availability"] },
+      { phase: "Development & QA", start: "May 11, 2026", end: "May 31, 2026", milestones: ["Articulate Build", "SCORM Testing", "Pilot Review"], dependencies: ["Content Sign-off"] },
+      { phase: "Launch & Delivery", start: "Jun 1, 2026", end: "Jun 30, 2026", milestones: ["Cohort Kickoff", "Live Workshops", "Capstone Presentations"], dependencies: ["Manager Nominations"] },
+    ],
+  },
+  metrics: {
+    cadence: "Monthly",
+    items: [
+      { metric: "Phillips ROI (Business Impact)", baseline: "0 (No formal tracking)", target: "15% increase in approved data initiatives", method: "Data Strategy Team Tracking", timeline: "6 Months Post-Launch" },
+      { metric: "Process Speed (Decision Making)", baseline: "Slow/Ad-hoc", target: "20% reduction in initiative scoping time", method: "Manager Surveys", timeline: "3 Months Post-Launch" },
+      { metric: "Learner Engagement", baseline: "N/A", target: "85% positive feedback score", method: "Post-Course Evaluation", timeline: "Immediate (June 30)" },
+    ],
+  },
+  risks: [
+    { risk: "Executive Time Constraints", probability: "High", impact: "High", mitigation: "Strict adherence to microlearning (max 15-min chunks); integrate into existing workflows." },
+    { risk: "Low Data Literacy / Tech Anxiety", probability: "High", impact: "Medium", mitigation: "Provide foundational pre-work glossary; use intuitive, read-only dashboard simulations." },
+    { risk: "Limited Leadership Sponsorship", probability: "Medium", impact: "High", mitigation: "Leverage manager nominations; align capstone directly to current Moody's strategic OKRs." },
+  ],
+  contingency: ["If live workshop attendance is low, record sessions and require asynchronous peer review of capstones.", "If completion lags, trigger automated LMS reminders and escalate to nominating managers."],
+  sustainability: {
+    content: "To ensure the program remains relevant within the fast-paced financial services sector, ownership will be jointly held by Central L&D and the Data Strategy team. The curriculum is designed with a 1-2 year shelf life, utilizing modular Articulate 360 files to allow for rapid updates without overhauling the entire program.",
+    review_frequency: "Biannually",
+    triggers: ["Changes in Moody's Data Strategy", "New Financial Data Regulations", "Introduction of new internal analytics tools"],
+    scaling: ["Convert live workshops to asynchronous peer-review formats for global rollout.", "Translate core modules for non-English speaking regional offices.", "Develop a 'Train-the-Trainer' model for regional Data SMEs."],
+  },
+};
+
+// ─── Shared static field renderers ────────────────────────────────────────────
 
 function RadioPills({ data }: { data: RadioPillsData }) {
   return (
@@ -487,15 +359,7 @@ function RadioPills({ data }: { data: RadioPillsData }) {
       {data.options.map((opt) => {
         const active = opt === data.selected;
         return (
-          <span
-            key={opt}
-            className={[
-              "inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-medium border transition-colors",
-              active
-                ? "border-emerald-500/60 bg-emerald-500/10 text-emerald-300"
-                : "border-white/10 bg-white/[0.04] text-neutral-400",
-            ].join(" ")}
-          >
+          <span key={opt} className={["inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-medium border transition-colors", active ? "border-emerald-500/60 bg-emerald-500/10 text-emerald-300" : "border-white/10 bg-white/[0.04] text-neutral-400"].join(" ")}>
             {active && <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" strokeWidth={2.5} />}
             {opt}
           </span>
@@ -511,19 +375,9 @@ function CheckPills({ data }: { data: CheckPillsData }) {
       {data.options.map((opt) => {
         const active = data.selected.includes(opt);
         return (
-          <span
-            key={opt}
-            className={[
-              "inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-medium border transition-colors",
-              active
-                ? "border-emerald-500/60 bg-emerald-500/10 text-emerald-300"
-                : "border-white/10 bg-white/[0.04] text-neutral-400",
-            ].join(" ")}
-          >
+          <span key={opt} className={["inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-medium border transition-colors", active ? "border-emerald-500/60 bg-emerald-500/10 text-emerald-300" : "border-white/10 bg-white/[0.04] text-neutral-400"].join(" ")}>
             {active && (
-              <svg className="h-3 w-3 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
+              <svg className="h-3 w-3 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
             )}
             {opt}
           </span>
@@ -534,22 +388,11 @@ function CheckPills({ data }: { data: CheckPillsData }) {
 }
 
 function TextareaDisplay({ data }: { data: TextareaData }) {
-  return (
-    <div
-      className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-[13px] leading-relaxed text-neutral-300 whitespace-pre-wrap"
-      style={{ minHeight: `${(data.rows ?? 3) * 1.6}rem` }}
-    >
-      {data.value}
-    </div>
-  );
+  return <div className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-[13px] leading-relaxed text-neutral-300 whitespace-pre-wrap" style={{ minHeight: `${(data.rows ?? 3) * 1.5}rem` }}>{data.value}</div>;
 }
 
 function TextFieldDisplay({ data }: { data: TextField }) {
-  return (
-    <div className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-[13px] text-neutral-300">
-      {data.value}
-    </div>
-  );
+  return <div className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-[13px] text-neutral-300">{data.value}</div>;
 }
 
 function ScaleDisplay({ data }: { data: ScaleData }) {
@@ -562,47 +405,14 @@ function ScaleDisplay({ data }: { data: ScaleData }) {
         <span className="text-lg font-bold text-emerald-400">{data.value}</span>
         <span>{data.maxLabel}</span>
       </div>
-      <div className="relative h-2 rounded-full bg-white/10">
-        <div
-          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
+      <div className="relative h-2 rounded-full bg-white/10"><div className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400" style={{ width: `${pct}%` }} /></div>
       <div className="flex justify-between">
         {steps.map((s) => (
           <div key={s} className="flex flex-col items-center gap-0.5">
             <div className={["h-1.5 w-0.5 rounded-full", s === data.value ? "bg-emerald-400" : "bg-white/15"].join(" ")} />
-            <span className={["text-[10px]", s === data.value ? "text-emerald-400 font-semibold" : "text-neutral-600"].join(" ")}>
-              {s}
-            </span>
+            <span className={["text-[10px]", s === data.value ? "text-emerald-400 font-semibold" : "text-neutral-600"].join(" ")}>{s}</span>
           </div>
         ))}
-      </div>
-    </div>
-  );
-}
-
-function SliderDisplay({ data }: { data: SliderData }) {
-  const pct = ((data.value - data.min) / (data.max - data.min)) * 100;
-  return (
-    <div className="space-y-2">
-      <div className="text-center">
-        <span className="text-2xl font-bold text-emerald-400">{data.value}</span>
-        <span className="ml-1 text-sm text-neutral-500">{data.unit}</span>
-      </div>
-      <div className="relative h-2 rounded-full bg-white/10">
-        <div
-          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400"
-          style={{ width: `${pct}%` }}
-        />
-        <div
-          className="absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-emerald-400 bg-[#0a0a0f] shadow-[0_0_10px_rgba(52,211,153,0.4)]"
-          style={{ left: `calc(${pct}% - 8px)` }}
-        />
-      </div>
-      <div className="flex justify-between text-[11px] text-neutral-600">
-        <span>{data.min}{data.unit}</span>
-        <span>{data.max}{data.unit}</span>
       </div>
     </div>
   );
@@ -611,70 +421,65 @@ function SliderDisplay({ data }: { data: SliderData }) {
 function CurrencyDisplay({ data }: { data: CurrencyData }) {
   return (
     <div className="relative">
-      <span className="absolute top-1/2 left-3.5 -translate-y-1/2 text-sm font-medium text-neutral-500">
-        {data.symbol}
-      </span>
-      <div className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-2.5 pl-8 pr-4 text-[13px] text-neutral-300">
-        {data.amount.toLocaleString()}
-      </div>
+      <span className="absolute top-1/2 left-3.5 -translate-y-1/2 text-sm font-medium text-neutral-500">{data.symbol}</span>
+      <div className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-2.5 pl-8 pr-4 text-[13px] text-neutral-300">{data.amount.toLocaleString()}</div>
     </div>
   );
 }
 
 function NumberDisplay({ data }: { data: NumberData }) {
+  return <div className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-[13px] text-neutral-300">{data.value}</div>;
+}
+
+function StaticFieldRenderer({ field }: { field: FieldData }) {
+  switch (field.type) {
+    case "radio": return <RadioPills data={field} />;
+    case "check": return <CheckPills data={field} />;
+    case "textarea": return <TextareaDisplay data={field} />;
+    case "text": return <TextFieldDisplay data={field} />;
+    case "scale": return <ScaleDisplay data={field} />;
+    case "currency": return <CurrencyDisplay data={field} />;
+    case "number": return <NumberDisplay data={field} />;
+    default: return null;
+  }
+}
+
+// ─── Dynamic question renderer (reads raw question + answer) ───────────────────
+
+function OptionPills({ options, selected, multi }: { options: DQOption[]; selected: string[]; multi: boolean }) {
   return (
-    <div className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-[13px] text-neutral-300">
-      {data.value}
+    <div className="flex flex-wrap gap-2">
+      {options.map((opt) => {
+        const active = selected.includes(opt.value);
+        return (
+          <span key={opt.value} className={["inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-medium border transition-colors", active ? "border-emerald-500/60 bg-emerald-500/10 text-emerald-300" : "border-white/10 bg-white/[0.04] text-neutral-400"].join(" ")}>
+            {active && (multi
+              ? <svg className="h-3 w-3 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+              : <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" strokeWidth={2.5} />)}
+            {opt.label}
+          </span>
+        );
+      })}
     </div>
   );
 }
 
-function ToggleDisplay({ data }: { data: ToggleData }) {
-  const isOn = data.selected === data.onValue;
-  return (
-    <div className="flex items-center gap-3">
-      <span className={["text-[13px] font-medium transition-colors", !isOn ? "text-white" : "text-neutral-600"].join(" ")}>
-        {data.offLabel}
-      </span>
-      <div className={["relative inline-flex h-7 w-12 items-center rounded-full transition-colors", isOn ? "bg-emerald-500" : "bg-white/15"].join(" ")}>
-        <span className={["inline-block h-5 w-5 rounded-full bg-white shadow transition-transform", isOn ? "translate-x-6" : "translate-x-1"].join(" ")} />
-      </div>
-      <span className={["text-[13px] font-medium transition-colors", isOn ? "text-white" : "text-neutral-600"].join(" ")}>
-        {data.onLabel}
-      </span>
-    </div>
-  );
-}
-
-function RadioCardsDisplay({ data }: { data: RadioCardsData }) {
+function OptionCards({ options, selected, multi }: { options: DQOption[]; selected: string[]; multi: boolean }) {
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-      {data.options.map((opt) => {
-        const active = opt.value === data.selected;
+      {options.map((opt) => {
+        const active = selected.includes(opt.value);
         return (
-          <div
-            key={opt.value}
-            className={[
-              "rounded-xl border px-4 py-3 transition-colors",
-              active
-                ? "border-emerald-500/50 bg-emerald-500/[0.07]"
-                : "border-white/10 bg-white/[0.02]",
-            ].join(" ")}
-          >
+          <div key={opt.value} className={["rounded-xl border px-4 py-3 transition-colors", active ? "border-emerald-500/50 bg-emerald-500/[0.07]" : "border-white/10 bg-white/[0.02]"].join(" ")}>
             <div className="flex items-start gap-2.5">
-              <div
-                className={[
-                  "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-                  active ? "border-emerald-400 bg-emerald-400/20" : "border-white/20",
-                ].join(" ")}
-              >
-                {active && <div className="h-2 w-2 rounded-full bg-emerald-400" />}
+              <div className={["mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center border-2 transition-colors", multi ? "rounded" : "rounded-full", active ? "border-emerald-400 bg-emerald-400/20" : "border-white/20"].join(" ")}>
+                {active && (multi
+                  ? <svg className="h-2.5 w-2.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" /></svg>
+                  : <div className="h-2 w-2 rounded-full bg-emerald-400" />)}
               </div>
               <div>
-                <p className={["text-[13px] font-medium", active ? "text-emerald-300" : "text-neutral-300"].join(" ")}>
-                  {opt.label}
-                </p>
-                <p className="mt-0.5 text-[11px] text-neutral-500">{opt.description}</p>
+                <p className={["text-[13px] font-medium", active ? "text-emerald-300" : "text-neutral-300"].join(" ")}>{opt.label}</p>
+                {opt.description && <p className="mt-0.5 text-[11px] text-neutral-500">{opt.description}</p>}
               </div>
             </div>
           </div>
@@ -684,25 +489,91 @@ function RadioCardsDisplay({ data }: { data: RadioCardsData }) {
   );
 }
 
-function FieldRenderer({ field }: { field: FieldData }) {
-  switch (field.type) {
-    case "radio": return <RadioPills data={field} />;
-    case "check": return <CheckPills data={field} />;
-    case "textarea": return <TextareaDisplay data={field} />;
-    case "text": return <TextFieldDisplay data={field} />;
-    case "scale": return <ScaleDisplay data={field} />;
-    case "slider": return <SliderDisplay data={field} />;
-    case "currency": return <CurrencyDisplay data={field} />;
-    case "number": return <NumberDisplay data={field} />;
-    case "toggle": return <ToggleDisplay data={field} />;
-    case "rcards": return <RadioCardsDisplay data={field} />;
+function ToggleDisplay({ options, selected }: { options: DQOption[]; selected: string }) {
+  const yes = options.find((o) => o.value === "yes") ?? options[0];
+  const no = options.find((o) => o.value === "no") ?? options[1];
+  const isOn = selected === yes.value;
+  return (
+    <div className="flex items-center gap-3">
+      <span className={["text-[13px] font-medium", !isOn ? "text-white" : "text-neutral-600"].join(" ")}>{no.label}</span>
+      <div className={["relative inline-flex h-7 w-12 items-center rounded-full transition-colors", isOn ? "bg-emerald-500" : "bg-white/15"].join(" ")}>
+        <span className={["inline-block h-5 w-5 rounded-full bg-white shadow transition-transform", isOn ? "translate-x-6" : "translate-x-1"].join(" ")} />
+      </div>
+      <span className={["text-[13px] font-medium", isOn ? "text-white" : "text-neutral-600"].join(" ")}>{yes.label}</span>
+    </div>
+  );
+}
+
+function SliderDisplay({ value, min, max, unit }: { value: number; min: number; max: number; unit: string }) {
+  const pct = ((value - min) / (max - min)) * 100;
+  return (
+    <div className="space-y-2">
+      <div className="text-center"><span className="text-2xl font-bold text-emerald-400">{value}</span><span className="ml-0.5 text-sm text-neutral-500">{unit}</span></div>
+      <div className="relative h-2 rounded-full bg-white/10">
+        <div className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400" style={{ width: `${pct}%` }} />
+        <div className="absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-emerald-400 bg-[#0a0a0f] shadow-[0_0_10px_rgba(52,211,153,0.4)]" style={{ left: `calc(${pct}% - 8px)` }} />
+      </div>
+    </div>
+  );
+}
+
+function EnhancedScaleDisplay({ value, labels }: { value: number; labels: string[] }) {
+  return (
+    <div className="space-y-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4">
+      <div className="text-center"><span className="text-xl font-semibold text-emerald-400">{labels[value - 1] ?? value}</span></div>
+      <div className="flex gap-1.5">
+        {labels.map((l, i) => (
+          <div key={l} className="flex-1">
+            <div className={["h-1.5 rounded-full transition-colors", i + 1 === value ? "bg-emerald-400" : "bg-white/10"].join(" ")} />
+            <p className={["mt-1.5 text-center text-[10px]", i + 1 === value ? "text-emerald-400 font-semibold" : "text-neutral-600"].join(" ")}>{l}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DynamicFieldRenderer({ question }: { question: DQuestion }) {
+  const answer = DYNAMIC_ANSWERS[question.id];
+  const asArray = Array.isArray(answer) ? (answer as string[]) : [];
+  const asString = typeof answer === "string" ? answer : "";
+  const asNumber = typeof answer === "number" ? answer : 0;
+
+  switch (question.type) {
+    case "checkbox_cards": return <OptionCards options={question.options ?? []} selected={asArray} multi />;
+    case "radio_cards": return <OptionCards options={question.options ?? []} selected={[asString]} multi={false} />;
+    case "checkbox_pills": return <OptionPills options={question.options ?? []} selected={asArray} multi />;
+    case "radio_pills": return <OptionPills options={question.options ?? []} selected={[asString]} multi={false} />;
+    case "toggle_switch": return <ToggleDisplay options={question.options ?? []} selected={asString} />;
+    case "textarea": return <TextareaDisplay data={{ type: "textarea", value: asString, rows: question.rows }} />;
+    case "text": return <TextFieldDisplay data={{ type: "text", value: asString }} />;
+    case "date": {
+      const d = new Date(asString + "T00:00:00");
+      const formatted = isNaN(d.getTime()) ? asString : d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+      return (
+        <div className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-[13px] text-neutral-300">
+          <Calendar className="h-3.5 w-3.5 text-emerald-400" strokeWidth={1.75} />{formatted}
+        </div>
+      );
+    }
+    case "currency": return <CurrencyDisplay data={{ type: "currency", amount: asNumber, symbol: question.currencyConfig?.symbol ?? "$" }} />;
+    case "number_spinner": return <NumberDisplay data={{ type: "number", value: asNumber }} />;
+    case "labeled_slider": {
+      const c = question.sliderConfig ?? { min: 0, max: 100, step: 1, unit: "" };
+      return <SliderDisplay value={asNumber} min={c.min} max={c.max} unit={c.unit} />;
+    }
+    case "enhanced_scale": return <EnhancedScaleDisplay value={asNumber} labels={question.scaleConfig?.labels ?? []} />;
+    case "scale": {
+      const c = question.scaleConfig ?? { min: 1, max: 5 };
+      return <ScaleDisplay data={{ type: "scale", value: asNumber, min: c.min, max: c.max, minLabel: c.minLabel, maxLabel: c.maxLabel }} />;
+    }
     default: return null;
   }
 }
 
 // ─── Static Questionnaire Card ────────────────────────────────────────────────
 
-const STATIC_SECTION_ICONS = [Briefcase, MapPin, Users];
+const STATIC_ICONS = [Briefcase, MapPin, Users];
 
 function StaticQuestionnaireCard() {
   const [active, setActive] = useState(0);
@@ -711,32 +582,19 @@ function StaticQuestionnaireCard() {
 
   return (
     <div className="flex flex-col rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden h-full">
-      {/* Header */}
       <div className="px-5 py-4 border-b border-white/[0.06] bg-white/[0.02]">
         <div className="flex items-center gap-2 mb-0.5">
           <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-500">
-            Phase 1 · Static Questionnaire
-          </span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-500">Phase 1 · Static Questionnaire</span>
         </div>
-        <p className="text-[11px] text-neutral-600 ml-3.5">Baseline context capture — 3 sections, 30+ fields</p>
+        <p className="text-[11px] text-neutral-600 ml-3.5">Baseline context capture · 3 sections</p>
       </div>
 
-      {/* Section tabs */}
       <div className="flex border-b border-white/[0.06]">
         {STATIC_SECTIONS.map((s, i) => {
-          const Icon = STATIC_SECTION_ICONS[i];
+          const Icon = STATIC_ICONS[i];
           return (
-            <button
-              key={s.id}
-              onClick={() => setActive(i)}
-              className={[
-                "flex flex-1 items-center justify-center gap-1.5 py-3 text-[11px] font-medium transition-colors border-b-2 -mb-px",
-                active === i
-                  ? "border-emerald-500 text-emerald-400"
-                  : "border-transparent text-neutral-600 hover:text-neutral-400",
-              ].join(" ")}
-            >
+            <button key={s.id} onClick={() => setActive(i)} className={["flex flex-1 items-center justify-center gap-1.5 py-3 text-[11px] font-medium transition-colors border-b-2 -mb-px", active === i ? "border-emerald-500 text-emerald-400" : "border-transparent text-neutral-600 hover:text-neutral-400"].join(" ")}>
               <Icon className="h-3 w-3 shrink-0" strokeWidth={2} />
               <span className="hidden sm:inline">{s.title.split(" ")[0]}</span>
               <span className="sm:hidden">{i + 1}</span>
@@ -745,71 +603,27 @@ function StaticQuestionnaireCard() {
         })}
       </div>
 
-      {/* Section content */}
-      <div className="flex-1 overflow-y-auto px-5 py-5" style={{ maxHeight: "440px" }}>
+      <div className="flex-1 overflow-y-auto px-5 py-5" style={{ maxHeight: "460px" }}>
         <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={reduced ? false : { opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-5"
-          >
+          <motion.div key={active} initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }} className="space-y-5">
             <div>
               <h3 className="text-[13px] font-semibold text-white">{section.title}</h3>
               <p className="text-[11px] text-neutral-500 mt-0.5">{section.subtitle}</p>
             </div>
             {section.fields.map((f, idx) => (
-              <motion.div
-                key={f.id}
-                initial={reduced ? false : { opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.15, delay: idx * 0.04, ease: EASE }}
-                className="space-y-2"
-              >
+              <motion.div key={f.id} initial={reduced ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15, delay: idx * 0.04, ease: EASE }} className="space-y-2">
                 <div>
                   <label className="text-[12px] font-medium text-neutral-300">{f.label}</label>
                   {f.help && <p className="text-[11px] text-neutral-600 mt-0.5">{f.help}</p>}
                 </div>
-                <FieldRenderer field={f.field} />
+                <StaticFieldRenderer field={f.field} />
               </motion.div>
             ))}
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Footer nav */}
-      <div className="flex items-center justify-between border-t border-white/[0.06] px-5 py-3">
-        <button
-          onClick={() => setActive((p) => Math.max(0, p - 1))}
-          disabled={active === 0}
-          className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[12px] font-medium text-neutral-500 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          <ChevronLeft className="h-3.5 w-3.5" />
-          Prev
-        </button>
-        <div className="flex items-center gap-1.5">
-          {STATIC_SECTIONS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActive(i)}
-              className={[
-                "h-1.5 rounded-full transition-all duration-200",
-                active === i ? "w-5 bg-emerald-400" : "w-1.5 bg-white/20 hover:bg-white/40",
-              ].join(" ")}
-            />
-          ))}
-        </div>
-        <button
-          onClick={() => setActive((p) => Math.min(STATIC_SECTIONS.length - 1, p + 1))}
-          disabled={active === STATIC_SECTIONS.length - 1}
-          className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[12px] font-medium text-neutral-500 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          Next
-          <ChevronRight className="h-3.5 w-3.5" />
-        </button>
-      </div>
+      <SectionFooterNav active={active} total={STATIC_SECTIONS.length} setActive={setActive} dots />
     </div>
   );
 }
@@ -824,418 +638,541 @@ function DynamicQuestionnaireCard() {
 
   return (
     <div className="flex flex-col rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.03] overflow-hidden h-full">
-      {/* Header */}
       <div className="px-5 py-4 border-b border-emerald-500/[0.12] bg-emerald-500/[0.03]">
         <div className="flex items-center gap-2 mb-0.5">
           <div className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
-          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-teal-400">
-            Phase 2 · AI-Generated Questions
-          </span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-teal-400">Phase 2 · AI-Generated Questions</span>
         </div>
-        <p className="text-[11px] text-neutral-600 ml-3.5">Context-aware deep dive — 10 sections, 50–70 questions</p>
+        <p className="text-[11px] text-neutral-600 ml-3.5">Context-aware deep dive · 10 sections, 60 questions</p>
       </div>
 
-      {/* Section number navigation */}
-      <div className="flex items-center gap-0.5 overflow-x-auto border-b border-white/[0.05] px-4 py-2 scrollbar-none">
+      <div className="flex items-center gap-0.5 overflow-x-auto border-b border-white/[0.05] px-4 py-2" style={{ scrollbarWidth: "none" }}>
         {DYNAMIC_SECTIONS.map((s, i) => (
-          <button
-            key={s.id}
-            onClick={() => setActive(i)}
-            title={s.title}
-            className={[
-              "flex h-7 min-w-7 items-center justify-center rounded-md px-2 text-[11px] font-semibold transition-all duration-150",
-              active === i
-                ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/40"
-                : "text-neutral-600 hover:text-neutral-400 hover:bg-white/[0.03]",
-            ].join(" ")}
-          >
-            {i + 1}
-          </button>
+          <button key={s.id} onClick={() => setActive(i)} title={s.title} className={["flex h-7 min-w-7 items-center justify-center rounded-md px-2 text-[11px] font-semibold transition-all duration-150", active === i ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/40" : "text-neutral-600 hover:text-neutral-400 hover:bg-white/[0.03]"].join(" ")}>{i + 1}</button>
         ))}
-        <div className="ml-auto shrink-0 text-[10px] text-neutral-600 pl-3">
-          {active + 1} / {total}
-        </div>
+        <div className="ml-auto shrink-0 text-[10px] text-neutral-600 pl-3">{active + 1} / {total}</div>
       </div>
 
-      {/* Section content */}
-      <div className="flex-1 overflow-y-auto px-5 py-5" style={{ maxHeight: "440px" }}>
+      <div className="flex-1 overflow-y-auto px-5 py-5" style={{ maxHeight: "460px" }}>
         <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={reduced ? false : { opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-5"
-          >
+          <motion.div key={active} initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }} className="space-y-5">
             <div className="flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500/15 text-[11px] font-bold text-emerald-400">
-                {active + 1}
-              </span>
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500/15 text-[11px] font-bold text-emerald-400">{active + 1}</span>
               <h3 className="text-[13px] font-semibold text-white">{section.title}</h3>
             </div>
             {section.questions.map((q, idx) => (
-              <motion.div
-                key={q.id}
-                initial={reduced ? false : { opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.15, delay: idx * 0.05, ease: EASE }}
-                className="space-y-2"
-              >
+              <motion.div key={q.id} initial={reduced ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15, delay: idx * 0.04, ease: EASE }} className="space-y-2">
                 <div>
                   <label className="text-[12px] font-medium text-neutral-300">{q.label}</label>
-                  {q.help && <p className="text-[11px] text-neutral-600 mt-0.5">{q.help}</p>}
+                  {q.helpText && <p className="text-[11px] text-neutral-600 mt-0.5">{q.helpText}</p>}
                 </div>
-                <FieldRenderer field={q.field} />
+                <DynamicFieldRenderer question={q} />
               </motion.div>
             ))}
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Footer nav */}
-      <div className="flex items-center justify-between border-t border-white/[0.06] px-5 py-3">
-        <button
-          onClick={() => setActive((p) => Math.max(0, p - 1))}
-          disabled={active === 0}
-          className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[12px] font-medium text-neutral-500 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          <ChevronLeft className="h-3.5 w-3.5" />
-          Prev
-        </button>
-        <div className="h-1 flex-1 mx-4 rounded-full bg-white/10 overflow-hidden">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300"
-            style={{ width: `${((active + 1) / total) * 100}%` }}
-          />
+      <SectionFooterNav active={active} total={total} setActive={setActive} progress />
+    </div>
+  );
+}
+
+function SectionFooterNav({ active, total, setActive, dots, progress }: { active: number; total: number; setActive: (fn: (p: number) => number) => void; dots?: boolean; progress?: boolean }) {
+  return (
+    <div className="flex items-center justify-between border-t border-white/[0.06] px-5 py-3">
+      <button onClick={() => setActive((p) => Math.max(0, p - 1))} disabled={active === 0} className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[12px] font-medium text-neutral-500 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed">
+        <ChevronLeft className="h-3.5 w-3.5" />Prev
+      </button>
+      {dots && (
+        <div className="flex items-center gap-1.5">
+          {Array.from({ length: total }).map((_, i) => (
+            <button key={i} onClick={() => setActive(() => i)} className={["h-1.5 rounded-full transition-all duration-200", active === i ? "w-5 bg-emerald-400" : "w-1.5 bg-white/20 hover:bg-white/40"].join(" ")} />
+          ))}
         </div>
-        <button
-          onClick={() => setActive((p) => Math.min(total - 1, p + 1))}
-          disabled={active === total - 1}
-          className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[12px] font-medium text-neutral-500 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          Next
-          <ChevronRight className="h-3.5 w-3.5" />
-        </button>
+      )}
+      {progress && (
+        <div className="h-1 flex-1 mx-4 rounded-full bg-white/10 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300" style={{ width: `${((active + 1) / total) * 100}%` }} /></div>
+      )}
+      <button onClick={() => setActive((p) => Math.min(total - 1, p + 1))} disabled={active === total - 1} className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[12px] font-medium text-neutral-500 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed">
+        Next<ChevronRight className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
+
+// ─── Blueprint: metric card ───────────────────────────────────────────────────
+
+function MetricCard({ icon: Icon, label, value, suffix, accent, delay }: { icon: React.ElementType; label: string; value: number; suffix?: string; accent: Accent; delay: number }) {
+  const a = ACCENT[accent];
+  const reduced = useReducedMotion();
+  return (
+    <motion.div
+      initial={reduced ? false : { opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay, ease: EASE }}
+      className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 transition-colors hover:border-white/[0.12]"
+    >
+      <div className={["absolute inset-0 opacity-[0.04] transition-opacity group-hover:opacity-[0.08]", a.bar].join(" ")} />
+      <div className="relative">
+        <div className={["mb-4 inline-flex rounded-xl p-2.5 transition-transform group-hover:scale-110", a.iconBg].join(" ")}><Icon className={["h-5 w-5", a.text].join(" ")} strokeWidth={1.75} /></div>
+        <p className="text-[12px] font-medium text-neutral-500">{label}</p>
+        <div className="mt-1 flex items-baseline gap-1">
+          <span className="text-3xl font-bold text-white tabular-nums">{value}</span>
+          {suffix && <span className={["text-base font-medium", a.text].join(" ")}>{suffix}</span>}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Blueprint: expandable section ────────────────────────────────────────────
+
+interface BPSection { id: string; title: string; icon: React.ElementType; accent: Accent; description: string }
+
+function ExpandableSection({ section, isExpanded, onToggle, children }: { section: BPSection; isExpanded: boolean; onToggle: () => void; children: React.ReactNode }) {
+  const a = ACCENT[section.accent];
+  const Icon = section.icon;
+  const reduced = useReducedMotion();
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]">
+      <button onClick={onToggle} className="flex w-full items-center justify-between gap-4 p-4 sm:p-5 text-left transition-colors hover:bg-white/[0.02]" aria-expanded={isExpanded}>
+        <div className="flex min-w-0 flex-1 items-center gap-4">
+          <div className={["shrink-0 rounded-xl p-2.5", a.iconBg].join(" ")}><Icon className={["h-5 w-5", a.text].join(" ")} strokeWidth={1.75} /></div>
+          <div className="min-w-0">
+            <h3 className="text-[15px] font-semibold text-white">{section.title}</h3>
+            <p className="text-[12px] text-neutral-500 mt-0.5 truncate">{section.description}</p>
+          </div>
+        </div>
+        <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }} className="shrink-0 rounded-full bg-white/5 p-2"><ChevronDown className="h-4 w-4 text-neutral-400" /></motion.div>
+      </button>
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ height: { duration: reduced ? 0 : 0.32, ease: [0.16, 1, 0.3, 1] }, opacity: { duration: reduced ? 0 : 0.2 } }} style={{ overflow: "hidden" }}>
+            <div className="border-t border-white/[0.06] p-4 sm:p-6">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ─── Blueprint: section bodies ────────────────────────────────────────────────
+
+function ObjectivesBody() {
+  return (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {BLUEPRINT.objectives.map((obj, i) => {
+        const pct = Math.round((obj.baseline / obj.target) * 100);
+        return (
+          <div key={obj.id} className="flex h-full flex-col rounded-xl border border-white/[0.07] bg-white/[0.02] p-5">
+            <div className="mb-3 flex items-start justify-between">
+              <div className="rounded-lg bg-emerald-500/10 p-2"><Target className="h-5 w-5 text-emerald-400" strokeWidth={1.75} /></div>
+              <span className="rounded-md bg-white/5 px-2 py-1 text-[10px] text-neutral-400">{obj.due}</span>
+            </div>
+            <h4 className="text-[14px] font-semibold text-white">{obj.title}</h4>
+            <p className="mt-1 mb-3 flex-grow text-[12px] leading-relaxed text-neutral-500">{obj.description}</p>
+            <div className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[11px] text-emerald-300"><BarChart3 className="h-3 w-3" />{obj.metric}</div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2"><p className="text-[10px] text-neutral-500">Baseline</p><p className="text-base font-semibold text-white">{obj.baseline}</p></div>
+              <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/[0.06] px-3 py-2"><p className="text-[10px] text-neutral-500">Target</p><p className="text-base font-bold text-emerald-400">{obj.target}</p></div>
+            </div>
+            <div className="mt-3">
+              <div className="mb-1 flex justify-between text-[10px] text-neutral-500"><span>Current progress</span><span>{pct}%</span></div>
+              <div className="h-1.5 overflow-hidden rounded-full bg-white/10"><motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 1, delay: i * 0.1, ease: EASE }} className="h-full rounded-full bg-emerald-400" /></div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function DistributionBars({ data, accent }: { data: { label: string; percentage: number }[]; accent: Accent }) {
+  const a = ACCENT[accent];
+  return (
+    <div className="space-y-3">
+      {data.map((d, i) => (
+        <div key={d.label}>
+          <div className="mb-1.5 flex justify-between text-[12px]"><span className="text-neutral-300">{d.label}</span><span className={["font-semibold", a.text].join(" ")}>{d.percentage}%</span></div>
+          <div className="h-2 overflow-hidden rounded-full bg-white/10"><motion.div initial={{ width: 0 }} whileInView={{ width: `${d.percentage}%` }} viewport={{ once: true }} transition={{ duration: 0.9, delay: i * 0.08, ease: EASE }} className={["h-full rounded-full", a.bar].join(" ")} /></div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TargetAudienceBody() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <div className="mb-3 flex items-center gap-2"><Users className="h-4 w-4 text-emerald-400" /><h4 className="text-[13px] font-semibold text-white">Target Roles</h4></div>
+        <div className="flex flex-wrap gap-2">{BLUEPRINT.audience.roles.map((r) => <span key={r} className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 px-3.5 py-1.5 text-[12px] text-emerald-300">{r}</span>)}</div>
+      </div>
+      <div>
+        <p className="mb-3 text-[12px] font-medium text-neutral-400">Experience Levels</p>
+        <div className="flex flex-wrap gap-2">{BLUEPRINT.audience.experience.map((e) => <span key={e} className="rounded-lg bg-white/5 px-3.5 py-1.5 text-[12px] text-neutral-300">{e}</span>)}</div>
+      </div>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+          <p className="mb-3 text-[12px] font-medium text-neutral-400">Department Distribution</p>
+          <DistributionBars data={BLUEPRINT.audience.departments.map((d) => ({ label: d.department, percentage: d.percentage }))} accent="teal" />
+        </div>
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+          <p className="mb-3 text-[12px] font-medium text-neutral-400">Learning Preferences</p>
+          <DistributionBars data={BLUEPRINT.audience.modalities.map((m) => ({ label: m.type, percentage: m.percentage }))} accent="emerald" />
+        </div>
       </div>
     </div>
   );
 }
 
-// ─── Blueprint Viewer ─────────────────────────────────────────────────────────
-
-const BLUEPRINT_TABS = [
-  { id: "overview", label: "Overview", icon: Target },
-  { id: "modules", label: "Modules", icon: BookOpen },
-  { id: "assessment", label: "Assessment", icon: Award },
-  { id: "timeline", label: "Timeline", icon: Calendar },
-  { id: "budget", label: "Budget", icon: DollarSign },
-  { id: "risks", label: "Risks", icon: Shield },
-] as const;
-
-type BlueprintTab = typeof BLUEPRINT_TABS[number]["id"];
-
-const TAG_COLORS: Record<string, string> = {
-  Awareness: "text-blue-400 bg-blue-500/10 border-blue-500/20",
-  Application: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
-  Practice: "text-violet-400 bg-violet-500/10 border-violet-500/20",
-  Analysis: "text-amber-400 bg-amber-500/10 border-amber-500/20",
-  Evaluation: "text-rose-400 bg-rose-500/10 border-rose-500/20",
-};
-
-function BlueprintViewer() {
-  const [tab, setTab] = useState<BlueprintTab>("overview");
-  const reduced = useReducedMotion();
-
+function AssessmentBody() {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
-      {/* Blueprint header */}
-      <div className="border-b border-white/[0.06] bg-white/[0.02] px-6 py-5">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-500">
-                Polaris Blueprint · Generated Output
-              </span>
+    <div className="space-y-5">
+      <p className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-[13px] leading-relaxed text-neutral-400">{BLUEPRINT.assessment.overview}</p>
+      <div>
+        <div className="mb-3 flex items-center gap-2"><BarChart3 className="h-4 w-4 text-emerald-400" /><h4 className="text-[13px] font-semibold text-white">Key Performance Indicators</h4></div>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          {BLUEPRINT.assessment.kpis.map((kpi) => (
+            <div key={kpi.metric} className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4">
+              <div className="mb-2 flex items-start justify-between gap-2"><p className="text-[12px] font-semibold text-white">{kpi.metric}</p><span className="text-xl font-bold text-emerald-400">{kpi.target}</span></div>
+              <p className="text-[11px] text-neutral-500">{kpi.method}</p>
+              <p className="mt-1 text-[11px] text-neutral-600">{kpi.frequency}</p>
             </div>
-            <h3 className="text-lg font-semibold text-white">{BLUEPRINT.title}</h3>
-            <p className="text-[12px] text-neutral-500 mt-0.5">{BLUEPRINT.org} · {BLUEPRINT.generated}</p>
-          </div>
-          <div className="shrink-0 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] px-3 py-1.5">
-            <p className="text-[10px] font-bold text-emerald-400 tabular-nums">45s</p>
-            <p className="text-[9px] text-emerald-600 whitespace-nowrap">generation time</p>
-          </div>
+          ))}
         </div>
       </div>
+      <div>
+        <div className="mb-3 flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-teal-400" /><h4 className="text-[13px] font-semibold text-white">Evaluation Methods</h4></div>
+        <div className="space-y-2">
+          {BLUEPRINT.assessment.methods.map((m) => (
+            <div key={m.method} className="flex items-center justify-between rounded-lg border border-white/[0.06] bg-white/[0.02] p-3.5">
+              <div><p className="text-[13px] font-medium text-white">{m.method}</p><p className="text-[11px] text-neutral-500">{m.timing}</p></div>
+              <span className="text-base font-bold text-emerald-400">{m.weight}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-      {/* Tabs */}
-      <div className="flex overflow-x-auto border-b border-white/[0.06] scrollbar-none">
-        {BLUEPRINT_TABS.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            onClick={() => setTab(id)}
-            className={[
-              "flex shrink-0 items-center gap-1.5 border-b-2 px-4 py-3 text-[12px] font-medium transition-colors -mb-px",
-              tab === id
-                ? "border-emerald-500 text-emerald-400"
-                : "border-transparent text-neutral-600 hover:text-neutral-400",
-            ].join(" ")}
-          >
-            <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
-            {label}
-          </button>
+function ContentOutlineBody() {
+  const [open, setOpen] = useState<string | null>(BLUEPRINT.modules[0].id);
+  return (
+    <div className="relative">
+      <div className="absolute top-2 bottom-2 left-[18px] w-px bg-white/10" />
+      <div className="space-y-3">
+        {BLUEPRINT.modules.map((mod) => {
+          const isOpen = open === mod.id;
+          return (
+            <div key={mod.id} className="relative pl-12">
+              <div className="absolute top-3 left-0 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-emerald-500/30 bg-[#0a0a0f] text-[13px] font-bold text-emerald-400">{mod.num}</div>
+              <div className="overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.02]">
+                <button onClick={() => setOpen(isOpen ? null : mod.id)} className="flex w-full items-start justify-between gap-3 p-4 text-left transition-colors hover:bg-white/[0.02]">
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-semibold text-white">{mod.title}</p>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-3">
+                      <span className="inline-flex items-center gap-1 text-[11px] text-neutral-500"><Clock className="h-3 w-3" />{mod.duration}</span>
+                      <span className="inline-flex items-center gap-1 text-[11px] text-neutral-500"><PlayCircle className="h-3 w-3" />{mod.delivery}</span>
+                    </div>
+                  </div>
+                  <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} className="shrink-0"><ChevronDown className="h-4 w-4 text-neutral-500" /></motion.div>
+                </button>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }} style={{ overflow: "hidden" }}>
+                      <div className="space-y-4 border-t border-white/[0.06] p-4">
+                        <p className="text-[12px] leading-relaxed text-neutral-400">{mod.description}</p>
+                        <div>
+                          <p className="mb-2 text-[11px] font-semibold text-neutral-500">TOPICS</p>
+                          <div className="flex flex-wrap gap-2">{mod.topics.map((t) => <span key={t} className="rounded-lg bg-white/5 px-3 py-1.5 text-[12px] text-neutral-300">{t}</span>)}</div>
+                        </div>
+                        <div>
+                          <p className="mb-2 text-[11px] font-semibold text-neutral-500">LEARNING ACTIVITIES</p>
+                          <div className="space-y-2">{mod.activities.map((act) => (
+                            <div key={act.activity} className="flex items-start gap-3 rounded-lg bg-white/5 p-3">
+                              <div className="mt-0.5 shrink-0 rounded-md bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-400">{act.type}</div>
+                              <div><p className="text-[12px] text-neutral-300">{act.activity}</p><p className="text-[11px] text-neutral-600">{act.duration}</p></div>
+                            </div>
+                          ))}</div>
+                        </div>
+                        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/[0.04] p-3">
+                          <div className="mb-1 flex items-center gap-2"><Target className="h-3.5 w-3.5 text-emerald-400" /><span className="text-[12px] font-semibold text-emerald-300">{mod.assessment.type}</span></div>
+                          <p className="text-[12px] text-neutral-400">{mod.assessment.description}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function StrategyBody() {
+  return (
+    <div className="space-y-5">
+      <p className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-[13px] leading-relaxed text-neutral-400">{BLUEPRINT.strategy.overview}</p>
+      <div>
+        <div className="mb-3 flex items-center gap-2"><Layers className="h-4 w-4 text-emerald-400" /><h4 className="text-[13px] font-semibold text-white">Delivery Modalities</h4></div>
+        <div className="space-y-3">
+          {BLUEPRINT.strategy.modalities.map((m, i) => (
+            <div key={m.type} className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4">
+              <div className="mb-2 flex items-start justify-between gap-3"><div><p className="text-[13px] font-semibold text-white">{m.type}</p><p className="text-[11px] text-neutral-500">{m.rationale}</p></div><span className="text-xl font-bold text-emerald-400">{m.percentage}%</span></div>
+              <div className="mb-3 h-2 overflow-hidden rounded-full bg-white/10"><motion.div initial={{ width: 0 }} whileInView={{ width: `${m.percentage}%` }} viewport={{ once: true }} transition={{ duration: 0.9, delay: i * 0.1, ease: EASE }} className="h-full rounded-full bg-emerald-400" /></div>
+              <div className="flex flex-wrap gap-2">{m.tools.map((t) => <span key={t} className="rounded-full bg-emerald-500/10 px-3 py-1 text-[11px] text-emerald-300">{t}</span>)}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+          <div className="mb-2 flex items-center gap-2"><Users className="h-4 w-4 text-teal-400" /><h4 className="text-[13px] font-semibold text-white">Cohort Model</h4></div>
+          <p className="text-[12px] leading-relaxed text-neutral-400">{BLUEPRINT.strategy.cohort}</p>
+        </div>
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+          <div className="mb-2 flex items-center gap-2"><Accessibility className="h-4 w-4 text-amber-400" /><h4 className="text-[13px] font-semibold text-white">Accessibility</h4></div>
+          <ul className="space-y-1.5">{BLUEPRINT.strategy.accessibility.map((c) => <li key={c} className="flex items-start gap-2 text-[12px] text-neutral-400"><span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />{c}</li>)}</ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ResourcesBody() {
+  const { budget, human, tools } = BLUEPRINT.resources;
+  return (
+    <div className="space-y-5">
+      <div>
+        <div className="mb-3 flex items-center gap-2"><DollarSign className="h-4 w-4 text-emerald-400" /><h4 className="text-[13px] font-semibold text-white">Budget Allocation</h4></div>
+        <div className="space-y-2">
+          {budget.items.map((line, i) => {
+            const pct = Math.round((line.amount / budget.total) * 100);
+            return (
+              <div key={line.item} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
+                <div className="mb-1.5 flex items-center justify-between"><span className="text-[12px] text-neutral-300">{line.item}</span><span className="text-[12px] font-bold text-emerald-400">${line.amount.toLocaleString()}</span></div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-white/10"><motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 0.9, delay: i * 0.08, ease: EASE }} className="h-full rounded-full bg-emerald-400" /></div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-3 flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/[0.06] p-3.5"><span className="text-[13px] font-semibold text-white">Total Programme Budget</span><span className="text-lg font-bold text-emerald-400">${budget.total.toLocaleString()} {budget.currency}</span></div>
+      </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+          <div className="mb-3 flex items-center gap-2"><Users className="h-4 w-4 text-teal-400" /><h4 className="text-[13px] font-semibold text-white">Human Resources</h4></div>
+          <div className="space-y-2">{human.map((h) => (
+            <div key={h.role} className="rounded-lg bg-white/5 p-3"><p className="mb-1 text-[12px] font-semibold text-white">{h.role}</p><div className="flex items-center justify-between text-[11px]"><span className="text-neutral-500">FTE: <span className="text-emerald-400 font-semibold">{h.fte}</span></span><span className="text-neutral-500">{h.duration}</span></div></div>
+          ))}</div>
+        </div>
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+          <div className="mb-3 flex items-center gap-2"><Wrench className="h-4 w-4 text-amber-400" /><h4 className="text-[13px] font-semibold text-white">Tools & Platforms</h4></div>
+          <div className="space-y-2">{tools.map((t) => (
+            <div key={t.name} className="rounded-lg bg-white/5 p-3"><p className="mb-1 text-[12px] font-medium text-white">{t.name}</p><div className="flex items-center gap-3 text-[11px]"><span className="text-emerald-400">{t.category}</span><span className="text-neutral-500">{t.cost}</span></div></div>
+          ))}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TimelineBody() {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3.5">
+        <div className="mb-1 flex items-center gap-2 text-[12px] font-semibold text-amber-400"><ChevronRight className="h-3.5 w-3.5" />Critical Path</div>
+        <p className="text-[12px] text-neutral-400">{BLUEPRINT.timeline.critical_path.join("  →  ")}</p>
+      </div>
+      <div className="relative">
+        <div className="absolute top-2 bottom-2 left-[11px] w-px bg-white/10" />
+        <div className="space-y-3">
+          {BLUEPRINT.timeline.phases.map((phase, i) => (
+            <motion.div key={phase.phase} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.08, ease: EASE }} className="relative pl-9">
+              <div className="absolute top-4 left-0 h-6 w-6 rounded-full border-2 border-emerald-500/40 bg-emerald-500/10" />
+              <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-[14px] font-semibold text-white">{phase.phase}</p>
+                  <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-500"><Calendar className="h-3 w-3" />{phase.start} – {phase.end}</span>
+                </div>
+                <ul className="grid grid-cols-1 gap-1.5 sm:grid-cols-3">{phase.milestones.map((m) => <li key={m} className="flex items-center gap-1.5 text-[11px] text-neutral-400"><CheckCircle2 className="h-3 w-3 shrink-0 text-emerald-500" />{m}</li>)}</ul>
+                <div className="mt-3 rounded-lg bg-white/5 px-3 py-2"><span className="text-[10px] text-neutral-500">Dependencies: </span><span className="text-[11px] text-emerald-400">{phase.dependencies.join(", ")}</span></div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MetricsBody() {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-center">
+        <div className="inline-flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5"><Calendar className="h-4 w-4 text-emerald-400" /><span className="text-[13px] font-semibold text-white">{BLUEPRINT.metrics.cadence} Reporting Cadence</span></div>
+      </div>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {BLUEPRINT.metrics.items.map((m) => (
+          <div key={m.metric} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
+            <div className="mb-4 flex items-start justify-between gap-3"><p className="text-[14px] font-bold text-white leading-tight">{m.metric}</p><div className="shrink-0 rounded-full bg-emerald-500/15 p-2"><TrendingUp className="h-4 w-4 text-emerald-400" /></div></div>
+            <div className="overflow-hidden rounded-xl border border-white/10">
+              <div className="border-b border-white/10 bg-white/[0.02] p-3"><p className="text-[10px] uppercase tracking-wider text-neutral-500">Baseline</p><p className="text-[13px] font-semibold text-white">{m.baseline}</p></div>
+              <div className="bg-emerald-500/[0.06] p-3"><p className="text-[10px] uppercase tracking-wider text-emerald-500">Target</p><p className="text-[13px] font-bold text-emerald-400">{m.target}</p></div>
+            </div>
+            <div className="mt-3 space-y-2">
+              <div className="flex items-start gap-2"><Activity className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400" /><div><p className="text-[10px] text-neutral-500">Method</p><p className="text-[12px] text-neutral-300">{m.method}</p></div></div>
+              <div className="flex items-start gap-2"><Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal-400" /><div><p className="text-[10px] text-neutral-500">Timeline</p><p className="text-[12px] text-neutral-300">{m.timeline}</p></div></div>
+            </div>
+          </div>
         ))}
       </div>
+    </div>
+  );
+}
 
-      {/* Tab content */}
-      <div className="p-6 overflow-y-auto" style={{ maxHeight: "520px" }}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            initial={reduced ? false : { opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {tab === "overview" && (
-              <div className="space-y-6">
-                <p className="text-sm leading-relaxed text-neutral-400">{BLUEPRINT.executive_summary}</p>
-                <div>
-                  <h4 className="text-[11px] font-semibold uppercase tracking-widest text-neutral-600 mb-3">
-                    Learning Objectives
-                  </h4>
-                  <div className="space-y-2.5">
-                    {BLUEPRINT.objectives.map((obj, i) => (
-                      <motion.div
-                        key={obj.id}
-                        initial={reduced ? false : { opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.15, delay: i * 0.05, ease: EASE }}
-                        className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5"
-                      >
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald-500/10 text-[10px] font-bold text-emerald-400">
-                          {obj.id}
-                        </span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[13px] font-medium text-white">{obj.title}</p>
-                          <p className="text-[11px] text-neutral-500 mt-0.5">{obj.metric}</p>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <p className="text-[11px] font-semibold text-emerald-400">{obj.target}</p>
-                          <p className="text-[10px] text-neutral-600">{obj.due}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
+function RiskBody() {
+  const probColor = (v: string) => (v === "High" ? "text-rose-400" : v === "Medium" ? "text-amber-400" : "text-emerald-400");
+  return (
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {BLUEPRINT.risks.map((r) => (
+          <div key={r.risk} className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4">
+            <div className="mb-3 flex items-start gap-3">
+              <div className="shrink-0 rounded-lg bg-amber-500/10 p-2"><AlertTriangle className="h-4 w-4 text-amber-400" /></div>
+              <div><p className="text-[13px] font-semibold text-white">{r.risk}</p><div className="mt-1 flex items-center gap-3 text-[11px] text-neutral-500"><span>Prob: <span className={probColor(r.probability)}>{r.probability}</span></span><span>Impact: <span className={probColor(r.impact)}>{r.impact}</span></span></div></div>
+            </div>
+            <div className="rounded-lg bg-white/5 p-3"><div className="mb-1 flex items-center gap-1.5"><Shield className="h-3 w-3 text-emerald-400" /><span className="text-[11px] font-medium text-white">Mitigation</span></div><p className="text-[12px] leading-relaxed text-neutral-400">{r.mitigation}</p></div>
+          </div>
+        ))}
+      </div>
+      <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.03] p-4">
+        <div className="mb-3 flex items-center gap-2"><Shield className="h-4 w-4 text-emerald-400" /><h4 className="text-[13px] font-semibold text-white">Contingency Plans</h4></div>
+        <ul className="space-y-2">{BLUEPRINT.contingency.map((c) => <li key={c} className="flex items-start gap-2 text-[12px] text-neutral-400"><ChevronRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400" />{c}</li>)}</ul>
+      </div>
+    </div>
+  );
+}
 
-            {tab === "modules" && (
-              <div className="space-y-3">
-                {BLUEPRINT.modules.map((mod, i) => (
-                  <motion.div
-                    key={mod.num}
-                    initial={reduced ? false : { opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.14, delay: i * 0.04, ease: EASE }}
-                    className="flex gap-4 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4"
-                  >
-                    <div className="flex flex-col items-center gap-1 shrink-0">
-                      <span className="font-mono text-[10px] font-bold text-emerald-400">{mod.num}</span>
-                      {i < BLUEPRINT.modules.length - 1 && (
-                        <div className="flex-1 w-px bg-white/10" style={{ minHeight: "24px" }} />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <p className="text-[13px] font-semibold text-white leading-snug">{mod.title}</p>
-                        <span className={["shrink-0 rounded-md border px-2 py-0.5 text-[10px] font-semibold", TAG_COLORS[mod.tag] ?? "text-neutral-400 bg-white/5 border-white/10"].join(" ")}>
-                          {mod.tag}
-                        </span>
-                      </div>
-                      <ul className="space-y-0.5">
-                        {mod.topics.map((t) => (
-                          <li key={t} className="flex items-center gap-1.5 text-[11px] text-neutral-500">
-                            <span className="h-1 w-1 shrink-0 rounded-full bg-neutral-700" />
-                            {t}
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="flex items-center gap-3 mt-2">
-                        <span className="flex items-center gap-1 text-[10px] text-neutral-600">
-                          <Clock className="h-3 w-3" strokeWidth={1.75} /> {mod.duration}
-                        </span>
-                        <span className="flex items-center gap-1 text-[10px] text-neutral-600">
-                          <Layers className="h-3 w-3" strokeWidth={1.75} /> {mod.format}
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+function SustainabilityBody() {
+  const s = BLUEPRINT.sustainability;
+  return (
+    <div className="space-y-5">
+      <div className="rounded-2xl border border-emerald-500/15 bg-emerald-500/[0.04] p-5">
+        <div className="mb-3 flex items-center gap-2"><Leaf className="h-5 w-5 text-emerald-400" /><h4 className="text-[14px] font-bold text-white">Long-Term Viability</h4></div>
+        <p className="text-[13px] leading-relaxed text-neutral-400">{s.content}</p>
+      </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+          <div className="mb-3 flex items-center gap-2"><RefreshCw className="h-4 w-4 text-emerald-400" /><h4 className="text-[13px] font-semibold text-white">Maintenance Schedule</h4></div>
+          <div className="mb-3 flex items-center gap-3 rounded-lg bg-emerald-500/10 p-3"><Calendar className="h-4 w-4 shrink-0 text-emerald-400" /><div><p className="text-[10px] uppercase tracking-wider text-emerald-500">Review Frequency</p><p className="text-[13px] font-medium text-white">{s.review_frequency}</p></div></div>
+          <div className="mb-2 flex items-center gap-1.5"><AlertCircle className="h-3.5 w-3.5 text-amber-400" /><span className="text-[12px] font-semibold text-white">Update Triggers</span></div>
+          <ul className="space-y-1.5">{s.triggers.map((t) => <li key={t} className="flex items-start gap-2 rounded-lg bg-white/5 p-2.5 text-[12px] text-neutral-400"><span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />{t}</li>)}</ul>
+        </div>
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+          <div className="mb-3 flex items-center gap-2"><TrendingUp className="h-4 w-4 text-teal-400" /><h4 className="text-[13px] font-semibold text-white">Scaling Considerations</h4></div>
+          <div className="space-y-2">{s.scaling.map((c, i) => (
+            <div key={c} className="flex items-start gap-3 rounded-lg bg-white/5 p-3"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-[10px] font-bold text-emerald-400">{i + 1}</span><p className="text-[12px] leading-relaxed text-neutral-400">{c}</p></div>
+          ))}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-            {tab === "assessment" && (
-              <div className="space-y-4">
-                <p className="text-[12px] text-neutral-500">
-                  Five-layer evaluation framework aligned to Kirkpatrick Levels 2 and 3, tracked monthly via Cornerstone analytics.
-                </p>
-                <div className="overflow-hidden rounded-xl border border-white/[0.06]">
-                  <table className="w-full text-[12px]">
-                    <thead>
-                      <tr className="border-b border-white/[0.06] bg-white/[0.03]">
-                        {["Metric", "Target", "Method", "Frequency"].map((h) => (
-                          <th key={h} className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-neutral-600">{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {BLUEPRINT.assessment.kpis.map((kpi, i) => (
-                        <motion.tr
-                          key={kpi.metric}
-                          initial={reduced ? false : { opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: i * 0.06, ease: EASE }}
-                          className={["border-b border-white/[0.04] transition-colors hover:bg-white/[0.02]", i % 2 === 0 ? "" : "bg-white/[0.01]"].join(" ")}
-                        >
-                          <td className="px-4 py-3 text-neutral-300">{kpi.metric}</td>
-                          <td className="px-4 py-3 font-semibold text-emerald-400">{kpi.target}</td>
-                          <td className="px-4 py-3 text-neutral-500">{kpi.method}</td>
-                          <td className="px-4 py-3 text-neutral-500">{kpi.freq}</td>
-                        </motion.tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
+// ─── Blueprint Viewer (Polaris dashboard UX) ──────────────────────────────────
 
-            {tab === "timeline" && (
-              <div className="space-y-3">
-                {BLUEPRINT.timeline.map((phase, i) => (
-                  <motion.div
-                    key={phase.phase}
-                    initial={reduced ? false : { opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.15, delay: i * 0.06, ease: EASE }}
-                    className={[
-                      "rounded-xl border p-4",
-                      phase.status === "active"
-                        ? "border-emerald-500/30 bg-emerald-500/[0.05]"
-                        : "border-white/[0.06] bg-white/[0.02]",
-                    ].join(" ")}
-                  >
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className={[
-                          "flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold shrink-0",
-                          phase.status === "active"
-                            ? "bg-emerald-500/20 text-emerald-400"
-                            : "bg-white/[0.06] text-neutral-500",
-                        ].join(" ")}>
-                          {i + 1}
-                        </div>
-                        <p className="text-[13px] font-semibold text-white">{phase.phase}</p>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        {phase.status === "active" && (
-                          <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 border border-emerald-500/20">
-                            In Progress
-                          </span>
-                        )}
-                        <span className="text-[11px] text-neutral-600">{phase.dates}</span>
-                      </div>
-                    </div>
-                    <ul className="grid grid-cols-1 gap-1 sm:grid-cols-3">
-                      {phase.milestones.map((m) => (
-                        <li key={m} className="flex items-center gap-1.5 text-[11px] text-neutral-500">
-                          <CheckCircle2 className={["h-3 w-3 shrink-0", phase.status === "active" ? "text-emerald-500" : "text-neutral-700"].join(" ")} strokeWidth={2} />
-                          {m}
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+const BP_SECTIONS: BPSection[] = [
+  { id: "learning_objectives", title: "Learning Objectives", icon: Target, accent: "emerald", description: "3 objectives to achieve · Target completion rates and KPIs defined" },
+  { id: "target_audience", title: "Target Audience", icon: Users, accent: "teal", description: "3 target roles · 3 learning modalities · Demographics analysed" },
+  { id: "assessment_strategy", title: "Assessment Strategy", icon: BarChart3, accent: "emerald", description: "3 KPIs defined · 3 evaluation methods · Continuous measurement" },
+  { id: "content_outline", title: "Content Outline", icon: BookOpen, accent: "emerald", description: "4 learning modules · 4 activities · 8 topics covered" },
+  { id: "instructional_strategy", title: "Instructional Strategy", icon: FileText, accent: "emerald", description: "2 delivery modalities · 4 accessibility considerations · Cohort model" },
+  { id: "resources", title: "Resources & Budget", icon: DollarSign, accent: "emerald", description: "USD 70,000 budget · 3 team roles · 3 platforms" },
+  { id: "implementation_timeline", title: "Implementation Timeline", icon: Calendar, accent: "teal", description: "3 phases from start to finish · 9 milestones · Critical path defined" },
+  { id: "success_metrics", title: "Success Metrics", icon: TrendingUp, accent: "emerald", description: "3 success metrics tracked · Monthly reporting · Dashboard requirements" },
+  { id: "risk_mitigation", title: "Risk Mitigation", icon: Shield, accent: "amber", description: "3 risks identified · 2 high-impact · 2 contingency plans" },
+  { id: "sustainability_plan", title: "Sustainability Plan", icon: Leaf, accent: "emerald", description: "Biannual reviews · 3 scaling strategies · Long-term viability" },
+];
 
-            {tab === "budget" && (
-              <div className="space-y-4">
-                <div className="overflow-hidden rounded-xl border border-white/[0.06]">
-                  <table className="w-full text-[12px]">
-                    <thead>
-                      <tr className="border-b border-white/[0.06] bg-white/[0.03]">
-                        <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-neutral-600">Line Item</th>
-                        <th className="px-4 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wider text-neutral-600">Cost</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {BLUEPRINT.budget.map((line, i) => (
-                        <motion.tr
-                          key={line.item}
-                          initial={reduced ? false : { opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: i * 0.05, ease: EASE }}
-                          className={["border-b border-white/[0.04] transition-colors hover:bg-white/[0.02]", i % 2 === 0 ? "" : "bg-white/[0.01]"].join(" ")}
-                        >
-                          <td className="px-4 py-3 text-neutral-400">{line.item}</td>
-                          <td className="px-4 py-3 text-right font-semibold text-emerald-400 tabular-nums">
-                            ${line.cost.toLocaleString()}
-                          </td>
-                        </motion.tr>
-                      ))}
-                    </tbody>
-                    <tfoot>
-                      <tr className="border-t border-white/10 bg-white/[0.03]">
-                        <td className="px-4 py-3 text-[12px] font-bold text-white">Total Programme Budget</td>
-                        <td className="px-4 py-3 text-right text-[14px] font-bold text-emerald-400 tabular-nums">
-                          ${BLUEPRINT.budget.reduce((a, b) => a + b.cost, 0).toLocaleString()}
-                        </td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-              </div>
-            )}
+function renderBody(id: string) {
+  switch (id) {
+    case "learning_objectives": return <ObjectivesBody />;
+    case "target_audience": return <TargetAudienceBody />;
+    case "assessment_strategy": return <AssessmentBody />;
+    case "content_outline": return <ContentOutlineBody />;
+    case "instructional_strategy": return <StrategyBody />;
+    case "resources": return <ResourcesBody />;
+    case "implementation_timeline": return <TimelineBody />;
+    case "success_metrics": return <MetricsBody />;
+    case "risk_mitigation": return <RiskBody />;
+    case "sustainability_plan": return <SustainabilityBody />;
+    default: return null;
+  }
+}
 
-            {tab === "risks" && (
-              <div className="space-y-3">
-                {BLUEPRINT.risks.map((r, i) => (
-                  <motion.div
-                    key={r.risk}
-                    initial={reduced ? false : { opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.14, delay: i * 0.07, ease: EASE }}
-                    className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4"
-                  >
-                    <div className="flex items-start gap-3 mb-2">
-                      <div className="shrink-0 mt-0.5">
-                        <Shield className="h-4 w-4 text-amber-500/70" strokeWidth={1.75} />
-                      </div>
-                      <p className="text-[13px] font-medium text-white">{r.risk}</p>
-                    </div>
-                    <div className="flex items-center gap-4 mb-2 ml-7">
-                      <span className="text-[11px] text-neutral-600">
-                        Probability: <span className={r.prob === "High" ? "text-rose-400" : r.prob === "Medium" ? "text-amber-400" : "text-emerald-400"}>{r.prob}</span>
-                      </span>
-                      <span className="text-[11px] text-neutral-600">
-                        Impact: <span className={r.impact === "High" ? "text-rose-400" : r.impact === "Medium" ? "text-amber-400" : "text-emerald-400"}>{r.impact}</span>
-                      </span>
-                    </div>
-                    <div className="ml-7 rounded-lg border border-white/[0.05] bg-white/[0.03] px-3 py-2">
-                      <p className="text-[11px] text-neutral-500">
-                        <span className="text-neutral-400 font-medium">Mitigation: </span>
-                        {r.mitigation}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+function BlueprintViewer() {
+  const [expanded, setExpanded] = useState<Set<string>>(new Set(["learning_objectives"]));
+  const reduced = useReducedMotion();
+
+  const toggle = (id: string) => setExpanded((prev) => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
+  const expandAll = () => setExpanded(new Set(BP_SECTIONS.map((s) => s.id)));
+  const collapseAll = () => setExpanded(new Set());
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="shrink-0 rounded-xl bg-emerald-500/15 p-3"><FileText className="h-6 w-6 text-emerald-400" strokeWidth={1.75} /></div>
+            <div>
+              <div className="mb-1.5 flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-emerald-400" /><span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-500">Generated Blueprint</span></div>
+              <h3 className="font-serif text-lg font-medium text-white leading-snug">{BLUEPRINT.title}</h3>
+              <p className="mt-1 text-[12px] text-neutral-500">{BLUEPRINT.organization} · {BLUEPRINT.role} · {BLUEPRINT.generated}</p>
+            </div>
+          </div>
+          <div className="hidden shrink-0 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] px-3 py-1.5 text-center sm:block"><p className="text-[12px] font-bold text-emerald-400 tabular-nums">v{BLUEPRINT.version}</p><p className="text-[9px] text-emerald-600">blueprint</p></div>
+        </div>
+        <p className="mt-4 text-[13px] leading-relaxed text-neutral-400 whitespace-pre-line">{BLUEPRINT.executive_summary}</p>
+      </div>
+
+      {/* Metric cards */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <MetricCard icon={Clock} label="Total Duration" value={6} suffix="hrs" accent="emerald" delay={0.05} />
+        <MetricCard icon={BookOpen} label="Modules" value={4} accent="teal" delay={0.1} />
+        <MetricCard icon={Target} label="Objectives" value={3} accent="emerald" delay={0.15} />
+        <MetricCard icon={Layers} label="Activities" value={4} accent="amber" delay={0.2} />
+      </div>
+
+      {/* Control bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex gap-2">
+          <button onClick={expandAll} className="inline-flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-emerald-500/20 active:scale-95"><Maximize2 className="h-3.5 w-3.5" />Expand All</button>
+          <button onClick={collapseAll} className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-white/10 active:scale-95"><Minimize2 className="h-3.5 w-3.5" />Collapse All</button>
+        </div>
+        <span className="text-[12px] text-neutral-500">{expanded.size} of {BP_SECTIONS.length} sections expanded</span>
+      </div>
+
+      {/* Sections */}
+      <div className="space-y-3">
+        {BP_SECTIONS.map((section, i) => (
+          <motion.div key={section.id} initial={reduced ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.4, delay: Math.min(i * 0.04, 0.2), ease: EASE }}>
+            <ExpandableSection section={section} isExpanded={expanded.has(section.id)} onToggle={() => toggle(section.id)}>
+              {renderBody(section.id)}
+            </ExpandableSection>
           </motion.div>
-        </AnimatePresence>
+        ))}
       </div>
     </div>
   );
@@ -1243,64 +1180,27 @@ function BlueprintViewer() {
 
 // ─── Expand Panel Wrapper ─────────────────────────────────────────────────────
 
-function ExpandPanel({
-  step,
-  title,
-  subtitle,
-  children,
-}: {
-  step: string;
-  title: string;
-  subtitle: string;
-  children: React.ReactNode;
-}) {
+function ExpandPanel({ step, title, subtitle, children }: { step: string; title: string; subtitle: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const reduced = useReducedMotion();
 
   return (
     <div className={["rounded-2xl border transition-colors duration-200", open ? "border-emerald-500/25 bg-emerald-500/[0.02]" : "border-white/[0.08] bg-white/[0.02] hover:border-white/15"].join(" ")}>
-      <button
-        onClick={() => setOpen((p) => !p)}
-        className="group w-full flex items-center gap-4 px-6 py-5 text-left"
-        aria-expanded={open}
-      >
-        <span className="shrink-0 font-mono text-[11px] font-bold text-neutral-700 group-hover:text-emerald-500/60 transition-colors">
-          {step}
-        </span>
+      <button onClick={() => setOpen((p) => !p)} className="group w-full flex items-center gap-4 px-6 py-5 text-left" aria-expanded={open}>
+        <span className="shrink-0 font-mono text-[11px] font-bold text-neutral-700 group-hover:text-emerald-500/60 transition-colors">{step}</span>
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-white">{title}</p>
           <p className="text-[12px] text-neutral-600 mt-0.5">{subtitle}</p>
         </div>
-        <div className={[
-          "shrink-0 flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-200",
-          open
-            ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
-            : "border-white/10 text-neutral-600 group-hover:border-white/20 group-hover:text-white",
-        ].join(" ")}>
-          <motion.div
-            animate={{ rotate: open ? 180 : 0 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <ChevronDown className="h-4 w-4" strokeWidth={2} />
-          </motion.div>
+        <div className={["shrink-0 flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-200", open ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400" : "border-white/10 text-neutral-600 group-hover:border-white/20 group-hover:text-white"].join(" ")}>
+          <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}><ChevronDown className="h-4 w-4" strokeWidth={2} /></motion.div>
         </div>
       </button>
 
       <AnimatePresence initial={false}>
         {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{
-              height: { duration: reduced ? 0 : 0.35, ease: [0.16, 1, 0.3, 1] },
-              opacity: { duration: reduced ? 0 : 0.2 },
-            }}
-            style={{ overflow: "hidden" }}
-          >
-            <div className="border-t border-white/[0.06] px-6 py-6">
-              {children}
-            </div>
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ height: { duration: reduced ? 0 : 0.35, ease: [0.16, 1, 0.3, 1] }, opacity: { duration: reduced ? 0 : 0.2 } }} style={{ overflow: "hidden" }}>
+            <div className="border-t border-white/[0.06] px-4 py-6 sm:px-6">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1316,37 +1216,15 @@ export function PolarisShowcaseSection() {
   return (
     <section className="px-5 py-20 md:py-28 bg-[#0a0a0f] relative">
       <div className="mx-auto max-w-6xl">
-        <motion.div
-          initial={reduced ? false : { opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease: EASE }}
-          className="mb-10"
-        >
-          <div className="inline-flex items-center gap-2 mb-5">
-            <span className="h-px w-8 bg-emerald-500/30" />
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">Live System Demo</span>
-          </div>
-          <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl mb-3">
-            See the <span className="text-emerald-400 italic">system</span> in motion.
-          </h2>
-          <p className="max-w-xl text-base text-neutral-500 leading-relaxed">
-            Expand either panel to explore the actual questionnaire UI and a real generated blueprint — same stack, same logic as production.
-          </p>
+        <motion.div initial={reduced ? false : { opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, ease: EASE }} className="mb-10">
+          <div className="inline-flex items-center gap-2 mb-5"><span className="h-px w-8 bg-emerald-500/30" /><span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">Live System Demo</span></div>
+          <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl mb-3">See the <span className="text-emerald-400 italic">system</span> in motion.</h2>
+          <p className="max-w-xl text-base text-neutral-500 leading-relaxed">Expand either panel to explore a real two-phase questionnaire run and the blueprint it generated — same stack, same logic, same dashboard UX as the Polaris production app.</p>
         </motion.div>
 
         <div className="space-y-3">
-          <motion.div
-            initial={reduced ? false : { opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, delay: 0.08, ease: EASE }}
-          >
-            <ExpandPanel
-              step="01"
-              title="Project Planning Questionnaire"
-              subtitle="Two-phase intake: static baseline capture + AI-generated deep-dive questions"
-            >
+          <motion.div initial={reduced ? false : { opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.6, delay: 0.08, ease: EASE }}>
+            <ExpandPanel step="01" title="Project Planning Questionnaire" subtitle="Two-phase intake: static baseline capture + AI-generated deep-dive questions">
               <div className="grid gap-5 lg:grid-cols-2">
                 <StaticQuestionnaireCard />
                 <DynamicQuestionnaireCard />
@@ -1354,17 +1232,8 @@ export function PolarisShowcaseSection() {
             </ExpandPanel>
           </motion.div>
 
-          <motion.div
-            initial={reduced ? false : { opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, delay: 0.14, ease: EASE }}
-          >
-            <ExpandPanel
-              step="02"
-              title="Generated Learning Blueprint"
-              subtitle="AI-synthesised 20-page curriculum architecture — output of a complete Polaris run"
-            >
+          <motion.div initial={reduced ? false : { opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.6, delay: 0.14, ease: EASE }}>
+            <ExpandPanel step="02" title="Generated Learning Blueprint" subtitle="AI-synthesised curriculum architecture — the interactive Polaris blueprint dashboard">
               <BlueprintViewer />
             </ExpandPanel>
           </motion.div>
