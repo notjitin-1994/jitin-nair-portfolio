@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
-import { ShowcasePlaceholder } from "../components/ShowcasePlaceholder";
+import { InstructionalDesignClient } from "./InstructionalDesignClient";
 
 export const metadata: Metadata = {
   title: "Instructional Design Showcase — Jitin Nair",
-  description: "Cognitive-first architectures built on ADDIE, Bloom's taxonomy, and modern learning science.",
+  description: "Beyond course creation: building the industrialized, scalable learning ecosystems that power enterprise growth.",
 };
 
 export default function InstructionalDesignPage() {
-  return (
-    <ShowcasePlaceholder 
-      title="Instructional Design" 
-      description="Deep-dive into cognitive-first architectures: how I apply learning science to create measurable behavior change and high-retention learning paths."
-    />
-  );
+  return <InstructionalDesignClient />;
 }
