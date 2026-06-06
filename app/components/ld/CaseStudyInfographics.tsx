@@ -1,6 +1,22 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { 
+  Activity, 
+  Layers, 
+  Cpu, 
+  Database, 
+  Search, 
+  FileCheck, 
+  Network, 
+  Sparkles, 
+  LayoutGrid,
+  Zap,
+  ArrowRight,
+  FileSearch,
+  Scan,
+  FileText
+} from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -29,100 +45,157 @@ function AnimatedBar({
   );
 }
 
-// ─── 01 / Smartslate — AI Discovery Pipeline ──────────────────────────────────
-const PIPELINE_STAGES = ["Brief", "Audit", "Design", "Draft", "Review", "Refine", "Ship"];
+function BentoCard({ 
+  children, 
+  className = "", 
+  accent = false 
+}: { 
+  children: React.ReactNode; 
+  className?: string; 
+  accent?: boolean 
+}) {
+  return (
+    <div className={`relative overflow-hidden rounded-2xl border p-4 transition-colors duration-300 ${
+      accent 
+        ? "border-emerald-500/20 bg-emerald-500/[0.04]" 
+        : "border-white/[0.08] bg-white/[0.02]"
+    } ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+// ─── 01 / Smartslate — Solara Ecosystem ───────────────────────────────────────
 
 export function SmartslateInfographic() {
   const reduced = useReducedMotion();
 
   return (
-    <div className="space-y-6 py-2">
-      {/* Label */}
-      <div className="text-[9px] font-semibold uppercase tracking-[0.22em] text-neutral-600">
-        7-Stage AI Discovery Pipeline
-      </div>
-
-      {/* Pipeline nodes */}
-      <div className="relative">
-        {/* Track */}
-        <div className="absolute left-[18px] right-[18px] top-[17px] h-px bg-white/[0.06]" />
-        {/* Animated fill */}
-        <motion.div
-          className="absolute left-[18px] right-[18px] top-[17px] h-px origin-left bg-gradient-to-r from-emerald-400/50 to-teal-400/25"
-          initial={reduced ? false : { scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 1.3, ease: EASE }}
-        />
-
-        {/* Nodes */}
-        <div className="relative flex justify-between">
-          {PIPELINE_STAGES.map((stage, i) => (
-            <div key={stage} className="flex flex-col items-center gap-2">
-              <motion.div
-                className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full border border-emerald-400/40 bg-[#0a0a0f]"
-                initial={reduced ? false : { opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.4, delay: i * 0.09, ease: EASE }}
-              >
-                {/* Pulse halo */}
-                <motion.div
-                  className="absolute inset-0 rounded-full bg-emerald-400/[0.12]"
-                  animate={reduced ? undefined : {
-                    scale: [1, 1.4, 1],
-                    opacity: [0.6, 0, 0.6],
-                  }}
-                  transition={{
-                    duration: 2.4,
-                    delay: i * 0.25,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-                <span className="relative font-mono text-[8px] font-bold text-emerald-400">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </motion.div>
-              <motion.span
-                className="text-center text-[7px] font-medium leading-none text-neutral-600"
-                initial={reduced ? false : { opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.3, delay: 0.1 + i * 0.09 }}
-              >
-                {stage}
-              </motion.span>
+    <div className="grid grid-cols-2 gap-3 py-2">
+      {/* Solara Hub - Full Width */}
+      <BentoCard accent className="col-span-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-400">
+              <Network className="h-5 w-5" />
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Key metrics */}
-      <div className="grid grid-cols-2 gap-3 pt-1">
-        <motion.div
-          className="rounded-xl border border-emerald-400/15 bg-emerald-400/[0.05] p-3"
-          initial={reduced ? false : { opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 0.7, ease: EASE }}
-        >
-          <div className="font-serif text-2xl font-medium text-white">
-            45<span className="text-base">s</span>
+            <div>
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-500/80">Ecosystem Hub</div>
+              <div className="text-sm font-semibold text-white">Solara Core Architecture</div>
+            </div>
           </div>
-          <div className="mt-0.5 text-[10px] leading-snug text-neutral-500">per learning report</div>
-        </motion.div>
-        <motion.div
-          className="rounded-xl border border-teal-400/15 bg-teal-400/[0.04] p-3"
-          initial={reduced ? false : { opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 0.82, ease: EASE }}
-        >
-          <div className="font-serif text-2xl font-medium text-white">500+</div>
-          <div className="mt-0.5 text-[10px] leading-snug text-neutral-500">automated jobs / day</div>
-        </motion.div>
-      </div>
+          <div className="flex items-center gap-1">
+            {[...Array(7)].map((_, i) => (
+              <div 
+                key={i} 
+                className={`h-1 w-3 rounded-full ${i < 2 ? "bg-emerald-400" : "bg-white/10"}`} 
+              />
+            ))}
+          </div>
+        </div>
+        
+        {/* Animated Connective Tissue */}
+        <div className="mt-4 relative h-12 flex items-center justify-center overflow-hidden rounded-lg bg-white/[0.02]">
+           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-500/5 to-transparent animate-pulse" />
+           <div className="flex items-center gap-8 z-10">
+              <div className="flex flex-col items-center">
+                 <div className="text-[8px] font-mono text-emerald-400/60 uppercase">Inputs</div>
+                 <Scan className="h-3 w-3 text-emerald-400/40" />
+              </div>
+              <motion.div 
+                animate={reduced ? {} : { scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5"
+              >
+                <Cpu className="h-3 w-3 text-emerald-400" />
+                <span className="text-[9px] font-mono font-bold text-emerald-400 tracking-tight">AI LOGIC LAYER</span>
+              </motion.div>
+              <div className="flex flex-col items-center">
+                 <div className="text-[8px] font-mono text-emerald-400/60 uppercase">Scale</div>
+                 <Zap className="h-3 w-3 text-emerald-400/40" />
+              </div>
+           </div>
+        </div>
+      </BentoCard>
+
+      {/* Polaris - 45s Blueprinting */}
+      <BentoCard className="col-span-1">
+        <div className="flex items-start justify-between mb-3">
+          <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-400">
+            <LayoutGrid className="h-4 w-4" />
+          </div>
+          <div className="text-right">
+            <div className="text-[14px] font-mono font-bold text-white">45s</div>
+            <div className="text-[8px] font-mono text-neutral-500 uppercase tracking-tighter">Blueprint</div>
+          </div>
+        </div>
+        <div className="text-[11px] font-semibold text-white mb-1">Polaris LXD</div>
+        <div className="text-[9px] text-neutral-500 leading-relaxed">Discovery to design documentation automation.</div>
+        <div className="mt-3 space-y-1">
+           <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+              <motion.div 
+                className="h-full bg-emerald-400" 
+                initial={{ width: 0 }} 
+                whileInView={{ width: "100%" }} 
+                transition={{ duration: 1.5, ease: EASE }}
+              />
+           </div>
+           <div className="flex justify-between text-[7px] font-mono text-neutral-600 uppercase">
+              <span>Intake</span>
+              <span>Synthesis</span>
+           </div>
+        </div>
+      </BentoCard>
+
+      {/* Constellation - Artifacts */}
+      <BentoCard className="col-span-1">
+        <div className="flex items-start justify-between mb-3">
+          <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-teal-400/10 text-teal-400">
+            <Database className="h-4 w-4" />
+          </div>
+          <div className="text-right">
+             <Activity className="h-3 w-3 text-teal-400 animate-pulse ml-auto" />
+             <div className="text-[8px] font-mono text-neutral-500 uppercase tracking-tighter">Live Audit</div>
+          </div>
+        </div>
+        <div className="text-[11px] font-semibold text-white mb-1">Constellation</div>
+        <div className="text-[9px] text-neutral-500 leading-relaxed">Cross-artifact analysis & instructional design gaps.</div>
+        <div className="mt-3 flex gap-1">
+           {[...Array(3)].map((_, i) => (
+             <div key={i} className="flex-1 h-4 rounded bg-white/[0.04] border border-white/[0.05] flex items-center justify-center">
+                <FileText className="h-2 w-2 text-neutral-600" />
+             </div>
+           ))}
+           <div className="flex-1 h-4 rounded border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-center">
+              <Sparkles className="h-2 w-2 text-emerald-400" />
+           </div>
+        </div>
+      </BentoCard>
+
+      {/* Integration Roadmap */}
+      <BentoCard className="col-span-2">
+        <div className="flex items-center gap-4">
+           <div className="text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-[0.2em] rotate-180 [writing-mode:vertical-lr]">Roadmap</div>
+           <div className="flex-1 grid grid-cols-4 gap-2">
+              <div className="col-span-1 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex flex-col items-center">
+                 <div className="text-[8px] font-bold text-emerald-400">P</div>
+                 <div className="text-[6px] text-emerald-600 font-mono">ACTIVE</div>
+              </div>
+              <div className="col-span-1 p-2 rounded-lg bg-teal-500/10 border border-teal-500/20 flex flex-col items-center">
+                 <div className="text-[8px] font-bold text-teal-400">C</div>
+                 <div className="text-[6px] text-teal-600 font-mono">ACTIVE</div>
+              </div>
+              <div className="col-span-2 p-2 rounded-lg bg-white/[0.03] border border-white/[0.08] flex items-center justify-center gap-2">
+                 <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
+                 <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
+                 <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
+                 <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
+                 <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
+                 <div className="text-[7px] font-mono text-neutral-600">PENDING</div>
+              </div>
+           </div>
+        </div>
+      </BentoCard>
     </div>
   );
 }

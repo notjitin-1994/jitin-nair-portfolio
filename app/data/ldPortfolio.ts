@@ -39,16 +39,16 @@ export const ldCaseStudies: LdCaseStudy[] = [
     id: "smartslate",
     org: "Smartslate",
     context: "smartslate.io · Lead Architect & Designer",
-    title: "An L&D ecosystem that designs as fast as the business moves",
+    title: "Solara: The AI-Native Learning Ecosystem for Enterprise Scale",
     challenge:
-      "Learning discovery and design is slow, manual, and inconsistent. Organizations rely on 7-15 disconnected tools, creating a bottleneck between a business need and the learning solution that solves it.",
+      "Learning discovery and design is slow, manual, and inconsistent. Organizations rely on fragmented toolstacks, creating a massive bottleneck between business velocity and workforce capability.",
     strategy:
-      "Architect a three-platform ecosystem (Solara, Ignite, SSA) that replaces fragmented tools with unified, AI-powered infrastructure. Solara Polaris automates stakeholder discovery into blueprints in 45 seconds.",
-    note: "Multi-provider AI (Claude, ChatGPT, Perplexity) with human-in-the-loop validation.",
+      "Architect Solara, an ecosystem of 7 standalone but cross-integrated AI products. Polaris automates Learning Experience Design (LXD) into blueprints in 45 seconds. Constellation functions as an artifact repository, reviewing PDFs, videos, and notes to instructionally design content and flag gaps against the Polaris blueprint.",
+    note: "A modular, cross-integrated infrastructure replacing 7-15 fragmented legacy tools.",
     outcomes: [
-      { value: "45 sec", label: "to a tailored learning blueprint" },
-      { value: "500+", label: "automated jobs run every day" },
-      { value: "95%", label: "completion in pilot programs" },
+      { value: "45 sec", label: "to a validated learning blueprint" },
+      { value: "7 / 7", label: "integrated ecosystem products" },
+      { value: "Auto", label: "artifact review & gap analysis" },
     ],
   },
   {
