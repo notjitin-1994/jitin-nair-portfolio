@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Clock, Calendar, CheckCircle2, Mail, Linkedin } from "lucide-react";
@@ -306,8 +307,14 @@ export function InsightShowcaseDetail({ slug }: { slug: string }) {
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] p-8">
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/20 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 text-lg font-bold text-emerald-300">
-                JN
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-emerald-400/20">
+                <Image
+                  src="/hero-photo.jpg"
+                  alt="Jitin Nair"
+                  fill
+                  className="object-cover"
+                  sizes="56px"
+                />
               </div>
               <div>
                 <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-emerald-400">Written by</p>
