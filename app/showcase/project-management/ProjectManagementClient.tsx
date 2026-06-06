@@ -25,7 +25,7 @@ function cn(...inputs: ClassValue[]) {
 // TYPES
 // ----------------------------------------------------------------------
 
-type Role = "Project Manager" | "Lead Instructional Designer" | "Instructional Designer" | "Content Developer";
+type Role = "Project Manager" | "Lead Instructional Designer" | "Instructional Designer" | "Content Developer" | "eLearning Developer";
 type Status = "Backlog" | "In Progress" | "In Review" | "Done";
 type Modality = "Video" | "Interactive" | "Hybrid" | "ILT" | "VILT";
 type MainTab = "PM Dashboard" | "Kanban Board" | "Team Member Dashboard";
@@ -97,9 +97,10 @@ interface Project {
 
 const USERS: User[] = [
   { id: "u-1", name: "Jitin Nair", role: "Project Manager", avatar: "/hero-photo.jpg" },
-  { id: "u-2", name: "Katrina Kaif", role: "Lead Instructional Designer", avatar: "https://upload.wikimedia.org/wikipedia/commons/1/15/Katrina_Kaif_at_the_launch_of_the_song_%27Pashmina%27.jpg" },
-  { id: "u-3", name: "Shah Rukh Khan", role: "Instructional Designer", avatar: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Shah_Rukh_Khan_at_Pathaan.jpg" },
-  { id: "u-4", name: "John Abraham", role: "Content Developer", avatar: "https://upload.wikimedia.org/wikipedia/commons/b/b1/John_Abraham_Launch_Pepsi_My_Can.jpg" },
+  { id: "u-2", name: "Katrina Kaif", role: "Lead Instructional Designer", avatar: "https://ui-avatars.com/api/?name=Katrina+Kaif&background=ec4899&color=fff&bold=true&size=128" },
+  { id: "u-3", name: "Shah Rukh Khan", role: "Instructional Designer", avatar: "https://ui-avatars.com/api/?name=Shah+Rukh+Khan&background=f59e0b&color=fff&bold=true&size=128" },
+  { id: "u-4", name: "John Abraham", role: "Content Developer", avatar: "https://ui-avatars.com/api/?name=John+Abraham&background=3b82f6&color=fff&bold=true&size=128" },
+  { id: "u-5", name: "Abhishek Bachchan", role: "eLearning Developer", avatar: "https://ui-avatars.com/api/?name=Abhishek+Bachchan&background=10b981&color=fff&bold=true&size=128" },
 ];
 
 const INITIAL_PROJECTS: Project[] = [
@@ -111,7 +112,7 @@ const INITIAL_PROJECTS: Project[] = [
     intakeDate: "Oct 01, 2025",
     pmAssignmentDate: "Oct 02, 2025",
     pmId: "u-1",
-    teamIds: ["u-2", "u-3", "u-4"]
+    teamIds: ["u-2", "u-3", "u-4", "u-5"]
   },
   {
     id: "p-2",
@@ -121,7 +122,7 @@ const INITIAL_PROJECTS: Project[] = [
     intakeDate: "May 20, 2024",
     pmAssignmentDate: "May 21, 2024",
     pmId: "u-1",
-    teamIds: ["u-2", "u-3", "u-4"]
+    teamIds: ["u-2", "u-3", "u-4", "u-5"]
   }
 ];
 
