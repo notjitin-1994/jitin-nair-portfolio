@@ -17,7 +17,12 @@ import {
   Scan,
   FileText,
   ClipboardList,
-  AlertTriangle
+  AlertTriangle,
+  Globe,
+  Gauge,
+  Clock,
+  CheckCircle2,
+  Circle
 } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -173,91 +178,94 @@ export function MoodysInfographic() {
   const reduced = useReducedMotion();
 
   return (
-    <div className="space-y-6 py-2">
-      {/* Production time comparison */}
-      <div>
-        <div className="text-[9px] font-semibold uppercase tracking-[0.22em] text-neutral-600 mb-4">
-          Content Production Time
-        </div>
-        <div className="space-y-3">
-          {/* Before */}
-          <div>
-            <div className="mb-1.5 flex justify-between">
-              <span className="text-[11px] text-neutral-500">Before</span>
-              <span className="text-[11px] text-neutral-500">100%</span>
-            </div>
-            <div className="h-1.5 w-full rounded-full bg-white/[0.10]" />
+    <div className="grid grid-cols-2 gap-3 py-2">
+      {/* Global Curricula - Top Left */}
+      <BentoCard className="col-span-1">
+        <div className="flex items-start justify-between mb-3">
+          <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400">
+            <Globe className="h-4 w-4" />
           </div>
-          {/* After */}
-          <div>
-            <div className="mb-1.5 flex justify-between">
-              <span className="text-[11px] text-emerald-400/90">After</span>
-              <span className="text-[11px] text-emerald-400/90">40%</span>
-            </div>
-            <AnimatedBar fill={0.4} delay={0.15} />
-          </div>
-          {/* Badge */}
-          <div className="flex justify-end">
-            <motion.span
-              className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-semibold text-emerald-400"
-              initial={reduced ? false : { opacity: 0, scale: 0.85 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.4, delay: 0.5, ease: EASE }}
-            >
-              ↓ 60% time saved
-            </motion.span>
+          <div className="text-right">
+             <div className="text-[14px] font-mono font-bold text-white">Global</div>
+             <div className="text-[8px] font-mono text-neutral-500 uppercase tracking-tighter">Footprint</div>
           </div>
         </div>
-      </div>
+        <div className="text-[11px] font-semibold text-white mb-1">Standardized Delivery</div>
+        <p className="text-[9px] text-neutral-500 leading-relaxed">Scaling curricula across multi-national teams with consistency.</p>
+        <div className="mt-3 flex justify-between">
+           {[...Array(5)].map((_, i) => (
+             <div key={i} className={`h-1 flex-1 mx-0.5 rounded-full ${i < 4 ? "bg-cyan-400/40" : "bg-white/5"}`} />
+           ))}
+        </div>
+      </BentoCard>
 
-      {/* Completion ring + global */}
-      <div className="flex items-center gap-4 border-t border-white/[0.05] pt-5">
-        {/* SVG donut */}
-        <div className="relative flex-shrink-0" style={{ width: 72, height: 72 }}>
-          <svg width={72} height={72} viewBox="0 0 72 72" overflow="visible">
-            <defs>
-              <linearGradient id="moodysGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="72" y2="72">
-                <stop offset="0%" stopColor="#34d399" />
-                <stop offset="100%" stopColor="#2dd4bf" />
-              </linearGradient>
-            </defs>
-            {/* Track */}
-            <circle cx={36} cy={36} r={28} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={5} />
-            {/* Animated fill arc */}
-            <g transform="rotate(-90 36 36)">
-              <motion.circle
-                cx={36}
-                cy={36}
-                r={28}
-                fill="none"
-                stroke="url(#moodysGrad)"
-                strokeWidth={5}
-                strokeLinecap="round"
-                strokeDasharray={MOODYS_CIRC}
-                initial={reduced ? false : { strokeDashoffset: MOODYS_CIRC }}
-                whileInView={{ strokeDashoffset: MOODYS_CIRC * 0.1 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 1.5, ease: EASE }}
-              />
-            </g>
-          </svg>
-          {/* Centre label */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="font-serif text-[13px] font-medium text-white">90%+</span>
+      {/* Production Pipeline - Top Right */}
+      <BentoCard accent className="col-span-1 border-emerald-500/10">
+        <div className="flex items-start justify-between mb-3">
+          <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-400">
+            <Zap className="h-4 w-4" />
+          </div>
+          <div className="text-right">
+             <div className="text-[14px] font-mono font-bold text-emerald-400">-60%</div>
+             <div className="text-[8px] font-mono text-neutral-500 uppercase tracking-tighter">Build Time</div>
           </div>
         </div>
+        <div className="text-[11px] font-semibold text-white mb-1">Pipeline Build</div>
+        <p className="text-[9px] text-neutral-500 leading-relaxed">From one-off builds to a high-velocity template engine.</p>
+        <div className="mt-3 relative h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+           <motion.div 
+             className="h-full bg-emerald-400"
+             initial={{ width: "100%" }}
+             whileInView={{ width: "40%" }}
+             transition={{ duration: 1.5, ease: EASE }}
+           />
+        </div>
+      </BentoCard>
 
-        {/* Labels */}
-        <div>
-          <div className="text-sm font-medium text-white">Completion Rate</div>
-          <div className="mt-0.5 text-[11px] text-neutral-500">module completion</div>
-          <div className="mt-3 flex items-center gap-1.5 text-[11px] text-neutral-400">
-            <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-teal-400" />
-            Global teams served
+      {/* Completion - Bottom Left */}
+      <BentoCard className="col-span-1">
+        <div className="flex items-start justify-between mb-3">
+          <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-amber-400/10 text-amber-400">
+            <Gauge className="h-4 w-4" />
+          </div>
+          <div className="text-right">
+             <div className="text-[14px] font-mono font-bold text-white">90%+</div>
+             <div className="text-[8px] font-mono text-neutral-500 uppercase tracking-tighter">Retention</div>
           </div>
         </div>
-      </div>
+        <div className="text-[11px] font-semibold text-white mb-1">Module Completion</div>
+        <p className="text-[9px] text-neutral-500 leading-relaxed">Achieving elite-tier engagement across financial curricula.</p>
+        <div className="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+           <motion.div 
+             className="h-full bg-amber-400"
+             initial={{ width: 0 }}
+             whileInView={{ width: "90%" }}
+             transition={{ duration: 1.5, delay: 0.2, ease: EASE }}
+           />
+        </div>
+      </BentoCard>
+
+      {/* Templates - Bottom Right */}
+      <BentoCard className="col-span-1">
+        <div className="flex items-start justify-between mb-3">
+          <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-teal-400/10 text-teal-400">
+            <FileCheck className="h-4 w-4" />
+          </div>
+          <div className="text-right">
+             <div className="text-[14px] font-mono font-bold text-white">100%</div>
+             <div className="text-[8px] font-mono text-neutral-500 uppercase tracking-tighter">Audit Pass</div>
+          </div>
+        </div>
+        <div className="text-[11px] font-semibold text-white mb-1">Templated Assets</div>
+        <p className="text-[9px] text-neutral-500 leading-relaxed">Standardizing artifact quality via automated production logic.</p>
+        <div className="mt-3 grid grid-cols-3 gap-1">
+           {[...Array(3)].map((_, i) => (
+             <div key={i} className="h-3 rounded bg-teal-400/20 flex items-center justify-center">
+                <div className="h-1 w-2 bg-teal-400/40 rounded-full" />
+             </div>
+           ))}
+        </div>
+      </BentoCard>
     </div>
   );
 }
