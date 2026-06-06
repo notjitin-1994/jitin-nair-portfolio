@@ -1803,7 +1803,7 @@ export function ProjectManagementClient() {
         cta={{ label: "Back to Portfolio", href: "/" }}
       />
 
-      <div className="flex-1 pt-24 pb-24 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto w-full">
+      <div className="flex-1 pt-24 pb-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
 
         {/* Back to Showcase */}
         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-8">
