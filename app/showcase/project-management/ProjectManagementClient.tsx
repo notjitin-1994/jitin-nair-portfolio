@@ -307,10 +307,10 @@ const SPRING = { type: "spring", stiffness: 100, damping: 20 };
 // SHARED COMPONENTS
 // ----------------------------------------------------------------------
 
-function ProgressBar({ value, color = "emerald" }: { value: number, color?: string }) {
+function ProgressBar({ value, color = "emerald", className }: { value: number, color?: string, className?: string }) {
   const bgColor = color === "emerald" ? "bg-emerald-500" : "bg-indigo-500";
   return (
-    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+    <div className={cn("h-1.5 w-full bg-white/5 rounded-full overflow-hidden", className)}>
       <motion.div 
         className={cn("h-full rounded-full", bgColor)}
         initial={{ width: 0 }}
@@ -1252,7 +1252,7 @@ export function ProjectManagementClient() {
         {selectedTask && (
           <TaskDetailOverlay 
             task={selectedTask} 
-            activeUser={activeUser}
+            user={activeUser}
             users={USERS}
             onClose={() => setSelectedTask(null)} 
             actions={actions}
