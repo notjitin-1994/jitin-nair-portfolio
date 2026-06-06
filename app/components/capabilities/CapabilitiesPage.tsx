@@ -81,12 +81,12 @@ function Hero() {
             >
               <span className="block overflow-hidden pb-[0.08em]">
                 <motion.span variants={line} className="block transform-gpu will-change-transform">
-                  Learning craft,
+                  Learning architecture,
                 </motion.span>
               </span>
               <span className="block overflow-hidden pb-[0.08em]">
                 <motion.span variants={line} className="block transform-gpu will-change-transform">
-                  <span className="text-emerald-400">engineered</span> to scale.
+                  <span className="text-emerald-400">orchestrated</span> for impact.
                 </motion.span>
               </span>
             </motion.h1>
@@ -97,7 +97,7 @@ function Hero() {
               transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
               className="mt-6 max-w-lg text-base leading-relaxed text-neutral-400 sm:text-lg"
             >
-              Six capability domains across learning science and AI, each one backed by a result, not a buzzword.
+              Strategic L&D leadership across instructional science and digital infrastructure. I build the systems that move business metrics at global scale.
             </motion.p>
 
             <motion.div
@@ -180,11 +180,10 @@ function DualFluency() {
         <Reveal className="mb-14 max-w-2xl">
           <Eyebrow>The differentiator</Eyebrow>
           <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
-            Two disciplines, one rare overlap.
+            Two disciplines, one seamless orchestration.
           </h2>
           <p className="mt-3 leading-relaxed text-neutral-400">
-            Most L&amp;D leaders have one of these. I operate fluently in both, which is what makes the bottlenecks
-            disappear.
+            I operate at the intersection of instructional science and technical infrastructure, building the pipelines that allow L&D to scale without linear headcount growth.
           </p>
         </Reveal>
 
@@ -198,7 +197,7 @@ function DualFluency() {
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: EASE }}
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-emerald-400/40 bg-emerald-400/10 text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.15)]"
             >
               <Plus className="h-5 w-5" strokeWidth={2.5} />
             </motion.span>
@@ -209,9 +208,12 @@ function DualFluency() {
         </div>
 
         <Reveal delay={0.1} className="mt-4">
-          <div className="rounded-2xl border border-emerald-400/20 bg-gradient-to-br from-emerald-500/[0.09] to-transparent p-7 sm:p-8">
-            <div className="font-serif text-xl font-medium tracking-tight text-emerald-300">{dualFluency.intersection.title}</div>
-            <p className="mt-3 max-w-2xl leading-relaxed text-neutral-200">{dualFluency.intersection.body}</p>
+          <div className="relative overflow-hidden rounded-2xl border border-emerald-400/20 bg-zinc-900/40 p-7 sm:p-10 backdrop-blur-md">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.08] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="font-serif text-2xl font-medium tracking-tight text-emerald-300">{dualFluency.intersection.title}</div>
+              <p className="mt-4 max-w-2xl text-lg leading-relaxed text-neutral-200">{dualFluency.intersection.body}</p>
+            </div>
           </div>
         </Reveal>
       </div>
@@ -224,48 +226,59 @@ function CapabilityCard({ d, wide }: { d: CapabilityDomain; wide: boolean }) {
   const Icon = d.icon;
   return (
     <div
-      className={`flex h-full flex-col rounded-3xl border p-7 transition-colors duration-200 ${
+      className={`flex h-full flex-col rounded-[2.5rem] border p-8 sm:p-10 transition-all duration-300 ${
         d.featured
-          ? "border-emerald-400/25 bg-emerald-500/[0.06] hover:border-emerald-400/40"
-          : "border-white/[0.08] bg-white/[0.02] hover:border-emerald-400/30"
-      }`}
+          ? "border-emerald-400/25 bg-zinc-900/60 shadow-[0_20px_50px_-12px_rgba(16,185,129,0.15)] hover:border-emerald-400/40"
+          : "border-white/[0.08] bg-zinc-900/40 hover:bg-zinc-900/60 hover:border-emerald-400/30"
+      } backdrop-blur-md`}
     >
-      <div className="flex items-center gap-3">
-        <span
-          className={`flex h-11 w-11 items-center justify-center rounded-xl ${
-            d.featured ? "bg-emerald-400/15 text-emerald-300" : "bg-white/[0.05] text-emerald-400"
-          }`}
-        >
-          <Icon className="h-5 w-5" strokeWidth={1.75} />
-        </span>
-        <h3 className="font-serif text-xl font-medium tracking-tight text-white sm:text-2xl">{d.title}</h3>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <span
+            className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
+              d.featured ? "bg-emerald-400/15 text-emerald-300 border border-emerald-400/20" : "bg-white/[0.05] text-emerald-400 border border-white/5"
+            }`}
+          >
+            <Icon className="h-6 w-6" strokeWidth={2} />
+          </span>
+          <h3 className="font-serif text-2xl font-medium tracking-tight text-white">{d.title}</h3>
+        </div>
+        {d.featured && (
+          <span className="hidden sm:block rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-400">
+            Core Competency
+          </span>
+        )}
       </div>
 
-      <p className={`mt-5 leading-relaxed text-neutral-300 ${wide ? "max-w-2xl text-lg" : ""}`}>{d.statement}</p>
-      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-neutral-500">{d.detail}</p>
+      <p className={`mt-6 leading-relaxed text-neutral-200 ${wide ? "max-w-3xl text-xl" : "text-lg"}`}>{d.statement}</p>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-500">{d.detail}</p>
 
       {/* proof metric */}
-      <div className="mt-5 inline-flex items-center gap-2 self-start rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs font-medium text-emerald-300">
-        <span className="font-serif text-sm">{d.proofValue}</span>
-        <span className="text-emerald-300/70">{d.proofLabel}</span>
+      <div className="mt-8 inline-flex items-center gap-2.5 self-start rounded-xl border border-emerald-400/15 bg-emerald-500/5 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-emerald-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+        <span className="font-serif text-lg leading-none">{d.proofValue}</span>
+        <span className="text-emerald-400/60 border-l border-emerald-400/20 pl-2.5">{d.proofLabel}</span>
       </div>
 
-      <div className={`mt-6 grid gap-5 ${wide ? "sm:grid-cols-2" : ""}`}>
+      <div className={`mt-10 grid gap-8 ${wide ? "sm:grid-cols-2" : ""}`}>
         <div>
-          <div className="text-xs font-medium uppercase tracking-[0.16em] text-emerald-400/70">Expert</div>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400/70">
+            <div className="h-1 w-3 rounded-full bg-emerald-400" /> Expert Mastery
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2.5">
             {d.expert.map((s) => (
-              <span key={s} className="rounded-full border border-emerald-400/25 bg-emerald-400/[0.08] px-3 py-1.5 text-xs text-emerald-200">
+              <span key={s} className="rounded-lg border border-emerald-400/20 bg-emerald-500/[0.04] px-3.5 py-2 text-xs text-emerald-100 font-medium">
                 {s}
               </span>
             ))}
           </div>
         </div>
         <div>
-          <div className="text-xs font-medium uppercase tracking-[0.16em] text-neutral-500">Advanced</div>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-600">
+            <div className="h-1 w-3 rounded-full bg-neutral-700" /> Advanced Proficiency
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2.5">
             {d.advanced.map((s) => (
-              <span key={s} className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-neutral-400">
+              <span key={s} className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3.5 py-2 text-xs text-neutral-400">
                 {s}
               </span>
             ))}
@@ -327,15 +340,16 @@ function SkillMatrix() {
     <section className="px-5 py-6 md:py-8">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-12 max-w-2xl">
-          <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">The full skill matrix.</h2>
-          <p className="mt-3 leading-relaxed text-neutral-400">Every tool and method, sorted by the depth I bring to it.</p>
+          <Eyebrow>The arsenal</Eyebrow>
+          <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">The full skill matrix.</h2>
+          <p className="mt-3 leading-relaxed text-neutral-400">Strategic L&D leadership and instructional science, amplified by AI and automation.</p>
         </Reveal>
 
         {/* Desktop table header */}
-        <div className="hidden grid-cols-[180px_1fr_1fr] gap-6 border-b border-white/[0.08] pb-4 text-xs font-medium uppercase tracking-[0.16em] text-neutral-500 lg:grid">
-          <div />
-          <div className="text-emerald-400/80">Expert</div>
-          <div>Advanced</div>
+        <div className="hidden grid-cols-[200px_1fr_1fr] gap-10 border-b border-white/[0.08] pb-6 text-xs font-bold uppercase tracking-[0.2em] text-neutral-500 lg:grid">
+          <div>Category</div>
+          <div className="text-emerald-400">Expertise & Strategy</div>
+          <div>Advanced Execution</div>
         </div>
 
         <div className="divide-y divide-white/[0.06]">
@@ -346,15 +360,15 @@ function SkillMatrix() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.06, ease: EASE }}
-              className="grid gap-4 py-7 lg:grid-cols-[180px_1fr_1fr] lg:gap-6"
+              className="grid gap-6 py-10 lg:grid-cols-[200px_1fr_1fr] lg:gap-10"
             >
-              <div className="font-serif text-lg font-medium tracking-tight text-white">{row.category}</div>
+              <div className="font-serif text-xl font-medium tracking-tight text-white">{row.category}</div>
               <div>
-                <div className="mb-3 text-xs font-medium uppercase tracking-[0.16em] text-emerald-400/80 lg:hidden">Expert</div>
+                <div className="mb-4 text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-400/80 lg:hidden">Expertise</div>
                 <SkillChips items={row.expert} tier="expert" />
               </div>
               <div>
-                <div className="mb-3 text-xs font-medium uppercase tracking-[0.16em] text-neutral-500 lg:hidden">Advanced</div>
+                <div className="mb-4 text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-500 lg:hidden">Advanced</div>
                 <SkillChips items={row.advanced} tier="advanced" />
               </div>
             </motion.div>
