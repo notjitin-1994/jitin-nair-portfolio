@@ -1453,6 +1453,15 @@ function LightboxModal({ id, onClose }: { id: ModalId; onClose: () => void }) {
   );
 }
 
+/* ---------- Section label (eyebrow, used sparingly) ---------- */
+function Label({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="mb-6 block text-xs font-medium uppercase tracking-[0.2em] text-emerald-400/80">
+      {children}
+    </span>
+  );
+}
+
 // ─── Main Export ──────────────────────────────────────────────────────────────
 
 export function PolarisShowcaseSection() {
@@ -1460,7 +1469,7 @@ export function PolarisShowcaseSection() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="relative bg-[#0a0a0f] px-5 py-20 md:py-28">
+    <section className="relative bg-[#0a0a0f] px-5 py-16 md:py-24">
       <div className="mx-auto max-w-6xl">
         {/* Section header */}
         <motion.div
@@ -1470,10 +1479,7 @@ export function PolarisShowcaseSection() {
           transition={{ duration: 0.7, ease: EASE }}
           className="mb-12"
         >
-          <div className="inline-flex items-center gap-2 mb-5">
-            <span className="h-px w-8 bg-emerald-500/30" />
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">Live System Demo</span>
-          </div>
+          <Label>Live System Demo</Label>
           <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl mb-3">
             See the <span className="italic text-emerald-400">system</span> in motion.
           </h2>

@@ -104,6 +104,15 @@ const PIPELINE_NODES = [
   },
 ];
 
+/* ---------- Section label (eyebrow, used sparingly) ---------- */
+function Label({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="mb-6 block text-xs font-medium uppercase tracking-[0.2em] text-emerald-400/80">
+      {children}
+    </span>
+  );
+}
+
 /* ---------- Nav ---------- */
 function Nav() {
   return (
@@ -176,19 +185,14 @@ function Hero() {
 /* ---------- Pipeline Section ---------- */
 function PipelineSection() {
   return (
-    <section className="px-5 py-24 md:py-32 bg-[#0a0a0f] relative overflow-hidden">
+    <section className="px-5 py-16 md:py-24 bg-[#0a0a0f] relative overflow-hidden">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[50vh] w-[80vh] rounded-full bg-emerald-500/5 blur-[100px]" />
       </div>
 
       <div className="mx-auto max-w-6xl">
         <Reveal>
-          <div className="inline-flex items-center gap-2 mb-6">
-            <span className="h-px w-8 bg-emerald-500/30" />
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">
-              The Methodology
-            </span>
-          </div>
+          <Label>The Methodology</Label>
           <h2 className="font-serif text-4xl font-medium tracking-tight text-white sm:text-5xl mb-6">
             Intelligence in <span className="text-emerald-400 italic">Two Acts.</span>
           </h2>
@@ -276,17 +280,12 @@ function ArchitectureSection() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="px-5 py-24 md:py-32 bg-white/[0.02] border-y border-white/[0.05] relative overflow-hidden">
+    <section className="px-5 py-16 md:py-24 bg-white/[0.02] border-y border-white/[0.05] relative overflow-hidden">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-16 lg:grid-cols-2 items-center">
           {/* LEFT: Copy */}
           <Reveal>
-            <div className="inline-flex items-center gap-2 mb-6">
-              <span className="h-px w-8 bg-emerald-500/30" />
-              <span className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400">
-                Core Architecture
-              </span>
-            </div>
+            <Label>Core Architecture</Label>
             <h2 className="font-serif text-4xl font-medium tracking-tight text-white sm:text-5xl mb-8">
               Two phases,
               <br />
@@ -418,11 +417,11 @@ function ArchitectureSection() {
 /* ---------- Metrics Section ---------- */
 function MetricsSection() {
   return (
-    <section className="px-5 py-24 md:py-32 bg-[#0a0a0f]">
+    <section className="px-5 py-16 md:py-24 bg-[#0a0a0f]">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-8 md:grid-cols-3">
           <Reveal>
-            <div className="h-full rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-10">
+            <div className="h-full rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-10 transition-colors duration-200 hover:border-emerald-500/20">
               <div className="font-serif text-5xl font-medium text-white mb-4">
                 45<span className="text-2xl text-emerald-400">s</span>
               </div>
@@ -434,7 +433,7 @@ function MetricsSection() {
             </div>
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="h-full rounded-[2.5rem] border border-emerald-500/20 bg-emerald-500/5 p-10">
+            <div className="h-full rounded-[2.5rem] border border-emerald-500/20 bg-emerald-500/5 p-10 transition-colors duration-200 hover:border-emerald-500/40">
               <div className="font-serif text-5xl font-medium text-white mb-4">
                 500<span className="text-2xl text-emerald-400">+</span>
               </div>
@@ -446,7 +445,7 @@ function MetricsSection() {
             </div>
           </Reveal>
           <Reveal delay={0.2}>
-            <div className="h-full rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-10">
+            <div className="h-full rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-10 transition-colors duration-200 hover:border-emerald-500/20">
               <div className="font-serif text-5xl font-medium text-white mb-4">
                 95<span className="text-2xl text-emerald-400">%</span>
               </div>
@@ -466,7 +465,7 @@ function MetricsSection() {
 /* ---------- Final CTA ---------- */
 function Contact() {
   return (
-    <section id="contact" className="scroll-mt-24 px-5 py-24 md:py-32">
+    <section id="contact" className="scroll-mt-24 px-5 py-16 md:py-24">
       <div className="mx-auto max-w-6xl text-left">
         <Reveal>
           <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
