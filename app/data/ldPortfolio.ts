@@ -112,25 +112,45 @@ export const ldAiLever = {
   heading: "AI as a lever, not a layer",
   body: "I do not just adopt AI tools, I architect them. The same engineering behind 200+ deployed agents removes the real L&D bottlenecks: automated discovery and design, self-running content pipelines, and audits that used to eat weeks.",
   points: [
-    "Discovery to delivery automated, with expert validation (Smartslate)",
+    "Programme leadership leveraging AI-native design (Smartslate)",
     "Production pipelines that cut build time by 60% (Moody's)",
     "Audit and reporting automation across pan-India teams (Accenture)",
   ],
   link: { label: "Read more about Jitin's AI Systems Architecture", href: "/AI-Systems-Architecture-Portfolio" },
 };
 
-export const ldCapabilities: { title: string; body: string; featured?: boolean; icon: LucideIcon }[] = [
+export const ldCapabilities = [
   {
-    title: "AI-native learning design",
-    body: "Learning systems where AI does the heavy lifting and experts guarantee the quality.",
+    title: "Programme leadership & strategy",
+    body: "Orchestrating high-impact learning architectures for global scale.",
     featured: true,
     icon: Sparkles,
   },
-  { title: "Instructional design", body: "ADDIE, Bloom's taxonomy, and adult-learning principles as the backbone.", icon: GraduationCap },
-  { title: "Video-based learning", body: "Standardized, scalable production for complex subject matter.", icon: Video },
-  { title: "Learning analytics", body: "Completion, retention, and capability, instrumented and acted on.", icon: BarChart3 },
-  { title: "Microlearning", body: "Right-sized learning delivered in the flow of work.", icon: Layers },
-  { title: "Automation & ops", body: "VBA, workflow orchestration, and multi-agent pipelines that remove bottlenecks.", icon: Workflow },
+  {
+    title: "Instructional science & design",
+    body: "Outcome-first design anchored in adult-learning principles (ADDIE, Bloom's).",
+    icon: GraduationCap,
+  },
+  {
+    title: "Scalable content ecosystems",
+    body: "Standardizing production via automated technical pipelines and templates.",
+    icon: Video,
+  },
+  {
+    title: "Learning analytics & ROI",
+    body: "Measuring the P&L impact of learning using Kirkpatrick Level 4 standards.",
+    icon: BarChart3,
+  },
+  {
+    title: "In-flow performance support",
+    body: "Right-sized microlearning delivered at the point of need for 90%+ completion.",
+    icon: Layers,
+  },
+  {
+    title: "Learning operations & AI",
+    body: "Automating the busywork (TNA, auditing) to keep the instructional craft human.",
+    icon: Workflow,
+  },
 ];
 
 export const ldJourney = [

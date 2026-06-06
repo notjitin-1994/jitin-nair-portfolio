@@ -23,6 +23,7 @@ import {
   ldAiLever,
   ldJourney,
   ldRecognition,
+  ldCapabilities,
   type LdCaseStudy,
 } from "../../data/ldPortfolio";
 import { CaseStudyInfographic } from "./CaseStudyInfographics";
@@ -816,28 +817,17 @@ function TileViz({ c }: { c: CapabilityDomain }) {
   );
 }
 
-function CapabilityTile({ c }: { c: CapabilityDomain }) {
+function CapabilityTile({ c }: { c: (typeof ldCapabilities)[0] }) {
   const Icon = c.icon;
   return (
-    <div className="group relative flex h-full min-h-[268px] flex-col overflow-hidden rounded-2xl border border-white/[0.08] transition-colors duration-200 hover:border-emerald-400/30">
-      {/* Blurred contextual background */}
-      <Image
-        src={capPicsum(c.bgSeed)}
-        alt=""
-        aria-hidden
-        fill
-        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-[0.18] blur-[3px] transition-opacity duration-300 group-hover:opacity-[0.26]"
-      />
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f]/92 via-[#0a0a0f]/82 to-emerald-950/40" />
-      <div className="relative z-10 flex h-full flex-col p-6">
-        <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-400/15 bg-emerald-400/10 text-emerald-400">
+    <div className="group relative flex h-full min-h-[220px] flex-col overflow-hidden rounded-[2.5rem] border border-white/[0.08] bg-zinc-900/40 p-7 backdrop-blur-md transition-all duration-300 hover:border-emerald-400/40 hover:bg-zinc-900/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.05] to-transparent pointer-events-none opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="relative z-10 flex h-full flex-col">
+        <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-400/15 bg-emerald-400/10 text-emerald-400 transition-colors group-hover:border-emerald-400/30">
           <Icon className="h-5 w-5" strokeWidth={1.75} />
         </span>
-        <h3 className="mt-5 font-serif text-xl font-medium tracking-tight text-white">{c.title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-neutral-300/90">{c.statement}</p>
-        <div className="mt-auto pt-7">
-          <TileViz c={c} />
-        </div>
+        <h3 className="mt-5 font-serif text-xl font-medium tracking-tight text-white group-hover:text-emerald-300 transition-colors">{c.title}</h3>
+        <p className="mt-3 text-sm leading-relaxed text-neutral-400 group-hover:text-neutral-300 transition-colors">{c.body}</p>
       </div>
     </div>
   );
@@ -851,15 +841,15 @@ function Capabilities() {
         <Reveal className="mb-14 max-w-2xl">
           <Label>What I bring</Label>
           <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl">
-            Range across learning and the systems that scale it.
+            L&D leadership built on results, not buzzwords.
           </h2>
           <p className="mt-3 leading-relaxed text-neutral-400">
-            Six capability domains, each one backed by a result rather than a buzzword.
+            Strategic domains covering instructional science, digital infrastructure, and global program orchestration.
           </p>
         </Reveal>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {capabilityDomains.map((c, i) => (
-            <Reveal key={c.id} delay={(i % 3) * 0.05}>
+          {ldCapabilities.map((c, i) => (
+            <Reveal key={c.title} delay={(i % 3) * 0.05}>
               <CapabilityTile c={c} />
             </Reveal>
           ))}
