@@ -9,7 +9,7 @@ import {
   Workflow, Zap, Users, LayoutDashboard, ChevronDown, Link as LinkIcon,
   FileText, Target, Globe, ShieldCheck, Mail, Linkedin, Upload,
   ListTodo, Info, UserCheck, Timer, ArrowRight, ChevronLeft, ChevronRight,
-  FolderKanban, Briefcase, ChevronUp, Sparkles, TrendingUp
+  FolderKanban, Briefcase, ChevronUp, Sparkles, TrendingUp, X, Trash2
 } from "lucide-react";
 import { FloatingNav } from "../../components/FloatingNav";
 import { LdFooter } from "../../components/ld/LdFooter";
@@ -568,14 +568,26 @@ function TaskCard({
 // TASK DETAIL OVERLAY
 // ----------------------------------------------------------------------
 
+// ----------------------------------------------------------------------
+// TASK DETAIL OVERLAY
+// ----------------------------------------------------------------------
+
 function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task, user: User, users: User[], onClose: () => void, actions: any }) {
   const [commentText, setCommentText] = useState("");
   const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
+  const [showAssigneePicker, setShowAssigneePicker] = useState(false);
+  const [showSubtaskAssigneePicker, setShowSubtaskAssigneePicker] = useState<string | null>(null);
   
   const totalSubtasks = task.subtasks.length;
   const completedSubtasks = task.subtasks.filter(s => s.completed).length;
   const progress = totalSubtasks === 0 ? (task.status === "Done" ? 100 : 0) : (completedSubtasks / totalSubtasks) * 100;
   const taskAssignee = users.find(u => u.id === task.assigneeId);
+
+  // Background Scroll Lock
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-6">
@@ -597,12 +609,26 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
           <div>
             <div className="flex items-center gap-3 mb-3">
               <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 uppercase tracking-widest">{task.id}</span>
-              <span className="text-xs text-neutral-500 font-medium px-2 py-0.5 rounded bg-white/5">{task.status}</span>
+              <div className="relative group">
+                <select
+                  value={task.status}
+                  onChange={e => actions.moveTask(task.id, e.target.value as Status)}
+                  className={cn(
+                    "text-[10px] font-bold uppercase tracking-wider border rounded-md px-2 py-0.5 bg-transparent cursor-pointer focus:outline-none appearance-none transition-colors",
+                    STATUS_STYLES[task.status]
+                  )}
+                >
+                  {(["Backlog", "In Progress", "In Review", "Done"] as Status[]).map(s => (
+                    <option key={s} value={s} className="bg-zinc-950 text-white normal-case text-xs">{s}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-1 top-1/2 -translate-y-1/2 h-2.5 w-2.5 opacity-40 pointer-events-none" />
+              </div>
             </div>
             <h2 className="text-2xl sm:text-3xl font-serif text-white tracking-tight leading-tight">{task.title}</h2>
           </div>
           <button onClick={onClose} className="p-2 rounded-full bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10 transition-colors">
-            <ChevronDown className="h-5 w-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
@@ -620,18 +646,65 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
                 ))}
               </div>
             </div>
-            <div className="w-full md:w-48 shrink-0 space-y-6">
-              <div>
+            <div className="w-full md:w-56 shrink-0 space-y-6">
+              <div className="relative">
                 <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block mb-2">Assignee</span>
-                <div className="flex items-center gap-3 p-2 rounded-xl bg-white/[0.02] border border-white/5">
-                  {taskAssignee && <UserAvatar user={taskAssignee} />}
-                  <span className="text-sm text-neutral-200">{taskAssignee?.name || 'Unassigned'}</span>
-                </div>
+                <button 
+                  onClick={() => setShowAssigneePicker(!showAssigneePicker)}
+                  className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-emerald-500/30 transition-all text-left"
+                >
+                  {taskAssignee && <UserAvatar user={taskAssignee} size="md" />}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-white truncate">{taskAssignee?.name || 'Unassigned'}</p>
+                    <p className="text-[9px] text-neutral-500 truncate">{taskAssignee?.role || 'Click to assign'}</p>
+                  </div>
+                  <ChevronRight className={cn("h-3 w-3 text-neutral-600 transition-transform", showAssigneePicker && "rotate-90")} />
+                </button>
+                
+                <AnimatePresence>
+                  {showAssigneePicker && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
+                      className="absolute top-full left-0 right-0 z-50 mt-2 p-1.5 rounded-2xl bg-zinc-900 border border-white/10 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.5)] max-h-60 overflow-y-auto"
+                    >
+                      {users.map(u => (
+                        <button
+                          key={u.id}
+                          onClick={() => {
+                            actions.changeAssignee(task.id, u.id, user.name);
+                            setShowAssigneePicker(false);
+                          }}
+                          className={cn(
+                            "w-full flex items-center gap-3 p-2 rounded-xl transition-colors text-left",
+                            task.assigneeId === u.id ? "bg-emerald-500/10" : "hover:bg-white/5"
+                          )}
+                        >
+                          <UserAvatar user={u} size="sm" />
+                          <div className="min-w-0 flex-1">
+                            <p className={cn("text-xs font-medium", task.assigneeId === u.id ? "text-emerald-400" : "text-white")}>{u.name}</p>
+                            <p className="text-[9px] text-neutral-500 truncate">{u.role}</p>
+                          </div>
+                          {task.assigneeId === u.id && <CheckCircle2 className="h-3 w-3 text-emerald-400 shrink-0" />}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
+
               <div>
                 <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block mb-2">Due Date</span>
-                <div className="flex items-center gap-2 text-sm text-emerald-400 bg-emerald-500/5 border border-emerald-500/10 p-2 rounded-xl w-fit">
-                  <Calendar className="h-4 w-4" /> {task.dueDate}
+                <div className="relative group">
+                  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-emerald-500/30 transition-all cursor-pointer">
+                    <Calendar className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <input 
+                      type="text"
+                      value={task.dueDate}
+                      onChange={(e) => actions.updateDueDate(task.id, e.target.value, user.name)}
+                      className="bg-transparent text-xs font-semibold text-white focus:outline-none w-full"
+                      placeholder="Set date..."
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -650,21 +723,65 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
             <div className="space-y-2">
               {task.subtasks.map(st => {
                 const stUser = users.find(u => u.id === st.assigneeId);
+                const isAssigneePickerOpen = showSubtaskAssigneePicker === st.id;
+                
                 return (
-                  <motion.div layout key={st.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 group hover:border-emerald-500/20 transition-colors">
+                  <motion.div layout key={st.id} className="relative flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 group hover:border-emerald-500/20 transition-all">
                     <button 
                       onClick={() => actions.toggleSubtask(task.id, st.id, user.name)}
-                      className="flex items-center gap-3 text-left focus:outline-none flex-1"
+                      className="flex items-center gap-3 text-left focus:outline-none flex-1 min-w-0"
                     >
                       {st.completed ? <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" /> : <Circle className="h-5 w-5 text-neutral-600 shrink-0 group-hover:text-neutral-400 transition-colors" />}
-                      <span className={cn("text-sm transition-colors", st.completed ? "text-neutral-600 line-through" : "text-neutral-300")}>{st.title}</span>
+                      <span className={cn("text-sm transition-colors truncate", st.completed ? "text-neutral-600 line-through" : "text-neutral-300")}>{st.title}</span>
                     </button>
-                    {stUser && (
-                      <div className="flex items-center gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                        <span className="text-[10px] text-neutral-500 hidden sm:inline">{stUser.name.split(' ')[0]}</span>
-                        <UserAvatar user={stUser} size="sm" />
+                    
+                    <div className="flex items-center gap-2 shrink-0">
+                      {/* Subtask Assignee */}
+                      <div className="relative">
+                        <button 
+                          onClick={() => setShowSubtaskAssigneePicker(isAssigneePickerOpen ? null : st.id)}
+                          className="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity"
+                        >
+                          <span className="text-[10px] text-neutral-500 hidden sm:inline">{stUser?.name.split(' ')[0] || 'Unassigned'}</span>
+                          {stUser ? <UserAvatar user={stUser} size="xs" /> : <Plus className="h-3.5 w-3.5 text-neutral-600" />}
+                        </button>
+
+                        <AnimatePresence>
+                          {isAssigneePickerOpen && (
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.9, x: 10 }} animate={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: 0.9, x: 10 }}
+                              className="absolute bottom-full right-0 mb-2 z-50 p-1.5 rounded-2xl bg-zinc-900 border border-white/10 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.5)] min-w-[200px]"
+                            >
+                              {users.map(u => (
+                                <button
+                                  key={u.id}
+                                  onClick={() => {
+                                    actions.changeSubtaskAssignee(task.id, st.id, u.id, user.name);
+                                    setShowSubtaskAssigneePicker(null);
+                                  }}
+                                  className={cn(
+                                    "w-full flex items-center gap-2 p-1.5 rounded-lg transition-colors text-left",
+                                    st.assigneeId === u.id ? "bg-emerald-500/10" : "hover:bg-white/5"
+                                  )}
+                                >
+                                  <UserAvatar user={u} size="xs" />
+                                  <span className={cn("text-[11px]", st.assigneeId === u.id ? "text-emerald-400" : "text-neutral-300")}>{u.name}</span>
+                                </button>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
-                    )}
+
+                      {/* Delete Subtask */}
+                      <button 
+                        onClick={() => actions.removeSubtask(task.id, st.id, user.name)}
+                        className="p-1.5 rounded-lg bg-white/5 text-neutral-600 hover:text-rose-500 hover:bg-rose-500/10 transition-all opacity-0 group-hover:opacity-100"
+                        title="Delete subtask"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </motion.div>
                 );
               })}
@@ -712,11 +829,11 @@ function TaskDetailOverlay({ task, user, users, onClose, actions }: { task: Task
           </div>
 
           {/* Comments */}
-          <div>
+          <div className="pb-8">
             <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-6">
               <MessageSquare className="h-3.5 w-3.5" /> Discussion
             </span>
-            <div className="space-y-6 mb-6">
+            <div className="space-y-6 mb-8">
               {task.comments.length === 0 && <p className="text-sm text-neutral-600 italic">No comments yet.</p>}
               {task.comments.map(c => {
                 const author = users.find(u => u.id === c.authorId);
@@ -845,6 +962,38 @@ export function ProjectManagementClient() {
           ...t,
           assigneeId: newAssigneeId,
           activity: [{ id: `a-${Date.now()}`, text: `${requesterName} reassigned to ${newAssignee?.name.split(' ')[0] || 'someone'}`, time: "Just now" }, ...t.activity]
+        };
+      }));
+    },
+    updateDueDate: (taskId: string, newDate: string, userName: string) => {
+      setTasks(prev => prev.map(t => {
+        if (t.id !== taskId) return t;
+        return {
+          ...t,
+          dueDate: newDate,
+          activity: [{ id: `a-${Date.now()}`, text: `${userName} changed due date to ${newDate}`, time: "Just now" }, ...t.activity]
+        };
+      }));
+    },
+    removeSubtask: (taskId: string, subtaskId: string, userName: string) => {
+      setTasks(prev => prev.map(t => {
+        if (t.id !== taskId) return t;
+        const subtask = t.subtasks.find(s => s.id === subtaskId);
+        return {
+          ...t,
+          subtasks: t.subtasks.filter(s => s.id !== subtaskId),
+          activity: [{ id: `a-${Date.now()}`, text: `${userName} removed subtask "${subtask?.title}"`, time: "Just now" }, ...t.activity]
+        };
+      }));
+    },
+    changeSubtaskAssignee: (taskId: string, subtaskId: string, newAssigneeId: string, userName: string) => {
+      const newAssignee = USERS.find(u => u.id === newAssigneeId);
+      setTasks(prev => prev.map(t => {
+        if (t.id !== taskId) return t;
+        return {
+          ...t,
+          subtasks: t.subtasks.map(st => st.id === subtaskId ? { ...st, assigneeId: newAssigneeId } : st),
+          activity: [{ id: `a-${Date.now()}`, text: `${userName} reassigned subtask to ${newAssignee?.name.split(' ')[0]}`, time: "Just now" }, ...t.activity]
         };
       }));
     }
@@ -1371,15 +1520,15 @@ export function ProjectManagementClient() {
           </div>
         </div>
 
-        {/* Collapsible Resource Allocation */}
-        <div className="rounded-[2rem] border border-white/10 bg-zinc-900/20 overflow-hidden">
+        {/* Collapsible Resource Allocation Overhaul */}
+        <div className="rounded-[2rem] border border-white/10 bg-zinc-900/20 overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
           <button 
             onClick={() => setIsResourcesOpen(!isResourcesOpen)}
             className="w-full p-6 flex items-center justify-between bg-white/[0.01] hover:bg-white/[0.03] transition-colors focus:outline-none"
           >
             <div className="flex items-center gap-3">
               <Users className="h-5 w-5 text-emerald-400" />
-              <h3 className="text-lg font-serif text-white">Resource Allocation Matrix</h3>
+              <h3 className="text-lg font-serif text-white">Workload Distribution Matrix</h3>
             </div>
             <motion.div animate={{ rotate: isResourcesOpen ? 180 : 0 }} transition={SPRING}>
               <ChevronDown className="h-5 w-5 text-neutral-500" />
@@ -1394,30 +1543,59 @@ export function ProjectManagementClient() {
                 exit={{ height: 0, opacity: 0 }}
                 className="border-t border-white/5"
               >
-                <div className="p-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                   {projectTasks.map(task => {
-                    const taskAssignee = USERS.find(u => u.id === task.assigneeId);
-                    return (
-                      <div key={task.id} className="p-4 rounded-xl border border-white/5 bg-black/20 space-y-4">
-                        <div className="flex items-start justify-between gap-4">
-                          <h4 className="text-xs font-medium text-neutral-300 leading-tight">{task.title}</h4>
-                          {taskAssignee && <UserAvatar user={taskAssignee} size="sm" />}
-                        </div>
-                        <div className="space-y-1.5">
-                          {task.subtasks.slice(0, 3).map(st => {
-                            const stAssignee = USERS.find(u => u.id === st.assigneeId);
-                            return (
-                              <div key={st.id} className="flex items-center justify-between text-[10px] bg-white/[0.02] p-1.5 rounded">
-                                <span className="text-neutral-500 truncate pr-2">{st.title}</span>
-                                <span className="text-neutral-600 font-medium shrink-0">{stAssignee?.name.split(' ')[0]}</span>
-                              </div>
-                            );
-                          })}
-                          {task.subtasks.length > 3 && <div className="text-[9px] text-neutral-600 pl-1">+{task.subtasks.length - 3} more</div>}
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div className="p-6">
+                   <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                      {USERS.map(user => {
+                         const userTasks = projectTasks.filter(t => t.assigneeId === user.id);
+                         const percentage = projectTasks.length > 0 ? (userTasks.length / projectTasks.length) * 100 : 0;
+                         const isOverloaded = percentage > 40;
+
+                         return (
+                            <div key={user.id} className="group relative p-5 rounded-2xl border border-white/5 bg-black/20 hover:border-emerald-500/30 transition-all duration-300">
+                               <div className="flex flex-col items-center text-center gap-3">
+                                  <div className="relative">
+                                     <UserAvatar user={user} size="lg" showRing />
+                                     <div className={cn(
+                                        "absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-black flex items-center justify-center",
+                                        isOverloaded ? "bg-amber-500" : "bg-emerald-500"
+                                     )}>
+                                        {isOverloaded ? <Clock className="h-2 w-2 text-black" /> : <CheckCircle2 className="h-2 w-2 text-black" />}
+                                     </div>
+                                  </div>
+                                  <div>
+                                     <p className="text-[13px] font-semibold text-white group-hover:text-emerald-400 transition-colors">{user.name}</p>
+                                     <p className="text-[10px] text-neutral-500 font-mono uppercase tracking-widest mt-0.5">{user.role.split(' ')[0]}</p>
+                                  </div>
+                                  
+                                  <div className="w-full space-y-2 mt-2">
+                                     <div className="flex justify-between items-baseline">
+                                        <span className="text-[10px] font-mono text-neutral-600">ALLOCATION</span>
+                                        <span className={cn("text-xs font-bold", isOverloaded ? "text-amber-500" : "text-emerald-400")}>{Math.round(percentage)}%</span>
+                                     </div>
+                                     <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                                        <motion.div 
+                                           initial={{ width: 0 }}
+                                           animate={{ width: `${percentage}%` }}
+                                           className={cn("h-full rounded-full", isOverloaded ? "bg-amber-500" : "bg-emerald-400")}
+                                        />
+                                     </div>
+                                  </div>
+                                  
+                                  <div className="grid grid-cols-2 w-full gap-2 mt-1">
+                                     <div className="text-center p-1.5 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                                        <p className="text-[14px] font-mono text-white leading-none">{userTasks.length}</p>
+                                        <p className="text-[8px] text-neutral-600 uppercase mt-1">Tasks</p>
+                                     </div>
+                                     <div className="text-center p-1.5 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                                        <p className="text-[14px] font-mono text-white leading-none">{userTasks.filter(t => t.status === 'Done').length}</p>
+                                        <p className="text-[8px] text-neutral-600 uppercase mt-1">Done</p>
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         )
+                      })}
+                   </div>
                 </div>
               </motion.div>
             )}
