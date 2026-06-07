@@ -97,7 +97,7 @@ function ArticleSection() {
   return (
     <section className="px-5 py-24 md:py-32 bg-[#050505] border-y border-white/5 relative overflow-hidden">
       <Grain />
-      <div className="mx-auto max-w-4xl relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <Reveal>
           <span className="mb-6 block text-xs font-medium uppercase tracking-[0.3em] text-emerald-500/80 font-mono">
             Strategic Architecture
@@ -133,21 +133,21 @@ function ToolsGrid() {
     {
       id: "learning-engine",
       title: "The Learning Engine",
-      subtitle: "AI/Multi-agent Orchestration",
-      description: "A proprietary multi-agent layer that automates storyboarding, scripting, and localization (14+ languages). Transforms months of development into hours.",
+      subtitle: "The Future of Content Velocity",
+      description: "A proprietary multi-agent orchestration layer that automates storyboarding, scripting, and localization (14+ languages). Built with a **Human-in-the-Loop** philosophy, it transforms months of development into hours, delivering a robust first draft that empowers instructional designers to focus on creative refinement and strategic impact.",
       icon: Sparkles,
       colSpan: "lg:col-span-2",
       tags: ["Python", "OpenAI", "Multi-Agent"],
       status: "Production Ready",
     },
     {
-      id: "tna-auditor",
-      title: "TNA Auditor",
-      subtitle: "VBA/Excel Automation",
-      description: "Custom automated gap analysis that systematically identifies performance gaps and aligns curriculum with verified business needs.",
+      id: "performance-data",
+      title: "Automated Performance Data Collection",
+      subtitle: "Systematic Insight",
+      description: "Beyond Simple Training. A custom-engineered data collection engine that automates the acquisition of pre and post-intervention performance metrics. By transforming mundane VBA forms into a high-precision diagnostic suite, this tool provides L&D leaders with the quantitative data needed to prove ROI and drive continuous organizational improvement.",
       icon: FileSpreadsheet,
       colSpan: "lg:col-span-1",
-      tags: ["VBA", "Data Analysis"],
+      tags: ["VBA", "Performance Tracking", "ROI"],
       status: "Active",
     },
     {
