@@ -134,7 +134,13 @@ function ToolsGrid() {
       id: "learning-engine",
       title: "The Learning Engine",
       subtitle: "The Future of Content Velocity",
-      description: "A proprietary multi-agent orchestration layer that automates storyboarding, scripting, and localization (14+ languages). Built with a **Human-in-the-Loop** philosophy, it transforms months of development into hours, delivering a robust first draft that empowers instructional designers to focus on creative refinement and strategic impact.",
+      description: (
+        <span>
+          A proprietary multi-agent orchestration layer that automates storyboarding, scripting, and localization (14+ languages). 
+          Built with a <span className="font-bold text-white">Human-in-the-Loop</span> philosophy, it transforms months of development into hours, 
+          delivering a robust first draft that empowers instructional designers to focus on creative refinement and strategic impact.
+        </span>
+      ),
       icon: Sparkles,
       colSpan: "lg:col-span-2",
       tags: ["Python", "OpenAI", "Multi-Agent"],
