@@ -742,22 +742,38 @@ function SmePipelineDemo({ state, setState }: { state: SmeState; setState: (s: S
         >
           {state === "idle" && (
             <div className="h-full flex flex-col items-center justify-center text-center py-12">
-              <div className="mb-8 p-6 rounded-3xl bg-emerald-500/5 border border-emerald-500/10 relative">
-                <Brain className="h-16 w-16 text-emerald-400/50" />
-                <motion.div 
-                  className="absolute inset-0 border border-emerald-500/20 rounded-3xl"
-                  animate={{ scale: [1, 1.2, 1], opacity: [1, 0, 1] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                />
+              <div className="relative mb-8 group/file">
+                <div className="absolute -inset-4 bg-emerald-500/10 blur-xl rounded-full opacity-0 group-hover/file:opacity-100 transition-opacity" />
+                <div className="relative p-6 rounded-3xl bg-white/[0.03] border border-white/10 shadow-2xl">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-10 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400">
+                      <FileSpreadsheet className="h-6 w-6" />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-sm font-bold text-white mb-0.5">sme_brain_dump_v4.pdf</div>
+                      <div className="flex gap-3 text-[10px] text-neutral-500 font-mono uppercase tracking-tight">
+                        <span>1.8 MB</span>
+                        <span className="text-emerald-500/60">•</span>
+                        <span className="text-emerald-400 font-bold">Captured</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -bottom-2 -right-2 h-6 w-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg border-2 border-[#0a0a0a]">
+                  <CheckCircle2 className="h-3 w-3 text-black" />
+                </div>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Intake Ready: Raw SME Brain-Dump</h3>
-              <p className="text-neutral-500 text-sm max-w-sm mb-10 font-light">
-                Unstructured knowledge captured. Ready to deconstruct and engineer pedagogical flows.
+
+              <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">Expertise Captured & Verified</h3>
+              <p className="text-neutral-500 text-sm max-w-sm mb-10 font-light leading-relaxed">
+                Unstructured technical knowledge captured from SME session. Ready to deconstruct and engineer production-ready pedagogical flows.
               </p>
+              
               <button
                 onClick={() => setState("crystallizing")}
-                className="group relative px-8 py-4 rounded-full bg-emerald-500 text-black font-bold uppercase tracking-widest text-xs transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(16,185,129,0.3)]"
+                className="group relative px-10 py-4 rounded-full bg-emerald-500 text-black font-bold uppercase tracking-widest text-[10px] transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:shadow-[0_0_60px_rgba(16,185,129,0.5)] overflow-hidden"
               >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                 <span className="relative z-10 flex items-center gap-2">
                   Initiate SME-to-Content Pipeline <ArrowRight className="h-4 w-4" />
                 </span>
