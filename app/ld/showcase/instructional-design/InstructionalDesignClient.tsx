@@ -417,24 +417,45 @@ function CommandCenterSection() {
                   className="relative h-full flex flex-col"
                 >
                   {state === "idle" && (
-                    <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                      <div className="mb-8 p-4 rounded-3xl bg-emerald-500/5 border border-emerald-500/10">
-                        <FileSpreadsheet className="h-16 w-12 text-emerald-400/50" />
+                <div className="h-full flex flex-col items-center justify-center text-center py-12">
+                  <div className="relative mb-8 group/file">
+                    <div className="absolute -inset-4 bg-emerald-500/10 blur-xl rounded-full opacity-0 group-hover/file:opacity-100 transition-opacity" />
+                    <div className="relative p-6 rounded-3xl bg-white/[0.03] border border-white/10 shadow-2xl">
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-10 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400">
+                          <FileSpreadsheet className="h-6 w-6" />
+                        </div>
+                        <div className="text-left">
+                          <div className="text-sm font-bold text-white mb-0.5">performance_data_q2.xlsx</div>
+                          <div className="flex gap-3 text-[10px] text-neutral-500 font-mono uppercase tracking-tight">
+                            <span>2.4 MB</span>
+                            <span className="text-emerald-500/60">•</span>
+                            <span className="text-emerald-400 font-bold">Verified</span>
+                          </div>
+                        </div>
                       </div>
-                      <h3 className="text-2xl font-bold text-white mb-2">Batch Ready: Q2 Performance Data</h3>
-                      <p className="text-neutral-500 text-sm max-w-sm mb-10 font-light">
-                        Secure ingestion pipeline established. 4,200 data points across 12 regions awaiting audit.
-                      </p>
-                      <button
-                        onClick={() => setState("diagnostic")}
-                        className="group relative px-8 py-4 rounded-full bg-emerald-500 text-black font-bold uppercase tracking-widest text-xs transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:shadow-[0_0_60px_rgba(16,185,129,0.5)]"
-                      >
-                        <span className="relative z-10 flex items-center gap-2">
-                          Initiate Global Audit <ArrowRight className="h-4 w-4" />
-                        </span>
-                      </button>
                     </div>
-                  )}
+                    <div className="absolute -bottom-2 -right-2 h-6 w-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg border-2 border-[#0a0a0a]">
+                      <CheckCircle2 className="h-3 w-3 text-black" />
+                    </div>
+                  </div>
+
+                  <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">Dataset Loaded & Verified</h3>
+                  <p className="text-neutral-500 text-sm max-w-sm mb-10 font-light leading-relaxed">
+                    Secure ingestion pipeline established. 4,200 unique data signals across 12 global regions are ready for strategic audit.
+                  </p>
+                  
+                  <button
+                    onClick={() => setState("diagnostic")}
+                    className="group relative px-10 py-4 rounded-full bg-emerald-500 text-black font-bold uppercase tracking-widest text-[10px] transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:shadow-[0_0_60px_rgba(16,185,129,0.5)] overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                    <span className="relative z-10 flex items-center gap-2">
+                      Initiate Global Audit <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </button>
+                </div>
+              )}
 
                   {state === "diagnostic" && (
                     <div className="space-y-8 py-6">
