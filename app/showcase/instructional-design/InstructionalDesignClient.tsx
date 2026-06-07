@@ -24,6 +24,7 @@ import {
   Brain,
   Rocket,
   ArrowUpRight,
+  Hammer,
 } from "lucide-react";
 import { EASE, Reveal, useFontsReady, MagneticButton } from "../../components/ld/primitives";
 import { Grain } from "../../components/leading/visuals";
@@ -304,11 +305,20 @@ function EcosystemSection() {
 }
 
 /* ---------- 4. Performance-to-Pipeline Command Center ---------- */
+type CommandTab = "performance" | "sme";
 type CommandState = "idle" | "diagnostic" | "engineering" | "designing" | "complete";
+type SmeState = "idle" | "crystallizing" | "forging" | "validating" | "complete";
 
 function CommandCenterSection() {
+  const [activeTab, setActiveTab] = useState<CommandTab>("performance");
   const [state, setState] = useState<CommandState>("idle");
+  const [smeState, setSmeState] = useState<SmeState>("idle");
   const reduced = useReducedMotion();
+
+  const tabs: { id: CommandTab; label: string }[] = [
+    { id: "performance", label: "Performance-to-Pipeline" },
+    { id: "sme", label: "SME-to-Content Direct" },
+  ];
 
   const states: { id: CommandState; label: string; icon: any }[] = [
     { id: "idle", label: "0. Status", icon: Activity },
@@ -325,21 +335,43 @@ function CommandCenterSection() {
       </div>
 
       <div className="mx-auto max-w-6xl relative z-10">
-        <Reveal className="text-center mb-16">
+        <Reveal className="mb-16">
           <span className="mb-6 block text-xs font-medium uppercase tracking-[0.3em] text-emerald-500/80 font-mono">
             Command Center
           </span>
           <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl mb-6 leading-tight">
-            Performance-to-Pipeline <br />
-            <span className="text-emerald-400 italic font-serif">Command Center.</span>
+            Command Center
           </h2>
-          <p className="text-lg text-neutral-400 leading-relaxed font-light max-w-3xl mx-auto">
+          <p className="text-lg text-neutral-400 leading-relaxed font-light max-w-3xl">
             Industrializing human capability. Watch as raw performance data is vectorized, 
             diagnosed through Gilbert&apos;s BEM, and engineered into a strategic learning blueprint.
           </p>
         </Reveal>
 
-        <div className="grid lg:grid-cols-[1fr_2.5fr] gap-8 items-start">
+        {/* Tab Switcher */}
+        <div className="flex gap-1 p-1 bg-white/[0.02] border border-white/5 rounded-full mb-12 w-fit">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all relative ${
+                activeTab === tab.id ? "text-white" : "text-neutral-500 hover:text-neutral-300"
+              }`}
+            >
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="active-tab"
+                  className="absolute inset-0 bg-emerald-500/10 border border-emerald-500/20 rounded-full"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <span className="relative z-10">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {activeTab === "performance" ? (
+          <div className="grid lg:grid-cols-[1fr_2.5fr] gap-8 items-start">
           {/* Navigation */}
           <div className="flex flex-col gap-3">
             {states.map((s) => (
@@ -618,8 +650,263 @@ function CommandCenterSection() {
             </motion.div>
           </div>
         </div>
+        ) : (
+          <SmePipelineDemo state={smeState} setState={setSmeState} />
+        )}
       </div>
     </section>
+  );
+}
+
+/* ---------- 5. SME-to-Content Direct Pipeline ---------- */
+function SmePipelineDemo({ state, setState }: { state: SmeState; setState: (s: SmeState) => void }) {
+  const reduced = useReducedMotion();
+
+  const states: { id: SmeState; label: string; icon: any }[] = [
+    { id: "idle", label: "Intake", icon: Mail },
+    { id: "crystallizing", label: "Crystallizing", icon: Sparkles },
+    { id: "forging", label: "Forging", icon: Hammer },
+    { id: "validating", label: "Validating", icon: ShieldCheck },
+    { id: "complete", label: "Direct Export", icon: Rocket },
+  ];
+
+  return (
+    <div className="grid lg:grid-cols-[1fr_2.5fr] gap-8 items-start">
+      {/* Navigation */}
+      <div className="flex flex-col gap-3">
+        {states.map((s) => (
+          <button
+            key={s.id}
+            disabled={state !== s.id && state !== "complete"}
+            onClick={() => state === "complete" && setState(s.id)}
+            className={`flex items-center gap-4 p-5 rounded-2xl border transition-all duration-500 text-left relative overflow-hidden group ${
+              state === s.id
+                ? "bg-emerald-500/10 border-emerald-500/30 text-white shadow-[0_0_30px_rgba(16,185,129,0.15)]"
+                : "bg-white/[0.02] border-white/5 text-neutral-500 opacity-60"
+            }`}
+          >
+            {state === s.id && (
+              <motion.div 
+                layoutId="active-pill-sme"
+                className="absolute inset-0 bg-emerald-500/5"
+                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+              />
+            )}
+            <div className={`relative z-10 h-10 w-10 rounded-xl flex items-center justify-center transition-all duration-500 ${
+              state === s.id ? "bg-emerald-500 text-black scale-110 shadow-[0_0_20px_rgba(16,185,129,0.4)]" : "bg-white/5 text-neutral-500"
+            }`}>
+              <s.icon className="h-5 w-5" />
+            </div>
+            <span className="relative z-10 font-bold text-xs uppercase tracking-[0.2em]">{s.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Display Area */}
+      <div className="relative min-h-[500px] rounded-[2.5rem] border border-white/10 bg-[#0a0a0a] p-10 overflow-hidden shadow-2xl group/display">
+        <Grain />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent opacity-50" />
+        
+        <motion.div
+          key={state}
+          initial={reduced ? { opacity: 1 } : { opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          transition={{ duration: 0.5, ease: EASE }}
+          className="relative h-full flex flex-col"
+        >
+          {state === "idle" && (
+            <div className="h-full flex flex-col items-center justify-center text-center py-12">
+              <div className="mb-8 p-6 rounded-3xl bg-emerald-500/5 border border-emerald-500/10 relative">
+                <Brain className="h-16 w-16 text-emerald-400/50" />
+                <motion.div 
+                  className="absolute inset-0 border border-emerald-500/20 rounded-3xl"
+                  animate={{ scale: [1, 1.2, 1], opacity: [1, 0, 1] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Intake Ready: Raw SME Brain-Dump</h3>
+              <p className="text-neutral-500 text-sm max-w-sm mb-10 font-light">
+                Unstructured knowledge captured. Ready to deconstruct and engineer pedagogical flows.
+              </p>
+              <button
+                onClick={() => setState("crystallizing")}
+                className="group relative px-8 py-4 rounded-full bg-emerald-500 text-black font-bold uppercase tracking-widest text-xs transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(16,185,129,0.3)]"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  Initiate SME-to-Content Pipeline <ArrowRight className="h-4 w-4" />
+                </span>
+              </button>
+            </div>
+          )}
+
+          {state === "crystallizing" && (
+            <div className="space-y-8 py-6">
+              <div className="flex items-center gap-3 text-emerald-500 font-mono text-xs uppercase tracking-[0.3em]">
+                <Sparkles className="h-4 w-4 animate-pulse" />
+                Semantic Processing
+              </div>
+              <div className="relative p-6 rounded-2xl border border-white/5 bg-white/[0.02] font-mono text-sm leading-relaxed text-neutral-400">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="space-y-4"
+                >
+                  <p className="relative inline-block">
+                    &quot;The system requires high-voltage isolation before any manual overrides...&quot;
+                    <motion.div 
+                      className="absolute inset-0 bg-emerald-500/20"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: [0, 1, 1] }}
+                      transition={{ duration: 2, times: [0, 0.5, 1] }}
+                      style={{ originX: 0 }}
+                    />
+                  </p>
+                  <div className="grid grid-cols-1 gap-3 pt-6">
+                    {[
+                      { text: "Semantic Deconstruction", delay: 0 },
+                      { text: "Pedagogical Chunking", delay: 1 },
+                      { text: "Objective Alignment", delay: 2 },
+                    ].map((node, i) => (
+                      <motion.div
+                        key={node.text}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: node.delay + 0.5 }}
+                        className="flex items-center gap-3 text-[11px] uppercase tracking-wider text-emerald-400/70"
+                      >
+                        <div className="h-1 w-1 rounded-full bg-emerald-500" />
+                        {node.text}
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 3.5 }}
+                onClick={() => setState("forging")}
+                className="text-xs font-bold text-emerald-400 uppercase tracking-widest hover:text-emerald-300 transition-colors flex items-center gap-2"
+              >
+                Proceed to Forging <ArrowRight className="h-3 w-3" />
+              </motion.button>
+            </div>
+          )}
+
+          {state === "forging" && (
+            <div className="h-full flex flex-col">
+              <div className="grid grid-cols-2 gap-4 flex-grow">
+                <div className="p-6 rounded-2xl border border-white/5 bg-white/[0.01] flex flex-col">
+                  <span className="text-[10px] text-neutral-500 uppercase tracking-widest mb-4">Raw Ingest</span>
+                  <div className="space-y-2 font-mono text-[10px] text-neutral-600">
+                    <p>&quot;Isolation first. Check meters. Verify load. Safety protocol 42. Lockout-Tagout...&quot;</p>
+                  </div>
+                </div>
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="p-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex flex-col"
+                >
+                  <span className="text-[10px] text-emerald-500 uppercase tracking-widest mb-4 font-bold">Storyboard Table</span>
+                  <div className="space-y-3 font-mono text-[10px] text-emerald-400/80">
+                    <div className="border-b border-emerald-500/20 pb-2 flex justify-between">
+                      <span>Step 1: Prep</span>
+                      <span className="opacity-50">#ID-01</span>
+                    </div>
+                    <div className="border-b border-emerald-500/20 pb-2 flex justify-between">
+                      <span>Step 2: Verify</span>
+                      <span className="opacity-50">#ID-02</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Step 3: Execute</span>
+                      <span className="opacity-50">#ID-03</span>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.5 }}
+                onClick={() => setState("validating")}
+                className="mt-8 px-10 py-4 rounded-full bg-white text-black font-bold uppercase tracking-widest text-[10px] transition-all hover:scale-105"
+              >
+                Validate Pedagogy
+              </motion.button>
+            </div>
+          )}
+
+          {state === "validating" && (
+            <div className="h-full flex flex-col items-center justify-center text-center">
+              <div className="flex gap-4 mb-8">
+                {[1, 2, 3].map(i => (
+                  <motion.div
+                    key={i}
+                    animate={{ 
+                      boxShadow: ["0 0 0px rgba(16,185,129,0)", "0 0 20px rgba(16,185,129,0.3)", "0 0 0px rgba(16,185,129,0)"],
+                      borderColor: ["rgba(255,255,255,0.05)", "rgba(16,185,129,0.5)", "rgba(255,255,255,0.05)"]
+                    }}
+                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
+                    className="h-12 w-12 rounded-xl border flex items-center justify-center text-emerald-400"
+                  >
+                    <ShieldCheck className="h-6 w-6" />
+                  </motion.div>
+                ))}
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Human-in-the-Loop Validation</h3>
+              <p className="text-neutral-500 text-xs mb-10 font-light uppercase tracking-widest">
+                Automated QA complete. Manual pedagogical sign-off required.
+              </p>
+              <button
+                onClick={() => setState("complete")}
+                className="px-8 py-3 rounded-full bg-emerald-500 text-black font-bold uppercase tracking-widest text-[10px] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all"
+              >
+                Approve Pedagogy
+              </button>
+            </div>
+          )}
+
+          {state === "complete" && (
+            <div className="h-full flex flex-col py-2">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono uppercase tracking-widest mb-2 inline-block">
+                    Pipeline Output
+                  </div>
+                  <h3 className="text-2xl font-bold text-white tracking-tight">Direct Export Successful</h3>
+                </div>
+                <div className="text-right">
+                  <div className="text-[10px] text-neutral-500 uppercase tracking-[0.2em] mb-1">Asset Status</div>
+                  <div className="font-mono text-xs text-emerald-500/80">READY</div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-8 flex-grow">
+                {[
+                  { title: "Storyline Template", desc: "Production-ready .story file" },
+                  { title: "Markdown Base", desc: "Structured architectural docs" },
+                ].map((item) => (
+                  <div key={item.title} className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 flex flex-col justify-center items-center text-center group/item hover:bg-emerald-500/5 hover:border-emerald-500/20 transition-all">
+                    <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center text-emerald-500 mb-4 group-hover/item:scale-110 transition-transform">
+                      <Zap className="h-5 w-5" />
+                    </div>
+                    <div className="text-sm font-bold text-white mb-1">{item.title}</div>
+                    <div className="text-[10px] text-neutral-500 font-light">{item.desc}</div>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => setState("idle")}
+                className="mt-auto text-[10px] text-neutral-500 uppercase tracking-[0.3em] hover:text-emerald-400 transition-colors"
+              >
+                Reset Pipeline
+              </button>
+            </div>
+          )}
+        </motion.div>
+      </div>
+    </div>
   );
 }
 
