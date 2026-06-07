@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
@@ -303,12 +304,18 @@ function EcosystemSection() {
 }
 
 /* ---------- 4. Performance-to-Pipeline Command Center ---------- */
+type CommandState = "idle" | "diagnostic" | "engineering" | "designing" | "complete";
+
 function CommandCenterSection() {
-  const [step, setStep] = (require("react").useState)(0);
-  const steps = [
+  const [state, setState] = useState<CommandState>("idle");
+  const reduced = useReducedMotion();
+
+  const states: { id: CommandState; label: string; icon: any }[] = [
+    { id: "idle", label: "0. Status", icon: Activity },
     { id: "diagnostic", label: "1. Diagnostic", icon: Terminal },
     { id: "engineering", label: "2. Engineering", icon: Brain },
-    { id: "impact", label: "3. Impact", icon: Rocket },
+    { id: "designing", label: "3. Designing", icon: Layers },
+    { id: "complete", label: "4. Deployment", icon: Rocket },
   ];
 
   return (
@@ -320,158 +327,292 @@ function CommandCenterSection() {
       <div className="mx-auto max-w-6xl relative z-10">
         <Reveal className="text-center mb-16">
           <span className="mb-6 block text-xs font-medium uppercase tracking-[0.3em] text-emerald-500/80 font-mono">
-            Interactive Demo
+            Command Center
           </span>
-          <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl mb-6">
-            The Command Center: <br />
-            <span className="text-emerald-400 italic font-serif">Performance-to-Pipeline</span>
+          <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl mb-6 leading-tight">
+            Performance-to-Pipeline <br />
+            <span className="text-emerald-400 italic font-serif">Command Center.</span>
           </h2>
           <p className="text-lg text-neutral-400 leading-relaxed font-light max-w-3xl mx-auto">
-            A unified lifecycle engine that bridges the gap between organizational performance data and industrial-scale learning solutions. 
-            This tool moves L&D from a reactive &quot;order-taker&quot; model to a proactive engineering discipline.
+            Industrializing human capability. Watch as raw performance data is vectorized, 
+            diagnosed through Gilbert&apos;s BEM, and engineered into a strategic learning blueprint.
           </p>
         </Reveal>
 
-        <div className="grid lg:grid-cols-[1fr_2fr] gap-8 items-start">
+        <div className="grid lg:grid-cols-[1fr_2.5fr] gap-8 items-start">
           {/* Navigation */}
           <div className="flex flex-col gap-3">
-            {steps.map((s, i) => (
+            {states.map((s) => (
               <button
                 key={s.id}
-                onClick={() => setStep(i)}
-                className={`flex items-center gap-4 p-5 rounded-2xl border transition-all duration-300 text-left ${
-                  step === i
-                    ? "bg-emerald-500/10 border-emerald-500/30 text-white shadow-[0_0_20px_rgba(16,185,129,0.1)]"
-                    : "bg-white/[0.02] border-white/5 text-neutral-500 hover:border-white/10"
+                disabled={state !== s.id && state !== "complete"}
+                onClick={() => state === "complete" && setState(s.id)}
+                className={`flex items-center gap-4 p-5 rounded-2xl border transition-all duration-500 text-left relative overflow-hidden group ${
+                  state === s.id
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-white shadow-[0_0_30px_rgba(16,185,129,0.15)]"
+                    : "bg-white/[0.02] border-white/5 text-neutral-500 opacity-60"
                 }`}
               >
-                <div className={`h-10 w-10 rounded-xl flex items-center justify-center transition-colors ${
-                  step === i ? "bg-emerald-500 text-black" : "bg-white/5 text-neutral-500"
+                {state === s.id && (
+                  <motion.div 
+                    layoutId="active-pill"
+                    className="absolute inset-0 bg-emerald-500/5"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <div className={`relative z-10 h-10 w-10 rounded-xl flex items-center justify-center transition-all duration-500 ${
+                  state === s.id ? "bg-emerald-500 text-black scale-110 shadow-[0_0_20px_rgba(16,185,129,0.4)]" : "bg-white/5 text-neutral-500"
                 }`}>
                   <s.icon className="h-5 w-5" />
                 </div>
-                <span className="font-bold text-sm uppercase tracking-wider">{s.label}</span>
+                <span className="relative z-10 font-bold text-xs uppercase tracking-[0.2em]">{s.label}</span>
               </button>
             ))}
           </div>
 
           {/* Display Area */}
-          <div className="relative min-h-[450px] rounded-[2rem] border border-white/10 bg-[#0a0a0a] p-8 overflow-hidden shadow-2xl">
+          <div className="relative min-h-[500px] rounded-[2.5rem] border border-white/10 bg-[#0a0a0a] p-10 overflow-hidden shadow-2xl group/display">
             <Grain />
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-50" />
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent opacity-50" />
             
             <motion.div
-              key={step}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+              key={state}
+              initial={reduced ? { opacity: 1 } : { opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              transition={{ duration: 0.5, ease: EASE }}
               className="relative h-full flex flex-col"
             >
-              {step === 0 && (
-                <div className="font-mono text-xs sm:text-sm space-y-2">
-                  <div className="flex items-center gap-2 text-emerald-500 mb-4">
-                    <Activity className="h-4 w-4 animate-pulse" />
-                    <span className="uppercase tracking-widest font-bold">Live Data Ingestion</span>
+              {state === "idle" && (
+                <div className="h-full flex flex-col items-center justify-center text-center py-12">
+                  <div className="mb-8 p-4 rounded-3xl bg-emerald-500/5 border border-emerald-500/10">
+                    <FileSpreadsheet className="h-16 w-12 text-emerald-400/50" />
                   </div>
-                  <div className="space-y-1.5">
-                    <p className="text-neutral-500">[08:42:11] <span className="text-white">Analyzing Support Stream...</span></p>
-                    <p className="text-neutral-500">[08:42:15] <span className="text-emerald-400/80">Support Ticket #492: Technical logic error detected.</span></p>
-                    <p className="text-neutral-500">[08:42:19] <span className="text-red-400/80">Customer Sentiment: Negative on troubleshooting steps.</span></p>
-                    <p className="text-neutral-500">[08:42:24] <span className="text-white">Pattern Recognition: Recurring gap in advanced logic application.</span></p>
-                    <p className="text-neutral-500">[08:42:30] <span className="text-emerald-400">Diagnostic Complete. Skill deficiency mapped.</span></p>
-                  </div>
-                  <div className="mt-8 pt-8 border-t border-white/5">
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ width: 0 }} 
-                        animate={{ width: "100%" }} 
-                        transition={{ duration: 4, ease: "linear" }}
-                        className="h-full bg-emerald-500" 
-                      />
-                    </div>
-                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Batch Ready: Q2 Performance Data</h3>
+                  <p className="text-neutral-500 text-sm max-w-sm mb-10 font-light">
+                    Secure ingestion pipeline established. 4,200 data points across 12 regions awaiting audit.
+                  </p>
+                  <button
+                    onClick={() => setState("diagnostic")}
+                    className="group relative px-8 py-4 rounded-full bg-emerald-500 text-black font-bold uppercase tracking-widest text-xs transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:shadow-[0_0_60px_rgba(16,185,129,0.5)]"
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      Initiate Global Audit <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </button>
                 </div>
               )}
 
-              {step === 1 && (
-                <div className="flex flex-col items-center justify-center py-10">
-                  <div className="relative mb-12">
-                    <div className="absolute inset-0 bg-emerald-500/20 blur-3xl rounded-full animate-pulse" />
-                    <div className="relative h-24 w-24 rounded-3xl bg-[#030303] border border-emerald-500/30 flex items-center justify-center">
-                      <Brain className="h-12 w-12 text-emerald-400" />
-                    </div>
-                    {/* Glowing Nodes Simulation */}
-                    {[...Array(6)].map((_, i) => (
+              {state === "diagnostic" && (
+                <div className="space-y-8 py-6">
+                  <div className="flex items-center gap-3 text-emerald-500 font-mono text-xs uppercase tracking-[0.3em]">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    Live Diagnostic
+                  </div>
+                  <div className="space-y-4">
+                    {[
+                      { text: "Vectorizing Benchmarks", delay: 0 },
+                      { text: "Gilbert's BEM Analysis", delay: 0.8 },
+                      { text: "Root Cause: Skill Gap Identified", delay: 1.6, highlight: true },
+                    ].map((node, i) => (
                       <motion.div
-                        key={i}
-                        animate={{
-                          scale: [1, 1.2, 1],
-                          opacity: [0.3, 0.6, 0.3],
-                        }}
-                        transition={{
-                          duration: 3,
-                          repeat: Infinity,
-                          delay: i * 0.5,
-                        }}
-                        className="absolute h-2 w-2 bg-emerald-500 rounded-full blur-[2px]"
-                        style={{
-                          top: `${50 + 40 * Math.sin((i * 2 * Math.PI) / 6)}%`,
-                          left: `${50 + 40 * Math.cos((i * 2 * Math.PI) / 6)}%`,
-                        }}
-                      />
+                        key={node.text}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: node.delay, duration: 0.5 }}
+                        className={`p-5 rounded-2xl border flex items-center gap-4 transition-colors ${
+                          node.highlight 
+                            ? "bg-emerald-500/10 border-emerald-500/30 text-white" 
+                            : "bg-white/[0.03] border-white/5 text-neutral-400"
+                        }`}
+                      >
+                        <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${
+                          node.highlight ? "bg-emerald-500 text-black" : "bg-white/5"
+                        }`}>
+                          {i === 2 ? <CheckCircle2 className="h-4 w-4" /> : <div className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" />}
+                        </div>
+                        <span className="font-mono text-sm tracking-tight">{node.text}</span>
+                      </motion.div>
                     ))}
                   </div>
-                  <div className="text-center">
-                    <div className="text-emerald-400 font-mono text-sm uppercase tracking-widest mb-4">Solution Forge Active</div>
-                    <h4 className="text-2xl font-bold text-white mb-2">Architecting Modular Curriculum</h4>
-                    <p className="text-neutral-400 text-sm max-w-md mx-auto">
-                      AI identified a critical skill gap: <span className="text-white">Advanced Logic Application (Bloom Level 3)</span>. 
-                      Generating optimized pedagogical nodes.
-                    </p>
-                  </div>
+                  <motion.div 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    transition={{ delay: 2.2 }}
+                    className="pt-6"
+                  >
+                    <button
+                      onClick={() => setState("engineering")}
+                      className="text-xs font-bold text-emerald-400 uppercase tracking-widest hover:text-emerald-300 transition-colors flex items-center gap-2"
+                    >
+                      Process to Engineering <ArrowRight className="h-3 w-3" />
+                    </button>
+                  </motion.div>
                 </div>
               )}
 
-              {step === 2 && (
-                <div className="space-y-6">
-                  <div className="flex justify-between items-center">
-                    <div className="px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono uppercase tracking-widest">
-                      Solution Blueprint Generated
-                    </div>
-                    <div className="flex items-center gap-2 text-emerald-400 font-bold">
-                      <span className="text-2xl">$124K</span>
-                      <span className="text-[10px] uppercase tracking-wider text-neutral-500">Projected Monthly ROI</span>
+              {state === "engineering" && (
+                <div className="h-full flex flex-col items-center justify-center py-10 relative">
+                  <div className="relative w-64 h-64 mb-12">
+                    {/* Radar Circles */}
+                    {[...Array(3)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute inset-0 border border-emerald-500/20 rounded-full"
+                        animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.6 }}
+                      />
+                    ))}
+                    {/* Rotating Scan Line */}
+                    <motion.div
+                      className="absolute top-1/2 left-1/2 w-32 h-[1px] bg-gradient-to-r from-transparent to-emerald-500 origin-left"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    />
+                    {/* Found Node */}
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 1.5, type: "spring" }}
+                      className="absolute top-1/4 right-1/4"
+                    >
+                      <div className="relative group/node">
+                        <div className="absolute -inset-4 bg-emerald-500/20 blur-xl rounded-full animate-pulse" />
+                        <div className="relative h-4 w-4 bg-emerald-500 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.8)]" />
+                        <div className="absolute top-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 bg-[#1a1a1a] border border-emerald-500/30 rounded-lg text-[10px] font-mono text-emerald-400 uppercase tracking-widest">
+                          Solution: Logic Application Simulation
+                        </div>
+                      </div>
+                    </motion.div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Brain className="h-10 w-10 text-emerald-500/30" />
                     </div>
                   </div>
-                  
-                  <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-100 transition-opacity">
-                      <ArrowUpRight className="h-5 w-5 text-emerald-400" />
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 2 }}
+                    onClick={() => setState("designing")}
+                    className="px-6 py-2.5 rounded-full border border-emerald-500/50 text-emerald-400 text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-500/10 transition-all"
+                  >
+                    Begin Architectural Design
+                  </motion.button>
+                </div>
+              )}
+
+              {state === "designing" && (
+                <div className="space-y-10 py-4">
+                  <div className="grid grid-cols-2 gap-8">
+                    <div className="space-y-6">
+                      <div className="text-emerald-500/60 font-mono text-[10px] uppercase tracking-[0.4em]">Drafting Pipeline</div>
+                      <div className="space-y-4">
+                        {[
+                          { label: "Objectives", val: "Industrial Logic Mastery" },
+                          { label: "Assessments", val: "Scenario-based simulation" },
+                          { label: "Scripting", val: "Multilingual logic-branching" },
+                        ].map((item, i) => (
+                          <div key={item.label} className="relative">
+                            <div className="text-[10px] text-neutral-500 uppercase tracking-widest mb-1">{item.label}</div>
+                            <div className="text-sm font-mono text-white flex">
+                              <motion.span
+                                initial={{ width: 0 }}
+                                animate={{ width: "100%" }}
+                                transition={{ duration: 1, delay: i * 0.8 }}
+                                className="overflow-hidden whitespace-nowrap border-r-2 border-emerald-500"
+                              >
+                                {item.val}
+                              </motion.span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <h5 className="text-lg font-bold text-white mb-4">Curriculum: LogicMaster v2.0</h5>
-                    <div className="grid grid-cols-2 gap-4">
-                      {[
-                        { label: "Modality", val: "Adaptive Learning" },
-                        { label: "Duration", val: "4.5 Hours" },
-                        { label: "Target", val: "L3 Logic Mastery" },
-                        { label: "Delivery", val: "In-Work AI Assist" },
-                      ].map((stat, i) => (
-                        <div key={i} className="space-y-1">
-                          <div className="text-[10px] text-neutral-500 uppercase tracking-widest">{stat.label}</div>
-                          <div className="text-sm font-medium text-emerald-100/90">{stat.val}</div>
-                        </div>
-                      ))}
+                    <div className="relative rounded-2xl border border-white/5 bg-white/[0.01] overflow-hidden p-6 flex items-center justify-center">
+                      <div className="absolute inset-0 grid grid-cols-6 grid-rows-6 opacity-10">
+                        {[...Array(36)].map((_, i) => (
+                          <div key={i} className="border-[0.5px] border-emerald-500" />
+                        ))}
+                      </div>
+                      <Layers className="h-16 w-16 text-emerald-500/20" />
+                      <motion.div
+                        className="absolute inset-0 bg-emerald-500/5"
+                        animate={{ top: ["0%", "100%", "0%"] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                      />
+                    </div>
+                  </div>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 2.8 }}
+                    className="flex justify-center"
+                  >
+                    <button
+                      onClick={() => setState("complete")}
+                      className="px-10 py-4 rounded-full bg-white text-black font-bold uppercase tracking-widest text-[10px] transition-all hover:scale-105"
+                    >
+                      Finalize & Deploy Blueprint
+                    </button>
+                  </motion.div>
+                </div>
+              )}
+
+              {state === "complete" && (
+                <div className="h-full flex flex-col py-2">
+                  <div className="flex justify-between items-start mb-8">
+                    <div>
+                      <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono uppercase tracking-widest mb-2 inline-block">
+                        Deployment Ready
+                      </div>
+                      <h3 className="text-2xl font-bold text-white tracking-tight">Strategic Learning Blueprint</h3>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] text-neutral-500 uppercase tracking-[0.2em] mb-1">Pipeline ID</div>
+                      <div className="font-mono text-xs text-emerald-500/80">#LD-PR-2024-042</div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3">
-                    {["Object A", "Object B", "Object C"].map((obj, i) => (
-                      <div key={i} className="p-4 rounded-xl border border-white/5 bg-white/[0.01] flex flex-col items-center justify-center text-center">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500/50 mb-2" />
-                        <span className="text-[10px] font-bold text-neutral-400 uppercase">{obj}</span>
+                  <div className="grid grid-cols-3 gap-4 mb-8">
+                    {[
+                      { label: "Target ROI", val: "142%", sub: "Quarterly Projection" },
+                      { label: "Throughput", val: "12k", sub: "Learners / Month" },
+                      { label: "Logic Score", val: "94/100", sub: "Simulation Grade" },
+                    ].map((stat) => (
+                      <div key={stat.label} className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                        <div className="text-[9px] text-neutral-500 uppercase tracking-widest mb-1">{stat.label}</div>
+                        <div className="text-xl font-bold text-emerald-400">{stat.val}</div>
+                        <div className="text-[9px] text-neutral-600 mt-1">{stat.sub}</div>
                       </div>
                     ))}
                   </div>
+
+                  <div className="flex-grow p-6 rounded-3xl bg-emerald-500 text-[#062a1d] relative overflow-hidden group/card shadow-[0_20px_50px_rgba(16,185,129,0.2)]">
+                    <div className="absolute top-0 right-0 p-6">
+                      <Rocket className="h-12 w-12 opacity-20 group-hover/card:translate-x-1 group-hover/card:-translate-y-1 transition-transform" />
+                    </div>
+                    <div className="relative z-10">
+                      <div className="text-[10px] font-bold uppercase tracking-widest mb-2 opacity-60">Impact Summary</div>
+                      <p className="text-lg font-bold leading-tight mb-4">
+                        Industrialized training infrastructure deployed to 12 global markets.
+                      </p>
+                      <ul className="space-y-2">
+                        {["Automated Localized Scripting", "Real-time Skill Gap Tracking", "ROI-Driven Feedback Loop"].map((item) => (
+                          <li key={item} className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider">
+                            <CheckCircle2 className="h-3 w-3" /> {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => setState("idle")}
+                    className="mt-6 text-[10px] text-neutral-500 uppercase tracking-[0.3em] hover:text-emerald-400 transition-colors"
+                  >
+                    Reset System Simulation
+                  </button>
                 </div>
               )}
             </motion.div>
@@ -481,6 +622,7 @@ function CommandCenterSection() {
     </section>
   );
 }
+
 
 /* ---------- Final CTA ---------- */
 function Contact() {
