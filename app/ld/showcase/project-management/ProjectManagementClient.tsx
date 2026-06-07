@@ -1822,8 +1822,11 @@ export function ProjectManagementClient() {
         brandHref="/ld/showcase"
         suffix="Enterprise Project Hub"
         accent="emerald"
-        links={[]}
-        cta={{ label: "Back to Portfolio", href: "/" }}
+        links={[
+          { label: "Showcase", href: "/ld/showcase" },
+          { label: "L&D Portfolio", href: "/ld" },
+        ]}
+        cta={{ label: "Get in touch", href: "mailto:not.jitin@gmail.com" }}
       />
 
       <div className="flex-1 pt-24 pb-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
