@@ -16,6 +16,9 @@ import {
   SkillsTaxonomyInfographic,
   ForgettingCurveInfographic,
   OperatingModelInfographic,
+  OnboardingVelocityInfographic,
+  AiFluencyInfographic,
+  ContentHalfLifeInfographic,
 } from "../../components/ShowcaseInfographics";
 
 const EMAIL = "mailto:not.jitin@gmail.com";
@@ -28,6 +31,9 @@ const INFOGRAPHICS: Record<string, () => JSX.Element> = {
   "<SkillsTaxonomyInfographic />": SkillsTaxonomyInfographic,
   "<ForgettingCurveInfographic />": ForgettingCurveInfographic,
   "<OperatingModelInfographic />": OperatingModelInfographic,
+  "<OnboardingVelocityInfographic />": OnboardingVelocityInfographic,
+  "<AiFluencyInfographic />": AiFluencyInfographic,
+  "<ContentHalfLifeInfographic />": ContentHalfLifeInfographic,
 };
 
 function fmtDate(d: string) {

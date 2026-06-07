@@ -560,6 +560,293 @@ export function OperatingModelInfographic() {
   );
 }
 
+/* =========================================================
+   7 · Onboarding Velocity — ramp curve + productivity debt
+   ========================================================= */
+export function OnboardingVelocityInfographic() {
+  const reduced = useReducedMotion();
+
+  const phases = [
+    { label: "Orientation", weeks: "0–4 wks", color: "text-neutral-500", bar: "bg-neutral-700" },
+    { label: "Integration", weeks: "4–16 wks", color: "text-amber-400", bar: "bg-amber-500/50" },
+    { label: "Performance", weeks: "16–36 wks", color: "text-emerald-400", bar: "bg-emerald-500" },
+  ];
+
+  const costs = [
+    { role: "Individual Contributor", months: "3–5 mo", cost: "~$30K" },
+    { role: "Senior / Specialist", months: "6–9 mo", cost: "~$65K" },
+    { role: "Manager / Leader", months: "9–12 mo", cost: "~$120K" },
+  ];
+
+  return (
+    <div className="my-12 rounded-3xl border border-white/[0.08] bg-white/[0.02] p-7 sm:p-9 relative overflow-hidden">
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.04] via-transparent to-emerald-500/[0.04] pointer-events-none" />
+      <div className="relative">
+        <h4 className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-emerald-400 mb-2">
+          The Ramp Curve · Time-to-Full-Productivity
+        </h4>
+        <p className="text-[11px] text-neutral-600 mb-7">Each day below 100% is productivity debt accruing on your P&L.</p>
+
+        {/* Ramp SVG */}
+        <div className="relative w-full mb-8">
+          <svg viewBox="0 0 100 60" className="w-full h-auto" preserveAspectRatio="none" style={{ maxHeight: 180 }}>
+            {/* grid lines */}
+            {[15, 30, 45, 60, 75].map(y => (
+              <line key={y} x1="6" y1={y * 0.6} x2="96" y2={y * 0.6} stroke="rgba(255,255,255,0.05)" strokeWidth="0.3" />
+            ))}
+            <line x1="6" y1="2" x2="96" y2="2" stroke="rgba(16,185,129,0.2)" strokeWidth="0.4" strokeDasharray="2 1.5" />
+
+            {/* productivity debt fill */}
+            <motion.path
+              d="M6,55 C14,52 22,44 34,30 C46,18 60,8 80,4 L80,2 L96,2 L96,55 Z"
+              fill="rgba(245,158,11,0.06)"
+              initial={reduced ? false : { opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            />
+
+            {/* ramp curve */}
+            <motion.path
+              d="M6,55 C14,52 22,44 34,30 C46,18 60,8 80,4 C88,3 92,2.4 96,2.2"
+              fill="none"
+              stroke="rgb(52,211,153)"
+              strokeWidth="1.3"
+              initial={reduced ? false : { pathLength: 0 }}
+              whileInView={{ pathLength: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.5, ease: EASE }}
+            />
+
+            {/* 100% label */}
+            <text x="97" y="3" fontSize="3" fill="rgba(16,185,129,0.6)" textAnchor="end">100%</text>
+            <text x="97" y="57" fontSize="3" fill="rgba(255,255,255,0.2)" textAnchor="end">0%</text>
+
+            {/* phase dividers */}
+            <line x1="28" y1="2" x2="28" y2="57" stroke="rgba(255,255,255,0.06)" strokeWidth="0.3" strokeDasharray="1 1" />
+            <line x1="58" y1="2" x2="58" y2="57" stroke="rgba(255,255,255,0.06)" strokeWidth="0.3" strokeDasharray="1 1" />
+
+            {/* debt annotation */}
+            <text x="52" y="24" fontSize="3" fill="rgba(245,158,11,0.5)" textAnchor="middle">productivity debt</text>
+          </svg>
+        </div>
+
+        {/* Phase strip */}
+        <div className="grid grid-cols-3 gap-3 mb-8">
+          {phases.map((p, i) => (
+            <motion.div
+              key={p.label}
+              initial={reduced ? false : { opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
+              className="rounded-2xl border border-white/[0.07] bg-white/[0.02] px-3 py-3 text-center"
+            >
+              <div className={`text-[10px] font-mono font-bold uppercase tracking-widest ${p.color} mb-1`}>{p.label}</div>
+              <div className="text-[11px] text-neutral-500">{p.weeks}</div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Cost table */}
+        <h5 className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-neutral-500 mb-3">Estimated Ramp Cost · by Role</h5>
+        <div className="space-y-2.5">
+          {costs.map((c, i) => (
+            <motion.div
+              key={c.role}
+              initial={reduced ? false : { opacity: 0, x: -8 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.5 + i * 0.1 }}
+              className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-2.5"
+            >
+              <span className="text-[12px] text-neutral-300">{c.role}</span>
+              <div className="flex items-center gap-4 text-[11px]">
+                <span className="font-mono text-amber-400">{c.months}</span>
+                <span className="font-mono font-bold text-white">{c.cost}</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        <p className="mt-3 text-[10px] text-neutral-600">Cost estimate = salary + overhead × ramp duration × (1 – avg. productivity during ramp).</p>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   8 · AI Fluency Spectrum — 4-level org capability ladder
+   ========================================================= */
+export function AiFluencyInfographic() {
+  const reduced = useReducedMotion();
+
+  const levels = [
+    {
+      n: "01",
+      title: "Tool User",
+      desc: "Knows AI exists and uses consumer-facing tools ad hoc. No workflow integration.",
+      pct: 58,
+      color: "text-neutral-400",
+      bar: "bg-neutral-600",
+      ring: "border-neutral-700",
+    },
+    {
+      n: "02",
+      title: "Workflow Integrator",
+      desc: "Embeds AI into recurring tasks — writing, summarising, research — with intentional prompting.",
+      pct: 28,
+      color: "text-sky-400",
+      bar: "bg-sky-500",
+      ring: "border-sky-500/30",
+    },
+    {
+      n: "03",
+      title: "Prompt Architect",
+      desc: "Designs multi-step prompts, chains tools, and builds reusable AI-assisted workflows for the team.",
+      pct: 11,
+      color: "text-violet-400",
+      bar: "bg-violet-500",
+      ring: "border-violet-500/30",
+    },
+    {
+      n: "04",
+      title: "Strategic Orchestrator",
+      desc: "Deploys agents, evaluates model trade-offs, and aligns AI capability to business outcomes.",
+      pct: 3,
+      color: "text-emerald-400",
+      bar: "bg-emerald-500",
+      ring: "border-emerald-500/30",
+    },
+  ];
+
+  return (
+    <div className="my-12 rounded-3xl border border-white/[0.08] bg-white/[0.02] p-7 sm:p-9 relative overflow-hidden">
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.04] via-transparent to-emerald-500/[0.05] pointer-events-none" />
+      <div className="relative">
+        <h4 className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-emerald-400 mb-2">
+          AI Fluency Spectrum · Where Your Workforce Sits Today
+        </h4>
+        <p className="text-[11px] text-neutral-600 mb-7">Estimated distribution across a typical knowledge-work enterprise in 2026.</p>
+
+        <div className="space-y-4">
+          {levels.map((l, i) => (
+            <motion.div
+              key={l.n}
+              initial={reduced ? false : { opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: i * 0.1, ease: EASE }}
+              className={`rounded-2xl border ${l.ring} bg-white/[0.02] p-4 sm:p-5`}
+            >
+              <div className="flex items-start justify-between gap-4 mb-3">
+                <div className="flex items-center gap-3">
+                  <span className={`font-mono text-xs font-bold ${l.color}`}>{l.n}</span>
+                  <span className={`text-sm font-semibold ${l.color}`}>{l.title}</span>
+                </div>
+                <span className={`font-mono text-sm font-bold ${l.color} shrink-0`}>{l.pct}%</span>
+              </div>
+              <p className="text-[12px] text-neutral-500 leading-relaxed mb-3">{l.desc}</p>
+              <div className="h-1.5 w-full bg-white/[0.04] rounded-full overflow-hidden">
+                <motion.div
+                  className={`h-full rounded-full ${l.bar}`}
+                  initial={reduced ? false : { width: 0 }}
+                  whileInView={{ width: `${l.pct}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: 0.3 + i * 0.1, ease: EASE }}
+                />
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <p className="mt-5 text-[10px] text-neutral-600">
+          Benchmark distribution based on Upwork Future Workforce Index 2026 and Korn Ferry AI Skills Research.
+          Individual organizations vary significantly based on prior investment.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   9 · Content Half-Life — decay rates by content type
+   ========================================================= */
+export function ContentHalfLifeInfographic() {
+  const reduced = useReducedMotion();
+
+  const types = [
+    { label: "Regulatory & Compliance", half: "24–36 mo", pct: 85, color: "bg-emerald-500" },
+    { label: "Product & Tool Knowledge", half: "6–12 mo", pct: 38, color: "bg-sky-500" },
+    { label: "Process & Workflow", half: "8–14 mo", pct: 45, color: "bg-violet-500" },
+    { label: "Technical / AI Skills", half: "3–6 mo", pct: 20, color: "bg-amber-500" },
+    { label: "Market & Competitive Intel", half: "1–3 mo", pct: 8, color: "bg-red-500" },
+  ];
+
+  const strategies = [
+    { icon: "⚡", label: "Atomic units", desc: "Small, independent chunks can be swapped without rebuilding the whole." },
+    { icon: "🔁", label: "Decay schedules", desc: "Every asset tagged with a review trigger, not a calendar date." },
+    { icon: "🤖", label: "AI-assisted refresh", desc: "LLMs flag stale content and draft updates for SME sign-off." },
+    { icon: "📊", label: "Usage signals", desc: "Drop-off and low-rating triggers auto-surface decay before SMEs notice." },
+  ];
+
+  return (
+    <div className="my-12 rounded-3xl border border-white/[0.08] bg-white/[0.02] p-7 sm:p-9 relative overflow-hidden">
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-red-500/[0.03] via-transparent to-emerald-500/[0.04] pointer-events-none" />
+      <div className="relative">
+        <h4 className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-emerald-400 mb-2">
+          Content Half-Life · by Type
+        </h4>
+        <p className="text-[11px] text-neutral-600 mb-7">How long before 50% of the content in each category is materially outdated.</p>
+
+        <div className="space-y-3 mb-10">
+          {types.map((t, i) => (
+            <motion.div
+              key={t.label}
+              initial={reduced ? false : { opacity: 0, y: 6 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.09, ease: EASE }}
+              className="flex items-center gap-3"
+            >
+              <span className="w-44 text-[11px] text-neutral-400 shrink-0">{t.label}</span>
+              <div className="flex-1 h-2 bg-white/[0.04] rounded-full overflow-hidden">
+                <motion.div
+                  className={`h-full rounded-full ${t.color}`}
+                  initial={reduced ? false : { width: 0 }}
+                  whileInView={{ width: `${t.pct}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: 0.2 + i * 0.09, ease: EASE }}
+                />
+              </div>
+              <span className="font-mono text-[10px] text-neutral-500 w-20 text-right shrink-0">{t.half}</span>
+            </motion.div>
+          ))}
+        </div>
+
+        <h5 className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-neutral-500 mb-4">Evergreen Architecture · Four Mechanisms</h5>
+        <div className="grid sm:grid-cols-2 gap-3">
+          {strategies.map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={reduced ? false : { opacity: 0, scale: 0.97 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: 0.4 + i * 0.08 }}
+              className="flex items-start gap-3 rounded-xl border border-white/[0.07] bg-white/[0.02] px-4 py-3"
+            >
+              <span className="text-base shrink-0 mt-0.5">{s.icon}</span>
+              <div>
+                <div className="text-[12px] font-semibold text-white mb-0.5">{s.label}</div>
+                <div className="text-[11px] text-neutral-500 leading-relaxed">{s.desc}</div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* Lucide icon map for cards (keyed by ShowcaseInsight.icon) */
 export const SHOWCASE_ICON_MAP = {
   BarChart3,
