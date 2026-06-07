@@ -38,7 +38,7 @@ const PROOF = [
 
 const TRACKS = [
   {
-    href: "/AI-Systems-Architecture-Portfolio",
+    href: "/ai",
     icon: Cpu,
     title: "AI Systems Architecture",
     what: "Multi-agent orchestration in production. 200+ agents on LangGraph, MCP, and RAG.",
@@ -47,7 +47,7 @@ const TRACKS = [
     glow: "hover:shadow-[0_0_36px_-10px_rgba(34,211,238,0.55)]",
   },
   {
-    href: "/LD-Systems-Portfolio",
+    href: "/ld",
     icon: GraduationCap,
     title: "Learning & Development Systems",
     what: "Adult learning design, proven at scale. 90%+ completion, 70% faster delivery.",

@@ -14,13 +14,13 @@ const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 function Nav({ title }: { title: string }) {
   return (
     <FloatingNav
-      brandHref="/showcase"
+      brandHref="/ld/showcase"
       suffix={title}
       accent="emerald"
       links={[
-        { label: "Showcase", href: "/showcase" },
-        { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-        { label: "Experience", href: "/work" },
+        { label: "Showcase", href: "/ld/showcase" },
+        { label: "L&D Portfolio", href: "/ld" },
+        { label: "Experience", href: "/ld/work" },
         { label: "Contact", href: "#contact" },
       ]}
       cta={{ label: "Get in touch", href: EMAIL }}
@@ -43,7 +43,7 @@ function Hero({ title, description }: { title: string; description: string }) {
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <Link
-            href="/showcase"
+            href="/ld/showcase"
             className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
           >
             <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2} />
@@ -100,7 +100,7 @@ function PlaceholderContent() {
             I am currently documenting the methodology, architectural diagrams, and tool demos for this phase of the L&D lifecycle.
           </p>
           <div className="mt-12 flex gap-4">
-            <MagneticButton href="/showcase" variant="ghost">
+            <MagneticButton href="/ld/showcase" variant="ghost">
               Back to Showcase
             </MagneticButton>
             <MagneticButton href="#contact" variant="primary">

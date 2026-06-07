@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "What Jitin Nair brings to L&D leadership: six capability domains across learning science and AI, each proven by a real result. AI-native learning design, instructional design, video-based learning, learning analytics, microlearning, and automation, backed by a full skill matrix.",
   alternates: {
-    canonical: "https://jitinnair.com/capabilities",
+    canonical: "https://jitinnair.com/ld/capabilities",
   },
 };
 

@@ -53,12 +53,12 @@ function StaggerGroup({ children, className }: { children: ReactNode; className?
 function Nav() {
   return (
     <FloatingNav
-      brandHref="/LD-Systems-Portfolio"
+      brandHref="/ld"
       suffix="Experience"
       accent="emerald"
       links={[
-        { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-        { label: "AI Systems", href: "/AI-Systems-Architecture-Portfolio" },
+        { label: "L&D Portfolio", href: "/ld" },
+        { label: "AI Systems", href: "/ai" },
         { label: "Contact", href: "#contact" },
       ]}
       cta={{ label: "Get in touch", href: EMAIL }}
@@ -91,7 +91,7 @@ function Hero() {
           transition={{ duration: 0.5, ease: EASE }}
         >
           <Link
-            href="/LD-Systems-Portfolio"
+            href="/ld"
             className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
           >
             <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2} />
@@ -539,17 +539,17 @@ function WorkFooter() {
             <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white">Portfolio</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/LD-Systems-Portfolio" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
+                <Link href="/ld" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
                   L&amp;D Portfolio
                 </Link>
               </li>
               <li>
-                <Link href="/AI-Systems-Architecture-Portfolio" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
+                <Link href="/ai" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
                   AI Systems Portfolio
                 </Link>
               </li>
               <li>
-                <Link href="/insights" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
+                <Link href="/ai/insights" className="text-sm text-slate-400 transition-colors hover:text-emerald-400">
                   Insights
                 </Link>
               </li>

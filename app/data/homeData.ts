@@ -44,7 +44,7 @@ export const projectsData = [
         ],
         githubUrl: "https://github.com/jitinnair1",
         liveUrl: undefined,
-        learnMoreUrl: "/projects/predator",
+        learnMoreUrl: "/ai/projects/predator",
       },
       {
         name: "AI Agency Ops",
@@ -162,7 +162,7 @@ export const projectsData = [
         ],
         githubUrl: undefined,
         liveUrl: "https://smartslate.io",
-        learnMoreUrl: "/projects/smartslate",
+        learnMoreUrl: "/ai/projects/smartslate",
       },
       {
         name: "RevOS",

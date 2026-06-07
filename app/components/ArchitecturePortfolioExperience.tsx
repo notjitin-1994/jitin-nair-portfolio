@@ -49,7 +49,7 @@ function ProjectsDropdown() {
             {projectsData.map((p) => (
               <Link
                 key={p.id}
-                href={`/projects/${p.id}`}
+                href={`/ai/projects/${p.id}`}
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-neutral-400 transition-colors hover:bg-white/[0.06] hover:text-white"
               >
@@ -69,7 +69,7 @@ function ProjectsDropdown() {
 const AI_MOBILE_LINKS = [
   { label: "Projects", href: "#projects" },
   { label: "Tech Stack", href: "#techstack" },
-  { label: "Insights", href: "/insights" },
+  { label: "Insights", href: "/ai/insights" },
 ];
 
 function NavAI() {
@@ -97,7 +97,7 @@ function NavAI() {
             <a href="#techstack" className="text-sm text-neutral-400 transition-colors hover:text-white">
               Tech Stack
             </a>
-            <Link href="/insights" className="text-sm text-neutral-400 transition-colors hover:text-white">
+            <Link href="/ai/insights" className="text-sm text-neutral-400 transition-colors hover:text-white">
               Insights
             </Link>
           </div>

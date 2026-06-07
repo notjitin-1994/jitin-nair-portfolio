@@ -29,7 +29,7 @@ const SHOWCASE_ITEMS = [
     title: "Leadership Case Studies",
     description: "Proven leadership outcomes and measurable business impact.",
     icon: LineChart,
-    href: "/showcase/case-studies",
+    href: "/ld/showcase/case-studies",
     imageUrl: "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&q=80&w=800",
     featured: true,
   },
@@ -38,7 +38,7 @@ const SHOWCASE_ITEMS = [
     title: "Project Discovery & Planning",
     description: "Automated stakeholder discovery and strategic curriculum mapping.",
     icon: Target,
-    href: "/showcase/project-discovery-planning",
+    href: "/ld/showcase/project-discovery-planning",
     imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
   },
   {
@@ -46,7 +46,7 @@ const SHOWCASE_ITEMS = [
     title: "Project Management",
     description: "Driving complex learning initiatives from kick-off to delivery.",
     icon: UsersRound,
-    href: "/showcase/project-management",
+    href: "/ld/showcase/project-management",
     imageUrl: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=800",
   },
   {
@@ -54,7 +54,7 @@ const SHOWCASE_ITEMS = [
     title: "Instructional Design",
     description: "Cognitive-first architectures built on learning science.",
     icon: GraduationCap,
-    href: "/showcase/instructional-design",
+    href: "/ld/showcase/instructional-design",
     imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=800",
   },
   {
@@ -62,7 +62,7 @@ const SHOWCASE_ITEMS = [
     title: "Content Development",
     description: "High-fidelity video and automated production pipelines.",
     icon: Video,
-    href: "/showcase/content-development",
+    href: "/ld/showcase/content-development",
     imageUrl: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=800",
   },
   {
@@ -70,7 +70,7 @@ const SHOWCASE_ITEMS = [
     title: "Insights",
     description: "Data-driven analytics and performance measurement systems.",
     icon: Rocket,
-    href: "/showcase/insights",
+    href: "/ld/showcase/insights",
     imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
   },
 ];
@@ -79,13 +79,13 @@ const SHOWCASE_ITEMS = [
 function Nav() {
   return (
     <FloatingNav
-      brandHref="/LD-Systems-Portfolio"
+      brandHref="/ld"
       suffix="Showcase"
       accent="emerald"
       links={[
-        { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-        { label: "Case Studies", href: "/showcase/case-studies" },
-        { label: "Experience", href: "/work" },
+        { label: "L&D Portfolio", href: "/ld" },
+        { label: "Case Studies", href: "/ld/showcase/case-studies" },
+        { label: "Experience", href: "/ld/work" },
         { label: "Contact", href: "#contact" },
       ]}
       cta={{ label: "Get in touch", href: EMAIL }}
@@ -108,7 +108,7 @@ function Hero() {
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <Link
-            href="/LD-Systems-Portfolio"
+            href="/ld"
             className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
           >
             <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2} />

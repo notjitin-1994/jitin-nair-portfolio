@@ -1819,7 +1819,7 @@ export function ProjectManagementClient() {
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-slate-100 selection:bg-emerald-500/30 flex flex-col font-sans overflow-x-hidden">
       <FloatingNav
-        brandHref="/showcase"
+        brandHref="/ld/showcase"
         suffix="Enterprise Project Hub"
         accent="emerald"
         links={[]}
@@ -1831,7 +1831,7 @@ export function ProjectManagementClient() {
         {/* Back to Showcase */}
         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-8">
           <Link
-            href="/showcase"
+            href="/ld/showcase"
             className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
           >
             <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2} />
@@ -1899,7 +1899,7 @@ export function ProjectManagementClient() {
             <span>
               Synced with the{" "}
               <Link
-                href="/showcase/project-discovery-planning"
+                href="/ld/showcase/project-discovery-planning"
                 className="font-medium text-emerald-400 underline-offset-4 transition-colors hover:underline"
               >
                 discovery intake pipeline

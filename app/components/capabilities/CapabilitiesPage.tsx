@@ -23,12 +23,12 @@ const fmt = (n: number, prefix = "", suffix = "") => `${prefix}${Math.round(n).t
 function Nav() {
   return (
     <FloatingNav
-      brandHref="/LD-Systems-Portfolio"
+      brandHref="/ld"
       suffix="Capabilities"
       accent="emerald"
       links={[
-        { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-        { label: "Showcase", href: "/showcase" },
+        { label: "L&D Portfolio", href: "/ld" },
+        { label: "Showcase", href: "/ld/showcase" },
         { label: "Contact", href: "#contact" },
       ]}
       cta={{ label: "Get in touch", href: EMAIL }}
@@ -63,7 +63,7 @@ function Hero() {
           transition={{ duration: 0.5, ease: EASE }}
         >
           <Link
-            href="/LD-Systems-Portfolio"
+            href="/ld"
             className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
           >
             <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2} />
@@ -110,7 +110,7 @@ function Hero() {
                 Explore the domains
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2} />
               </MagneticButton>
-              <MagneticButton href="/showcase" variant="ghost">
+              <MagneticButton href="/ld/showcase" variant="ghost">
                 Explore the Showcase
               </MagneticButton>
             </motion.div>

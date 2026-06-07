@@ -374,7 +374,7 @@ function CTASection() {
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
               <Link
-                href="/projects"
+                href="/ai/projects"
                 className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-cyan-500/10 text-cyan-400 font-semibold border border-cyan-500/20 hover:bg-cyan-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <LayoutDashboard className="w-5 h-5" />

@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${project.name} | AI Systems Architecture`,
       description: project.description,
       type: "article",
-      url: `/projects/${project.id}`,
+      url: `/ai/projects/${project.id}`,
       images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     },
     twitter: {

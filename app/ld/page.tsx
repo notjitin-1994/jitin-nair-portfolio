@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Jitin Nair: a Learning & Development leader who turns learning into measurable business performance. 10+ years across instructional design and AI, reaching 5K+ learners, cutting training time 70%, and saving $140K+ through automation.",
   alternates: {
-    canonical: "https://jitinnair.com/LD-Systems-Portfolio",
+    canonical: "https://jitinnair.com/ld",
   },
 };
 

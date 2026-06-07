@@ -5,7 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://jitinnair.com';
 
   const posts = blogPosts.map((post) => ({
-    url: `${baseUrl}/insights/${post.slug}`,
+    url: `${baseUrl}/ai/insights/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: 'monthly' as const,
     priority: 0.8,
@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'commune',
     'localmind',
   ].map((id) => ({
-    url: `${baseUrl}/projects/${id}`,
+    url: `${baseUrl}/ai/projects/${id}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
@@ -27,9 +27,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const routes = [
     { route: '', priority: 1.0, frequency: 'weekly' as const },
-    { route: '/AI-Systems-Architecture-Portfolio', priority: 1.0, frequency: 'weekly' as const },
-    { route: '/LD-Systems-Portfolio', priority: 0.6, frequency: 'monthly' as const },
-    { route: '/insights', priority: 0.9, frequency: 'weekly' as const },
+    { route: '/ai', priority: 1.0, frequency: 'weekly' as const },
+    { route: '/ld', priority: 0.6, frequency: 'monthly' as const },
+    { route: '/ai/insights', priority: 0.9, frequency: 'weekly' as const },
   ].map(({ route, priority, frequency }) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),

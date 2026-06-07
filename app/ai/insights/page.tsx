@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Insights & Articles | Jitin Nair — AI Systems Architect",
     description: "Technical deep-dives on multi-agent orchestration, MCP, compound AI systems, Bayesian inference, and AI governance by Jitin Nair.",
-    url: "/insights",
+    url: "/ai/insights",
     images: [{ url: "/og-image.svg", width: 1200, height: 630 }],
   },
 };

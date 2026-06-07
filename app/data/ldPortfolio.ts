@@ -120,7 +120,7 @@ export const ldAiLever = {
     "Production pipelines that cut build time by 60% (Moody's)",
     "Audit and reporting automation across pan-India teams (Accenture)",
   ],
-  link: { label: "Read more about Jitin's AI Systems Architecture", href: "/AI-Systems-Architecture-Portfolio" },
+  link: { label: "Read more about Jitin's AI Systems Architecture", href: "/ai" },
 };
 
 export const ldCapabilities = [

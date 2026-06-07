@@ -10,9 +10,9 @@ function SiteNav() {
       brandHref="/"
       accent="cyan"
       links={[
-        { label: "AI Systems", href: "/AI-Systems-Architecture-Portfolio" },
-        { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-        { label: "Insights", href: "/insights" },
+        { label: "AI Systems", href: "/ai" },
+        { label: "L&D Portfolio", href: "/ld" },
+        { label: "Insights", href: "/ai/insights" },
       ]}
       cta={{ label: "Contact", href: "mailto:not.jitin@gmail.com" }}
     />

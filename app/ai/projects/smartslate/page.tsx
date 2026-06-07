@@ -385,7 +385,7 @@ function CTASection() {
               </a>
 
               <Link
-                href="/projects"
+                href="/ai/projects"
                 className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/[0.05] text-white font-medium border border-white/[0.1] hover:bg-white/[0.1] transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <Database className="w-5 h-5" />

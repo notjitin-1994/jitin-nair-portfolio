@@ -1,5 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      { source: '/LD-Systems-Portfolio', destination: '/ld', permanent: true },
+      { source: '/AI-Systems-Architecture-Portfolio', destination: '/ai', permanent: true },
+      { source: '/showcase', destination: '/ld/showcase', permanent: true },
+      { source: '/showcase/:path*', destination: '/ld/showcase/:path*', permanent: true },
+      { source: '/capabilities', destination: '/ld/capabilities', permanent: true },
+      { source: '/work', destination: '/ld/work', permanent: true },
+      { source: '/insights', destination: '/ai/insights', permanent: true },
+      { source: '/insights/:path*', destination: '/ai/insights/:path*', permanent: true },
+      { source: '/projects', destination: '/ai/projects', permanent: true },
+      { source: '/projects/:path*', destination: '/ai/projects/:path*', permanent: true },
+    ];
+  },
+
   // Enterprise Grade Image Optimization
   images: {
     unoptimized: false,

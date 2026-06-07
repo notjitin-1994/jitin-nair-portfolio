@@ -42,9 +42,9 @@ const EMAIL = "mailto:not.jitin@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 
 const NAV = [
-  { label: "Work", href: "/work" },
+  { label: "Work", href: "/ld/work" },
   { label: "Approach", href: "#approach" },
-  { label: "Capabilities", href: "/capabilities" },
+  { label: "Capabilities", href: "/ld/capabilities" },
 ];
 
 const HERO_LINES: ReactNode[] = [
@@ -443,7 +443,7 @@ function Work() {
 
         <Reveal className="mt-12 flex">
           <Link
-            href="/work"
+            href="/ld/work"
             className="group inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/[0.06] px-7 py-3.5 text-sm font-semibold text-emerald-300 transition-[transform,background-color,border-color] duration-200 ease-out hover:border-emerald-400/70 hover:bg-emerald-400/[0.12] hover:text-emerald-200 active:scale-[0.97]"
           >
             Full Work Experience
@@ -516,7 +516,7 @@ function Approach() {
                 A detailed deep-dive into the tools and systems built for every phase of the L&amp;D lifecycle—from automated discovery to scalable content production.
               </p>
               <Link
-                href="/showcase"
+                href="/ld/showcase"
                 className="group mt-7 inline-flex items-center gap-2 rounded-full bg-emerald-400 px-6 py-3 text-sm font-semibold text-[#062a1d] transition-[transform,background-color] duration-200 ease-out hover:bg-emerald-300 active:scale-[0.97]"
               >
                 Explore the Showcase
@@ -805,7 +805,7 @@ function Capabilities() {
 
         <Reveal className="mt-12 flex">
           <Link
-            href="/capabilities"
+            href="/ld/capabilities"
             className="group inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/[0.06] px-7 py-3.5 text-sm font-semibold text-emerald-300 transition-[transform,background-color,border-color] duration-200 ease-out hover:border-emerald-400/70 hover:bg-emerald-400/[0.12] hover:text-emerald-200 active:scale-[0.97]"
           >
             See the full capability map
@@ -1209,7 +1209,7 @@ export function LDPortfolio() {
               Ready to scale your learning engine?
             </h2>
             <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <MagneticButton href="/work" variant="primary" className="px-10 py-4 text-base">
+              <MagneticButton href="/ld/work" variant="primary" className="px-10 py-4 text-base">
                 Full Work Experience
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" strokeWidth={2} />
               </MagneticButton>

@@ -54,7 +54,7 @@ export function Footer() {
               {projectsData.map((project) => (
                 <li key={project.id}>
                   <Link
-                    href={`/projects/${project.id}`}
+                    href={`/ai/projects/${project.id}`}
                     className="text-slate-400 hover:text-cyan-400 transition-colors text-sm"
                   >
                     {project.shortName}

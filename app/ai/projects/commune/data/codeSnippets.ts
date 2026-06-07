@@ -85,7 +85,7 @@ export const codeSnippets: CodeSnippet[] = [
         <div className="p-2">
           <h3 className="font-bold">{flag.title}</h3>
           <p className="text-xs text-slate-500">{flag.postCount} Posts</p>
-          <Link href={\`/projects/commune/tags/\${flag.id}\`}>
+          <Link href={\`/ai/projects/commune/tags/\${flag.id}\`}>
             Explore Room
           </Link>
         </div>

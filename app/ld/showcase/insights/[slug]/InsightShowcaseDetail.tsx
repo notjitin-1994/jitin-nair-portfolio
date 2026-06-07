@@ -44,13 +44,13 @@ function fmtDate(d: string) {
 function Nav() {
   return (
     <FloatingNav
-      brandHref="/showcase"
+      brandHref="/ld/showcase"
       suffix="Insights"
       accent="emerald"
       links={[
-        { label: "Showcase", href: "/showcase" },
-        { label: "All Insights", href: "/showcase/insights" },
-        { label: "Experience", href: "/work" },
+        { label: "Showcase", href: "/ld/showcase" },
+        { label: "All Insights", href: "/ld/showcase/insights" },
+        { label: "Experience", href: "/ld/work" },
         { label: "Contact", href: "#contact" },
       ]}
       cta={{ label: "Get in touch", href: EMAIL }}
@@ -203,7 +203,7 @@ export function InsightShowcaseDetail({ slug }: { slug: string }) {
             <h1 className="font-serif text-3xl font-medium text-white">Not found</h1>
             <p className="mt-4 text-neutral-400">This insight isn&apos;t available yet.</p>
             <Link
-              href="/showcase/insights"
+              href="/ld/showcase/insights"
               className="mt-8 inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300"
             >
               <ArrowLeft className="h-4 w-4" /> Back to Insights
@@ -240,7 +240,7 @@ export function InsightShowcaseDetail({ slug }: { slug: string }) {
             publisher: { "@type": "Person", name: "Jitin Nair", url: "https://jitinnair.com" },
             mainEntityOfPage: {
               "@type": "WebPage",
-              "@id": `https://jitinnair.com/showcase/insights/${slug}`,
+              "@id": `https://jitinnair.com/ld/showcase/insights/${slug}`,
             },
             keywords: [post.category, "L&D", "Learning & Development", "AI in Learning", "Jitin Nair"],
             articleSection: post.category,
@@ -258,7 +258,7 @@ export function InsightShowcaseDetail({ slug }: { slug: string }) {
         <div className="mx-auto max-w-3xl">
           <Reveal>
             <Link
-              href="/showcase/insights"
+              href="/ld/showcase/insights"
               className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
             >
               <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
@@ -345,7 +345,7 @@ export function InsightShowcaseDetail({ slug }: { slug: string }) {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: i * 0.1, ease: EASE }}
                   >
-                    <Link href={`/showcase/insights/${rp.slug}`} className="group block h-full">
+                    <Link href={`/ld/showcase/insights/${rp.slug}`} className="group block h-full">
                       <div className="flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white/[0.04]">
                         <span className="mb-3 inline-flex w-fit items-center rounded-full border border-emerald-500/20 bg-emerald-500/[0.08] px-2.5 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider text-emerald-400/90">
                           {rp.category}

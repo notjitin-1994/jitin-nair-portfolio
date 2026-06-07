@@ -229,7 +229,7 @@ export default function RootLayout({
               },
               potentialAction: {
                 "@type": "SearchAction",
-                target: `${siteUrl}/insights?q={search_term_string}`,
+                target: `${siteUrl}/ai/insights?q={search_term_string}`,
                 "query-input": "required name=search_term_string",
               },
             }),

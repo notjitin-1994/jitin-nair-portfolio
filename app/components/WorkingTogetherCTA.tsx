@@ -55,7 +55,7 @@ export function WorkingTogetherCTA() {
             </p>
             
             <Link 
-              href="/AI-Systems-Architecture-Portfolio#contact"
+              href="/ai#contact"
               className="flex items-center justify-center gap-3 px-10 py-4 rounded-2xl bg-cyan-500/10 text-cyan-400 font-bold border border-cyan-500/20 hover:bg-cyan-500/20 transition-all hover:scale-[1.05] active:scale-[0.95]"
             >
               Get in Touch

@@ -212,13 +212,13 @@ const EFFICIENCY = [
 function Nav() {
   return (
     <FloatingNav
-      brandHref="/showcase"
+      brandHref="/ld/showcase"
       suffix="Content Development"
       accent="emerald"
       links={[
-        { label: "Showcase", href: "/showcase" },
-        { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-        { label: "Experience", href: "/work" },
+        { label: "Showcase", href: "/ld/showcase" },
+        { label: "L&D Portfolio", href: "/ld" },
+        { label: "Experience", href: "/ld/work" },
         { label: "Contact", href: "#contact" },
       ]}
       cta={{ label: "Get in touch", href: EMAIL }}
@@ -242,7 +242,7 @@ function Hero() {
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <Link
-            href="/showcase"
+            href="/ld/showcase"
             className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
           >
             <ArrowLeft
@@ -757,7 +757,7 @@ function Contact() {
                   Get in touch
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </MagneticButton>
-                <MagneticButton href="/showcase" variant="ghost" className="px-8 py-4 text-base">
+                <MagneticButton href="/ld/showcase" variant="ghost" className="px-8 py-4 text-base">
                   Back to Showcase
                 </MagneticButton>
               </div>

@@ -74,7 +74,7 @@ export default function InsightsPage() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: i * 0.1 }}
             >
-              <Link href={`/insights/${post.slug}`}>
+              <Link href={`/ai/insights/${post.slug}`}>
                 <Card variant="default" hover className="h-full">
                   <div className="flex items-center justify-between mb-4">
                     <Badge variant="teal" size="sm">

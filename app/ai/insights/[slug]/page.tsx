@@ -10,7 +10,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const post = blogPosts.find((p) => p.slug === params.slug);
   if (!post) return { title: "Not Found" };
 
-  const articleUrl = `https://jitinnair.com/insights/${post.slug}`;
+  const articleUrl = `https://jitinnair.com/ai/insights/${post.slug}`;
 
   return {
     title: post.title,

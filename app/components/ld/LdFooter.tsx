@@ -8,15 +8,15 @@ const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 
 export function LdFooter() {
   const LD_SECTIONS = [
-    { label: "Work", href: "/work", isLink: true },
-    { label: "Showcase", href: "/showcase", isLink: true },
-    { label: "Capabilities", href: "/capabilities", isLink: true },
+    { label: "Work", href: "/ld/work", isLink: true },
+    { label: "Showcase", href: "/ld/showcase", isLink: true },
+    { label: "Capabilities", href: "/ld/capabilities", isLink: true },
   ];
 
   const PORTFOLIO_LINKS = [
     { label: "Home", href: "/" },
-    { label: "AI Systems Portfolio", href: "/AI-Systems-Architecture-Portfolio" },
-    { label: "Insights", href: "/insights" },
+    { label: "AI Systems Portfolio", href: "/ai" },
+    { label: "Insights", href: "/ai/insights" },
   ];
 
   return (

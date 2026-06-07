@@ -39,7 +39,7 @@ export function InsightDetail({ slug }: { slug: string }) {
             <h1 className="text-3xl font-bold text-white mb-4">Not Found</h1>
             <p className="text-slate-400 mb-6">Article not found.</p>
             <Link
-              href="/insights"
+              href="/ai/insights"
               className="text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Insights
@@ -207,7 +207,7 @@ export function InsightDetail({ slug }: { slug: string }) {
             },
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": `https://jitinnair.com/insights/${slug}`
+              "@id": `https://jitinnair.com/ai/insights/${slug}`
             },
             "keywords": [post.category, "AI", "AI Systems Architect", "Jitin Nair", "Multi-Agent", "Agentic AI"],
             "articleSection": post.category,
@@ -219,7 +219,7 @@ export function InsightDetail({ slug }: { slug: string }) {
       <Section className="pt-12 pb-6">
         <div className="max-w-4xl mx-auto">
           <Link
-            href="/insights"
+            href="/ai/insights"
             className="text-sm text-slate-500 hover:text-cyan-400 mb-8 inline-flex items-center gap-2 transition-all group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Insights
@@ -255,7 +255,7 @@ export function InsightDetail({ slug }: { slug: string }) {
               </span>
             </div>
 
-            <ShareButtons title={post.title} url={"/insights/" + slug} />
+            <ShareButtons title={post.title} url={"/ai/insights/" + slug} />
           </motion.div>
         </div>
       </Section>
@@ -328,7 +328,7 @@ export function InsightDetail({ slug }: { slug: string }) {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  <Link href={`/insights/${rp.slug}`}>
+                  <Link href={`/ai/insights/${rp.slug}`}>
                     <Card variant="ghost" hover className="h-full group p-8 bg-white/[0.02] border-white/[0.05] hover:border-cyan-500/30 transition-all rounded-3xl">
                       <Badge variant="teal" size="sm" className="mb-4">
                         {rp.category}

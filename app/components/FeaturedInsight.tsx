@@ -40,7 +40,7 @@ export function FeaturedInsight() {
         </div>
         
         <Link 
-          href="/insights"
+          href="/ai/insights"
           className="group flex items-center gap-2 text-slate-500 hover:text-cyan-400 transition-colors text-xs font-mono uppercase tracking-widest"
         >
           <span>View Knowledge Base</span>
@@ -49,7 +49,7 @@ export function FeaturedInsight() {
       </motion.div>
 
       {/* Cinematic Card */}
-      <Link href={`/insights/${featuredPost.slug}`}>
+      <Link href={`/ai/insights/${featuredPost.slug}`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -153,12 +153,12 @@ export function FeaturedInsight() {
           Core Authority Domains
         </span>
         {[
-          { name: "Agentic AI", href: "https://jitinnair.com/insights/mcp-usb-c-moment-for-ai" },
+          { name: "Agentic AI", href: "https://jitinnair.com/ai/insights/mcp-usb-c-moment-for-ai" },
           { name: "Model Context Protocol", href: "https://modelcontextprotocol.io" },
           { name: "LangGraph Architecture", href: "https://www.langchain.com/langgraph" },
           { name: "AI Systems Design", href: "https://jitinnair.com" },
-          { name: "Multi-Agent Orchestration", href: "https://jitinnair.com/insights/beyond-the-monolith-compound-ai-systems" },
-          { name: "Advanced RAG", href: "https://jitinnair.com/projects/localmind" },
+          { name: "Multi-Agent Orchestration", href: "https://jitinnair.com/ai/insights/beyond-the-monolith-compound-ai-systems" },
+          { name: "Advanced RAG", href: "https://jitinnair.com/ai/projects/localmind" },
         ].map((domain, i) => (
           <Link 
             key={i} 

@@ -12,7 +12,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const post = showcaseInsights.find((p) => p.slug === params.slug && p.status === "published");
   if (!post) return { title: "Not Found" };
 
-  const url = `https://jitinnair.com/showcase/insights/${post.slug}`;
+  const url = `https://jitinnair.com/ld/showcase/insights/${post.slug}`;
 
   return {
     title: `${post.title} — Jitin Nair`,

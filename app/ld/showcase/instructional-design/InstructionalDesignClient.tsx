@@ -38,13 +38,13 @@ const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
 function Nav() {
   return (
     <FloatingNav
-      brandHref="/showcase"
+      brandHref="/ld/showcase"
       suffix="Instructional Design"
       accent="emerald"
       links={[
-        { label: "Showcase", href: "/showcase" },
-        { label: "L&D Portfolio", href: "/LD-Systems-Portfolio" },
-        { label: "Experience", href: "/work" },
+        { label: "Showcase", href: "/ld/showcase" },
+        { label: "L&D Portfolio", href: "/ld" },
+        { label: "Experience", href: "/ld/work" },
         { label: "Contact", href: "#contact" },
       ]}
       cta={{ label: "Get in touch", href: EMAIL }}
@@ -67,7 +67,7 @@ function Hero() {
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <Link
-            href="/showcase"
+            href="/ld/showcase"
             className="group inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-emerald-400"
           >
             <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />

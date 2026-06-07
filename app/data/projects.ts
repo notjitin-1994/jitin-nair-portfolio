@@ -123,7 +123,7 @@ export const projectsData: Project[] = [
       { metric: 'Precision', value: 'Absolute', context: 'via Time Anchor' },
     ],
     duration: '6 Months',
-    learnMoreUrl: '/projects/predator',
+    learnMoreUrl: '/ai/projects/predator',
   },
   {
     id: 'reality',
@@ -184,7 +184,7 @@ export const projectsData: Project[] = [
       { metric: 'Latency', value: '0ms', context: 'hook-based overhead' },
     ],
     duration: '4 Months',
-    learnMoreUrl: '/projects/reality',
+    learnMoreUrl: '/ai/projects/reality',
   },
   {
     id: 'localmind',
@@ -244,7 +244,7 @@ export const projectsData: Project[] = [
       { metric: 'Storage', value: '1GB', context: 'per 14K files' },
     ],
     duration: '6 Months',
-    learnMoreUrl: '/projects/localmind',
+    learnMoreUrl: '/ai/projects/localmind',
   },
   {
     id: 'smartslate',
@@ -305,7 +305,7 @@ export const projectsData: Project[] = [
       { metric: 'Accuracy', value: 'High', context: 'via Expert HITL' },
     ],
     duration: 'Ongoing',
-    learnMoreUrl: '/projects/smartslate',
+    learnMoreUrl: '/ai/projects/smartslate',
   },
   {
     id: 'revos',
@@ -364,7 +364,7 @@ export const projectsData: Project[] = [
       { metric: 'UX', value: '44px', context: 'Touch targets' },
     ],
     duration: 'Ongoing',
-    learnMoreUrl: '/projects/revos',
+    learnMoreUrl: '/ai/projects/revos',
   },
   {
     id: 'commune',
@@ -423,6 +423,6 @@ export const projectsData: Project[] = [
       { metric: 'Optimization', value: 'WebP', context: 'Auto-media compression' },
     ],
     duration: 'Ongoing',
-    learnMoreUrl: '/projects/commune',
+    learnMoreUrl: '/ai/projects/commune',
   },
 ];
