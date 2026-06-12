@@ -323,54 +323,38 @@ function Portrait({ ready }: { ready: boolean }) {
   );
 }
 
-/* ---------- Mobile portrait: arch frame, fully visible, no overlay ---------- */
-function MobilePortrait({ ready }: { ready: boolean }) {
+/* ---------- Mobile portrait: full-bleed, dissolves into the page via mask.
+   No card, no frame, no overlay. The subject stays fully visible. ---------- */
+const PORTRAIT_MASK =
+  "linear-gradient(to bottom, black 0%, black 55%, rgba(0,0,0,0.6) 78%, transparent 99%)";
+
+function CinematicPortrait({ ready }: { ready: boolean }) {
   const reduced = useReducedMotion();
-  const arch = "rounded-t-full rounded-b-[24px]";
   return (
-    <div className="relative mx-auto aspect-[3/4] h-[34dvh] min-h-[230px] [@media(max-height:740px)]:h-[28dvh] [@media(max-height:740px)]:min-h-[190px]">
-      {/* Ambient glow */}
-      <div
-        aria-hidden
-        className={`absolute -inset-6 ${arch} bg-gradient-to-tr from-emerald-500/[0.16] via-transparent to-cyan-500/[0.16] blur-2xl`}
-      />
-      {/* Hairline echo arch */}
+    <div
+      className="relative h-[48dvh] min-h-[300px] w-full overflow-hidden [@media(max-height:740px)]:h-[42dvh] [@media(max-height:740px)]:min-h-[240px]"
+      style={{
+        maskImage: PORTRAIT_MASK,
+        WebkitMaskImage: PORTRAIT_MASK,
+      }}
+    >
       <motion.div
-        aria-hidden
-        initial={reduced ? false : { opacity: 0 }}
-        animate={reduced || ready ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.8, delay: 0.75, ease: EASE }}
-        className={`absolute inset-0 -translate-x-3 translate-y-3 ${arch} border border-white/10`}
-      />
-      <div className={`relative h-full w-full overflow-hidden ${arch} border border-white/[0.12] shadow-2xl`}>
-        <motion.div
-          initial={reduced ? false : { scale: 1.14, opacity: 0 }}
-          animate={reduced || ready ? { scale: 1, opacity: 1 } : { scale: 1.14, opacity: 0 }}
-          transition={{ duration: 1.2, delay: 0.1, ease: EASE }}
-          className="relative h-full w-full will-change-transform"
-        >
-          <Image
-            src="/hero-photo.jpg"
-            alt="Jitin Nair"
-            fill
-            className="object-cover"
-            style={{ objectPosition: "center 15%" }}
-            priority
-            fetchPriority="high"
-            sizes="(max-width: 768px) 320px, 1px"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/35 via-transparent to-transparent" />
-          {!reduced && (
-            <motion.div
-              aria-hidden
-              initial={{ x: "-160%" }}
-              animate={ready ? { x: "160%" } : { x: "-160%" }}
-              transition={{ duration: 1.1, delay: 0.7, ease: "easeInOut" }}
-              className="pointer-events-none absolute inset-y-0 -left-1/2 w-2/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
-            />
-          )}
-        </motion.div>
-      </div>
+        initial={reduced ? false : { scale: 1.08, opacity: 0 }}
+        animate={reduced || ready ? { scale: 1, opacity: 1 } : { scale: 1.08, opacity: 0 }}
+        transition={{ duration: 1.6, ease: EASE }}
+        className="relative h-full w-full will-change-transform"
+      >
+        <Image
+          src="/hero-photo.jpg"
+          alt="Jitin Nair"
+          fill
+          className="object-cover"
+          style={{ objectPosition: "center 10%" }}
+          priority
+          fetchPriority="high"
+          sizes="100vw"
+        />
+      </motion.div>
     </div>
   );
 }
@@ -472,66 +456,65 @@ export function ChooserHero() {
   return (
     <>
       {/* ═══════════════════════════════════════════════════
-          MOBILE: vertical editorial stack, portrait fully visible,
-          CTAs anchored in the thumb zone. Hidden at md+ breakpoint
+          MOBILE: cinematic full-bleed portrait dissolving into the
+          page, editorial type below, CTAs in the thumb zone.
+          Hidden at md+ breakpoint
       ═══════════════════════════════════════════════════ */}
-      <section className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-[#0a0a0f] px-5 pt-safe md:hidden">
+      <section className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-[#0a0a0f] md:hidden">
         <h1 className="sr-only">
           Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
         </h1>
 
-        {/* Static ambient glows: cheap on mobile, no animation loops */}
+        {/* Static ambient glows behind the content block: cheap, no loops */}
         <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute left-[-25%] top-[-10%] h-[40vh] w-[40vh] rounded-full bg-emerald-500/[0.12] blur-[70px]" />
-          <div className="absolute bottom-[-12%] right-[-25%] h-[38vh] w-[38vh] rounded-full bg-cyan-500/[0.12] blur-[70px]" />
+          <div className="absolute bottom-[20%] left-[-30%] h-[36vh] w-[36vh] rounded-full bg-emerald-500/[0.1] blur-[70px]" />
+          <div className="absolute bottom-[-12%] right-[-28%] h-[36vh] w-[36vh] rounded-full bg-cyan-500/[0.11] blur-[70px]" />
         </div>
+
+        <CinematicPortrait ready={ready} />
 
         <Grain />
 
-        <div className="relative z-10 flex flex-1 flex-col pb-6 pt-5">
-          <MobilePortrait ready={ready} />
+        <div className="relative z-10 -mt-14 flex flex-1 flex-col px-5 pb-7">
+          <motion.p
+            {...mobileFade(0.5)}
+            className="text-[11px] font-medium uppercase tracking-[0.3em] text-neutral-400"
+          >
+            Jitin Nair
+          </motion.p>
 
-          <div className="mt-5 text-center">
-            <motion.p
-              {...mobileFade(0.45)}
-              className="text-[11px] font-medium uppercase tracking-[0.28em] text-neutral-400"
-            >
-              Jitin Nair
-            </motion.p>
+          <motion.h2
+            variants={mobileContainer}
+            initial="hidden"
+            animate={ready ? "show" : "hidden"}
+            className="mt-2.5 max-w-[22rem] font-serif text-[1.7rem] font-medium leading-[1.16] tracking-tight text-white [@media(max-height:740px)]:text-[1.45rem]"
+          >
+            {HEADLINE.map((line, i) => (
+              <span key={i} className="block overflow-hidden pb-[0.08em]">
+                <motion.span
+                  variants={lineVariant}
+                  className="block transform-gpu will-change-transform"
+                >
+                  {line}
+                </motion.span>
+              </span>
+            ))}
+          </motion.h2>
 
-            <motion.h2
-              variants={mobileContainer}
-              initial="hidden"
-              animate={ready ? "show" : "hidden"}
-              className="mx-auto mt-2.5 max-w-[21rem] text-balance font-serif text-[1.5rem] font-medium leading-[1.22] tracking-tight text-white [@media(max-height:740px)]:text-[1.35rem]"
-            >
-              {HEADLINE.map((line, i) => (
-                <span key={i} className="block overflow-hidden pb-[0.08em]">
-                  <motion.span
-                    variants={lineVariant}
-                    className="block transform-gpu will-change-transform"
-                  >
-                    {line}
-                  </motion.span>
-                </span>
-              ))}
-            </motion.h2>
-
-            <motion.p
-              {...mobileFade(M_BODY_DELAY)}
-              className="mt-2.5 text-[12px] leading-relaxed text-neutral-400"
-            >
-              Learning &amp; Development Designer{" "}
-              <span className="text-neutral-600">·</span> AI Systems Architect
-            </motion.p>
-          </div>
+          <motion.p
+            {...mobileFade(M_BODY_DELAY)}
+            className="mt-2.5 text-[12px] leading-relaxed text-neutral-400"
+          >
+            Learning &amp; Development Designer{" "}
+            <span className="text-neutral-600">·</span> AI Systems Architect
+          </motion.p>
 
           {/* Spacer pushes stats + CTAs into the thumb zone */}
           <div className="flex-1" />
 
           <motion.div
             {...mobileFade(M_STATS_DELAY)}
-            className="mt-5 grid grid-cols-3 gap-3 border-t border-white/10 pt-3.5 text-center"
+            className="mt-6 grid grid-cols-3 gap-3 border-t border-white/10 pt-4"
           >
             {PROOF.map((stat) => (
               <StatTile key={stat.label} {...stat} run={countRun} compact />
