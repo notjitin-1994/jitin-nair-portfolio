@@ -323,6 +323,58 @@ function Portrait({ ready }: { ready: boolean }) {
   );
 }
 
+/* ---------- Mobile portrait: arch frame, fully visible, no overlay ---------- */
+function MobilePortrait({ ready }: { ready: boolean }) {
+  const reduced = useReducedMotion();
+  const arch = "rounded-t-full rounded-b-[24px]";
+  return (
+    <div className="relative mx-auto aspect-[3/4] h-[34dvh] min-h-[230px] [@media(max-height:740px)]:h-[28dvh] [@media(max-height:740px)]:min-h-[190px]">
+      {/* Ambient glow */}
+      <div
+        aria-hidden
+        className={`absolute -inset-6 ${arch} bg-gradient-to-tr from-emerald-500/[0.16] via-transparent to-cyan-500/[0.16] blur-2xl`}
+      />
+      {/* Hairline echo arch */}
+      <motion.div
+        aria-hidden
+        initial={reduced ? false : { opacity: 0 }}
+        animate={reduced || ready ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.8, delay: 0.75, ease: EASE }}
+        className={`absolute inset-0 -translate-x-3 translate-y-3 ${arch} border border-white/10`}
+      />
+      <div className={`relative h-full w-full overflow-hidden ${arch} border border-white/[0.12] shadow-2xl`}>
+        <motion.div
+          initial={reduced ? false : { scale: 1.14, opacity: 0 }}
+          animate={reduced || ready ? { scale: 1, opacity: 1 } : { scale: 1.14, opacity: 0 }}
+          transition={{ duration: 1.2, delay: 0.1, ease: EASE }}
+          className="relative h-full w-full will-change-transform"
+        >
+          <Image
+            src="/hero-photo.jpg"
+            alt="Jitin Nair"
+            fill
+            className="object-cover"
+            style={{ objectPosition: "center 15%" }}
+            priority
+            fetchPriority="high"
+            sizes="(max-width: 768px) 320px, 1px"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/35 via-transparent to-transparent" />
+          {!reduced && (
+            <motion.div
+              aria-hidden
+              initial={{ x: "-160%" }}
+              animate={ready ? { x: "160%" } : { x: "-160%" }}
+              transition={{ duration: 1.1, delay: 0.7, ease: "easeInOut" }}
+              className="pointer-events-none absolute inset-y-0 -left-1/2 w-2/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
+            />
+          )}
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------- Hero ---------- */
 export function ChooserHero() {
   const mounted = useMounted();
@@ -356,11 +408,11 @@ export function ChooserHero() {
   const HEADING_DELAY = 0.2;
   const REST_DELAY = 1.05;
 
-  // Mobile choreography
-  const M_HEAD_DELAY = 0.25;
-  const M_BODY_DELAY = 0.95;
+  // Mobile choreography: portrait first, then type, then thumb-zone CTAs
+  const M_HEAD_DELAY = 0.6;
+  const M_BODY_DELAY = 1.0;
   const M_STATS_DELAY = 1.1;
-  const M_LINKS_DELAY = 1.25;
+  const M_LINKS_DELAY = 1.2;
 
   useEffect(() => {
     if (!ready) return;
@@ -386,7 +438,7 @@ export function ChooserHero() {
     hidden: {},
     show: {
       transition: {
-        staggerChildren: reduced ? 0 : 0.18,
+        staggerChildren: reduced ? 0 : 0.14,
         delayChildren: reduced ? 0 : M_HEAD_DELAY,
       },
     },
@@ -420,60 +472,29 @@ export function ChooserHero() {
   return (
     <>
       {/* ═══════════════════════════════════════════════════
-          MOBILE: full-bleed portrait + glass panel pinned to bottom
-          Hidden at md+ breakpoint
+          MOBILE: vertical editorial stack, portrait fully visible,
+          CTAs anchored in the thumb zone. Hidden at md+ breakpoint
       ═══════════════════════════════════════════════════ */}
-      <section className="relative h-[100dvh] overflow-hidden bg-[#0a0a0f] md:hidden">
+      <section className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-[#0a0a0f] px-5 pt-safe md:hidden">
         <h1 className="sr-only">
           Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
         </h1>
 
-        <Image
-          src="/hero-photo.jpg"
-          alt=""
-          fill
-          className="object-cover"
-          style={{ objectPosition: "center 12%" }}
-          priority
-          fetchPriority="high"
-          sizes="100vw"
-        />
-
-        {/* Top vignette */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#0a0a0f]/80 to-transparent"
-        />
-
-        {/* Soft scrim behind the glass panel */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-[#0a0a0f]/65 via-[#0a0a0f]/20 to-transparent"
-        />
+        {/* Static ambient glows: cheap on mobile, no animation loops */}
+        <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute left-[-25%] top-[-10%] h-[40vh] w-[40vh] rounded-full bg-emerald-500/[0.12] blur-[70px]" />
+          <div className="absolute bottom-[-12%] right-[-25%] h-[38vh] w-[38vh] rounded-full bg-cyan-500/[0.12] blur-[70px]" />
+        </div>
 
         <Grain />
 
-        {/* Glass content panel */}
-        <div className="absolute inset-x-0 bottom-0 z-10">
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background: "rgba(10,10,15,0.66)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-            }}
-          />
-          {/* Dual-tone accent hairline */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-emerald-400/50 via-cyan-400/40 to-transparent"
-          />
+        <div className="relative z-10 flex flex-1 flex-col pb-6 pt-5">
+          <MobilePortrait ready={ready} />
 
-          <div className="relative overflow-hidden px-5 pb-8 pt-6">
+          <div className="mt-5 text-center">
             <motion.p
-              {...mobileFade(0.15)}
-              className="text-[11px] font-medium uppercase tracking-[0.26em] text-neutral-400"
+              {...mobileFade(0.45)}
+              className="text-[11px] font-medium uppercase tracking-[0.28em] text-neutral-400"
             >
               Jitin Nair
             </motion.p>
@@ -482,7 +503,7 @@ export function ChooserHero() {
               variants={mobileContainer}
               initial="hidden"
               animate={ready ? "show" : "hidden"}
-              className="mt-3 font-serif text-[1.75rem] font-medium leading-[1.16] tracking-tight text-white"
+              className="mx-auto mt-2.5 max-w-[21rem] text-balance font-serif text-[1.5rem] font-medium leading-[1.22] tracking-tight text-white [@media(max-height:740px)]:text-[1.35rem]"
             >
               {HEADLINE.map((line, i) => (
                 <span key={i} className="block overflow-hidden pb-[0.08em]">
@@ -498,31 +519,34 @@ export function ChooserHero() {
 
             <motion.p
               {...mobileFade(M_BODY_DELAY)}
-              className="mt-3 text-[13px] leading-relaxed text-neutral-300"
+              className="mt-2.5 text-[12px] leading-relaxed text-neutral-400"
             >
               Learning &amp; Development Designer{" "}
-              <span className="text-neutral-500">·</span> AI Systems Architect
+              <span className="text-neutral-600">·</span> AI Systems Architect
             </motion.p>
+          </div>
 
-            <motion.div
-              {...mobileFade(M_STATS_DELAY)}
-              className="mt-4 grid grid-cols-3 gap-3 border-t border-white/10 pt-4"
-            >
-              {PROOF.map((stat) => (
-                <StatTile key={stat.label} {...stat} run={countRun} compact />
-              ))}
-            </motion.div>
+          {/* Spacer pushes stats + CTAs into the thumb zone */}
+          <div className="flex-1" />
 
-            <div className="mt-4 grid gap-2.5">
-              {TRACKS.map((track, i) => (
-                <MobileTrackCard
-                  key={track.href}
-                  track={track}
-                  delay={M_LINKS_DELAY + i * 0.12}
-                  ready={ready}
-                />
-              ))}
-            </div>
+          <motion.div
+            {...mobileFade(M_STATS_DELAY)}
+            className="mt-5 grid grid-cols-3 gap-3 border-t border-white/10 pt-3.5 text-center"
+          >
+            {PROOF.map((stat) => (
+              <StatTile key={stat.label} {...stat} run={countRun} compact />
+            ))}
+          </motion.div>
+
+          <div className="mt-4 grid gap-2.5">
+            {TRACKS.map((track, i) => (
+              <MobileTrackCard
+                key={track.href}
+                track={track}
+                delay={M_LINKS_DELAY + i * 0.08}
+                ready={ready}
+              />
+            ))}
           </div>
         </div>
       </section>
