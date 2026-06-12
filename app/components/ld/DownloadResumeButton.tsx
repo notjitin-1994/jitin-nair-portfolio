@@ -144,7 +144,7 @@ export function DownloadResumeButton({ mobile = false, onExpandChange }: { mobil
               mobile ? "text-white" : "text-[#062a1d]"
             }`}
           >
-            Download Resume
+            Resume
             <Download
               className="h-4 w-4 transition-transform duration-200 group-hover:translate-y-0.5"
               strokeWidth={2}

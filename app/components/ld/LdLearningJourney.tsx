@@ -25,16 +25,220 @@ import { ldImpact } from "../../data/ldPortfolio";
 
 const TITLE = "Turning learning into measurable business performance";
 
+/* ---------- Phase glyphs: one visual grammar, five drawings.
+   Shared rules: viewBox 240x56, 1.5px hairline strokes, round caps,
+   guides at white/10, emerald accent, GPU-friendly animation only
+   (pathLength via stroke-dashoffset, opacity, transform). Each glyph
+   animates the meaning of its phase, not decoration. ---------- */
+
+/* Analyze: signals being measured against a baseline */
+function GlyphAnalyze() {
+  const bars = [
+    { x: 32, h: 20 },
+    { x: 76, h: 13 },
+    { x: 120, h: 30 },
+    { x: 164, h: 17 },
+    { x: 208, h: 38 },
+  ];
+  return (
+    <svg viewBox="0 0 240 56" className="h-14 w-full" aria-hidden fill="none">
+      <line x1="10" y1="50" x2="230" y2="50" className="stroke-white/10" strokeWidth="1" />
+      {bars.map((b, i) => (
+        <motion.line
+          key={b.x}
+          x1={b.x}
+          y1={50}
+          x2={b.x}
+          y2={50 - b.h}
+          className="stroke-emerald-400"
+          strokeWidth="6"
+          strokeLinecap="round"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 0.45, delay: 0.15 + i * 0.07, ease: EASE }}
+        />
+      ))}
+      <motion.line
+        x1="10"
+        y1="20"
+        x2="230"
+        y2="20"
+        className="stroke-emerald-400/50"
+        strokeWidth="1"
+        strokeDasharray="4 5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.62, ease: EASE }}
+      />
+    </svg>
+  );
+}
+
+/* Design: the storyboard frame sketches itself, then content lines */
+function GlyphDesign() {
+  const lines = [
+    { x2: 222, y: 14, accent: true },
+    { x2: 198, y: 28, accent: false },
+    { x2: 176, y: 42, accent: false },
+  ];
+  return (
+    <svg viewBox="0 0 240 56" className="h-14 w-full" aria-hidden fill="none">
+      <motion.rect
+        x="8"
+        y="6"
+        width="98"
+        height="44"
+        rx="7"
+        className="stroke-emerald-400"
+        strokeWidth="1.5"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 0.55, delay: 0.1, ease: EASE }}
+      />
+      <motion.path
+        d="M16 42 L38 26 L54 36 L74 22 L98 38"
+        className="stroke-emerald-400/60"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ pathLength: 1, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.5, ease: EASE }}
+      />
+      {lines.map((l, i) => (
+        <motion.line
+          key={l.y}
+          x1="122"
+          y1={l.y}
+          x2={l.x2}
+          y2={l.y}
+          className={l.accent ? "stroke-emerald-400" : "stroke-white/25"}
+          strokeWidth={l.accent ? 2 : 1.5}
+          strokeLinecap="round"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.35 + i * 0.12, ease: EASE }}
+        />
+      ))}
+    </svg>
+  );
+}
+
+/* Develop: content modules assemble, building upward */
+function GlyphDevelop() {
+  const blocks = [
+    { x: 14, y: 26, fill: "fill-emerald-400/[0.06]" },
+    { x: 90, y: 17, fill: "fill-emerald-400/[0.14]" },
+    { x: 166, y: 8, fill: "fill-emerald-400/[0.24]" },
+  ];
+  return (
+    <svg viewBox="0 0 240 56" className="h-14 w-full" aria-hidden fill="none">
+      <line x1="10" y1="50" x2="230" y2="50" className="stroke-white/10" strokeWidth="1" />
+      {blocks.map((b, i) => (
+        <motion.rect
+          key={b.x}
+          x={b.x}
+          y={b.y}
+          width="60"
+          height={50 - b.y - 2}
+          rx="5"
+          className={`stroke-emerald-400/70 ${b.fill}`}
+          strokeWidth="1.5"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.18 + i * 0.14, ease: EASE }}
+        />
+      ))}
+    </svg>
+  );
+}
+
+/* Implement: the cohort comes online, left to right */
+function GlyphImplement() {
+  const cols = 9;
+  const rows = 2;
+  const dots: { cx: number; cy: number; order: number }[] = [];
+  for (let c = 0; c < cols; c++) {
+    for (let r = 0; r < rows; r++) {
+      dots.push({ cx: 24 + c * 24, cy: r === 0 ? 18 : 38, order: c * rows + r });
+    }
+  }
+  return (
+    <svg viewBox="0 0 240 56" className="h-14 w-full" aria-hidden fill="none">
+      {dots.map((d) => (
+        <motion.circle
+          key={`${d.cx}-${d.cy}`}
+          cx={d.cx}
+          cy={d.cy}
+          r="4"
+          className="fill-emerald-400"
+          initial={{ opacity: 0.12, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, delay: 0.15 + d.order * 0.045, ease: EASE }}
+          style={{ transformBox: "fill-box", transformOrigin: "center" }}
+        />
+      ))}
+    </svg>
+  );
+}
+
+/* Evaluate: measured impact climbs; the endpoint lands with a pop */
+function GlyphEvaluate() {
+  return (
+    <svg viewBox="0 0 240 56" className="h-14 w-full" aria-hidden fill="none">
+      <line x1="10" y1="50" x2="230" y2="50" className="stroke-white/10" strokeWidth="1" />
+      <motion.path
+        d="M10 48 C60 46 96 40 134 28 C168 17 200 11 226 9 L226 50 L10 50 Z"
+        className="fill-emerald-400/[0.08]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.55, ease: EASE }}
+      />
+      <motion.path
+        d="M10 48 C60 46 96 40 134 28 C168 17 200 11 226 9"
+        className="stroke-emerald-400"
+        strokeWidth="2"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 0.7, delay: 0.12, ease: EASE }}
+      />
+      <motion.circle
+        cx="226"
+        cy="9"
+        r="4"
+        className="fill-emerald-400"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ type: "spring", stiffness: 360, damping: 16, delay: 0.78 }}
+        style={{ transformBox: "fill-box", transformOrigin: "center" }}
+      />
+      <motion.circle
+        cx="226"
+        cy="9"
+        r="4"
+        className="stroke-emerald-400/60"
+        strokeWidth="1.5"
+        initial={{ opacity: 0, scale: 1 }}
+        animate={{ opacity: [0, 0.8, 0], scale: [1, 2.2, 2.2] }}
+        transition={{ duration: 0.8, delay: 0.85, ease: "easeOut" }}
+        style={{ transformBox: "fill-box", transformOrigin: "center" }}
+      />
+    </svg>
+  );
+}
+
 const PHASES = [
-  { key: "Analyze", desc: "Stakeholder discovery & needs analysis", icon: Search },
-  { key: "Design", desc: "Learning architecture & storyboards", icon: PenTool },
-  { key: "Develop", desc: "Content, media & assessments", icon: Layers },
-  { key: "Implement", desc: "LMS rollout & facilitation", icon: Rocket },
-  { key: "Evaluate", desc: "Kirkpatrick L1-L4 measurement", icon: BarChart3 },
+  { key: "Analyze", desc: "Stakeholder discovery & needs analysis", icon: Search, glyph: GlyphAnalyze },
+  { key: "Design", desc: "Learning architecture & storyboards", icon: PenTool, glyph: GlyphDesign },
+  { key: "Develop", desc: "Content, media & assessments", icon: Layers, glyph: GlyphDevelop },
+  { key: "Implement", desc: "LMS rollout & facilitation", icon: Rocket, glyph: GlyphImplement },
+  { key: "Evaluate", desc: "Kirkpatrick L1-L4 measurement", icon: BarChart3, glyph: GlyphEvaluate },
 ];
 
 /* Steps: 0 idle/typing · 1..5 phase (step-1) running · 6 metrics · 7 done */
-const STEP_DURATIONS = [0, 1050, 1050, 1050, 1050, 1050, 1400];
+const PHASE_MS = 1400;
+const STEP_DURATIONS = [0, PHASE_MS, PHASE_MS, PHASE_MS, PHASE_MS, PHASE_MS, 1400];
 
 function useTypewriter(text: string, run: boolean, speed = 28) {
   const [count, setCount] = useState(0);
@@ -184,7 +388,7 @@ export function LdLearningJourney({ className = "" }: { className?: string }) {
             {/* Track + animated fill */}
             <div className="absolute inset-x-3 top-1/2 h-px -translate-y-1/2 bg-neutral-800" />
             <motion.div
-              className="absolute inset-x-3 top-1/2 h-px -translate-y-1/2 origin-left bg-emerald-400/70"
+              className="absolute inset-x-3 top-1/2 h-[2px] -translate-y-1/2 origin-left bg-emerald-400"
               initial={false}
               animate={{ scaleX: railProgress }}
               transition={{ duration: 0.6, ease: EASE }}
@@ -206,15 +410,13 @@ export function LdLearningJourney({ className = "" }: { className?: string }) {
                         : { duration: 0.25, ease: EASE }
                     }
                     className={`flex h-6 w-6 items-center justify-center rounded-full border transition-colors duration-300 ${
-                      isDone
-                        ? "border-emerald-400/60 bg-emerald-400/15 text-emerald-400"
-                        : isRunning
-                          ? "border-emerald-400/70 bg-emerald-400/10 text-emerald-300"
-                          : "border-neutral-700 bg-[#0d0d13] text-neutral-600"
+                      isDone || isRunning
+                        ? "border-emerald-400 bg-emerald-400 text-[#0a0a0f]"
+                        : "border-neutral-700 bg-[#0d0d13] text-neutral-600"
                     }`}
                   >
                     {isDone ? (
-                      <Check className="h-3 w-3" strokeWidth={3} />
+                      <Check className="h-3 w-3" strokeWidth={3.5} />
                     ) : (
                       <span className="h-1.5 w-1.5 rounded-full bg-current" />
                     )}
@@ -238,38 +440,51 @@ export function LdLearningJourney({ className = "" }: { className?: string }) {
             {runningPhase >= 0 && !reduced ? (
               <motion.div
                 key={PHASES[runningPhase].key}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.3, ease: EASE }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{
+                  opacity: 0,
+                  y: -6,
+                  filter: "blur(2px)",
+                  transition: { duration: 0.15, ease: EASE },
+                }}
+                transition={{ duration: 0.25, ease: EASE }}
                 className="rounded-lg border border-neutral-800/80 bg-white/[0.02] p-3.5"
               >
                 {(() => {
-                  const Icon = PHASES[runningPhase].icon;
+                  const phase = PHASES[runningPhase];
+                  const Icon = phase.icon;
+                  const Glyph = phase.glyph;
                   return (
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-emerald-400/10 text-emerald-400">
-                        <Icon className="h-4 w-4" strokeWidth={1.75} />
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-[13px] font-semibold text-white">
-                          {PHASES[runningPhase].key}
-                        </div>
-                        <div className="truncate text-[11px] text-neutral-500">
-                          {PHASES[runningPhase].desc}
+                    <>
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-emerald-400/10 text-emerald-400">
+                          <Icon className="h-4 w-4" strokeWidth={1.75} />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[13px] font-semibold text-white">
+                            {phase.key}
+                          </div>
+                          <div className="truncate text-[11px] text-neutral-500">
+                            {phase.desc}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                      <div className="mt-3">
+                        <Glyph />
+                      </div>
+                      {/* Phase timer: constant motion, so linear easing */}
+                      <div className="mt-3 h-0.5 overflow-hidden rounded-full bg-neutral-800">
+                        <motion.div
+                          initial={{ scaleX: 0 }}
+                          animate={{ scaleX: 1 }}
+                          transition={{ duration: PHASE_MS / 1000, ease: "linear" }}
+                          className="h-full origin-left rounded-full bg-emerald-400"
+                        />
+                      </div>
+                    </>
                   );
                 })()}
-                <div className="mt-3 h-1 overflow-hidden rounded-full bg-neutral-800">
-                  <motion.div
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ duration: 0.85, ease: EASE }}
-                    className="h-full origin-left rounded-full bg-emerald-400"
-                  />
-                </div>
               </motion.div>
             ) : (
               <motion.div
