@@ -10,10 +10,10 @@ import {
   useSpring,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, ArrowUpRight, ArrowDown, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink, ChevronDown, Network, Video, Zap, Workflow, Cpu, Sparkles } from "lucide-react";
-import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "./primitives";
-import { DownloadResumeButton } from "./DownloadResumeButton";
-import { EditorialHero } from "../landing/EditorialHero";
+import { ArrowRight, ArrowUpRight, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink, ChevronDown, Network, Video, Zap, Workflow, Cpu, Sparkles } from "lucide-react";
+import { EASE, useFontsReady, Reveal, CountUp, MagneticButton, useMounted } from "./primitives";
+import { LdLearningJourney } from "./LdLearningJourney";
+import { LdVortexBackground } from "./LdVortexBackground";
 import { FloatingNav } from "../FloatingNav";
 import {
   ldImpact,
@@ -46,13 +46,6 @@ const NAV = [
   { label: "Capabilities", href: "/ld/capabilities" },
 ];
 
-const HERO_LINES: ReactNode[] = [
-  <>I turn learning into</>,
-  <>
-    measurable <span className="text-emerald-400">business performance</span>.
-  </>,
-];
-
 /* ---------- Section label (eyebrow, used sparingly) ---------- */
 function Label({ children }: { children: ReactNode }) {
   return (
@@ -75,46 +68,110 @@ function Nav() {
   );
 }
 
-/* ---------- Hero: shared editorial treatment (same as landing + /ai) ---------- */
+/* ---------- Hero: mirrors the AI portfolio hero, with the learning
+   journey console playing the role of the terminal ---------- */
 function Hero() {
-  const [resumeExpanded, setResumeExpanded] = useState(false);
-
-  const buttonsBlock = (isMobile: boolean) => (
-    <div className={cn("flex items-center gap-3", !isMobile && "max-w-md")}>
-      <AnimatePresence>
-        {!resumeExpanded && (
-          <motion.a
-            key="learn-more"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            href="#impact"
-            className={cn(
-              "flex-1 flex items-center justify-center gap-2 rounded-full bg-emerald-400 font-semibold text-[#062a1d] transition-transform duration-150 active:scale-[0.97]",
-              isMobile ? "px-4 py-3 text-xs" : "px-6 py-3 text-sm hover:bg-emerald-300"
-            )}
-          >
-            Learn More
-            <ArrowDown className={isMobile ? "h-3.5 w-3.5" : "h-4 w-4"} strokeWidth={2} />
-          </motion.a>
-        )}
-      </AnimatePresence>
-      <div className={cn("transition-all duration-300", resumeExpanded ? "w-full" : "flex-1")}>
-        <DownloadResumeButton mobile onExpandChange={setResumeExpanded} />
-      </div>
-    </div>
-  );
+  const mounted = useMounted();
+  const reducedMotion = useReducedMotion();
+  const reduced = mounted ? reducedMotion : false;
 
   return (
-    <EditorialHero
-      accent="emerald"
-      eyebrow="Jitin Nair · Learning & Development"
-      headline={HERO_LINES}
-      subline="A decade designing how people learn, and building the AI that scales it."
-      ctas={buttonsBlock}
-      mobilePortraitPosition="center 12%"
-      desktopPortraitPosition="center 15%"
-    />
+    <>
+      {/* ══════════════════════════════════════════════
+          MOBILE: full-bleed portrait backdrop, learning
+          journey console at the bottom. Hidden at md+.
+      ══════════════════════════════════════════════ */}
+      <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-[#0a0a0f] pb-4 pt-4 md:hidden">
+        <h1 className="sr-only">
+          Jitin Nair · Learning &amp; Development leader turning learning into
+          measurable business performance
+        </h1>
+
+        {/* Photo backdrop with slow settle */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-0 will-change-transform"
+          initial={reduced ? false : { opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: reduced ? 0.3 : 2.0, ease: EASE }}
+        >
+          <Image
+            src="/hero-photo.jpg"
+            alt=""
+            fill
+            className="object-cover"
+            style={{ objectPosition: "center 20%" }}
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+          />
+        </motion.div>
+
+        {/* Scrims */}
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/80 to-transparent" />
+        <div aria-hidden className="absolute inset-0 bg-[#0a0a0f]/40" />
+
+        <div className="relative z-10 px-5">
+          <div className="mx-auto max-w-3xl">
+            <LdLearningJourney />
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          DESKTOP: vortex backdrop, console left, photo
+          right. Hidden below md breakpoint.
+      ══════════════════════════════════════════════ */}
+      <section className="relative hidden min-h-screen items-center overflow-hidden bg-[#0a0a0f] px-4 md:flex">
+        <h1 className="sr-only">
+          Jitin Nair · Learning &amp; Development leader turning learning into
+          measurable business performance
+        </h1>
+
+        <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+          <LdVortexBackground />
+        </div>
+
+        <div className="relative z-10 mx-auto w-full max-w-7xl py-2">
+          <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
+            {/* Left: learning journey console */}
+            <motion.div
+              initial={reduced ? false : { opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.0, delay: 0.5, ease: EASE }}
+              className="h-[480px]"
+            >
+              <LdLearningJourney />
+            </motion.div>
+
+            {/* Right: portrait card with emerald glow */}
+            <motion.div
+              initial={reduced ? false : { opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.5, delay: 0.3, ease: EASE }}
+              className="flex justify-center"
+            >
+              <div className="relative h-[480px] w-full max-w-[480px]">
+                <div className="absolute inset-0 scale-110 rounded-xl bg-emerald-500/20 blur-3xl" />
+                <div className="relative h-full w-full overflow-hidden rounded-xl border border-white/10 shadow-2xl">
+                  <Image
+                    src="/hero-photo.jpg"
+                    alt="Jitin Nair"
+                    fill
+                    className="object-cover"
+                    style={{ objectPosition: "center 20%" }}
+                    priority
+                    fetchPriority="high"
+                    sizes="(max-width: 768px) 100vw, 480px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/60 via-transparent to-transparent" />
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 

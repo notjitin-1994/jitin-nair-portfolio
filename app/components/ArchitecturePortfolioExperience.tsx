@@ -1,18 +1,17 @@
 "use client";
 
-import { useState, useEffect, useRef, type ReactNode } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { Footer } from "./Footer";
 import LazySection from "./LazySection";
 import { projectsData } from "../data/projects";
 
 // Static imports for above-the-fold (Critical Path)
 import { useIsMobile } from "./home/shared";
-import { EditorialHero, type HeroStat } from "./landing/EditorialHero";
 
 function ProjectsDropdown() {
   const [open, setOpen] = useState(false);
@@ -178,70 +177,8 @@ function NavAI() {
     </header>
   );
 }
-/* ---------- Hero content: same editorial language as the landing page ---------- */
-const AI_HEADLINE: ReactNode[] = [
-  <>
-    Autonomous <span className="text-cyan-400">agents</span>, orchestrated
-  </>,
-  <>into systems that ship.</>,
-];
-
-const AI_STATS: HeroStat[] = [
-  { to: 200, format: (n) => `${Math.round(n)}+`, label: "AI agents in production" },
-  { to: 147, format: (n) => `${Math.round(n)}`, label: "live instances" },
-  { to: 1, format: (n) => `${Math.round(n)}K+`, label: "hours automated" },
-];
-
-function AIHeroCtas(mobile: boolean) {
-  const primary =
-    "inline-flex items-center justify-center gap-2 rounded-full bg-cyan-400 font-semibold text-[#061828] transition-[transform,background-color] duration-200 ease-out hover:bg-cyan-300 active:scale-[0.97]";
-  const ghost =
-    "inline-flex items-center justify-center gap-2 rounded-full border border-white/15 font-semibold text-white transition-[transform,border-color,background-color] duration-200 ease-out hover:border-cyan-400/50 hover:bg-white/[0.04] active:scale-[0.97]";
-  if (mobile) {
-    return (
-      <div className="flex items-center gap-2.5">
-        <a href="#projects" className={`${primary} flex-1 px-4 py-3 text-xs`}>
-          Explore projects
-          <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
-        </a>
-        <Link href="/ai/insights" className={`${ghost} flex-1 px-4 py-3 text-xs`}>
-          Read insights
-        </Link>
-      </div>
-    );
-  }
-  return (
-    <div className="flex items-center gap-3.5">
-      <a href="#projects" className={`${primary} px-6 py-3 text-sm`}>
-        Explore projects
-        <ArrowRight className="h-4 w-4" strokeWidth={2} />
-      </a>
-      <Link href="/ai/insights" className={`${ghost} px-6 py-3 text-sm`}>
-        Read insights
-      </Link>
-    </div>
-  );
-}
-
-function AIHero() {
-  return (
-    <EditorialHero
-      accent="cyan"
-      eyebrow="Jitin Nair · AI Systems"
-      headline={AI_HEADLINE}
-      subline={
-        <>
-          AI Systems Architect <span className="text-neutral-600">·</span>{" "}
-          Multi-agent orchestration on LangGraph, MCP, and RAG
-        </>
-      }
-      stats={AI_STATS}
-      ctas={AIHeroCtas}
-      mobilePortraitPosition="center 12%"
-      desktopPortraitPosition="center 18%"
-    />
-  );
-}
+import { MobileHero } from "./home/MobileHero";
+import { DesktopHero } from "./home/DesktopHero";
 
 // Dynamic imports for below-the-fold (Quantum Performance)
 const FeaturedInsight = dynamic(() => import("./FeaturedInsight").then(mod => mod.FeaturedInsight), { ssr: false });
@@ -266,6 +203,13 @@ export function ArchitecturePortfolioExperience() {
     setMounted(true);
   }, []);
 
+  const handleUnlock = useCallback(() => {
+    const expertiseSection = document.getElementById('expertise');
+    if (expertiseSection) {
+      expertiseSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, []);
+
   // Prevent hydration mismatch by rendering null until mounted
   if (!mounted) {
     return (
@@ -280,11 +224,12 @@ export function ArchitecturePortfolioExperience() {
   return (
     <main className="bg-[#0a0a0f] min-h-screen selection:bg-cyan-500/30">
       <NavAI />
-      <div id="top" className="relative z-10">
-        <AIHero />
-      </div>
       {isMobile ? (
         <>
+          <div id="top" className="relative z-10">
+            <MobileHero onUnlock={handleUnlock} />
+          </div>
+
           <div className="space-y-4 md:space-y-0">
             <LazySection id="expertise">
               <MobileBento />
@@ -313,6 +258,10 @@ export function ArchitecturePortfolioExperience() {
         </>
       ) : (
         <>
+          <div id="top" className="relative z-10">
+            <DesktopHero onUnlock={handleUnlock} />
+          </div>
+
           <div className="space-y-12 md:space-y-0">
             <LazySection id="expertise">
               <DesktopExpertiseMarquee />
