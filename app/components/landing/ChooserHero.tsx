@@ -11,22 +11,21 @@ import {
 } from "framer-motion";
 import { ArrowRight, Cpu, GraduationCap } from "lucide-react";
 import { useMounted } from "../ld/primitives";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-// Utility for cleaner classes
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+/* Film grain: inline SVG noise, tiled. Static texture, zero JS cost. */
+const GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")";
+
 const HEADLINE: ReactNode[] = [
   <>
-    Ten years designing how humans <span className="text-emerald-400">learn</span>.
+    Ten years designing how humans{" "}
+    <em className="italic text-emerald-400">learn</em>.
   </>,
   <>
-    Now architecting the <span className="text-cyan-400">AI</span> that empowers them.
+    Now architecting the <span className="text-cyan-400">AI</span> that
+    empowers them.
   </>,
 ];
 
@@ -43,8 +42,9 @@ const TRACKS = [
     title: "AI Systems Architecture",
     what: "Multi-agent orchestration in production. 200+ agents on LangGraph, MCP, and RAG.",
     accent: "text-cyan-400",
-    ring: "hover:border-cyan-400/40",
-    glow: "hover:shadow-[0_0_36px_-10px_rgba(34,211,238,0.55)]",
+    bar: "bg-cyan-400",
+    ring: "hover:border-cyan-400/30 focus-visible:border-cyan-400/40",
+    arrowRing: "group-hover:border-cyan-400/40",
   },
   {
     href: "/ld",
@@ -52,29 +52,42 @@ const TRACKS = [
     title: "Learning & Development Systems",
     what: "Adult learning design, proven at scale. 90%+ completion, 70% faster delivery.",
     accent: "text-emerald-400",
-    ring: "hover:border-emerald-400/40",
-    glow: "hover:shadow-[0_0_36px_-10px_rgba(52,211,153,0.55)]",
+    bar: "bg-emerald-400",
+    ring: "hover:border-emerald-400/30 focus-visible:border-emerald-400/40",
+    arrowRing: "group-hover:border-emerald-400/40",
   },
 ];
 
-/* ---------- Background: brand-neutral dual-tone aurora ---------- */
+/* ---------- Background: quiet dual-tone aurora + vignette ---------- */
 function AuroraBackground() {
   const reduced = useReducedMotion();
-  const orb = "pointer-events-none absolute rounded-full blur-[120px]";
+  const orb = "pointer-events-none absolute rounded-full blur-[130px]";
   return (
     <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
       <motion.div
-        className={`${orb} left-[-12%] top-[-15%] h-[60vh] w-[60vh] bg-emerald-500/20`}
-        animate={reduced ? undefined : { x: [0, 40, 0], y: [0, 28, 0], scale: [1, 1.08, 1] }}
-        transition={reduced ? undefined : { duration: 26, repeat: Infinity, ease: "easeInOut" }}
+        className={`${orb} left-[-14%] top-[-18%] h-[58vh] w-[58vh] bg-emerald-500/[0.14]`}
+        animate={reduced ? undefined : { x: [0, 36, 0], y: [0, 24, 0], scale: [1, 1.06, 1] }}
+        transition={reduced ? undefined : { duration: 32, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className={`${orb} bottom-[-15%] right-[-12%] h-[55vh] w-[55vh] bg-cyan-500/20`}
-        animate={reduced ? undefined : { x: [0, -36, 0], y: [0, -26, 0], scale: [1, 1.1, 1] }}
-        transition={reduced ? undefined : { duration: 30, repeat: Infinity, ease: "easeInOut" }}
+        className={`${orb} bottom-[-18%] right-[-10%] h-[52vh] w-[52vh] bg-cyan-500/[0.13]`}
+        animate={reduced ? undefined : { x: [0, -30, 0], y: [0, -22, 0], scale: [1, 1.08, 1] }}
+        transition={reduced ? undefined : { duration: 36, repeat: Infinity, ease: "easeInOut" }}
       />
-      <div className="absolute inset-0 bg-[#0a0a0f]/35" />
+      {/* Vignette pulls focus to the composition's center */}
+      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_40%,rgba(10,10,15,0.7)_100%)]" />
     </div>
+  );
+}
+
+/* ---------- Grain overlay ---------- */
+function Grain() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-20 opacity-[0.04]"
+      style={{ backgroundImage: GRAIN }}
+    />
   );
 }
 
@@ -84,18 +97,20 @@ function StatTile({
   format,
   label,
   run,
+  compact = false,
 }: {
   to: number;
   format: (n: number) => string;
   label: string;
   run: boolean;
+  compact?: boolean;
 }) {
   const reduced = useReducedMotion();
   const [val, setVal] = useState(reduced ? to : 0);
 
   useEffect(() => {
     if (reduced || !run) {
-      setVal(to);
+      if (reduced) setVal(to);
       return;
     }
     let raf = 0;
@@ -113,10 +128,18 @@ function StatTile({
 
   return (
     <div>
-      <div className="font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl">
+      <div
+        className={
+          compact
+            ? "font-serif text-xl font-medium tracking-tight text-white"
+            : "font-serif text-3xl font-medium tracking-tight text-white lg:text-[2.1rem]"
+        }
+      >
         {format(val)}
       </div>
-      <div className="mt-1 text-xs text-neutral-500">{label}</div>
+      <div className={compact ? "mt-0.5 text-[10px] leading-tight text-neutral-500" : "mt-1.5 text-xs text-neutral-500"}>
+        {label}
+      </div>
     </div>
   );
 }
@@ -142,8 +165,8 @@ function MagneticCard({
   const onMove = (e: React.PointerEvent) => {
     if (reduced || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
-    x.set((e.clientX - (r.left + r.width / 2)) * 0.15);
-    y.set((e.clientY - (r.top + r.height / 2)) * 0.28);
+    x.set((e.clientX - (r.left + r.width / 2)) * 0.12);
+    y.set((e.clientY - (r.top + r.height / 2)) * 0.22);
   };
   const reset = () => {
     x.set(0);
@@ -159,29 +182,30 @@ function MagneticCard({
       <motion.div ref={ref} style={{ x: sx, y: sy }} onPointerMove={onMove} onPointerLeave={reset}>
         <Link
           href={track.href}
-          className={`group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 transition-[transform,border-color,box-shadow] duration-200 ease-out active:scale-[0.98] ${track.ring} ${track.glow}`}
+          className={`group relative flex items-center gap-5 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] px-6 py-5 outline-none transition-[transform,border-color,background-color] duration-200 ease-out hover:bg-white/[0.04] active:scale-[0.98] ${track.ring}`}
         >
-          <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
-            <span className="absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[320%]" />
-          </span>
-          <span className={`relative flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.05] ${track.accent}`}>
-            <Icon className="h-5 w-5" strokeWidth={1.75} />
-          </span>
-          <span className="relative min-w-0">
-            <span className="block text-[15px] font-semibold text-white">{track.title}</span>
-            <span className="block text-[13px] leading-snug text-neutral-400">{track.what}</span>
-          </span>
-          <ArrowRight
-            className={`relative ml-auto h-5 w-5 flex-shrink-0 ${track.accent} transition-transform duration-200 ease-out group-hover:translate-x-1`}
-            strokeWidth={2}
+          {/* Accent edge grows in on hover */}
+          <span
+            aria-hidden
+            className={`absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 transition-transform duration-300 ease-out group-hover:scale-y-100 ${track.bar}`}
           />
+          <Icon className={`h-6 w-6 flex-shrink-0 ${track.accent}`} strokeWidth={1.5} />
+          <span className="min-w-0 flex-1">
+            <span className="block text-[15px] font-semibold text-white">{track.title}</span>
+            <span className="mt-0.5 block text-[13px] leading-snug text-neutral-400">{track.what}</span>
+          </span>
+          <span
+            className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-white/10 transition-[border-color,transform] duration-200 ease-out group-hover:translate-x-1 ${track.arrowRing}`}
+          >
+            <ArrowRight className={`h-4 w-4 ${track.accent}`} strokeWidth={2} />
+          </span>
         </Link>
       </motion.div>
     </motion.div>
   );
 }
 
-/* ---------- Mobile track card: flat rows inside the glass panel ---------- */
+/* ---------- Mobile track card ---------- */
 function MobileTrackCard({
   track,
   delay,
@@ -201,13 +225,10 @@ function MobileTrackCard({
     >
       <Link
         href={track.href}
-        className={`group flex w-full overflow-hidden items-center gap-3 rounded-xl border border-white/10 bg-white/[0.07] px-3.5 py-3 transition-[border-color,transform] duration-150 active:scale-[0.97] ${track.ring}`}
+        className={`group relative flex w-full items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3.5 transition-[border-color,transform] duration-150 active:scale-[0.97] ${track.ring}`}
       >
-        <span
-          className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.08] ${track.accent}`}
-        >
-          <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
-        </span>
+        <span aria-hidden className={`absolute left-0 top-0 h-full w-[2px] ${track.bar} opacity-70`} />
+        <Icon className={`h-5 w-5 flex-shrink-0 ${track.accent}`} strokeWidth={1.5} />
         <span className="min-w-0 flex-1 overflow-hidden">
           <span className="block text-[13px] font-semibold leading-snug text-white">
             {track.title}
@@ -216,85 +237,89 @@ function MobileTrackCard({
             {track.what}
           </span>
         </span>
-        <ArrowRight
-          className={`flex-shrink-0 ${track.accent} h-4 w-4`}
-          strokeWidth={2}
-        />
+        <ArrowRight className={`h-4 w-4 flex-shrink-0 ${track.accent}`} strokeWidth={2} />
       </Link>
     </motion.div>
   );
 }
 
-/* ---------- Portrait: clip-path reveal, settle, sheen, pointer tilt ---------- */
+/* ---------- Portrait: arch frame, hairline echo, slow settle, pointer tilt ---------- */
 function Portrait({ ready }: { ready: boolean }) {
   const reduced = useReducedMotion();
   const mvX = useMotionValue(0);
   const mvY = useMotionValue(0);
-  const rotateY = useSpring(mvX, { stiffness: 120, damping: 14 });
-  const rotateX = useSpring(mvY, { stiffness: 120, damping: 14 });
+  const rotateY = useSpring(mvX, { stiffness: 110, damping: 16 });
+  const rotateX = useSpring(mvY, { stiffness: 110, damping: 16 });
   const ref = useRef<HTMLDivElement>(null);
 
   const onMove = (e: React.PointerEvent) => {
     if (reduced || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
-    mvX.set(((e.clientX - r.left) / r.width - 0.5) * 10);
-    mvY.set((0.5 - (e.clientY - r.top) / r.height) * 10);
+    mvX.set(((e.clientX - r.left) / r.width - 0.5) * 7);
+    mvY.set((0.5 - (e.clientY - r.top) / r.height) * 7);
   };
   const reset = () => {
     mvX.set(0);
     mvY.set(0);
   };
 
+  const arch = "rounded-t-full rounded-b-[28px]";
+
   return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4, ease: EASE }}
-      className="flex h-[360px] w-full items-stretch justify-center sm:h-[440px] md:h-full md:justify-start"
-    >
+    <div className="relative mx-auto w-full max-w-[300px] sm:max-w-[360px] lg:max-w-[440px]" style={{ perspective: 1000 }}>
+      {/* Ambient glow behind the arch */}
+      <div
+        aria-hidden
+        className={`absolute -inset-8 ${arch} bg-gradient-to-tr from-emerald-500/[0.18] via-transparent to-cyan-500/[0.18] blur-3xl`}
+      />
+      {/* Hairline echo arch, offset for editorial depth */}
+      <motion.div
+        aria-hidden
+        initial={reduced ? false : { opacity: 0 }}
+        animate={reduced || ready ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.9, delay: 0.9, ease: EASE }}
+        className={`absolute inset-0 -translate-x-4 translate-y-4 ${arch} border border-white/10`}
+      />
       <div
         ref={ref}
         onPointerMove={onMove}
         onPointerLeave={reset}
-        className="relative h-full w-full"
-        style={{ perspective: 900 }}
+        className={`relative aspect-[7/10] w-full overflow-hidden ${arch} border border-white/[0.12] shadow-2xl`}
       >
-        <div className="absolute inset-0 scale-110 rounded-[28px] bg-gradient-to-tr from-emerald-500/25 to-cyan-500/25 blur-3xl" />
         <motion.div
-          initial={reduced ? false : { clipPath: "inset(100% 0% 0% 0% round 28px)", scale: 1.12 }}
-          animate={
-            reduced || ready
-              ? { clipPath: "inset(0% 0% 0% 0% round 28px)", scale: 1 }
-              : { clipPath: "inset(100% 0% 0% 0% round 28px)", scale: 1.12 }
-          }
-          transition={{ duration: 1.15, ease: EASE }}
-          className="relative h-full w-full overflow-hidden rounded-[28px] border border-white/10 shadow-2xl will-change-transform"
+          style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+          className="h-full w-full"
         >
-          <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="relative h-full w-full">
+          <motion.div
+            initial={reduced ? false : { scale: 1.16, opacity: 0 }}
+            animate={reduced || ready ? { scale: 1, opacity: 1 } : { scale: 1.16, opacity: 0 }}
+            transition={{ duration: 1.4, delay: 0.15, ease: EASE }}
+            className="relative h-full w-full will-change-transform"
+          >
             <Image
               src="/hero-photo.jpg"
               alt="Jitin Nair"
               fill
               className="object-cover"
-              style={{ objectPosition: "center 20%" }}
-              sizes="(max-width: 768px) 360px, 440px"
+              style={{ objectPosition: "center 18%" }}
+              sizes="(max-width: 1024px) 360px, 420px"
               priority
               fetchPriority="high"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/55 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/60 via-transparent to-transparent" />
             {!reduced && (
               <motion.div
                 aria-hidden
                 initial={{ x: "-160%" }}
                 animate={ready ? { x: "160%" } : { x: "-160%" }}
-                transition={{ duration: 1.2, delay: 0.45, ease: "easeInOut" }}
-                className="pointer-events-none absolute inset-y-0 -left-1/2 w-2/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/15 to-transparent"
+                transition={{ duration: 1.2, delay: 0.85, ease: "easeInOut" }}
+                className="pointer-events-none absolute inset-y-0 -left-1/2 w-2/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
               />
             )}
           </motion.div>
         </motion.div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -304,7 +329,7 @@ export function ChooserHero() {
   const reducedMotion = useReducedMotion();
   const [ready, setReady] = useState(false);
   const [countRun, setCountRun] = useState(false);
-  
+
   const reduced = mounted ? reducedMotion : false;
 
   useEffect(() => {
@@ -327,38 +352,41 @@ export function ChooserHero() {
     return () => { active = false; clearTimeout(fallback); };
   }, [reduced]);
 
-  // Desktop timing
-  const HEADING_DELAY = 1.0;
-  const REST_DELAY = 2.0;
+  // Desktop choreography: confident and quick, not theatrical
+  const HEADING_DELAY = 0.2;
+  const REST_DELAY = 1.05;
 
-  // Mobile timing — image is immediately visible, start sooner
-  const M_HEAD_DELAY = 0.35;
-  const M_BODY_DELAY = 1.1;
-  const M_LINKS_DELAY = 1.5;
+  // Mobile choreography
+  const M_HEAD_DELAY = 0.25;
+  const M_BODY_DELAY = 0.95;
+  const M_STATS_DELAY = 1.1;
+  const M_LINKS_DELAY = 1.25;
 
   useEffect(() => {
-    if (!ready || reduced) return;
-    const t = setTimeout(() => setCountRun(true), REST_DELAY * 1000 + 150);
+    if (!ready) return;
+    if (reduced) {
+      setCountRun(true);
+      return;
+    }
+    const t = setTimeout(() => setCountRun(true), (REST_DELAY + 0.3) * 1000);
     return () => clearTimeout(t);
-  }, [ready, reduced, REST_DELAY]);
+  }, [ready, reduced]);
 
-  // Desktop stagger container
   const desktopContainer = {
     hidden: {},
     show: {
       transition: {
-        staggerChildren: reduced ? 0 : 0.18,
+        staggerChildren: reduced ? 0 : 0.16,
         delayChildren: reduced ? 0 : HEADING_DELAY,
       },
     },
   };
 
-  // Mobile stagger container
   const mobileContainer = {
     hidden: {},
     show: {
       transition: {
-        staggerChildren: reduced ? 0 : 0.2,
+        staggerChildren: reduced ? 0 : 0.18,
         delayChildren: reduced ? 0 : M_HEAD_DELAY,
       },
     },
@@ -368,7 +396,7 @@ export function ChooserHero() {
     ? { hidden: { y: 0 }, show: { y: 0 } }
     : {
         hidden: { y: "112%" },
-        show: { y: 0, transition: { duration: 1.05, ease: EASE } },
+        show: { y: 0, transition: { duration: 1.0, ease: EASE } },
       };
 
   const fade = (delay: number) =>
@@ -392,7 +420,7 @@ export function ChooserHero() {
   return (
     <>
       {/* ═══════════════════════════════════════════════════
-          MOBILE: full-bleed portrait + text pinned to bottom
+          MOBILE: full-bleed portrait + glass panel pinned to bottom
           Hidden at md+ breakpoint
       ═══════════════════════════════════════════════════ */}
       <section className="relative h-[100dvh] overflow-hidden bg-[#0a0a0f] md:hidden">
@@ -400,7 +428,6 @@ export function ChooserHero() {
           Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
         </h1>
 
-        {/* Full-bleed background portrait */}
         <Image
           src="/hero-photo.jpg"
           alt=""
@@ -412,7 +439,7 @@ export function ChooserHero() {
           sizes="100vw"
         />
 
-        {/* Top vignette — keeps nav readable */}
+        {/* Top vignette */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#0a0a0f]/80 to-transparent"
@@ -421,49 +448,44 @@ export function ChooserHero() {
         {/* Soft scrim behind the glass panel */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#0a0a0f]/60 via-[#0a0a0f]/20 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-[#0a0a0f]/65 via-[#0a0a0f]/20 to-transparent"
         />
 
-        {/* ── Glass content panel — full viewport width, no rounded corners ── */}
-        {/*
-          Architecture: backdrop-filter lives on its own absolute child so
-          the parent's overflow-hidden isn't sabotaged by WebKit's
-          backdrop-filter stacking context. This ensures all button text
-          is hard-clipped at the correct boundary.
-        */}
-        <div className="absolute inset-x-0 bottom-0">
-          {/* Layer 1: frosted blur + dark base (no overflow-hidden here) */}
+        <Grain />
+
+        {/* Glass content panel */}
+        <div className="absolute inset-x-0 bottom-0 z-10">
           <div
             aria-hidden
             className="absolute inset-0"
             style={{
-              background: "rgba(10,10,15,0.64)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
+              background: "rgba(10,10,15,0.66)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
             }}
           />
-          {/* Layer 2: emerald tint */}
+          {/* Dual-tone accent hairline */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-500/[0.07] via-transparent to-cyan-500/[0.03]"
-          />
-          {/* Layer 3: top accent hairline */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-emerald-500/30"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-emerald-400/50 via-cyan-400/40 to-transparent"
           />
 
-          {/* Layer 4: content — overflow-hidden here works cleanly */}
-          <div className="relative overflow-hidden px-5 pt-6 pb-8">
-            {/* ① Heading — first to reveal */}
+          <div className="relative overflow-hidden px-5 pb-8 pt-6">
+            <motion.p
+              {...mobileFade(0.15)}
+              className="text-[11px] font-medium uppercase tracking-[0.26em] text-neutral-400"
+            >
+              Jitin Nair
+            </motion.p>
+
             <motion.h2
               variants={mobileContainer}
               initial="hidden"
               animate={ready ? "show" : "hidden"}
-              className="font-serif text-[1.8rem] font-medium leading-[1.18] tracking-tight text-white"
+              className="mt-3 font-serif text-[1.75rem] font-medium leading-[1.16] tracking-tight text-white"
             >
               {HEADLINE.map((line, i) => (
-                <span key={i} className="block overflow-hidden pb-[0.06em]">
+                <span key={i} className="block overflow-hidden pb-[0.08em]">
                   <motion.span
                     variants={lineVariant}
                     className="block transform-gpu will-change-transform"
@@ -474,22 +496,29 @@ export function ChooserHero() {
               ))}
             </motion.h2>
 
-            {/* ② Body — after headings complete */}
             <motion.p
               {...mobileFade(M_BODY_DELAY)}
-              className="mt-3.5 text-sm leading-relaxed text-neutral-300"
+              className="mt-3 text-[13px] leading-relaxed text-neutral-300"
             >
               Learning &amp; Development Designer{" "}
               <span className="text-neutral-500">·</span> AI Systems Architect
             </motion.p>
 
-            {/* ③ Links — last to appear */}
+            <motion.div
+              {...mobileFade(M_STATS_DELAY)}
+              className="mt-4 grid grid-cols-3 gap-3 border-t border-white/10 pt-4"
+            >
+              {PROOF.map((stat) => (
+                <StatTile key={stat.label} {...stat} run={countRun} compact />
+              ))}
+            </motion.div>
+
             <div className="mt-4 grid gap-2.5">
               {TRACKS.map((track, i) => (
                 <MobileTrackCard
                   key={track.href}
                   track={track}
-                  delay={M_LINKS_DELAY + i * 0.14}
+                  delay={M_LINKS_DELAY + i * 0.12}
                   ready={ready}
                 />
               ))}
@@ -499,55 +528,77 @@ export function ChooserHero() {
       </section>
 
       {/* ═══════════════════════════════════════════════════
-          DESKTOP: two-column portrait + content
+          DESKTOP: editorial asymmetric split, type left, arch portrait right
           Hidden below md breakpoint
       ═══════════════════════════════════════════════════ */}
-      <main className="relative hidden min-h-[100dvh] items-center overflow-hidden bg-[#0a0a0f] px-5 text-[#f8fafc] selection:bg-cyan-500/30 md:flex">
+      <main className="relative hidden min-h-[100dvh] items-center overflow-hidden bg-[#0a0a0f] px-6 text-[#f8fafc] selection:bg-cyan-500/30 md:flex lg:px-10">
         <h1 className="sr-only">
           Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
         </h1>
 
         <AuroraBackground />
+        <Grain />
 
-        <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-10 py-12 md:grid-cols-2 md:items-stretch md:gap-14">
-          {/* Left - portrait */}
-          <Portrait ready={ready} />
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-12 items-center gap-x-10 gap-y-12 py-16 lg:gap-x-16">
+          {/* Left: type column */}
+          <div className="col-span-12 md:col-span-7">
+            <motion.p
+              {...fade(0.1)}
+              className="text-[12px] font-medium uppercase tracking-[0.3em] text-neutral-400"
+            >
+              Jitin Nair
+            </motion.p>
 
-          {/* Right - content */}
-          <div className="max-w-2xl">
             <motion.h2
               variants={desktopContainer}
               initial="hidden"
               animate={ready ? "show" : "hidden"}
-              className="font-serif text-[2rem] font-medium leading-[1.18] tracking-tight text-white sm:text-[2.6rem] lg:text-[3rem]"
+              className="mt-6 font-serif text-[2.4rem] font-medium leading-[1.1] tracking-tight text-white md:text-[2.6rem] lg:text-[3.4rem] xl:text-[4rem]"
             >
               {HEADLINE.map((line, i) => (
-                <span key={i} className="block overflow-hidden pb-[0.08em]">
-                  <motion.span variants={lineVariant} className="block transform-gpu will-change-transform">
+                <span key={i} className="block overflow-hidden pb-[0.1em]">
+                  <motion.span
+                    variants={lineVariant}
+                    className="block transform-gpu will-change-transform"
+                  >
                     {line}
                   </motion.span>
                 </span>
               ))}
             </motion.h2>
 
-            <motion.p {...fade(REST_DELAY)} className="mt-6 text-base text-neutral-400 sm:text-lg">
-              Learning &amp; Development Designer <span className="text-neutral-600">and</span> AI Systems Architect
+            <motion.p
+              {...fade(REST_DELAY)}
+              className="mt-6 text-base text-neutral-400 lg:text-lg"
+            >
+              Learning &amp; Development Designer{" "}
+              <span className="text-neutral-600">·</span> AI Systems Architect
             </motion.p>
 
             <motion.div
               {...fade(REST_DELAY + 0.12)}
-              className="mt-8 grid max-w-md grid-cols-3 gap-5 border-t border-white/10 pt-6"
+              className="mt-9 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-7"
             >
               {PROOF.map((stat) => (
                 <StatTile key={stat.label} {...stat} run={countRun} />
               ))}
             </motion.div>
 
-            <div className="mt-9 grid gap-3.5">
+            <div className="mt-10 grid max-w-xl gap-3.5">
               {TRACKS.map((track, i) => (
-                <MagneticCard key={track.href} track={track} delay={REST_DELAY + 0.24 + i * 0.1} ready={ready} />
+                <MagneticCard
+                  key={track.href}
+                  track={track}
+                  delay={REST_DELAY + 0.24 + i * 0.1}
+                  ready={ready}
+                />
               ))}
             </div>
+          </div>
+
+          {/* Right: arch portrait */}
+          <div className="col-span-12 md:col-span-5">
+            <Portrait ready={ready} />
           </div>
         </div>
       </main>

@@ -25,7 +25,9 @@ const jetbrains = localFont({
 const playfair = localFont({
   src: [
     { path: "../public/fonts/playfair-display-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/playfair-display-latin-400-italic.woff2", weight: "400", style: "italic" },
     { path: "../public/fonts/playfair-display-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/playfair-display-latin-500-italic.woff2", weight: "500", style: "italic" },
     { path: "../public/fonts/playfair-display-latin-700-normal.woff2", weight: "700", style: "normal" },
     { path: "../public/fonts/playfair-display-latin-900-normal.woff2", weight: "900", style: "normal" },
   ],
