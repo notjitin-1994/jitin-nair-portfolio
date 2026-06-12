@@ -332,7 +332,7 @@ function CinematicPortrait({ ready }: { ready: boolean }) {
   const reduced = useReducedMotion();
   return (
     <div
-      className="relative h-[48dvh] min-h-[300px] w-full overflow-hidden [@media(max-height:740px)]:h-[42dvh] [@media(max-height:740px)]:min-h-[240px]"
+      className="relative h-[44dvh] w-full overflow-hidden [@media(max-height:700px)]:h-[40dvh]"
       style={{
         maskImage: PORTRAIT_MASK,
         WebkitMaskImage: PORTRAIT_MASK,
@@ -460,7 +460,7 @@ export function ChooserHero() {
           page, editorial type below, CTAs in the thumb zone.
           Hidden at md+ breakpoint
       ═══════════════════════════════════════════════════ */}
-      <section className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-[#0a0a0f] md:hidden">
+      <section className="relative flex h-[100dvh] flex-col overflow-hidden bg-[#0a0a0f] md:hidden">
         <h1 className="sr-only">
           Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
         </h1>
@@ -475,7 +475,7 @@ export function ChooserHero() {
 
         <Grain />
 
-        <div className="relative z-10 -mt-14 flex flex-1 flex-col px-5 pb-7">
+        <div className="relative z-10 -mt-10 flex flex-1 flex-col px-5 pb-5 [@media(max-height:700px)]:pb-3">
           <motion.p
             {...mobileFade(0.5)}
             className="text-[11px] font-medium uppercase tracking-[0.3em] text-neutral-400"
@@ -487,7 +487,7 @@ export function ChooserHero() {
             variants={mobileContainer}
             initial="hidden"
             animate={ready ? "show" : "hidden"}
-            className="mt-2.5 max-w-[22rem] font-serif text-[1.7rem] font-medium leading-[1.16] tracking-tight text-white [@media(max-height:740px)]:text-[1.45rem]"
+            className="mt-2 max-w-[22rem] font-serif text-[1.6rem] font-medium leading-[1.16] tracking-tight text-white [@media(max-height:700px)]:text-[1.4rem]"
           >
             {HEADLINE.map((line, i) => (
               <span key={i} className="block overflow-hidden pb-[0.08em]">
