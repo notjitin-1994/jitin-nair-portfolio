@@ -8,13 +8,12 @@ import {
   AnimatePresence,
   useScroll,
   useSpring,
-  useMotionValue,
   useReducedMotion,
 } from "framer-motion";
 import { ArrowRight, ArrowUpRight, ArrowDown, Mail, Linkedin, Check, Phone, MessageCircle, Instagram, Users, ChevronRight, X, ExternalLink, ChevronDown, Network, Video, Zap, Workflow, Cpu, Sparkles } from "lucide-react";
-import { EASE, useFontsReady, Reveal, CountUp, MagneticButton, useMounted } from "./primitives";
+import { EASE, useFontsReady, Reveal, CountUp, MagneticButton } from "./primitives";
 import { DownloadResumeButton } from "./DownloadResumeButton";
-import { LdVortexBackground } from "./LdVortexBackground";
+import { EditorialHero } from "../landing/EditorialHero";
 import { FloatingNav } from "../FloatingNav";
 import {
   ldImpact,
@@ -76,67 +75,12 @@ function Nav() {
   );
 }
 
-/* ---------- Hero ---------- */
+/* ---------- Hero: shared editorial treatment (same as landing + /ai) ---------- */
 function Hero() {
-  const mounted = useMounted();
-  const reducedMotion = useReducedMotion();
-  const ready = useFontsReady();
   const [resumeExpanded, setResumeExpanded] = useState(false);
-  
-  const reduced = mounted ? reducedMotion : false;
-
-  // Portrait pointer tilt + clip-path reveal (reuses the landing treatment).
-  const mvX = useMotionValue(0);
-  const mvY = useMotionValue(0);
-  const rotateY = useSpring(mvX, { stiffness: 120, damping: 14 });
-  const rotateX = useSpring(mvY, { stiffness: 120, damping: 14 });
-  const pRef = useRef<HTMLDivElement>(null);
-  const onMove = (e: React.PointerEvent) => {
-    if (reduced || !pRef.current) return;
-    const r = pRef.current.getBoundingClientRect();
-    mvX.set(((e.clientX - r.left) / r.width - 0.5) * 8);
-    mvY.set((0.5 - (e.clientY - r.top) / r.height) * 8);
-  };
-  const reset = () => {
-    mvX.set(0);
-    mvY.set(0);
-  };
-
-  const container = {
-    hidden: {},
-    show: { transition: { staggerChildren: reduced ? 0 : 0.16, delayChildren: reduced ? 0 : 0.1 } },
-  };
-  const line = reduced
-    ? { hidden: { y: 0 }, show: { y: 0 } }
-    : { hidden: { y: "112%" }, show: { y: 0, transition: { duration: 1.0, ease: EASE } } };
-
-  const M_HEAD_DELAY = 0.35;
-  const M_BODY_DELAY = 1.1;
-  const M_BUTTONS_DELAY = 1.5;
-
-  const mobileContainer = {
-    hidden: {},
-    show: { transition: { staggerChildren: reduced ? 0 : 0.2, delayChildren: reduced ? 0 : M_HEAD_DELAY } },
-  };
-
-  const mobileFade = (delay: number) =>
-    reduced
-      ? { initial: false as const, animate: { opacity: 1, y: 0 } }
-      : {
-          initial: { opacity: 0, y: 14 },
-          animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 },
-          transition: { duration: 0.7, delay, ease: EASE },
-        };
 
   const buttonsBlock = (isMobile: boolean) => (
-    <motion.div
-      {...(isMobile ? mobileFade(M_BUTTONS_DELAY) : {
-        initial: reduced ? false : { opacity: 0, y: 16 },
-        animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 },
-        transition: { duration: 0.7, delay: 0.68, ease: EASE }
-      })}
-      className={cn("mt-5 flex items-center gap-3", !isMobile && "mt-9")}
-    >
+    <div className={cn("flex items-center gap-3", !isMobile && "max-w-md")}>
       <AnimatePresence>
         {!resumeExpanded && (
           <motion.a
@@ -145,196 +89,32 @@ function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             href="#impact"
-            className="flex-1 flex items-center justify-center gap-2 rounded-full bg-emerald-400 px-4 py-3 text-xs font-semibold text-[#062a1d] transition-transform duration-150 active:scale-[0.97]"
+            className={cn(
+              "flex-1 flex items-center justify-center gap-2 rounded-full bg-emerald-400 font-semibold text-[#062a1d] transition-transform duration-150 active:scale-[0.97]",
+              isMobile ? "px-4 py-3 text-xs" : "px-6 py-3 text-sm hover:bg-emerald-300"
+            )}
           >
             Learn More
-            <ArrowDown className="h-3.5 w-3.5" strokeWidth={2} />
+            <ArrowDown className={isMobile ? "h-3.5 w-3.5" : "h-4 w-4"} strokeWidth={2} />
           </motion.a>
         )}
       </AnimatePresence>
       <div className={cn("transition-all duration-300", resumeExpanded ? "w-full" : "flex-1")}>
         <DownloadResumeButton mobile onExpandChange={setResumeExpanded} />
       </div>
-    </motion.div>
+    </div>
   );
 
   return (
-    <>
-      {/* ══════════════════════════════════════════════
-          MOBILE: full-bleed portrait + text at bottom
-          Hidden at md+ breakpoint
-      ══════════════════════════════════════════════ */}
-      <section className="relative h-[100dvh] overflow-hidden bg-[#0a0a0f] md:hidden">
-        {/* Aurora fallback */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-          <motion.div
-            className="absolute left-[-10%] top-[-12%] h-[55vh] w-[55vh] rounded-full bg-emerald-500/20 blur-[120px]"
-            animate={reduced ? undefined : { x: [0, 36, 0], y: [0, 26, 0], scale: [1, 1.08, 1] }}
-            transition={reduced ? undefined : { duration: 28, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute right-[-10%] bottom-[-12%] h-[50vh] w-[50vh] rounded-full bg-teal-500/15 blur-[120px]"
-            animate={reduced ? undefined : { x: [0, -30, 0], y: [0, -22, 0], scale: [1, 1.1, 1] }}
-            transition={reduced ? undefined : { duration: 32, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
-
-        {/* Hero photo */}
-        <div aria-hidden className="absolute inset-0 z-[1]">
-          <Image
-            src="/hero-photo.jpg"
-            alt=""
-            fill
-            className="object-cover"
-            style={{ objectPosition: "center 15%" }}
-            priority
-            sizes="100vw"
-          />
-        </div>
-
-        {/* Top vignette */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-36 bg-gradient-to-b from-[#0a0a0f]/80 to-transparent"
-        />
-
-        {/* Soft scrim behind glass panel */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-[55%] bg-gradient-to-t from-[#0a0a0f]/60 via-[#0a0a0f]/20 to-transparent"
-        />
-
-        {/* Glass panel — full viewport width, no rounded corners */}
-        <div className="absolute inset-x-0 bottom-0 z-[3]">
-          {/* Layer 1: frosted blur (separate from overflow-hidden — fixes WebKit backdrop-filter bug) */}
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background: "rgba(10,10,15,0.64)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-            }}
-          />
-          {/* Layer 2: emerald tint */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-500/[0.07] via-transparent to-teal-500/[0.03]"
-          />
-          {/* Layer 3: top accent hairline */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-emerald-500/30"
-          />
-          {/* Layer 4: content — overflow-hidden works cleanly here */}
-          <div className="relative overflow-hidden px-5 pt-6 pb-8">
-            <motion.h1
-              variants={mobileContainer}
-              initial="hidden"
-              animate={ready ? "show" : "hidden"}
-              className="font-serif text-[1.8rem] font-medium leading-[1.18] tracking-tight text-white"
-            >
-              {HERO_LINES.map((l, i) => (
-                <span key={i} className="block overflow-hidden pb-[0.06em]">
-                  <motion.span variants={line} className="block transform-gpu will-change-transform">
-                    {l}
-                  </motion.span>
-                </span>
-              ))}
-            </motion.h1>
-
-            <motion.p
-              {...mobileFade(M_BODY_DELAY)}
-              className="mt-3.5 text-sm leading-relaxed text-neutral-300"
-            >
-              A decade designing how people learn, and building the AI that scales it.
-            </motion.p>
-
-            {buttonsBlock(true)}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════
-          DESKTOP: vortex + two-column layout
-          Hidden below md breakpoint
-      ══════════════════════════════════════════════ */}
-      <section className="relative hidden min-h-[100dvh] items-center overflow-hidden px-5 pt-16 pb-8 md:flex">
-        <div aria-hidden className="absolute inset-0 z-0 pointer-events-none">
-          <LdVortexBackground />
-        </div>
-
-        <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
-          {/* Content */}
-          <div className="order-2 md:order-1 pb-4 md:pb-0">
-            <motion.h1
-              variants={container}
-              initial="hidden"
-              animate={ready ? "show" : "hidden"}
-              className="font-serif text-[2.1rem] font-medium leading-[1.12] tracking-tight text-white sm:text-[2.8rem] lg:text-[3.2rem]"
-            >
-              {HERO_LINES.map((l, i) => (
-                <span key={i} className="block overflow-hidden pb-[0.08em]">
-                  <motion.span variants={line} className="block transform-gpu will-change-transform">
-                    {l}
-                  </motion.span>
-                </span>
-              ))}
-            </motion.h1>
-
-            <motion.p
-              initial={reduced ? false : { opacity: 0, y: 16 }}
-              animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-              transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-              className="mt-6 max-w-md text-base leading-relaxed text-neutral-400 sm:text-lg"
-            >
-              A decade designing how people learn, and building the AI that scales it.
-            </motion.p>
-
-            {buttonsBlock(false)}
-          </div>
-
-          {/* Portrait */}
-          <motion.div
-            initial={reduced ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, ease: EASE }}
-            className="order-1 flex justify-center md:order-2 md:justify-end"
-          >
-            <div
-              ref={pRef}
-              onPointerMove={onMove}
-              onPointerLeave={reset}
-              className="relative aspect-[4/5] w-full max-w-[300px] sm:max-w-[360px] md:max-w-[420px]"
-              style={{ perspective: 900 }}
-            >
-              <div className="absolute inset-0 scale-110 rounded-[28px] bg-gradient-to-tr from-emerald-500/25 to-teal-500/20 blur-3xl" />
-              <motion.div
-                initial={reduced ? false : { clipPath: "inset(100% 0% 0% 0% round 28px)", scale: 1.1 }}
-                animate={
-                  reduced || ready
-                    ? { clipPath: "inset(0% 0% 0% 0% round 28px)", scale: 1 }
-                    : { clipPath: "inset(100% 0% 0% 0% round 28px)", scale: 1.1 }
-                }
-                transition={{ duration: 1.15, ease: EASE }}
-                style={{ rotateX, rotateY }}
-                className="group relative h-full w-full overflow-hidden rounded-[28px] border border-white/10 bg-[#12121a] shadow-2xl"
-              >
-                <Image
-                  src="/hero-photo.jpg"
-                  alt="Jitin Nair"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  style={{ objectPosition: "center 15%" }}
-                  sizes="(max-width: 768px) 100vw, 420px"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/40 via-transparent to-transparent" />
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-    </>
+    <EditorialHero
+      accent="emerald"
+      eyebrow="Jitin Nair · Learning & Development"
+      headline={HERO_LINES}
+      subline="A decade designing how people learn, and building the AI that scales it."
+      ctas={buttonsBlock}
+      mobilePortraitPosition="center 12%"
+      desktopPortraitPosition="center 15%"
+    />
   );
 }
 
