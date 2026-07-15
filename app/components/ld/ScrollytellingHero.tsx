@@ -49,10 +49,10 @@ const SCROLL_ACTS = [
 ];
 
 const POSITIONS = {
-  "top-left": "top-24 md:top-[20%] left-0 right-0 mx-auto md:mx-0 md:left-[8%] md:right-auto text-center md:text-left",
-  "top-right": "top-24 md:top-[20%] left-0 right-0 mx-auto md:mx-0 md:right-[8%] md:left-auto text-center md:text-right",
-  "bottom-left": "bottom-24 md:bottom-[25%] left-0 right-0 mx-auto md:mx-0 md:left-[8%] md:right-auto text-center md:text-left",
-  "bottom-right": "bottom-24 md:bottom-[25%] left-0 right-0 mx-auto md:mx-0 md:right-[8%] md:left-auto text-center md:text-right",
+  "top-left": "top-[40dvh] md:top-[20%] left-0 right-0 mx-auto md:mx-0 md:left-[8%] md:right-auto text-center md:text-left",
+  "top-right": "top-[40dvh] md:top-[20%] left-0 right-0 mx-auto md:mx-0 md:right-[8%] md:left-auto text-center md:text-right",
+  "bottom-left": "top-[40dvh] md:top-auto md:bottom-[25%] left-0 right-0 mx-auto md:mx-0 md:left-[8%] md:right-auto text-center md:text-left",
+  "bottom-right": "top-[40dvh] md:top-auto md:bottom-[25%] left-0 right-0 mx-auto md:mx-0 md:right-[8%] md:left-auto text-center md:text-right",
 };
 
 function useFramePreloader() {
@@ -155,14 +155,14 @@ function HeroPortrait() {
 
 function HeroConsole() {
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center justify-center gap-8 px-5 md:flex-row md:gap-12 lg:gap-16">
+    <div className="flex w-full max-w-5xl flex-col items-center justify-center gap-6 px-5 pt-8 md:flex-row md:gap-12 lg:gap-16 md:pt-0">
       {/* Left: Bleeding Portrait */}
-      <div className="h-[360px] w-full max-w-[360px] shrink-0 md:h-[440px] md:w-[440px]">
+      <div className="h-[280px] w-full max-w-[280px] shrink-0 md:h-[440px] md:w-[440px]">
         <HeroPortrait />
       </div>
       
       {/* Right: Glassmorphic Marketing Copy */}
-      <div className="flex h-auto w-full max-w-[360px] flex-col justify-center gap-5 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl md:h-[440px] md:w-[440px] md:gap-6 md:p-10">
+      <div className="flex h-auto w-full max-w-[280px] flex-col justify-center gap-4 rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl md:h-[440px] md:w-[440px] md:gap-6 md:p-10">
         <div>
           <h2 className="mb-1 text-3xl font-bold tracking-tight text-white md:mb-2 md:text-5xl">
             Jitin Nair
