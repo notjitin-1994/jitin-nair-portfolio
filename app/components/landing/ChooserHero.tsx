@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -9,606 +9,317 @@ import {
   useSpring,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowRight, Cpu, GraduationCap } from "lucide-react";
+import { ArrowRight, Cpu, GraduationCap, ArrowDown } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useMounted } from "../ld/primitives";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+gsap.registerPlugin(ScrollTrigger);
 
-/* Film grain: inline SVG noise, tiled. Static texture, zero JS cost. */
-const GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")";
+// Emil Kowalski style easings
+const EASE_OUT = [0.23, 1, 0.32, 1] as const;
 
-const HEADLINE: ReactNode[] = [
-  <>
-    Ten years designing how humans{" "}
-    <em className="italic text-emerald-400">learn</em>.
-  </>,
-  <>
-    Now architecting the <span className="text-cyan-400">AI</span> that
-    empowers them.
-  </>,
-];
-
-const PROOF = [
-  { to: 200, format: (n: number) => `${Math.round(n)}+`, label: "AI agents in production" },
-  { to: 5, format: (n: number) => `${Math.round(n)}K+`, label: "learners trained" },
-  { to: 140, format: (n: number) => `$${Math.round(n)}K+`, label: "training costs saved" },
-];
-
-const TRACKS = [
-  {
-    href: "/ai",
-    icon: Cpu,
-    title: "AI Systems Architecture",
-    what: "Multi-agent orchestration in production. 200+ agents on LangGraph, MCP, and RAG.",
-    accent: "text-cyan-400",
-    bar: "bg-cyan-400",
-    ring: "hover:border-cyan-400/30 focus-visible:border-cyan-400/40",
-    arrowRing: "group-hover:border-cyan-400/40",
-  },
-  {
-    href: "/ld",
-    icon: GraduationCap,
-    title: "Learning & Development Systems",
-    what: "Adult learning design, proven at scale. 90%+ completion, 70% faster delivery.",
-    accent: "text-emerald-400",
-    bar: "bg-emerald-400",
-    ring: "hover:border-emerald-400/30 focus-visible:border-emerald-400/40",
-    arrowRing: "group-hover:border-emerald-400/40",
-  },
-];
-
-/* ---------- Background: quiet dual-tone aurora + vignette ---------- */
-function AuroraBackground() {
-  const reduced = useReducedMotion();
-  const orb = "pointer-events-none absolute rounded-full blur-[130px]";
-  return (
-    <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
-      <motion.div
-        className={`${orb} left-[-14%] top-[-18%] h-[58vh] w-[58vh] bg-emerald-500/[0.14]`}
-        animate={reduced ? undefined : { x: [0, 36, 0], y: [0, 24, 0], scale: [1, 1.06, 1] }}
-        transition={reduced ? undefined : { duration: 32, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className={`${orb} bottom-[-18%] right-[-10%] h-[52vh] w-[52vh] bg-cyan-500/[0.13]`}
-        animate={reduced ? undefined : { x: [0, -30, 0], y: [0, -22, 0], scale: [1, 1.08, 1] }}
-        transition={reduced ? undefined : { duration: 36, repeat: Infinity, ease: "easeInOut" }}
-      />
-      {/* Vignette pulls focus to the composition's center */}
-      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_40%,rgba(10,10,15,0.7)_100%)]" />
-    </div>
-  );
-}
-
-/* ---------- Grain overlay ---------- */
-function Grain() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 z-20 opacity-[0.04]"
-      style={{ backgroundImage: GRAIN }}
-    />
-  );
-}
-
-/* ---------- Count-up stat ---------- */
-function StatTile({
-  to,
-  format,
-  label,
-  run,
-  compact = false,
+// 1. MAGNETIC BUTTON COMPONENT
+function MagneticButton({
+  href,
+  children,
+  accentClass,
 }: {
-  to: number;
-  format: (n: number) => string;
-  label: string;
-  run: boolean;
-  compact?: boolean;
+  href: string;
+  children: ReactNode;
+  accentClass: string;
 }) {
+  const ref = useRef<HTMLAnchorElement>(null);
   const reduced = useReducedMotion();
-  const [val, setVal] = useState(reduced ? to : 0);
-
-  useEffect(() => {
-    if (reduced || !run) {
-      if (reduced) setVal(to);
-      return;
-    }
-    let raf = 0;
-    const start = performance.now();
-    const duration = 1100;
-    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
-      setVal(to * easeOutCubic(t));
-      if (t < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [reduced, run, to]);
-
-  return (
-    <div>
-      <div
-        className={
-          compact
-            ? "font-serif text-xl font-medium tracking-tight text-white"
-            : "font-serif text-3xl font-medium tracking-tight text-white lg:text-[2.1rem]"
-        }
-      >
-        {format(val)}
-      </div>
-      <div className={compact ? "mt-0.5 text-[10px] leading-tight text-neutral-500" : "mt-1.5 text-xs text-neutral-500"}>
-        {label}
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Magnetic track card (desktop) ---------- */
-function MagneticCard({
-  track,
-  delay,
-  ready,
-}: {
-  track: (typeof TRACKS)[number];
-  delay: number;
-  ready: boolean;
-}) {
-  const reduced = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 150, damping: 15, mass: 0.3 });
-  const sy = useSpring(y, { stiffness: 150, damping: 15, mass: 0.3 });
-  const Icon = track.icon;
+  const springX = useSpring(x, { stiffness: 150, damping: 15, mass: 0.1 });
+  const springY = useSpring(y, { stiffness: 150, damping: 15, mass: 0.1 });
 
-  const onMove = (e: React.PointerEvent) => {
+  const onPointerMove = (e: React.PointerEvent) => {
     if (reduced || !ref.current) return;
-    const r = ref.current.getBoundingClientRect();
-    x.set((e.clientX - (r.left + r.width / 2)) * 0.12);
-    y.set((e.clientY - (r.top + r.height / 2)) * 0.22);
+    const rect = ref.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    x.set((e.clientX - centerX) * 0.2);
+    y.set((e.clientY - centerY) * 0.2);
   };
-  const reset = () => {
+
+  const onPointerLeave = () => {
     x.set(0);
     y.set(0);
   };
 
   return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0, y: 14 }}
-      animate={reduced ? { opacity: 1, y: 0 } : ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
-      transition={{ duration: 0.55, delay, ease: EASE }}
-    >
-      <motion.div ref={ref} style={{ x: sx, y: sy }} onPointerMove={onMove} onPointerLeave={reset}>
-        <Link
-          href={track.href}
-          className={`group relative flex items-center gap-5 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] px-6 py-5 outline-none transition-[transform,border-color,background-color] duration-200 ease-out hover:bg-white/[0.04] active:scale-[0.98] ${track.ring}`}
-        >
-          {/* Accent edge grows in on hover */}
-          <span
-            aria-hidden
-            className={`absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 transition-transform duration-300 ease-out group-hover:scale-y-100 ${track.bar}`}
-          />
-          <Icon className={`h-6 w-6 flex-shrink-0 ${track.accent}`} strokeWidth={1.5} />
-          <span className="min-w-0 flex-1">
-            <span className="block text-[15px] font-semibold text-white">{track.title}</span>
-            <span className="mt-0.5 block text-[13px] leading-snug text-neutral-400">{track.what}</span>
-          </span>
-          <span
-            className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-white/10 transition-[border-color,transform] duration-200 ease-out group-hover:translate-x-1 ${track.arrowRing}`}
-          >
-            <ArrowRight className={`h-4 w-4 ${track.accent}`} strokeWidth={2} />
-          </span>
-        </Link>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-/* ---------- Mobile track card ---------- */
-function MobileTrackCard({
-  track,
-  delay,
-  ready,
-}: {
-  track: (typeof TRACKS)[number];
-  delay: number;
-  ready: boolean;
-}) {
-  const reduced = useReducedMotion();
-  const Icon = track.icon;
-  return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0, y: 12 }}
-      animate={reduced || ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-      transition={{ duration: 0.55, delay, ease: EASE }}
-    >
+    <motion.div style={{ x: springX, y: springY }} className="inline-block">
       <Link
-        href={track.href}
-        className={`group relative flex w-full items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3.5 transition-[border-color,transform] duration-150 active:scale-[0.97] ${track.ring}`}
+        ref={ref}
+        href={href}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
+        className={`group relative flex items-center justify-center gap-3 overflow-hidden rounded-full bg-white px-8 py-4 font-medium text-black transition-transform duration-200 ease-out active:scale-[0.97]`}
       >
-        <span aria-hidden className={`absolute left-0 top-0 h-full w-[2px] ${track.bar} opacity-70`} />
-        <Icon className={`h-5 w-5 flex-shrink-0 ${track.accent}`} strokeWidth={1.5} />
-        <span className="min-w-0 flex-1 overflow-hidden">
-          <span className="block text-[13px] font-semibold leading-snug text-white">
-            {track.title}
-          </span>
-          <span className="block line-clamp-1 text-[11px] text-neutral-400">
-            {track.what}
-          </span>
+        <span className="relative z-10 flex items-center gap-2">
+          {children}
         </span>
-        <ArrowRight className={`h-4 w-4 flex-shrink-0 ${track.accent}`} strokeWidth={2} />
+        <div
+          className={`absolute inset-0 z-0 origin-bottom translate-y-full scale-y-0 rounded-full transition-transform duration-300 ease-out group-hover:translate-y-0 group-hover:scale-y-100 ${accentClass}`}
+        />
       </Link>
     </motion.div>
   );
 }
 
-/* ---------- Portrait: arch frame, hairline echo, slow settle, pointer tilt ---------- */
-function Portrait({ ready }: { ready: boolean }) {
-  const reduced = useReducedMotion();
-  const mvX = useMotionValue(0);
-  const mvY = useMotionValue(0);
-  const rotateY = useSpring(mvX, { stiffness: 110, damping: 16 });
-  const rotateX = useSpring(mvY, { stiffness: 110, damping: 16 });
+// 2. PARALLAX PORTRAIT WITH 3D TILT
+function ParallaxPortrait({ src }: { src: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  // 3D tilt
+  const rotateX = useSpring(y, { stiffness: 100, damping: 30 });
+  const rotateY = useSpring(x, { stiffness: 100, damping: 30 });
 
   const onMove = (e: React.PointerEvent) => {
     if (reduced || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
-    mvX.set(((e.clientX - r.left) / r.width - 0.5) * 7);
-    mvY.set((0.5 - (e.clientY - r.top) / r.height) * 7);
-  };
-  const reset = () => {
-    mvX.set(0);
-    mvY.set(0);
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    x.set(((e.clientX - cx) / r.width) * 15);
+    y.set((-(e.clientY - cy) / r.height) * 15);
   };
 
-  const arch = "rounded-t-full rounded-b-[28px]";
+  const onLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
 
-  return (
-    <div className="relative mx-auto w-full max-w-[300px] sm:max-w-[360px] lg:max-w-[440px]" style={{ perspective: 1000 }}>
-      {/* Ambient glow behind the arch */}
-      <div
-        aria-hidden
-        className={`absolute -inset-8 ${arch} bg-gradient-to-tr from-emerald-500/[0.18] via-transparent to-cyan-500/[0.18] blur-3xl`}
-      />
-      {/* Hairline echo arch, offset for editorial depth */}
-      <motion.div
-        aria-hidden
-        initial={reduced ? false : { opacity: 0 }}
-        animate={reduced || ready ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.9, delay: 0.9, ease: EASE }}
-        className={`absolute inset-0 -translate-x-4 translate-y-4 ${arch} border border-white/10`}
-      />
-      <div
-        ref={ref}
-        onPointerMove={onMove}
-        onPointerLeave={reset}
-        className={`relative aspect-[7/10] w-full overflow-hidden ${arch} border border-white/[0.12] shadow-2xl`}
-      >
-        <motion.div
-          style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-          className="h-full w-full"
-        >
-          <motion.div
-            initial={reduced ? false : { scale: 1.16, opacity: 0 }}
-            animate={reduced || ready ? { scale: 1, opacity: 1 } : { scale: 1.16, opacity: 0 }}
-            transition={{ duration: 1.4, delay: 0.15, ease: EASE }}
-            className="relative h-full w-full will-change-transform"
-          >
-            <Image
-              src="/hero-photo.jpg"
-              alt="Jitin Nair"
-              fill
-              className="object-cover"
-              style={{ objectPosition: "center 18%" }}
-              sizes="(max-width: 1024px) 360px, 420px"
-              priority
-              fetchPriority="high"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/60 via-transparent to-transparent" />
-            {!reduced && (
-              <motion.div
-                aria-hidden
-                initial={{ x: "-160%" }}
-                animate={ready ? { x: "160%" } : { x: "-160%" }}
-                transition={{ duration: 1.2, delay: 0.85, ease: "easeInOut" }}
-                className="pointer-events-none absolute inset-y-0 -left-1/2 w-2/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
-              />
-            )}
-          </motion.div>
-        </motion.div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Mobile portrait: full-bleed, dissolves into the page via mask.
-   No card, no frame, no overlay. The subject stays fully visible. ---------- */
-const PORTRAIT_MASK =
-  "linear-gradient(to bottom, black 0%, black 55%, rgba(0,0,0,0.6) 78%, transparent 99%)";
-
-function CinematicPortrait({ ready }: { ready: boolean }) {
-  const reduced = useReducedMotion();
   return (
     <div
-      className="relative h-[44dvh] w-full overflow-hidden [@media(max-height:700px)]:h-[40dvh]"
-      style={{
-        maskImage: PORTRAIT_MASK,
-        WebkitMaskImage: PORTRAIT_MASK,
-      }}
+      ref={ref}
+      onPointerMove={onMove}
+      onPointerLeave={onLeave}
+      className="absolute inset-0 lg:relative lg:aspect-[3/4] lg:w-full lg:max-w-[440px]"
+      style={{ perspective: 1200 }}
     >
       <motion.div
-        initial={reduced ? false : { scale: 1.08, opacity: 0 }}
-        animate={reduced || ready ? { scale: 1, opacity: 1 } : { scale: 1.08, opacity: 0 }}
-        transition={{ duration: 1.6, ease: EASE }}
-        className="relative h-full w-full will-change-transform"
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        className="relative h-full w-full overflow-hidden lg:shadow-2xl lg:rounded-[24px] lg:border lg:border-white/[0.08]"
       >
-        <Image
-          src="/hero-photo.jpg"
-          alt="Jitin Nair"
-          fill
-          className="object-cover"
-          style={{ objectPosition: "center 10%" }}
-          priority
-          fetchPriority="high"
-          sizes="100vw"
-        />
+        <div className="absolute inset-0 bg-neutral-900">
+          <Image
+            src={src}
+            alt="Jitin Nair"
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 500px"
+            className="object-cover scale-[1.05] transition-all duration-700 lg:hover:scale-100"
+            style={{ objectPosition: "center 15%" }}
+          />
+          {/* Mobile dark overlay */}
+          <div className="absolute inset-0 bg-black/75 lg:hidden" />
+          {/* Desktop gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#030303]/80 via-transparent to-transparent hidden lg:block" />
+        </div>
       </motion.div>
     </div>
   );
 }
 
-/* ---------- Hero ---------- */
-export function ChooserHero() {
-  const mounted = useMounted();
-  const reducedMotion = useReducedMotion();
-  const [ready, setReady] = useState(false);
-  const [countRun, setCountRun] = useState(false);
+// 3. FLOATING 3D ICON FOR CARDS 2 & 3
+function FloatingIcon({ icon: Icon, colorClass, glowColor }: { icon: any, colorClass: string, glowColor: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useSpring(y, { stiffness: 80, damping: 20 });
+  const rotateY = useSpring(x, { stiffness: 80, damping: 20 });
 
-  const reduced = mounted ? reducedMotion : false;
-
-  useEffect(() => {
-    if (reduced) {
-      setReady(true);
-      return;
-    }
-    if (typeof document !== "undefined" && document.readyState === "complete") {
-      setReady(true);
-      return;
-    }
-    let active = true;
-    const done = () => { if (active) setReady(true); };
-    const fallback = setTimeout(done, 800);
-    if (typeof document !== "undefined" && document.fonts?.ready) {
-      document.fonts.ready.then(done).catch(done);
-    } else {
-      done();
-    }
-    return () => { active = false; clearTimeout(fallback); };
-  }, [reduced]);
-
-  // Desktop choreography: confident and quick, not theatrical
-  const HEADING_DELAY = 0.2;
-  const REST_DELAY = 1.05;
-
-  // Mobile choreography: portrait first, then type, then thumb-zone CTAs
-  const M_HEAD_DELAY = 0.6;
-  const M_BODY_DELAY = 1.0;
-  const M_STATS_DELAY = 1.1;
-  const M_LINKS_DELAY = 1.2;
-
-  useEffect(() => {
-    if (!ready) return;
-    if (reduced) {
-      setCountRun(true);
-      return;
-    }
-    const t = setTimeout(() => setCountRun(true), (REST_DELAY + 0.3) * 1000);
-    return () => clearTimeout(t);
-  }, [ready, reduced]);
-
-  const desktopContainer = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: reduced ? 0 : 0.16,
-        delayChildren: reduced ? 0 : HEADING_DELAY,
-      },
-    },
+  const onMove = (e: React.PointerEvent) => {
+    if (reduced || !ref.current) return;
+    const r = ref.current.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    x.set(((e.clientX - cx) / r.width) * 30);
+    y.set((-(e.clientY - cy) / r.height) * 30);
   };
 
-  const mobileContainer = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: reduced ? 0 : 0.14,
-        delayChildren: reduced ? 0 : M_HEAD_DELAY,
-      },
-    },
+  const onLeave = () => {
+    x.set(0);
+    y.set(0);
   };
-
-  const lineVariant = reduced
-    ? { hidden: { y: 0 }, show: { y: 0 } }
-    : {
-        hidden: { y: "112%" },
-        show: { y: 0, transition: { duration: 1.0, ease: EASE } },
-      };
-
-  const fade = (delay: number) =>
-    reduced
-      ? { initial: false as const, animate: { opacity: 1, y: 0 } }
-      : {
-          initial: { opacity: 0, y: 18 },
-          animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 },
-          transition: { duration: 0.8, delay, ease: EASE },
-        };
-
-  const mobileFade = (delay: number) =>
-    reduced
-      ? { initial: false as const, animate: { opacity: 1, y: 0 } }
-      : {
-          initial: { opacity: 0, y: 14 },
-          animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 },
-          transition: { duration: 0.7, delay, ease: EASE },
-        };
 
   return (
-    <>
-      {/* ═══════════════════════════════════════════════════
-          MOBILE: cinematic full-bleed portrait dissolving into the
-          page, editorial type below, CTAs in the thumb zone.
-          Hidden at md+ breakpoint
-      ═══════════════════════════════════════════════════ */}
-      <section className="relative flex h-[100dvh] flex-col overflow-hidden bg-[#0a0a0f] md:hidden">
-        <h1 className="sr-only">
-          Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
-        </h1>
+    <div ref={ref} onPointerMove={onMove} onPointerLeave={onLeave} className="relative w-full max-w-[300px] lg:max-w-[400px] aspect-square" style={{ perspective: 1000 }}>
+      <motion.div
+        className="flex h-full w-full items-center justify-center rounded-full border border-white/[0.05] bg-white/[0.01] backdrop-blur-2xl"
+        style={{
+           rotateX, 
+           rotateY, 
+           transformStyle: "preserve-3d",
+           boxShadow: `inset 0 1px 1px rgba(255,255,255,0.1), 0 0 120px ${glowColor}`
+        }}
+      >
+        <motion.div style={{ transform: "translateZ(60px)" }}>
+          <Icon className={`h-24 w-24 lg:h-32 lg:w-32 ${colorClass}`} strokeWidth={1} />
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
 
-        {/* Static ambient glows behind the content block: cheap, no loops */}
-        <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute bottom-[20%] left-[-30%] h-[36vh] w-[36vh] rounded-full bg-emerald-500/[0.1] blur-[70px]" />
-          <div className="absolute bottom-[-12%] right-[-28%] h-[36vh] w-[36vh] rounded-full bg-cyan-500/[0.11] blur-[70px]" />
-        </div>
+// 4. MAIN HERO / SCROLLYTELLING COMPONENT
+export function ChooserHero() {
+  const mounted = useMounted();
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
 
-        <CinematicPortrait ready={ready} />
+  useEffect(() => {
+    if (reduce || !ref.current || !mounted) return;
+    
+    // Smooth GSAP scroll integration
+    const ctx = gsap.context(() => {
+      const cardEls = gsap.utils.toArray<HTMLElement>(".stack-card");
+      if (cardEls.length === 0) return;
 
-        <Grain />
+      cardEls.forEach((card, i) => {
+        if (i === cardEls.length - 1) return;
+        
+        // Pin the current card
+        ScrollTrigger.create({
+          trigger: card,
+          start: "top top",
+          endTrigger: cardEls[cardEls.length - 1],
+          end: "top top",
+          pin: true,
+          pinSpacing: false,
+        });
+        
+        // Scale and fade it out as the next one comes up
+        gsap.to(card, {
+          scale: 0.94,
+          opacity: 0,
+          filter: "blur(12px)",
+          ease: "none",
+          scrollTrigger: {
+            trigger: cardEls[i + 1],
+            start: "top bottom",
+            end: "top top",
+            scrub: true,
+          },
+        });
+      });
+    }, ref);
+    
+    return () => ctx.revert();
+  }, [mounted, reduce]);
 
-        <div className="relative z-10 -mt-10 flex flex-1 flex-col px-5 pb-5 [@media(max-height:700px)]:pb-3">
-          <motion.p
-            {...mobileFade(0.5)}
-            className="text-[11px] font-medium uppercase tracking-[0.3em] text-neutral-400"
+  if (!mounted) return null;
+
+  return (
+    <div ref={ref} className="relative bg-[#030303] text-neutral-200 selection:bg-white/20">
+      
+      {/* ──────────────────────────────────────────────────────────
+          CARD 1: HERO (SPLIT SCREEN)
+      ────────────────────────────────────────────────────────── */}
+      <section className="stack-card relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:flex-row lg:px-12 z-[1]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.03)_0%,transparent_60%)] pointer-events-none" />
+        <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
+          
+          <motion.div 
+            initial={reduce ? false : { opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: EASE_OUT }}
+            className="relative z-10 flex flex-col pt-20 lg:pt-0"
           >
-            Jitin Nair
-          </motion.p>
-
-          <motion.h2
-            variants={mobileContainer}
-            initial="hidden"
-            animate={ready ? "show" : "hidden"}
-            className="mt-2 max-w-[22rem] font-serif text-[1.6rem] font-medium leading-[1.16] tracking-tight text-white [@media(max-height:700px)]:text-[1.4rem]"
-          >
-            {HEADLINE.map((line, i) => (
-              <span key={i} className="block overflow-hidden pb-[0.08em]">
-                <motion.span
-                  variants={lineVariant}
-                  className="block transform-gpu will-change-transform"
-                >
-                  {line}
-                </motion.span>
-              </span>
-            ))}
-          </motion.h2>
-
-          <motion.p
-            {...mobileFade(M_BODY_DELAY)}
-            className="mt-2.5 text-[12px] leading-relaxed text-neutral-400"
-          >
-            Learning &amp; Development Designer{" "}
-            <span className="text-neutral-600">·</span> AI Systems Architect
-          </motion.p>
-
-          {/* Spacer pushes stats + CTAs into the thumb zone */}
-          <div className="flex-1" />
-
-          <motion.div
-            {...mobileFade(M_STATS_DELAY)}
-            className="mt-6 grid grid-cols-3 gap-3 border-t border-white/10 pt-4"
-          >
-            {PROOF.map((stat) => (
-              <StatTile key={stat.label} {...stat} run={countRun} compact />
-            ))}
+            <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.2em] bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+              Jitin Nair
+            </p>
+            <h1 className="text-balance text-[2.75rem] font-medium leading-[1.05] tracking-tight text-white md:text-6xl lg:text-[4.5rem]">
+              Designing how <br className="hidden lg:block"/> <span className="text-emerald-400">humans learn</span>. <br/>
+              Architecting the <br className="hidden lg:block"/> <span className="text-cyan-400">AI</span> that empowers them.
+            </h1>
+            <p className="mt-8 max-w-md text-base leading-relaxed text-neutral-200">
+              I split my time between building multi-agent AI systems in production and designing scalable adult learning experiences. Scroll to explore the portfolios.
+            </p>
+            
+            <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               transition={{ delay: 1, duration: 1 }}
+               className="mt-16 flex items-center gap-3 text-sm text-neutral-400"
+            >
+               <ArrowDown className="h-4 w-4 animate-bounce text-white" />
+               <span className="text-white">Scroll to explore</span>
+            </motion.div>
           </motion.div>
 
-          <div className="mt-4 grid gap-2.5">
-            {TRACKS.map((track, i) => (
-              <MobileTrackCard
-                key={track.href}
-                track={track}
-                delay={M_LINKS_DELAY + i * 0.08}
-                ready={ready}
-              />
-            ))}
+          <motion.div 
+            initial={reduce ? false : { opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.2, ease: EASE_OUT }}
+            className="absolute inset-0 z-0 lg:relative lg:z-auto lg:flex lg:justify-end"
+          >
+             <ParallaxPortrait src="/hero-photo.jpg" />
+          </motion.div>
+
+        </div>
+      </section>
+
+      {/* ──────────────────────────────────────────────────────────
+          CARD 2: AI PORTFOLIO (SPLIT SCREEN LEFT TEXT)
+      ────────────────────────────────────────────────────────── */}
+      <section className="stack-card relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[2] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_50%,rgba(34,211,238,0.04)_0%,transparent_50%)] pointer-events-none" />
+        <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
+          <div className="flex flex-col">
+            <h2 className="text-balance text-5xl font-medium leading-[1.05] tracking-tight text-white md:text-7xl lg:text-[5.5rem]">
+              AI Systems <br className="hidden lg:block"/> Architecture
+            </h2>
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-neutral-200">
+              Multi-agent orchestration in production. 200+ agents built on LangGraph, MCP, and advanced RAG architectures.
+            </p>
+            <div className="mt-10 self-start">
+              <MagneticButton href="/ai" accentClass="bg-cyan-400">
+                <Cpu className="h-5 w-5 text-current group-hover:text-black transition-colors" />
+                <span className="group-hover:text-black transition-colors">Explore AI Portfolio</span>
+                <ArrowRight className="h-4 w-4 opacity-50 group-hover:text-black transition-colors" />
+              </MagneticButton>
+            </div>
+          </div>
+          <div className="flex justify-center lg:justify-end">
+             <FloatingIcon icon={Cpu} colorClass="text-cyan-400" glowColor="rgba(34,211,238,0.12)" />
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════
-          DESKTOP: editorial asymmetric split, type left, arch portrait right
-          Hidden below md breakpoint
-      ═══════════════════════════════════════════════════ */}
-      <main className="relative hidden min-h-[100dvh] items-center overflow-hidden bg-[#0a0a0f] px-6 text-[#f8fafc] selection:bg-cyan-500/30 md:flex lg:px-10">
-        <h1 className="sr-only">
-          Jitin Nair · Learning &amp; Development Designer and AI Systems Architect
-        </h1>
-
-        <AuroraBackground />
-        <Grain />
-
-        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-12 items-center gap-x-10 gap-y-12 py-16 lg:gap-x-16">
-          {/* Left: type column */}
-          <div className="col-span-12 md:col-span-7">
-            <motion.p
-              {...fade(0.1)}
-              className="text-[12px] font-medium uppercase tracking-[0.3em] text-neutral-400"
-            >
-              Jitin Nair
-            </motion.p>
-
-            <motion.h2
-              variants={desktopContainer}
-              initial="hidden"
-              animate={ready ? "show" : "hidden"}
-              className="mt-6 font-serif text-[2.4rem] font-medium leading-[1.1] tracking-tight text-white md:text-[2.6rem] lg:text-[3.4rem] xl:text-[4rem]"
-            >
-              {HEADLINE.map((line, i) => (
-                <span key={i} className="block overflow-hidden pb-[0.1em]">
-                  <motion.span
-                    variants={lineVariant}
-                    className="block transform-gpu will-change-transform"
-                  >
-                    {line}
-                  </motion.span>
-                </span>
-              ))}
-            </motion.h2>
-
-            <motion.p
-              {...fade(REST_DELAY)}
-              className="mt-6 text-base text-neutral-400 lg:text-lg"
-            >
-              Learning &amp; Development Designer{" "}
-              <span className="text-neutral-600">·</span> AI Systems Architect
-            </motion.p>
-
-            <motion.div
-              {...fade(REST_DELAY + 0.12)}
-              className="mt-9 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-7"
-            >
-              {PROOF.map((stat) => (
-                <StatTile key={stat.label} {...stat} run={countRun} />
-              ))}
-            </motion.div>
-
-            <div className="mt-10 grid max-w-xl gap-3.5">
-              {TRACKS.map((track, i) => (
-                <MagneticCard
-                  key={track.href}
-                  track={track}
-                  delay={REST_DELAY + 0.24 + i * 0.1}
-                  ready={ready}
-                />
-              ))}
+      {/* ──────────────────────────────────────────────────────────
+          CARD 3: L&D PORTFOLIO (SPLIT SCREEN RIGHT TEXT)
+      ────────────────────────────────────────────────────────── */}
+      <section className="stack-card relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[3] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_50%,rgba(52,211,153,0.04)_0%,transparent_50%)] pointer-events-none" />
+         <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
+          <div className="flex justify-center lg:justify-start order-2 lg:order-1">
+             <FloatingIcon icon={GraduationCap} colorClass="text-emerald-400" glowColor="rgba(52,211,153,0.12)" />
+          </div>
+          <div className="flex flex-col order-1 lg:order-2">
+            <h2 className="text-balance text-5xl font-medium leading-[1.05] tracking-tight text-white md:text-7xl lg:text-[5.5rem]">
+              Learning &amp; <br className="hidden lg:block"/> Development
+            </h2>
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-neutral-200">
+              Adult learning design, proven at scale. Achieving 90%+ completion rates and 70% faster content delivery.
+            </p>
+            <div className="mt-10 self-start">
+              <MagneticButton href="/ld" accentClass="bg-emerald-400">
+                <GraduationCap className="h-5 w-5 text-current group-hover:text-black transition-colors" />
+                <span className="group-hover:text-black transition-colors">Explore L&D Portfolio</span>
+                <ArrowRight className="h-4 w-4 opacity-50 group-hover:text-black transition-colors" />
+              </MagneticButton>
             </div>
           </div>
-
-          {/* Right: arch portrait */}
-          <div className="col-span-12 md:col-span-5">
-            <Portrait ready={ready} />
-          </div>
         </div>
-      </main>
-    </>
+      </section>
+
+    </div>
   );
 }

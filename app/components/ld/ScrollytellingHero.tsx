@@ -55,8 +55,10 @@ const POSITIONS = {
   "bottom-right": "top-[40dvh] md:top-auto md:bottom-[25%] left-0 right-0 mx-auto md:mx-0 md:right-[8%] md:left-auto text-center md:text-right",
 };
 
-function useFramePreloader() {
+function useFramePreloader(onFrameLoad?: (idx: number) => void) {
   const imagesRef = useRef<(HTMLImageElement | null)[]>([]);
+  const callbackRef = useRef(onFrameLoad);
+  callbackRef.current = onFrameLoad;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -66,6 +68,9 @@ function useFramePreloader() {
     for (let i = 0; i < TOTAL_FRAMES; i++) {
       const img = new window.Image();
       img.src = `${FRAME_PATH}${String(i + 1).padStart(4, "0")}.webp`;
+      img.onload = () => {
+        if (callbackRef.current) callbackRef.current(i);
+      };
       imgs[i] = img;
     }
     imagesRef.current = imgs;
@@ -187,9 +192,14 @@ function ScrollytellingExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const journeyRef = useRef<HTMLDivElement>(null);
-  const imagesRef = useFramePreloader();
   const [gsapLoaded, setGsapLoaded] = useState(false);
   const currentFrameRef = useRef(-1);
+
+  const imagesRef = useFramePreloader((idx) => {
+    if (currentFrameRef.current === idx) {
+      paintFrame(idx);
+    }
+  });
 
   const paintFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
