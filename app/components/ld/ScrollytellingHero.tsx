@@ -143,9 +143,8 @@ function HeroPortrait() {
         data-portrait-img
         src="/hero-photo-nobg.png"
         alt="Jitin Nair"
-        className="absolute bottom-0 w-[130%] max-w-none origin-bottom drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)] z-10"
+        className="absolute bottom-0 left-1/2 z-10 w-[130%] max-w-none -translate-x-1/2 origin-bottom drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)] md:h-[112%] md:w-auto"
         style={{ 
-          left: "-15%",
           clipPath: "inset(-100% -100% 0 -100% round 0 0 1.5rem 1.5rem)"
         }}
       />
@@ -527,7 +526,7 @@ function ScrollytellingExperience() {
       {/* Final 2-Column Console */}
       <div
         ref={journeyRef}
-        className="absolute left-1/2 top-1/2 z-20 w-full -translate-x-1/2 -translate-y-1/2 opacity-0 flex justify-center"
+        className="absolute bottom-4 left-1/2 z-20 flex w-full -translate-x-1/2 justify-center opacity-0 md:bottom-auto md:top-1/2 md:-translate-y-1/2"
       >
         <HeroConsole />
       </div>
