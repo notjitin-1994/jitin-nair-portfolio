@@ -143,7 +143,7 @@ function HeroPortrait() {
         data-portrait-img
         src="/hero-photo-nobg.png"
         alt="Jitin Nair"
-        className="absolute bottom-0 left-1/2 z-10 w-[130%] max-w-none -translate-x-1/2 origin-bottom drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)] md:h-[112%] md:w-auto"
+        className="absolute bottom-0 left-1/2 z-10 w-[130%] max-w-none -translate-x-1/2 origin-bottom drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)] md:left-auto md:right-0 md:h-[112%] md:w-auto md:translate-x-0"
         style={{ 
           clipPath: "inset(-100% -100% 0 -100% round 0 0 1.5rem 1.5rem)"
         }}
