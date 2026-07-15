@@ -143,7 +143,7 @@ function HeroPortrait() {
         data-portrait-img
         src="/hero-photo-nobg.png"
         alt="Jitin Nair"
-        className="absolute bottom-0 left-1/2 z-10 w-[130%] max-w-none -translate-x-1/2 origin-bottom drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)] md:left-auto md:right-0 md:h-[112%] md:w-auto md:translate-x-0"
+        className="absolute bottom-0 left-1/2 z-10 w-[115%] max-w-none -translate-x-1/2 origin-bottom drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)] md:left-auto md:right-0 md:h-[112%] md:w-auto md:translate-x-0"
         style={{ 
           clipPath: "inset(-100% -100% 0 -100% round 0 0 1.5rem 1.5rem)"
         }}
@@ -156,12 +156,12 @@ function HeroConsole() {
   return (
     <div className="flex w-full max-w-7xl flex-col items-center justify-center gap-4 px-4 pt-6 md:flex-row md:gap-8 lg:gap-12 md:pt-0">
       {/* Left: Bleeding Portrait */}
-      <div className="h-[220px] w-full max-w-[340px] shrink-0 md:h-[440px] md:w-[600px] md:max-w-none">
+      <div className="h-[220px] w-full max-w-[300px] shrink-0 md:h-[440px] md:w-[600px] md:max-w-none">
         <HeroPortrait />
       </div>
       
       {/* Right: Glassmorphic Marketing Copy */}
-      <div className="flex h-auto w-full max-w-[340px] flex-col justify-center gap-3 rounded-3xl border border-white/20 bg-white/10 p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] backdrop-blur-2xl md:h-[440px] md:w-[600px] md:max-w-none md:gap-6 md:p-10">
+      <div className="flex h-auto w-full max-w-[300px] flex-col justify-center gap-3 rounded-3xl border border-white/20 bg-white/10 p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] backdrop-blur-2xl md:h-[440px] md:w-[600px] md:max-w-none md:gap-6 md:p-10">
         <div>
           <h2 className="mb-1 text-2xl font-bold tracking-tight text-white md:mb-2 md:text-5xl">
             Jitin Nair
@@ -184,7 +184,6 @@ function HeroConsole() {
 function ScrollytellingExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvasRefForeground = useRef<HTMLCanvasElement>(null);
   const journeyRef = useRef<HTMLDivElement>(null);
   const imagesRef = useFramePreloader();
   const [gsapLoaded, setGsapLoaded] = useState(false);
@@ -213,14 +212,6 @@ function ScrollytellingExperience() {
 
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
-    const canvasFg = canvasRefForeground.current;
-    if (canvasFg) {
-      const ctxFg = canvasFg.getContext("2d");
-      if (ctxFg) {
-        ctxFg.drawImage(img, sx, sy, sw, sh, 0, 0, canvasFg.width, canvasFg.height);
-      }
-    }
-
     // Hide the LCP image permanently once the canvas is actively painting
     const lcp = document.getElementById("lcp-fallback");
     if (lcp && lcp.style.opacity !== "0") {
@@ -239,14 +230,6 @@ function ScrollytellingExperience() {
       canvas.height = window.innerHeight * dpr;
       canvas.style.width = `${window.innerWidth}px`;
       canvas.style.height = `${window.innerHeight}px`;
-      
-      const canvasFg = canvasRefForeground.current;
-      if (canvasFg) {
-        canvasFg.width = window.innerWidth * dpr;
-        canvasFg.height = window.innerHeight * dpr;
-        canvasFg.style.width = `${window.innerWidth}px`;
-        canvasFg.style.height = `${window.innerHeight}px`;
-      }
       
       if (currentFrameRef.current >= 0) {
         paintFrame(currentFrameRef.current);
@@ -539,14 +522,6 @@ function ScrollytellingExperience() {
           </div>
         );
       })}
-
-      {/* Foreground Canvas for 3D Text Behind Clouds Effect (Luma Matte) */}
-      <canvas
-        ref={canvasRefForeground}
-        className="pointer-events-none absolute inset-0 z-[12] h-full w-full object-cover mix-blend-screen opacity-[0.85]"
-        style={{ filter: "brightness(1.6) contrast(2.5) grayscale(100%)" }}
-        aria-hidden
-      />
 
       {/* Final 2-Column Console */}
       <div className="absolute inset-0 z-20 flex items-end justify-center pb-4 md:items-center md:pb-0 pointer-events-none">
