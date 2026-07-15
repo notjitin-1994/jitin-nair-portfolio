@@ -137,17 +137,18 @@ export function FloatingNav({
         <nav
           className={[
             "relative z-10 mt-3 flex h-[52px] items-center justify-between rounded-full pl-4 pr-2.5",
-            "border backdrop-blur-xl",
+            "border backdrop-blur-2xl",
             "transition-[background-color,border-color,box-shadow] duration-300 ease-out",
             scrolled
-              ? `${a.border} bg-[#0a0a0f]/88 ${a.glow}`
-              : "border-white/[0.07] bg-[#0a0a0f]/55",
+              ? `${a.border} bg-black/20 ${a.glow}`
+              : "border-white/[0.07] bg-white/[0.02]",
           ].join(" ")}
         >
           {/* Brand */}
           <Link
             href={brandHref}
             className="flex shrink-0 items-center gap-2.5 text-white transition-opacity duration-150 hover:opacity-75"
+            style={{ textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}
           >
             <span
               className={[
@@ -181,17 +182,18 @@ export function FloatingNav({
             {links.map((n) => {
               const active = isActivePath(n.href, pathname);
               return (
-                <NavAnchor
-                  key={n.href}
-                  item={n}
-                  className={[
-                    "rounded-full px-3.5 py-1.5 text-[13px] font-medium leading-none",
-                    "transition-[color,background-color] duration-150 ease-out",
-                    active
-                      ? a.activePill
-                      : "text-neutral-400 hover:bg-white/[0.05] hover:text-white",
-                  ].join(" ")}
-                />
+                <div key={n.href} style={{ textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}>
+                  <NavAnchor
+                    item={n}
+                    className={[
+                      "rounded-full px-3.5 py-1.5 text-[13px] font-medium leading-none block",
+                      "transition-[color,background-color] duration-150 ease-out",
+                      active
+                        ? a.activePill
+                        : "text-neutral-200 hover:bg-white/[0.05] hover:text-white",
+                    ].join(" ")}
+                  />
+                </div>
               );
             })}
           </div>

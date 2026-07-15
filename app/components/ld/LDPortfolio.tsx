@@ -14,6 +14,7 @@ import { ArrowRight, ArrowUpRight, Mail, Linkedin, Check, Phone, MessageCircle, 
 import { EASE, useFontsReady, Reveal, CountUp, MagneticButton, useMounted } from "./primitives";
 import { LdLearningJourney } from "./LdLearningJourney";
 import { LdVortexBackground } from "./LdVortexBackground";
+import { ScrollytellingHero } from "./ScrollytellingHero";
 import { FloatingNav } from "../FloatingNav";
 import {
   ldImpact,
@@ -1024,12 +1025,11 @@ function Testimonials() {
   );
 }
 
-/* ---------- Page ---------- */
 export function LDPortfolio() {
   return (
-    <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#0a0a0f] text-[#f8fafc] selection:bg-emerald-500/30">
+    <main className="relative min-h-[100dvh] overflow-x-clip bg-[#0a0a0f] text-[#f8fafc] selection:bg-emerald-500/30">
       <Nav />
-      <Hero />
+      <ScrollytellingHero />
       <Impact />
       <Work />
       <Approach />

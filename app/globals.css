@@ -21,6 +21,12 @@
   
   html {
     scroll-behavior: smooth;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  html::-webkit-scrollbar {
+    display: none;
   }
   
   body {
@@ -623,22 +629,21 @@ button, a, [role="button"] {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  display: none;
+  width: 0px;
+  height: 0px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0f;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #252538;
-  border-radius: 4px;
-  border: 2px solid #0a0a0f;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #22d3ee;
+  background: transparent;
 }
 
 /* ============================================

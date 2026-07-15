@@ -301,7 +301,8 @@ function CountUpStat({
 export function LdLearningJourney({ className = "" }: { className?: string }) {
   const mounted = useMounted();
   const reducedMotion = useReducedMotion();
-  const reduced = mounted ? reducedMotion : false;
+  // Force reduced motion to true to instantly show the final state without animation
+  const reduced = true;
 
   const rootRef = useRef<HTMLDivElement>(null);
   const inView = useInView(rootRef, { once: true, margin: "-40px" });
@@ -384,11 +385,11 @@ export function LdLearningJourney({ className = "" }: { className?: string }) {
 
         {/* ADDIE milestone rail */}
         <div className="mt-4 md:mt-6">
-          <div className="relative flex items-center justify-between">
+          <div className="relative flex items-start justify-between">
             {/* Track + animated fill */}
-            <div className="absolute inset-x-3 top-1/2 h-px -translate-y-1/2 bg-neutral-800" />
+            <div className="absolute inset-x-3 top-3 h-px -translate-y-1/2 bg-neutral-800" />
             <motion.div
-              className="absolute inset-x-3 top-1/2 h-[2px] -translate-y-1/2 origin-left bg-emerald-400"
+              className="absolute inset-x-3 top-3 h-[2px] -translate-y-1/2 origin-left bg-emerald-400"
               initial={false}
               animate={{ scaleX: railProgress }}
               transition={{ duration: 0.6, ease: EASE }}
