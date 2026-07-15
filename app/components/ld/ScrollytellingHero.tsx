@@ -184,6 +184,7 @@ function HeroConsole() {
 function ScrollytellingExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRefForeground = useRef<HTMLCanvasElement>(null);
   const journeyRef = useRef<HTMLDivElement>(null);
   const imagesRef = useFramePreloader();
   const [gsapLoaded, setGsapLoaded] = useState(false);
@@ -212,6 +213,14 @@ function ScrollytellingExperience() {
 
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
+    const canvasFg = canvasRefForeground.current;
+    if (canvasFg) {
+      const ctxFg = canvasFg.getContext("2d");
+      if (ctxFg) {
+        ctxFg.drawImage(img, sx, sy, sw, sh, 0, 0, canvasFg.width, canvasFg.height);
+      }
+    }
+
     // Hide the LCP image permanently once the canvas is actively painting
     const lcp = document.getElementById("lcp-fallback");
     if (lcp && lcp.style.opacity !== "0") {
@@ -230,6 +239,14 @@ function ScrollytellingExperience() {
       canvas.height = window.innerHeight * dpr;
       canvas.style.width = `${window.innerWidth}px`;
       canvas.style.height = `${window.innerHeight}px`;
+      
+      const canvasFg = canvasRefForeground.current;
+      if (canvasFg) {
+        canvasFg.width = window.innerWidth * dpr;
+        canvasFg.height = window.innerHeight * dpr;
+        canvasFg.style.width = `${window.innerWidth}px`;
+        canvasFg.style.height = `${window.innerHeight}px`;
+      }
       
       if (currentFrameRef.current >= 0) {
         paintFrame(currentFrameRef.current);
@@ -522,6 +539,14 @@ function ScrollytellingExperience() {
           </div>
         );
       })}
+
+      {/* Foreground Canvas for 3D Text Behind Clouds Effect (Luma Matte) */}
+      <canvas
+        ref={canvasRefForeground}
+        className="pointer-events-none absolute inset-0 z-[12] h-full w-full object-cover mix-blend-screen opacity-[0.85]"
+        style={{ filter: "brightness(1.6) contrast(2.5) grayscale(100%)" }}
+        aria-hidden
+      />
 
       {/* Final 2-Column Console */}
       <div className="absolute inset-0 z-20 flex items-end justify-center pb-4 md:items-center md:pb-0 pointer-events-none">
