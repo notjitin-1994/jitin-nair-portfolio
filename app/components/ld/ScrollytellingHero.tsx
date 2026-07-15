@@ -18,8 +18,8 @@ const FRAME_PATH = "https://lymilwegnuzimngpawik.supabase.co/storage/v1/object/p
 const SCROLL_ACTS = [
   {
     position: "bottom-left" as const,
-    eyebrow: "Jitin Nair",
-    headline: "Strategic Learning & Development Leadership",
+    eyebrow: "Learning & Development Professional",
+    headline: "Jitin Nair",
     sub: "",
   },
   {
