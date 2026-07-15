@@ -155,26 +155,26 @@ function HeroPortrait() {
 
 function HeroConsole() {
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center justify-center gap-6 px-5 pt-8 md:flex-row md:gap-12 lg:gap-16 md:pt-0">
+    <div className="flex w-full max-w-7xl flex-col items-center justify-center gap-4 px-4 pt-6 md:flex-row md:gap-8 lg:gap-12 md:pt-0">
       {/* Left: Bleeding Portrait */}
-      <div className="h-[280px] w-full max-w-[280px] shrink-0 md:h-[440px] md:w-[440px]">
+      <div className="h-[220px] w-full max-w-[340px] shrink-0 md:h-[440px] md:w-[600px] md:max-w-none">
         <HeroPortrait />
       </div>
       
       {/* Right: Glassmorphic Marketing Copy */}
-      <div className="flex h-auto w-full max-w-[280px] flex-col justify-center gap-4 rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl md:h-[440px] md:w-[440px] md:gap-6 md:p-10">
+      <div className="flex h-auto w-full max-w-[340px] flex-col justify-center gap-3 rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl md:h-[440px] md:w-[600px] md:max-w-none md:gap-6 md:p-10">
         <div>
-          <h2 className="mb-1 text-3xl font-bold tracking-tight text-white md:mb-2 md:text-5xl">
+          <h2 className="mb-1 text-2xl font-bold tracking-tight text-white md:mb-2 md:text-5xl">
             Jitin Nair
           </h2>
-          <p className="text-lg font-medium text-emerald-400 md:text-xl">
+          <p className="text-base font-medium text-emerald-400 md:text-xl">
             Learning & Development Professional
           </p>
         </div>
         
-        <div className="h-px w-16 bg-white/20"></div>
+        <div className="h-px w-12 bg-white/20 md:w-16"></div>
         
-        <p className="max-w-md text-base leading-relaxed text-neutral-300 md:text-lg">
+        <p className="text-sm leading-relaxed text-neutral-300 md:max-w-md md:text-lg">
           I engineer scalable learning architectures that directly drive business performance. Fusing instructional design with cutting-edge technical execution to transform how modern organizations learn, adapt, and scale.
         </p>
       </div>
