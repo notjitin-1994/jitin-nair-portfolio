@@ -161,7 +161,7 @@ function HeroConsole() {
       </div>
       
       {/* Right: Glassmorphic Marketing Copy */}
-      <div className="flex h-auto w-full max-w-[340px] flex-col justify-center gap-3 rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl md:h-[440px] md:w-[600px] md:max-w-none md:gap-6 md:p-10">
+      <div className="flex h-auto w-full max-w-[340px] flex-col justify-center gap-3 rounded-3xl border border-white/20 bg-white/10 p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] backdrop-blur-2xl md:h-[440px] md:w-[600px] md:max-w-none md:gap-6 md:p-10">
         <div>
           <h2 className="mb-1 text-2xl font-bold tracking-tight text-white md:mb-2 md:text-5xl">
             Jitin Nair
@@ -524,11 +524,13 @@ function ScrollytellingExperience() {
       })}
 
       {/* Final 2-Column Console */}
-      <div
-        ref={journeyRef}
-        className="absolute bottom-4 left-1/2 z-20 flex w-full -translate-x-1/2 justify-center opacity-0 md:bottom-auto md:top-1/2 md:-translate-y-1/2"
-      >
-        <HeroConsole />
+      <div className="absolute inset-0 z-20 flex items-end justify-center pb-4 md:items-center md:pb-0 pointer-events-none">
+        <div
+          ref={journeyRef}
+          className="flex w-full justify-center opacity-0 pointer-events-auto"
+        >
+          <HeroConsole />
+        </div>
       </div>
 
       {/* Darkening scrim for journey readability */}
