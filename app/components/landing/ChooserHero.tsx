@@ -126,8 +126,8 @@ function ParallaxPortrait({ src }: { src: string }) {
   );
 }
 
-// 3. FLOATING 3D ICON FOR CARDS 2 & 3
-function FloatingIcon({ icon: Icon, colorClass, glowColor }: { icon: any, colorClass: string, glowColor: string }) {
+// 3. AVATAR POP-OUT FOR CARDS 2 & 3
+function AvatarPopOut({ src, glowColor }: { src: string, glowColor: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const x = useMotionValue(0);
@@ -149,20 +149,37 @@ function FloatingIcon({ icon: Icon, colorClass, glowColor }: { icon: any, colorC
     y.set(0);
   };
 
+  // Scale the image up and push it down so the upper body pops out of the top/sides
+  const imageClasses = "object-cover object-bottom mix-blend-lighten scale-[1.35] translate-y-[15%]";
+
   return (
-    <div ref={ref} onPointerMove={onMove} onPointerLeave={onLeave} className="relative w-full max-w-[300px] lg:max-w-[400px] aspect-square" style={{ perspective: 1000 }}>
+    <div ref={ref} onPointerMove={onMove} onPointerLeave={onLeave} className="relative w-full max-w-[280px] lg:max-w-[400px] aspect-square mx-auto mt-8 lg:mt-0" style={{ perspective: 1000 }}>
       <motion.div
-        className="flex h-full w-full items-center justify-center rounded-full border border-white/[0.05] bg-white/[0.01] backdrop-blur-2xl"
+        className="relative h-full w-full"
         style={{
            rotateX, 
            rotateY, 
            transformStyle: "preserve-3d",
-           boxShadow: `inset 0 1px 1px rgba(255,255,255,0.1), 0 0 120px ${glowColor}`
         }}
       >
-        <motion.div style={{ transform: "translateZ(60px)" }}>
-          <Icon className={`h-24 w-24 lg:h-32 lg:w-32 ${colorClass}`} strokeWidth={1} />
-        </motion.div>
+        {/* Layer 1: The Circle Base (Clipped) */}
+        <div 
+          className="absolute inset-0 rounded-full border border-white/[0.05] bg-white/[0.01] backdrop-blur-2xl overflow-hidden"
+          style={{
+             boxShadow: `inset 0 1px 1px rgba(255,255,255,0.1), 0 0 120px ${glowColor}`
+          }}
+        >
+           <Image src={src} alt="Avatar" fill priority sizes="(max-width: 1024px) 280px, 400px" className={imageClasses} />
+        </div>
+
+        {/* Layer 2: The Pop-Out Top Half */}
+        {/* We clip at exactly 50% height so it perfectly blends into the circle's boundaries for the bottom half */}
+        <div 
+          className="absolute inset-0 z-10 pointer-events-none"
+          style={{ clipPath: "polygon(-50% -50%, 150% -50%, 150% 50%, -50% 50%)" }}
+        >
+           <Image src={src} alt="Avatar popout" fill priority sizes="(max-width: 1024px) 280px, 400px" className={imageClasses} />
+        </div>
       </motion.div>
     </div>
   );
@@ -177,36 +194,52 @@ export function ChooserHero() {
   useEffect(() => {
     if (reduce || !ref.current || !mounted) return;
     
-    // Smooth GSAP scroll integration
+    // Smooth GSAP scroll integration using MatchMedia for responsive animations
     const ctx = gsap.context(() => {
       const cardEls = gsap.utils.toArray<HTMLElement>(".stack-card");
       if (cardEls.length === 0) return;
 
-      cardEls.forEach((card, i) => {
-        if (i === cardEls.length - 1) return;
-        
-        // Pin the current card
-        ScrollTrigger.create({
-          trigger: card,
-          start: "top top",
-          endTrigger: cardEls[cardEls.length - 1],
-          end: "top top",
-          pin: true,
-          pinSpacing: false,
-        });
-        
-        // Scale and fade it out as the next one comes up
-        gsap.to(card, {
-          scale: 0.94,
-          opacity: 0,
-          filter: "blur(12px)",
-          ease: "none",
-          scrollTrigger: {
-            trigger: cardEls[i + 1],
-            start: "top bottom",
+      const mm = gsap.matchMedia();
+
+      mm.add({
+        isDesktop: "(min-width: 1024px)",
+        isMobile: "(max-width: 1023px)"
+      }, (context) => {
+        const { isDesktop } = context.conditions as { isDesktop: boolean };
+
+        cardEls.forEach((card, i) => {
+          if (i === cardEls.length - 1) return;
+          
+          // Pin the current card
+          ScrollTrigger.create({
+            trigger: card,
+            start: "top top",
+            endTrigger: cardEls[cardEls.length - 1],
             end: "top top",
-            scrub: true,
-          },
+            pin: true,
+            pinSpacing: false,
+          });
+          
+          // Scale it down as the next one comes up
+          const animationProps: any = {
+            scale: 0.94,
+            ease: "none",
+            scrollTrigger: {
+              trigger: cardEls[i + 1],
+              start: "top bottom",
+              end: "top top",
+              scrub: true,
+            },
+          };
+
+          // On desktop, add cinematic depth with blur and fade.
+          // On mobile, keep 100% visibility and no blur for maximum performance.
+          if (isDesktop) {
+            animationProps.opacity = 0;
+            animationProps.filter = "blur(12px)";
+          }
+
+          gsap.to(card, animationProps);
         });
       });
     }, ref);
@@ -288,7 +321,7 @@ export function ChooserHero() {
             </div>
           </div>
           <div className="flex justify-center lg:justify-end">
-             <FloatingIcon icon={Cpu} colorClass="text-cyan-400" glowColor="rgba(34,211,238,0.12)" />
+             <AvatarPopOut src="/ai_avatar.jpg" glowColor="rgba(34,211,238,0.12)" />
           </div>
         </div>
       </section>
@@ -300,7 +333,7 @@ export function ChooserHero() {
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_50%,rgba(52,211,153,0.04)_0%,transparent_50%)] pointer-events-none" />
          <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
           <div className="flex justify-center lg:justify-start order-2 lg:order-1">
-             <FloatingIcon icon={GraduationCap} colorClass="text-emerald-400" glowColor="rgba(52,211,153,0.12)" />
+             <AvatarPopOut src="/ld_avatar.jpg" glowColor="rgba(52,211,153,0.12)" />
           </div>
           <div className="flex flex-col order-1 lg:order-2">
             <h2 className="text-balance text-5xl font-medium leading-[1.05] tracking-tight text-white md:text-7xl lg:text-[5.5rem]">
