@@ -82,7 +82,7 @@ function Hero() {
           MOBILE: full-bleed portrait backdrop, learning
           journey console at the bottom. Hidden at md+.
       ══════════════════════════════════════════════ */}
-      <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-[#0a0a0f] pb-4 pt-4 md:hidden">
+      <section className="relative flex min-h-[100dvh] flex-col justify-end overflow-hidden bg-[#0a0a0f] pb-4 pt-4 md:hidden">
         <h1 className="sr-only">
           Jitin Nair · Learning &amp; Development leader turning learning into
           measurable business performance
