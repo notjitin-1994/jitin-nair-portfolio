@@ -99,15 +99,14 @@ function ParallaxPortrait({ src }: { src: string }) {
       ref={ref}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
-      className="absolute inset-0 lg:relative lg:aspect-[3/4] lg:w-full lg:max-w-[440px]"
+      className="absolute inset-0 lg:relative lg:aspect-square lg:w-full lg:max-w-[580px]"
       style={{ perspective: 1200 }}
     >
       <motion.div
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="relative h-full w-full"
+        className="relative h-full w-full overflow-hidden lg:shadow-2xl lg:rounded-[24px] lg:border lg:border-white/[0.08]"
       >
-        {/* Background layer (clipped to rounded corners) */}
-        <div className="absolute inset-0 overflow-hidden lg:shadow-2xl lg:rounded-[24px] lg:border lg:border-white/[0.08] bg-gradient-to-br from-emerald-600 via-cyan-500 to-blue-700 bg-[length:200%_200%]" style={{ animation: "gradient-shift 8s ease infinite" }}>
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-cyan-500 to-blue-700 bg-[length:200%_200%]" style={{ animation: "gradient-shift 8s ease infinite" }}>
           <style>{`
             @keyframes gradient-shift {
               0% { background-position: 0% 50%; }
@@ -115,23 +114,19 @@ function ParallaxPortrait({ src }: { src: string }) {
               100% { background-position: 0% 50%; }
             }
           `}</style>
-          {/* Desktop gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#030303]/80 via-transparent to-transparent hidden lg:block" />
-        </div>
-
-        {/* Image layer (NOT clipped, allows bleeding) */}
-        <div className="absolute inset-0 pointer-events-none">
           <Image
             src={src}
             alt="Jitin Nair"
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 500px"
-            className="object-cover scale-[1.05] lg:scale-[1.25] lg:translate-x-[15%] lg:translate-y-[3%] transition-all duration-700 lg:hover:scale-[1.3]"
+            className="object-cover scale-[1.05] transition-all duration-700 lg:hover:scale-100"
             style={{ objectPosition: "center 15%" }}
           />
           {/* Mobile dark overlay */}
           <div className="absolute inset-0 bg-black/75 lg:hidden" />
+          {/* Desktop gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#030303]/80 via-transparent to-transparent hidden lg:block" />
         </div>
       </motion.div>
     </div>
