@@ -249,6 +249,18 @@ export function ChooserHero() {
 
           gsap.to(card, animationProps);
         });
+
+        // Snap to each card
+        ScrollTrigger.create({
+          trigger: ref.current,
+          start: "top top",
+          end: "bottom bottom",
+          snap: {
+            snapTo: 1 / (cardEls.length - 1),
+            duration: { min: 0.3, max: 0.8 },
+            ease: "power3.inOut"
+          }
+        });
       });
     }, ref);
     
