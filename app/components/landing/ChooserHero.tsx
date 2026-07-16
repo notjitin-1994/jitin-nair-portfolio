@@ -104,54 +104,34 @@ function ParallaxPortrait({ src }: { src: string }) {
     >
       <motion.div
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="relative h-full w-full lg:shadow-2xl"
+        className="relative h-full w-full"
       >
-        {/* Base Layer: Clipped container with gradient and Base Image */}
-        <div className="absolute inset-0 overflow-hidden lg:rounded-[24px] lg:border lg:border-white/[0.08]">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-cyan-500 to-blue-700 bg-[length:200%_200%]" style={{ animation: "gradient-shift 8s ease infinite" }}>
-            <style>{`
-              @keyframes gradient-shift {
-                0% { background-position: 0% 50%; }
-                50% { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-              }
-            `}</style>
-          </div>
-          
+        {/* Background layer (clipped to rounded corners) */}
+        <div className="absolute inset-0 overflow-hidden lg:shadow-2xl lg:rounded-[24px] lg:border lg:border-white/[0.08] bg-gradient-to-br from-emerald-600 via-cyan-500 to-blue-700 bg-[length:200%_200%]" style={{ animation: "gradient-shift 8s ease infinite" }}>
+          <style>{`
+            @keyframes gradient-shift {
+              0% { background-position: 0% 50%; }
+              50% { background-position: 100% 50%; }
+              100% { background-position: 0% 50%; }
+            }
+          `}</style>
+          {/* Desktop gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#030303]/80 via-transparent to-transparent hidden lg:block" />
+        </div>
+
+        {/* Image layer (NOT clipped, allows bleeding) */}
+        <div className="absolute inset-0 pointer-events-none">
           <Image
             src={src}
             alt="Jitin Nair"
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 500px"
-            className="object-cover scale-[1.12] transition-all duration-700 translate-x-[8%] lg:translate-x-[12%] lg:scale-[1.18]"
+            className="object-cover scale-[1.05] lg:scale-[1.25] lg:translate-x-[15%] lg:translate-y-[3%] transition-all duration-700 lg:hover:scale-[1.3]"
             style={{ objectPosition: "center 15%" }}
           />
-
           {/* Mobile dark overlay */}
           <div className="absolute inset-0 bg-black/75 lg:hidden" />
-          {/* Desktop gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#030303]/40 to-transparent hidden lg:block" />
-        </div>
-
-        {/* Pop-out Layer: Same image but allowed to bleed on the right side */}
-        <div 
-          className="absolute inset-0 pointer-events-none hidden lg:block"
-          style={{ 
-            clipPath: "polygon(60% -20%, 150% -20%, 150% 120%, 60% 120%)",
-            maskImage: "linear-gradient(to top, transparent 0%, black 20%, black 100%)",
-            WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 20%, black 100%)"
-          }}
-        >
-          <Image
-            src={src}
-            alt="Jitin Nair Popout"
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 500px"
-            className="object-cover scale-[1.12] transition-all duration-700 translate-x-[8%] lg:translate-x-[12%] lg:scale-[1.18]"
-            style={{ objectPosition: "center 15%" }}
-          />
         </div>
       </motion.div>
     </div>
