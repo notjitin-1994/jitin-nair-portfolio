@@ -272,6 +272,8 @@ function ScrollytellingExperience() {
         snap: {
           snapTo: [0, 0.1913, 0.3826, 0.5739, 0.7652, 1],
           duration: { min: 0.3, max: 0.8 },
+          delay: 0,
+          directional: true,
           ease: "power3.inOut"
         }
       },

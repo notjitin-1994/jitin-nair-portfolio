@@ -12,10 +12,11 @@ import {
 import { ArrowRight, Cpu, GraduationCap, ArrowDown } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Observer } from "gsap/Observer";
 import { useMounted } from "../ld/primitives";
 import { Vortex } from "@/components/ui/vortex";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, Observer);
 
 // Emil Kowalski style easings
 const EASE_OUT = [0.23, 1, 0.32, 1] as const;
@@ -202,44 +203,72 @@ export function ChooserHero() {
   useEffect(() => {
     if (reduce || !ref.current || !mounted) return;
     
-    // Smooth GSAP scroll integration using MatchMedia for responsive animations
+    // Smooth GSAP Observer integration for flawless one-scroll-one-slide
     const ctx = gsap.context(() => {
       const cardEls = gsap.utils.toArray<HTMLElement>(".stack-card");
       if (cardEls.length === 0) return;
 
-      const mm = gsap.matchMedia();
+      let currentIndex = 0;
+      let animating = false;
 
-      mm.add({
-        isDesktop: "(min-width: 1024px)",
-        isMobile: "(max-width: 1023px)"
-      }, (context) => {
-        const { isDesktop } = context.conditions as { isDesktop: boolean };
+      // Initial Setup
+      gsap.set(cardEls, { yPercent: 100 });
+      gsap.set(cardEls[0], { yPercent: 0 });
 
-        cardEls.forEach((card, i) => {
-          if (i === cardEls.length - 1) return;
+      const gotoSection = (index: number, direction: number) => {
+        if (animating || index < 0 || index >= cardEls.length) return;
+        animating = true;
 
-          // Scale it down as the next one comes up
-          const animationProps: any = {
-            scale: 0.94,
-            ease: "none",
-            scrollTrigger: {
-              scroller: ref.current,
-              trigger: cardEls[i + 1],
-              start: "top bottom",
-              end: "top top",
-              scrub: true,
-            },
-          };
+        const currentCard = cardEls[currentIndex];
+        const nextCard = cardEls[index];
+        
+        const mm = gsap.matchMedia();
+        let isDesktop = false;
+        mm.add("(min-width: 1024px)", () => { isDesktop = true; });
 
-          // On desktop, add cinematic depth with blur and fade.
-          // On mobile, keep 100% visibility and no blur for maximum performance.
-          if (isDesktop) {
-            animationProps.opacity = 0;
-            animationProps.filter = "blur(12px)";
+        const tl = gsap.timeline({
+          onComplete: () => {
+            animating = false;
           }
-
-          gsap.to(card, animationProps);
         });
+
+        if (direction > 0) {
+          // Scrolling down: current card shrinks, next card slides up
+          tl.to(currentCard, {
+            scale: 0.94,
+            filter: isDesktop ? "blur(12px)" : "blur(0px)",
+            opacity: isDesktop ? 0 : 1,
+            duration: 1.0,
+            ease: "power3.inOut"
+          }, 0)
+          .fromTo(nextCard, { yPercent: 100 }, { yPercent: 0, duration: 1.0, ease: "power3.inOut" }, 0);
+        } else {
+          // Scrolling up: current card slides down, prev card grows
+          tl.to(currentCard, {
+            yPercent: 100,
+            duration: 1.0,
+            ease: "power3.inOut"
+          }, 0)
+          .to(nextCard, {
+            scale: 1,
+            filter: "blur(0px)",
+            opacity: 1,
+            duration: 1.0,
+            ease: "power3.inOut"
+          }, 0);
+        }
+
+        currentIndex = index;
+      };
+
+      Observer.create({
+        target: window,
+        type: "wheel,touch,pointer",
+        wheelSpeed: -1,
+        onDown: () => !animating && gotoSection(currentIndex - 1, -1),
+        onUp: () => !animating && gotoSection(currentIndex + 1, 1),
+        tolerance: 10,
+        preventDefault: true
       });
     }, ref);
     
@@ -249,12 +278,12 @@ export function ChooserHero() {
   if (!mounted) return null;
 
   return (
-    <div ref={ref} className="relative bg-[#030303] text-neutral-200 selection:bg-white/20 h-[100dvh] w-full overflow-y-auto snap-y snap-mandatory scroll-smooth">
+    <div ref={ref} className="relative bg-[#030303] text-neutral-200 selection:bg-white/20 h-[100dvh] w-full overflow-hidden">
       
       {/* ──────────────────────────────────────────────────────────
           CARD 1: HERO (SPLIT SCREEN)
       ────────────────────────────────────────────────────────── */}
-      <section className="stack-card sticky top-0 snap-start snap-always relative flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:flex-row lg:px-12 z-[1]">
+      <section className="stack-card absolute top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:flex-row lg:px-12 z-[1]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.03)_0%,transparent_60%)] pointer-events-none" />
         <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
           
@@ -301,7 +330,7 @@ export function ChooserHero() {
       {/* ──────────────────────────────────────────────────────────
           CARD 2: AI PORTFOLIO (SPLIT SCREEN LEFT TEXT)
       ────────────────────────────────────────────────────────── */}
-      <section className="stack-card sticky top-0 snap-start snap-always relative flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[2] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+      <section className="stack-card absolute top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[2] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_50%,rgba(34,211,238,0.04)_0%,transparent_50%)] pointer-events-none" />
         <Vortex backgroundColor="transparent" particleCount={500} baseHue={180} rangeY={800} baseSpeed={0.1} rangeSpeed={1.5} baseRadius={1.5} rangeRadius={3} containerClassName="absolute inset-0 z-0 pointer-events-none opacity-50" className="w-full h-full" />
         <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
@@ -329,7 +358,7 @@ export function ChooserHero() {
       {/* ──────────────────────────────────────────────────────────
           CARD 3: L&D PORTFOLIO (SPLIT SCREEN RIGHT TEXT)
       ────────────────────────────────────────────────────────── */}
-      <section className="stack-card sticky top-0 snap-start snap-always relative flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[3] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+      <section className="stack-card absolute top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[3] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_50%,rgba(52,211,153,0.04)_0%,transparent_50%)] pointer-events-none" />
          <Vortex backgroundColor="transparent" particleCount={500} baseHue={150} rangeY={800} baseSpeed={0.1} rangeSpeed={1.5} baseRadius={1.5} rangeRadius={3} containerClassName="absolute inset-0 z-0 pointer-events-none opacity-50" className="w-full h-full" />
          <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
