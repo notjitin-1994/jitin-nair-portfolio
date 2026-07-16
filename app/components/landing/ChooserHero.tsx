@@ -328,7 +328,7 @@ export function ChooserHero() {
             </div>
           </div>
           <div className="flex justify-center lg:justify-end">
-             <AvatarPopOut src="/ai_avatar_nobg.png" glowColor="rgba(34,211,238,0.12)" circleBg="bg-cyan-500" />
+             <AvatarPopOut src="/ai_avatar_v2.png" glowColor="rgba(34,211,238,0.12)" circleBg="bg-cyan-500" />
           </div>
         </div>
       </section>
@@ -340,7 +340,7 @@ export function ChooserHero() {
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_50%,rgba(52,211,153,0.04)_0%,transparent_50%)] pointer-events-none" />
          <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
           <div className="flex justify-center lg:justify-start order-2 lg:order-1">
-             <AvatarPopOut src="/ld_avatar_nobg.png" glowColor="rgba(52,211,153,0.12)" circleBg="bg-emerald-500" />
+             <AvatarPopOut src="/ld_avatar_v2.png" glowColor="rgba(52,211,153,0.12)" circleBg="bg-emerald-500" />
           </div>
           <div className="flex flex-col order-1 lg:order-2">
             <h2 className="text-balance text-5xl font-medium leading-[1.05] tracking-tight text-white md:text-7xl lg:text-[5.5rem]">
