@@ -99,7 +99,7 @@ function ParallaxPortrait({ src }: { src: string }) {
       ref={ref}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
-      className="absolute inset-0 lg:relative lg:aspect-[3/4] lg:w-full lg:max-w-[440px]"
+      className="absolute inset-0 lg:relative lg:aspect-[4/5] lg:w-full"
       style={{ perspective: 1200 }}
     >
       <motion.div
