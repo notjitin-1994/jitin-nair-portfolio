@@ -106,7 +106,14 @@ function ParallaxPortrait({ src }: { src: string }) {
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
         className="relative h-full w-full overflow-hidden lg:shadow-2xl lg:rounded-[24px] lg:border lg:border-white/[0.08]"
       >
-        <div className="absolute inset-0 bg-neutral-900">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-cyan-500 to-blue-700 bg-[length:200%_200%]" style={{ animation: "gradient-shift 8s ease infinite" }}>
+          <style>{`
+            @keyframes gradient-shift {
+              0% { background-position: 0% 50%; }
+              50% { background-position: 100% 50%; }
+              100% { background-position: 0% 50%; }
+            }
+          `}</style>
           <Image
             src={src}
             alt="Jitin Nair"
@@ -293,7 +300,7 @@ export function ChooserHero() {
             transition={{ duration: 1, delay: 0.2, ease: EASE_OUT }}
             className="absolute inset-0 z-0 lg:relative lg:z-auto lg:flex lg:justify-end"
           >
-             <ParallaxPortrait src="/hero-photo.jpg" />
+             <ParallaxPortrait src="/hero-photo-nobg.png" />
           </motion.div>
 
         </div>
