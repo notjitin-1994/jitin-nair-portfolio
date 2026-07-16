@@ -127,7 +127,7 @@ function ParallaxPortrait({ src }: { src: string }) {
 }
 
 // 3. AVATAR POP-OUT FOR CARDS 2 & 3
-function AvatarPopOut({ src, glowColor }: { src: string, glowColor: string }) {
+function AvatarPopOut({ src, glowColor, circleBg }: { src: string, glowColor: string, circleBg: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const x = useMotionValue(0);
@@ -149,8 +149,8 @@ function AvatarPopOut({ src, glowColor }: { src: string, glowColor: string }) {
     y.set(0);
   };
 
-  // Scale the image up and push it down so the upper body pops out of the top/sides
-  const imageClasses = "object-cover object-bottom mix-blend-lighten scale-[1.35] translate-y-[15%]";
+  // Scale the image up from the bottom so the upper body prominently pops out of the top
+  const imageClasses = "object-cover object-bottom origin-bottom mix-blend-lighten scale-[1.25] translate-y-[8%]";
 
   return (
     <div ref={ref} onPointerMove={onMove} onPointerLeave={onLeave} className="relative w-full max-w-[280px] lg:max-w-[400px] aspect-square mx-auto mt-8 lg:mt-0" style={{ perspective: 1000 }}>
@@ -164,7 +164,7 @@ function AvatarPopOut({ src, glowColor }: { src: string, glowColor: string }) {
       >
         {/* Layer 1: The Circle Base (Clipped) */}
         <div 
-          className="absolute inset-0 rounded-full border border-white/[0.05] bg-white/[0.01] backdrop-blur-2xl overflow-hidden"
+          className={`absolute inset-0 rounded-full border border-white/[0.05] ${circleBg} backdrop-blur-2xl overflow-hidden`}
           style={{
              boxShadow: `inset 0 1px 1px rgba(255,255,255,0.1), 0 0 120px ${glowColor}`
           }}
@@ -321,7 +321,7 @@ export function ChooserHero() {
             </div>
           </div>
           <div className="flex justify-center lg:justify-end">
-             <AvatarPopOut src="/ai_avatar.jpg" glowColor="rgba(34,211,238,0.12)" />
+             <AvatarPopOut src="/ai_avatar.jpg" glowColor="rgba(34,211,238,0.12)" circleBg="bg-cyan-500/20" />
           </div>
         </div>
       </section>
@@ -333,7 +333,7 @@ export function ChooserHero() {
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_50%,rgba(52,211,153,0.04)_0%,transparent_50%)] pointer-events-none" />
          <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
           <div className="flex justify-center lg:justify-start order-2 lg:order-1">
-             <AvatarPopOut src="/ld_avatar.jpg" glowColor="rgba(52,211,153,0.12)" />
+             <AvatarPopOut src="/ld_avatar.jpg" glowColor="rgba(52,211,153,0.12)" circleBg="bg-emerald-500/20" />
           </div>
           <div className="flex flex-col order-1 lg:order-2">
             <h2 className="text-balance text-5xl font-medium leading-[1.05] tracking-tight text-white md:text-7xl lg:text-[5.5rem]">
