@@ -217,22 +217,13 @@ export function ChooserHero() {
 
         cardEls.forEach((card, i) => {
           if (i === cardEls.length - 1) return;
-          
-          // Pin the current card
-          ScrollTrigger.create({
-            trigger: card,
-            start: "top top",
-            endTrigger: cardEls[cardEls.length - 1],
-            end: "top top",
-            pin: true,
-            pinSpacing: false,
-          });
-          
+
           // Scale it down as the next one comes up
           const animationProps: any = {
             scale: 0.94,
             ease: "none",
             scrollTrigger: {
+              scroller: ref.current,
               trigger: cardEls[i + 1],
               start: "top bottom",
               end: "top top",
@@ -249,18 +240,6 @@ export function ChooserHero() {
 
           gsap.to(card, animationProps);
         });
-
-        // Snap to each card
-        ScrollTrigger.create({
-          trigger: ref.current,
-          start: "top top",
-          end: "bottom bottom",
-          snap: {
-            snapTo: 1 / (cardEls.length - 1),
-            duration: { min: 0.3, max: 0.8 },
-            ease: "power3.inOut"
-          }
-        });
       });
     }, ref);
     
@@ -270,12 +249,12 @@ export function ChooserHero() {
   if (!mounted) return null;
 
   return (
-    <div ref={ref} className="relative bg-[#030303] text-neutral-200 selection:bg-white/20">
+    <div ref={ref} className="relative bg-[#030303] text-neutral-200 selection:bg-white/20 h-[100dvh] w-full overflow-y-auto snap-y snap-mandatory scroll-smooth">
       
       {/* ──────────────────────────────────────────────────────────
           CARD 1: HERO (SPLIT SCREEN)
       ────────────────────────────────────────────────────────── */}
-      <section className="stack-card relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:flex-row lg:px-12 z-[1]">
+      <section className="stack-card sticky top-0 snap-start snap-always relative flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:flex-row lg:px-12 z-[1]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.03)_0%,transparent_60%)] pointer-events-none" />
         <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
           
@@ -322,7 +301,7 @@ export function ChooserHero() {
       {/* ──────────────────────────────────────────────────────────
           CARD 2: AI PORTFOLIO (SPLIT SCREEN LEFT TEXT)
       ────────────────────────────────────────────────────────── */}
-      <section className="stack-card relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[2] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+      <section className="stack-card sticky top-0 snap-start snap-always relative flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[2] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_50%,rgba(34,211,238,0.04)_0%,transparent_50%)] pointer-events-none" />
         <Vortex backgroundColor="transparent" particleCount={500} baseHue={180} rangeY={800} baseSpeed={0.1} rangeSpeed={1.5} baseRadius={1.5} rangeRadius={3} containerClassName="absolute inset-0 z-0 pointer-events-none opacity-50" className="w-full h-full" />
         <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
@@ -350,7 +329,7 @@ export function ChooserHero() {
       {/* ──────────────────────────────────────────────────────────
           CARD 3: L&D PORTFOLIO (SPLIT SCREEN RIGHT TEXT)
       ────────────────────────────────────────────────────────── */}
-      <section className="stack-card relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[3] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+      <section className="stack-card sticky top-0 snap-start snap-always relative flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[3] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_50%,rgba(52,211,153,0.04)_0%,transparent_50%)] pointer-events-none" />
          <Vortex backgroundColor="transparent" particleCount={500} baseHue={150} rangeY={800} baseSpeed={0.1} rangeSpeed={1.5} baseRadius={1.5} rangeRadius={3} containerClassName="absolute inset-0 z-0 pointer-events-none opacity-50" className="w-full h-full" />
          <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
