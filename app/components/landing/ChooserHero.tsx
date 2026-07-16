@@ -157,7 +157,7 @@ function AvatarPopOut({ src, glowColor, circleBg }: { src: string, glowColor: st
   };
 
   // Scale the image up from the bottom so the upper body prominently pops out of the top
-  const imageClasses = "object-cover object-bottom origin-bottom scale-[1.25] translate-y-[8%]";
+  const imageClasses = "object-cover object-bottom origin-bottom scale-[1.2] translate-y-[8%]";
 
   return (
     <div ref={ref} onPointerMove={onMove} onPointerLeave={onLeave} className="relative w-full max-w-[280px] lg:max-w-[400px] aspect-square mx-auto mt-8 lg:mt-0" style={{ perspective: 1000 }}>
