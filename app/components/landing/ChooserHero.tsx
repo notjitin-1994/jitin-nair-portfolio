@@ -312,7 +312,7 @@ export function ChooserHero() {
       <section className="stack-card relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[2] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_50%,rgba(34,211,238,0.04)_0%,transparent_50%)] pointer-events-none" />
         <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
-          <div className="flex flex-col">
+          <div className="flex flex-col order-2 lg:order-1">
             <h2 className="text-balance text-5xl font-medium leading-[1.05] tracking-tight text-white md:text-7xl lg:text-[5.5rem]">
               AI Systems <br className="hidden lg:block"/> Architecture
             </h2>
@@ -327,7 +327,7 @@ export function ChooserHero() {
               </MagneticButton>
             </div>
           </div>
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex justify-center lg:justify-end order-1 lg:order-2">
              <AvatarPopOut src="/ai_avatar_v2.png" glowColor="rgba(34,211,238,0.12)" circleBg="bg-cyan-500" />
           </div>
         </div>
@@ -339,10 +339,10 @@ export function ChooserHero() {
       <section className="stack-card relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#030303] px-6 lg:px-12 z-[3] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_50%,rgba(52,211,153,0.04)_0%,transparent_50%)] pointer-events-none" />
          <div className="z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
-          <div className="flex justify-center lg:justify-start order-2 lg:order-1">
+          <div className="flex justify-center lg:justify-start">
              <AvatarPopOut src="/ld_avatar_v2.png" glowColor="rgba(52,211,153,0.12)" circleBg="bg-emerald-500" />
           </div>
-          <div className="flex flex-col order-1 lg:order-2">
+          <div className="flex flex-col">
             <h2 className="text-balance text-5xl font-medium leading-[1.05] tracking-tight text-white md:text-7xl lg:text-[5.5rem]">
               Learning &amp; <br className="hidden lg:block"/> Development
             </h2>
