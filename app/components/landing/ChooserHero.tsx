@@ -210,13 +210,18 @@ export function ChooserHero() {
 
       let currentIndex = 0;
       let animating = false;
+      let lastScrollTime = 0;
 
       // Initial Setup
       gsap.set(cardEls, { yPercent: 100 });
       gsap.set(cardEls[0], { yPercent: 0 });
 
       const gotoSection = (index: number, direction: number) => {
-        if (animating || index < 0 || index >= cardEls.length) return;
+        const now = Date.now();
+        // 1400ms cooldown absorbs the 1s animation + 400ms of residual trackpad inertia
+        if (animating || index < 0 || index >= cardEls.length || (now - lastScrollTime < 1400)) return;
+        
+        lastScrollTime = now;
         animating = true;
 
         const currentCard = cardEls[currentIndex];
