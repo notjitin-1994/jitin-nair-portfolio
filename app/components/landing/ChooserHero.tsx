@@ -135,7 +135,7 @@ function ParallaxPortrait({ src }: { src: string }) {
 }
 
 // 3. AVATAR POP-OUT FOR CARDS 2 & 3
-function AvatarPopOut({ src, glowColor, circleBg }: { src: string, glowColor: string, circleBg: string }) {
+function AvatarPopOut({ src, glowColor, circleBg, customClip }: { src: string, glowColor: string, circleBg: string, customClip?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const x = useMotionValue(0);
@@ -184,7 +184,7 @@ function AvatarPopOut({ src, glowColor, circleBg }: { src: string, glowColor: st
         {/* We clip at exactly 50% height so it perfectly blends into the circle's boundaries for the bottom half */}
         <div 
           className="absolute inset-0 z-10 pointer-events-none"
-          style={{ clipPath: "polygon(-50% -50%, 150% -50%, 150% 50%, -50% 50%)" }}
+          style={{ clipPath: customClip || "polygon(-50% -50%, 150% -50%, 150% 50%, -50% 50%)" }}
         >
            <Image src={src} alt="Avatar popout" fill priority sizes="(max-width: 1024px) 280px, 400px" className={imageClasses} />
         </div>
@@ -330,7 +330,7 @@ export function ChooserHero() {
             </div>
           </div>
           <div className="flex justify-center lg:justify-end order-1 lg:order-2">
-             <AvatarPopOut src="/ai_avatar_v2.png" glowColor="rgba(34,211,238,0.12)" circleBg="bg-cyan-500" />
+             <AvatarPopOut src="/ai_avatar_v2.png" glowColor="rgba(34,211,238,0.12)" circleBg="bg-cyan-500" customClip="polygon(-50% -50%, 150% -50%, 150% 100%, 50% 100%, 50% 50%, -50% 50%)" />
           </div>
         </div>
       </section>
