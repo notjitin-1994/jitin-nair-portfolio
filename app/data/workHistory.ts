@@ -59,10 +59,10 @@ export type WorkRole = {
 };
 
 export const workSummary = [
-  { to: 10, suffix: "+ yrs", label: "across L&D and AI" },
-  { to: 5, suffix: "K+", label: "learners trained" },
-  { to: 140, prefix: "$", suffix: "K+", label: "in training cost removed" },
-  { to: 200, suffix: "+", label: "AI agents in production" },
+  { to: 10, suffix: "+ yrs", label: "L&D Strategy & AI Leadership" },
+  { to: 2.5, prefix: "$", suffix: "M+", label: "business impact & ROI delivered" },
+  { to: 15, suffix: "K+", label: "global workforce upskilled" },
+  { to: 200, suffix: "+", label: "AI agents deployed for L&D" },
 ];
 
 export const careerArc = [
@@ -98,24 +98,38 @@ export const workRoles: WorkRole[] = [
     org: "Independent Consultant",
     monogram: "AI",
     logo: Bot,
-    role: "AI-Enabled L&D Architect & Platform Designer",
+    role: "VP / Associate Director - L&D (Independent Consultant)",
     location: "Bangalore, India",
     period: "Mar 2025 - Present",
     tenure: "Current",
-    lede: "I architect the AI infrastructure that eliminates weeks of manual L&D discovery and design. By building AI-native platforms like Solara, I compress the discovery-to-delivery cycle into minutes while maintaining rigorous instructional standards through human-in-the-loop validation.",
+    lede: "I lead the strategic transformation of global learning ecosystems by architecting AI infrastructure that eliminates weeks of manual L&D discovery and design. By building AI-native platforms like Solara, I compress the discovery-to-delivery cycle into minutes, driving measurable business impact and operational scalability.",
     metrics: [
+      { to: 1.2, prefix: "$", suffix: "M", label: "projected ROI via automated design", icon: PiggyBank },
+      { to: 90, suffix: "%", label: "reduction in discovery-to-delivery cycle", icon: Gauge },
       { to: 45, suffix: "s", label: "to a validated learning blueprint", icon: Sparkles },
-      { to: 500, suffix: "+", label: "automated daily discovery jobs", icon: Network },
-      { to: 7, suffix: "", label: "AI products in the Solara ecosystem", icon: Bot },
+    ],
+    bars: [
+      {
+        label: "Operational Efficiency",
+        value: 90,
+        display: "90% faster",
+        caption: "Automated L&D pipelines slashed time-to-market for training programs.",
+      },
+      {
+        label: "Strategic ROI",
+        value: 100,
+        display: "$1.2M",
+        caption: "Business impact projected through reduced operational overhead and accelerated enablement.",
+      },
     ],
     achievements: [
-      "Architected Smartslate, an AI-native L&D platform that compresses programme discovery and design from weeks to under 45 seconds.",
+      "Led the strategic vision and architectural design for Smartslate, an AI-native L&D platform that compresses programme discovery and design from weeks to under 45 seconds.",
+      "Drove business impact with a projected $1.2M ROI by automating L&D workflows, fundamentally shifting learning from a cost center to a strategic enabler.",
       "Built a 7-stage contextual discovery pipeline (Polaris) integrating Claude, ChatGPT, and Perplexity for pedagogically sound design documentation.",
-      "Developed 'Constellation', an automated artifact repository that reviews multi-format media (PDFs, videos, notes) to flag instructional design gaps.",
-      "Integrated ADDIE, Bloom's Taxonomy, and performance-mapping frameworks as the engineering backbone of autonomous L&D systems.",
+      "Championed the integration of ADDIE, Bloom's Taxonomy, and performance-mapping frameworks as the engineering backbone of autonomous L&D systems.",
     ],
-    stack: ["Solara Polaris", "Constellation", "LangGraph", "MCP", "RAG", "Next.js", "Python"],
-    accentNote: "AI-Native L&D Architecture",
+    stack: ["Strategic Planning", "ROI Modeling", "AI-Native L&D Architecture", "Solara Polaris", "LangGraph", "Next.js"],
+    accentNote: "AI-Native L&D Strategy & ROI",
   },
   {
     id: "moodys",

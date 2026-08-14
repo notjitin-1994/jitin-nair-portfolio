@@ -13,7 +13,10 @@ import {
   Video, 
   LineChart,
   Mail,
-  Linkedin
+  Linkedin,
+  RefreshCw,
+  PieChart,
+  Network
 } from "lucide-react";
 import { EASE, useFontsReady, Reveal, MagneticButton } from "../../components/ld/primitives";
 import { Grain } from "../../components/leading/visuals";
@@ -42,12 +45,28 @@ const SHOWCASE_ITEMS = [
     imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
   },
   {
-    id: "management",
-    title: "Project Management",
-    description: "Driving complex learning initiatives from kick-off to delivery.",
-    icon: UsersRound,
-    href: "/ld/showcase/project-management",
-    imageUrl: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=800",
+    id: "change-management",
+    title: "Change Management",
+    description: "Driving organizational transformation and adoption at scale.",
+    icon: RefreshCw,
+    href: "/ld/showcase/change-management",
+    imageUrl: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800",
+  },
+  {
+    id: "budget",
+    title: "Budget Management",
+    description: "Strategic financial planning and maximizing ROI for L&D initiatives.",
+    icon: PieChart,
+    href: "/ld/showcase/budget-management",
+    imageUrl: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=800",
+  },
+  {
+    id: "taxonomy",
+    title: "Skills Taxonomies & Talent Mobility",
+    description: "Architecting talent mobility frameworks and skills ontologies.",
+    icon: Network,
+    href: "/ld/showcase/skills-taxonomy",
+    imageUrl: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: "instructional",

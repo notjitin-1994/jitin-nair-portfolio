@@ -23,7 +23,7 @@ import { SHOWCASE_ICON_MAP } from "../components/ShowcaseInfographics";
 
 const EMAIL = "mailto:not.jitin@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 10;
 
 function fmtDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", {

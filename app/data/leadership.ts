@@ -21,10 +21,10 @@ import {
 
 export const leadingHero = {
   stats: [
+    { to: 2.5, prefix: "$", suffix: "M+", label: "projected ROI & business impact" },
     { to: 140, prefix: "$", suffix: "K+", label: "training cost removed" },
     { to: 70, suffix: "%", label: "faster training delivery" },
     { to: 60, suffix: "%", label: "less production time" },
-    { to: 54, suffix: "%", label: "knowledge retention held" },
   ],
 };
 
@@ -219,7 +219,7 @@ export const kirkpatrick: KirkRung[] = [
   { level: "Level 1", name: "Reaction", note: "Did they enjoy it? Deliberately not the headline.", state: "skipped" },
   { level: "Level 2", name: "Learning", note: "54% knowledge retention. Capability held.", state: "proven" },
   { level: "Level 3", name: "Behavior", note: "On-the-job application. The step I instrument next.", state: "next" },
-  { level: "Level 4", name: "Results", note: "$140K removed, 70% less learning time.", state: "proven" },
+  { level: "Level 4", name: "Results", note: "$2.5M+ projected ROI, $140K cost removed.", state: "proven" },
 ];
 
 // Savings breakdown (real: $80K F&A + $60K HRO).

@@ -25,11 +25,11 @@ function cn(...inputs: ClassValue[]) {
 // TYPES
 // ----------------------------------------------------------------------
 
-type Role = "Project Manager" | "Lead Instructional Designer" | "Instructional Designer" | "Content Developer" | "eLearning Developer";
+type Role = "Change & Project Manager" | "Lead Instructional Designer" | "Instructional Designer" | "Content Developer" | "eLearning Developer";
 type Status = "Backlog" | "In Progress" | "In Review" | "Done";
 type Modality = "Video" | "Interactive" | "Hybrid" | "ILT" | "VILT";
 type MainTab = "Dashboard" | "Kanban Board";
-type DashboardType = "PM Dashboard" | "Team Member Dashboard";
+type DashboardType = "Change Portfolio Dashboard" | "Team Member Dashboard";
 type PMViewMode = "Home" | "Project List" | "Project Detail";
 
 interface User {
@@ -218,7 +218,7 @@ function PremiumDatePicker({
 // ----------------------------------------------------------------------
 
 const USERS: User[] = [
-  { id: "u-1", name: "Jitin Nair", role: "Project Manager", avatar: "/hero-photo.jpg" },
+  { id: "u-1", name: "Jitin Nair", role: "Change & Project Manager", avatar: "/hero-photo.jpg" },
   { id: "u-2", name: "Katrina Kaif", role: "Lead Instructional Designer", avatar: "https://ui-avatars.com/api/?name=Katrina+Kaif&background=ec4899&color=fff&bold=true&size=128" },
   { id: "u-3", name: "Shah Rukh Khan", role: "Instructional Designer", avatar: "https://ui-avatars.com/api/?name=Shah+Rukh+Khan&background=f59e0b&color=fff&bold=true&size=128" },
   { id: "u-4", name: "John Abraham", role: "Content Developer", avatar: "https://ui-avatars.com/api/?name=John+Abraham&background=3b82f6&color=fff&bold=true&size=128" },
@@ -1061,9 +1061,9 @@ function TaskDetailOverlay({ taskId, user, users, onClose, actions }: { taskId: 
 // MAIN APPLICATION
 // ----------------------------------------------------------------------
 
-export function ProjectManagementClient() {
+export function ChangeManagementClient() {
   const [activeTab, setActiveTab] = useState<MainTab>("Dashboard");
-  const [dashboardType, setDashboardType] = useState<DashboardType>("PM Dashboard");
+  const [dashboardType, setDashboardType] = useState<DashboardType>("Change Portfolio Dashboard");
   const [pmViewMode, setPmViewMode] = useState<PMViewMode>("Home");
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
   const [projects] = useState<Project[]>(INITIAL_PROJECTS);
@@ -1185,7 +1185,7 @@ export function ProjectManagementClient() {
     }
   };
 
-  // PM Dashboard Renderers
+  // Change Portfolio Dashboard Renderers
   const renderPMDashboard = () => {
     if (pmViewMode === "Home") {
       return (
@@ -1279,7 +1279,7 @@ export function ProjectManagementClient() {
                     </div>
 
                     <div className="space-y-2">
-                      <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">Project Manager</span>
+                      <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">Change & Project Manager</span>
                       <div className="flex items-center gap-3">
                         {pm ? (
                           <><UserAvatar user={pm} size="sm" showRing /><span className="text-sm text-neutral-300">{pm.name}</span></>
@@ -1958,7 +1958,7 @@ export function ProjectManagementClient() {
                   onChange={(e) => setDashboardType(e.target.value as DashboardType)}
                   className="bg-transparent text-white text-xs font-bold rounded-xl pl-1 pr-8 py-1.5 focus:outline-none appearance-none cursor-pointer flex-1 uppercase tracking-tight"
                 >
-                  <option value="PM Dashboard" className="bg-zinc-950 text-white">PM Dashboard</option>
+                  <option value="Change Portfolio Dashboard" className="bg-zinc-950 text-white">Change Portfolio Dashboard</option>
                   <option value="Team Member Dashboard" className="bg-zinc-950 text-white">Team Member Dashboard</option>
                 </select>
                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500 pointer-events-none group-hover:text-emerald-400 transition-colors" />
@@ -1976,7 +1976,7 @@ export function ProjectManagementClient() {
           <AnimatePresence mode="wait">
             {activeTab === "Dashboard" && (
               <motion.div key="dash-view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                {dashboardType === "PM Dashboard" ? renderPMDashboard() : renderTeamMemberDashboard()}
+                {dashboardType === "Change Portfolio Dashboard" ? renderPMDashboard() : renderTeamMemberDashboard()}
               </motion.div>
             )}
             
