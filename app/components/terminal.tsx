@@ -824,40 +824,20 @@ export function Terminal({
 
     // Trigger download protocol IMMEDIATELY from user gesture
     try {
-      const supabase = createClient();
       console.log(`[Terminal] Initiating secure pull for: ${targetFilename}`);
       
-      // Industry Standard: Fetch as Blob to force a browser download prompt
-      const { data, error: downloadError } = await supabase
-        .storage
-        .from('resume')
-        .download(targetFilename);
-        
-      if (downloadError) {
-        console.warn("[Terminal] Blob download failed, attempting public URL fallback:", downloadError);
-        const { data: { publicUrl } } = supabase.storage.from('resume').getPublicUrl(targetFilename);
-        const downloadUrl = `${publicUrl}${publicUrl.includes('?') ? '&' : '?'}download=`;
-        window.open(downloadUrl, "_blank");
-        return;
-      }
+      const downloadUrl = "/resume-v1-ai.md";
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "Jitin_Nair_Resume_AI.md";
+      document.body.appendChild(link);
+      link.click();
+      
+      setTimeout(() => {
+        document.body.removeChild(link);
+      }, 100);
 
-      if (data) {
-        console.log("[Terminal] Data acquired. Creating local stream...");
-        const url = URL.createObjectURL(data);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = targetFilename;
-        document.body.appendChild(link);
-        link.click();
-        
-        // Cleanup resources
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-          document.body.removeChild(link);
-        }, 100);
-
-        console.log("[Terminal] Download protocol complete.");
-      }
+      console.log("[Terminal] Download protocol complete.");
     } catch (error: any) {
       console.error("[Terminal] Critical system error during acquisition:", error);
       setLines((prev) => [

@@ -4,8 +4,7 @@ import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Download, ArrowRight, Check, X } from "lucide-react";
 
-const RESUME_URL =
-  "https://kshmtzeqwovezlkkficd.supabase.co/storage/v1/object/public/resume/resume-ld-v5.pdf";
+const RESUME_URL = "/resume-v1-ld.md";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -94,7 +93,7 @@ export function DownloadResumeButton({ mobile = false, onExpandChange }: { mobil
     /* Trigger download */
     const a = document.createElement("a");
     a.href = RESUME_URL;
-    a.setAttribute("download", "Jitin_Nair_Resume_LD.pdf");
+    a.setAttribute("download", "Jitin_Nair_Resume_LD.md");
     a.setAttribute("target", "_blank");
     a.rel = "noopener noreferrer";
     document.body.appendChild(a);
