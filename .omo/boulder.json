@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "active_work_id": "resume-builder",
+  "works": {
+    "resume-builder": {
+      "work_id": "resume-builder",
+      "active_plan": ".omo/plans/resume-builder.md",
+      "plan_name": "resume-builder",
+      "session_ids": ["opencode:ses_06cce6659ffeOCnOxqk6iNx5s4"],
+      "status": "active",
+      "worktree_path": null
+    }
+  }
+}

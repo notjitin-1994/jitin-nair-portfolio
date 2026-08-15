@@ -92,23 +92,23 @@ export const ldCaseStudies: LdCaseStudy[] = [
 export const ldPrinciples = [
   {
     k: "01",
-    title: "Design backwards from the business outcome",
-    body: "Every program starts from the metric it has to move (time, cost, capability), not the course it produces.",
+    title: "Align Learning to P&L Impact",
+    body: "Every program must justify its budget by directly moving business metrics—cost reduction, time-to-competency, or revenue enablement.",
   },
   {
     k: "02",
-    title: "Automate the busywork, keep the craft human",
-    body: "I build the pipelines and agents that remove repetitive work, so design effort goes where judgment actually matters.",
+    title: "Lead Through Change & Ambiguity",
+    body: "I drive cross-functional adoption by aligning senior stakeholders, managing resistance, and ensuring smooth operational transitions at scale.",
   },
   {
     k: "03",
-    title: "Measure capability, not attendance",
-    body: "Completion is table stakes. I instrument retention, time-to-competency, and behaviour change so learning is provably working.",
+    title: "Architect Scalable Talent Ecosystems",
+    body: "I move beyond isolated courses to build dynamic skills taxonomies, succession pipelines, and continuous talent mobility frameworks.",
   },
   {
     k: "04",
-    title: "Meet people in the flow of work",
-    body: "The right modality for each audience: microlearning, video, hands-on. Learning that fits the job instead of interrupting it.",
+    title: "Automate Operations, Humanize Coaching",
+    body: "By implementing AI-native platforms like Solara, I eliminate administrative overhead so my team can focus on deep performance consulting.",
   },
 ];
 

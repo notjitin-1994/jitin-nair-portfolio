@@ -60,7 +60,7 @@ AI Systems Architect with 10+ years bridging instructional design and autonomous
 ## Professional Experience
 
 ### AI Systems Architect
-**Independent Consultant** | Bangalore, India | Mar 2025 - Present
+**Senior Manager - Corporate Learning Solutions** | Bangalore, India | Mar 2025 - Present
 
 - Architected and deployed 200+ autonomous AI agents across multi-agent orchestration platforms
 - Built production-grade systems including autonomous trading engine (Predator), multi-agent governance platform (Reality-Check), and AI-powered LMS (SmartSlate)

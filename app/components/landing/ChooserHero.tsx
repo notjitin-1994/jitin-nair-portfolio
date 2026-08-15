@@ -346,12 +346,31 @@ export function ChooserHero() {
             <p className="mt-6 max-w-md text-lg leading-relaxed text-neutral-200">
               Multi-agent orchestration in production. 200+ agents built on LangGraph, MCP, and advanced RAG architectures.
             </p>
-            <div className="mt-10 self-start">
+            <div className="mt-10 self-start flex flex-col gap-8">
               <MagneticButton href="/ai" accentClass="bg-cyan-400">
                 <Cpu className="h-5 w-5 text-current group-hover:text-black transition-colors" />
                 <span className="group-hover:text-black transition-colors">Explore AI Portfolio</span>
                 <ArrowRight className="h-4 w-4 opacity-50 group-hover:text-black transition-colors" />
               </MagneticButton>
+              
+              <motion.div 
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 transition={{ delay: 1, duration: 1 }}
+                 className="flex items-center gap-3 text-sm text-cyan-400/80 lg:hidden"
+              >
+                 <ArrowDown className="h-4 w-4 animate-bounce text-cyan-400" />
+                 <span>Scroll to explore L&D</span>
+              </motion.div>
+              <motion.div 
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 transition={{ delay: 1, duration: 1 }}
+                 className="hidden lg:flex items-center gap-3 text-sm text-cyan-400/80"
+              >
+                 <ArrowDown className="h-4 w-4 animate-bounce text-cyan-400" />
+                 <span>Scroll to explore L&D</span>
+              </motion.div>
             </div>
           </div>
           <div className="flex justify-center lg:justify-end order-1 lg:order-2">

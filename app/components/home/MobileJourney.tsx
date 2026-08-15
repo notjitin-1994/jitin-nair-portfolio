@@ -21,7 +21,7 @@ export function MobileJourney() {
       year: "2025",
       period: "Present",
       title: "AI Systems Architect",
-      role: "Independent Consultant",
+      role: "Senior Manager - Corporate Learning Solutions",
       description: "Architecting sophisticated multi-agent orchestration platforms and autonomous systems. Engineered institutional-grade infrastructure including high-frequency trading engines (Predator), distributed governance frameworks (Reality-Check), and AI-native learning ecosystems (Smartslate). Specialized in LangGraph and Model Context Protocol (MCP) to enable seamless tool-sharing and truth-verified agentic autonomy.",
       highlights: ["Multi-Agent Orchestration", "HFT Engine Architecture", "MCP Tool Integration"],
       icon: Bot,

@@ -95,14 +95,15 @@ export const careerArc = [
 export const workRoles: WorkRole[] = [
   {
     id: "independent",
-    org: "Independent Consultant",
+    org: "Smartslate",
     monogram: "AI",
     logo: Bot,
-    role: "VP / Associate Director - L&D (Independent Consultant)",
+    logoSrc: "/logo.png",
+    role: "Senior Manager - Corporate Learning Solutions",
     location: "Bangalore, India",
     period: "Mar 2025 - Present",
     tenure: "Current",
-    lede: "I lead the strategic transformation of global learning ecosystems by architecting AI infrastructure that eliminates weeks of manual L&D discovery and design. By building AI-native platforms like Solara, I compress the discovery-to-delivery cycle into minutes, driving measurable business impact and operational scalability.",
+    lede: "I lead the strategic transformation of global learning ecosystems by architecting AI infrastructure and overseeing the development of corporate L&D products. This includes building AI-native platforms like Solara to compress discovery-to-delivery cycles into minutes, and leading the development of flagship commercial offerings like the 'AI Foundations: Concept to Application' course.",
     metrics: [
       { to: 1.2, prefix: "$", suffix: "M", label: "projected ROI via automated design", icon: PiggyBank },
       { to: 90, suffix: "%", label: "reduction in discovery-to-delivery cycle", icon: Gauge },

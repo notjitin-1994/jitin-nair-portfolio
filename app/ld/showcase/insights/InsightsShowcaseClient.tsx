@@ -23,7 +23,7 @@ import { SHOWCASE_ICON_MAP } from "../components/ShowcaseInfographics";
 
 const EMAIL = "mailto:not.jitin@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/notjitin/";
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 9;
 
 function fmtDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", {
@@ -272,7 +272,9 @@ function GridSection() {
 
   // Published first, then coming-soon — preserves the "6 live + rest locked" ordering.
   const ordered = useMemo(() => {
-    const published = showcaseInsights.filter((i) => i.status === "published");
+    const published = showcaseInsights
+      .filter((i) => i.status === "published")
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     const soon = showcaseInsights.filter((i) => i.status === "coming-soon");
     return [...published, ...soon];
   }, []);
